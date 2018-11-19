@@ -1,6 +1,6 @@
 import React from 'react';
-import Cookies from 'universal-cookie';
 // import { connect } from 'react-redux';
+import API_END_POINT from "./../constants/Constant";
 
 class Login extends React.Component {
   constructor(props) {
@@ -24,7 +24,7 @@ class Login extends React.Component {
   }
 
   handleSubmit = event => {
-   const url= "https://1w5tcso1ol.execute-api.ap-southeast-1.amazonaws.com/alpha",
+   const url = API_END_POINT,
    endPoint = "/login-1-time",
    urlEndPoint = url + endPoint,
    data_to_post = {
@@ -40,8 +40,7 @@ class Login extends React.Component {
    }).then(result => {
     return result.json();
    }).then(data => {
-     const cookies = new Cookies();
-     cookies.set('RefreshToken', data['AuthenticationResult']['RefreshToken']);
+     sessionStorage.setItem('RefreshToken', data['AuthenticationResult']['RefreshToken']);
      sessionStorage.setItem('IdToken', data['AuthenticationResult']['IdToken']);
      this.props.history.push("/");
    }).catch(err => {
