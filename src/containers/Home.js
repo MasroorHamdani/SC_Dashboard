@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import ProjectDataComponent from "./projectData";
-import "./App.css";
+import ProjectDataComponent from "./../components/projectData";
+import "./../sass/App.css";
+import API_END_POINT from "./../constants/Constant";
 
 // import Helmet from 'react-helmet';
 class Home extends Component {
@@ -9,7 +10,7 @@ class Home extends Component {
     data : {}
   }
   componentDidMount(){
-    const url= "https://1w5tcso1ol.execute-api.ap-southeast-1.amazonaws.com/alpha",
+    const url= API_END_POINT,
     endPoint = "/get-settings",
     urlEndPoint = url + endPoint;
 
@@ -33,13 +34,6 @@ class Home extends Component {
       this.setState({
           data: mapped_data
       })
-      // console.log(this.state.data, typeof(this.state.data));
-      // var arr3 = Object.values(this.state.data);
-      // console.log(arr3, typeof(arr3));
-      console.log(this.state.data.length, "9099")
-      this.state.data.map((row, index) => {
-        console.log(index, row);
-      });
     });
     
     // const url= "https://1w5tcso1ol.execute-api.ap-southeast-1.amazonaws.com/alpha",

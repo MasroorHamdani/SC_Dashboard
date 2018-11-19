@@ -3,9 +3,9 @@ import { BrowserRouter as Router, Route, Switch, Link,
   NavLink, Redirect,
   withRouter } from "react-router-dom";
 import Home from "./Home";
-import Login from "./Login";
-import Header from "./Header";
-import "./App.css";
+import Login from "./../components/Login";
+import Header from "./../components/Header";
+import "./../sass/App.css";
 
 const App = () => (
   <Router>

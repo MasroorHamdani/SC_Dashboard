@@ -34,11 +34,6 @@
   }
 }
 
-.Header {
-  display: flex;
-  flex-flow: row-reverse;
-}
-
 .Something {
   text-align: center;
 }
