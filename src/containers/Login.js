@@ -1,7 +1,7 @@
 import React from 'react';
 import axios from 'axios';
-import API_END_POINT from "../constants/Constant";
-import LoginComponent from "./../components/Login"
+import * as constants from "../constants/Constant";
+import LoginComponent from "./../components/Login";
 
 class Login extends React.Component {
   constructor(props) {
@@ -22,8 +22,8 @@ class Login extends React.Component {
   }
 
   handleSubmit() {
-    const url = API_END_POINT,
-    endPoint = "/login-1-time",
+    const url = constants.API_END_POINT,
+    endPoint = constants.API_URLS['LOGIN'],
     urlEndPoint = url + endPoint,
     data_to_post = {
       "uname": this.state.username,
@@ -32,11 +32,11 @@ class Login extends React.Component {
     self = this;
     
     axios({
-      method: 'post',
+      method: 'POST',
       url: urlEndPoint,
       data: data_to_post,
       headers: {'Content-Type':'application/json',
-                'x-api-key':'QcbUJLoJSY2Mj1IdHNgAV6BoArOS6KHa7TlL4Qgx',
+                'x-api-key': constants.X_API_KEY,
                 'Authorization':sessionStorage.getItem('IdToken')
               }
     })
@@ -44,7 +44,7 @@ class Login extends React.Component {
       const response_data = response['data'];
       sessionStorage.setItem('RefreshToken', response_data['AuthenticationResult']['RefreshToken']);
       sessionStorage.setItem('IdToken', response_data['AuthenticationResult']['IdToken']);
-      self.props.history.push("/");
+      self.props.history.push(constants.REACT_URLS['DASHBOARD']);
     })
     .catch(function (error) {
       console.log(error);
