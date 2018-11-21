@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import ProjectDataComponent from "./../components/projectData";
 import "./../sass/App.css";
-import API_END_POINT from "./../constants/Constant";
+import * as constants from "../constants/Constant";
 import axios from 'axios';
 import { Redirect } from 'react-router'
 
@@ -16,20 +16,20 @@ class Home extends Component {
   
   handleClick() {
     console.log('Click happened');
-    this.setState({ redirect: true })
-    // this.props.history.push("/project")
+    // this.setState({ redirect: true })
+    this.props.history.push(constants.REACT_URLS['PROJECT_DETAILS'])
   }
 
   componentDidMount(){
-    const url= API_END_POINT,
-    endPoint = "/get-settings",
+    const url= constants.API_END_POINT,
+    endPoint = constants.API_URLS['DASHBOARD'],
     urlEndPoint = url + endPoint,
     self = this;
     axios({
-      method:'get',
+      method:'GET',
       url: urlEndPoint,
       headers: {'Content-Type':'application/json',
-                'x-api-key':'QcbUJLoJSY2Mj1IdHNgAV6BoArOS6KHa7TlL4Qgx',
+                'x-api-key': constants.X_API_KEY,
                 'Authorization':sessionStorage.getItem('IdToken')
               }
     }).then(function(response) {
@@ -67,9 +67,9 @@ class Home extends Component {
         'Hello, React!',
         'or something more then that',
       );
-      if (this.state.redirect) {
-        return <Redirect to='/project'/>;
-      }
+      // if (this.state.redirect) {
+      //   return <Redirect to='/project'/>;
+      // }
       return (
         <div className="App App-header">
           {/* <Helmet title="SmartClean" /> */}

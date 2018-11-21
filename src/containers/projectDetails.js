@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import API_END_POINT from "./../constants/Constant";
+import * as constants from "../constants/Constant";
 import axios from 'axios';
 
 class ProjectDetails extends Component {
@@ -11,8 +11,8 @@ class ProjectDetails extends Component {
         }
     }
     componentDidMount(){
-        const url= API_END_POINT,
-        endPoint = "/get-project",
+        const url= constants.API_END_POINT,
+        endPoint = constants.API_URLS['PROJECT_DETAILS'],
         urlEndPoint = url + endPoint,
         data_to_post = {
             "pid": this.state.pid
@@ -23,7 +23,7 @@ class ProjectDetails extends Component {
             url: urlEndPoint,
             data: data_to_post,
             headers: {'Content-Type':'application/json',
-                      'x-api-key':'QcbUJLoJSY2Mj1IdHNgAV6BoArOS6KHa7TlL4Qgx',
+                      'x-api-key': constants.X_API_KEY,
                       'Authorization':sessionStorage.getItem('IdToken')
                     }
           })
@@ -36,20 +36,6 @@ class ProjectDetails extends Component {
           .catch(function (error) {
             console.log(error);
           });
-        // fetch(urlEndPoint, {
-        //   method: 'POST',
-        //   headers: {'Content-Type':'application/json',
-        //   'x-api-key':'QcbUJLoJSY2Mj1IdHNgAV6BoArOS6KHa7TlL4Qgx',
-        //   'Authorization':sessionStorage.getItem('IdToken')
-        //   },
-        //   body: JSON.stringify(data_to_post)
-        // })
-        // .then(result => result.json())
-        // .then(result => {
-        //   this.setState({
-        //       data: result
-        //   })
-        // });
     }
     render() {
         return(
