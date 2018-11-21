@@ -1,14 +1,13 @@
 import React from "react";
 import { BrowserRouter as Router, Route, Switch} from "react-router-dom";
-import Home from "./Home";
-import Login from "./Login";
-import Header from "./../components/Header";
-import Menu from "./../components/menu";
-import ProjectDetails from "./projectDetails";
-import About from "./about";
-import "./../sass/App.css";
+import Home from "./containers/Home";
+import Login from "./containers/Login";
+import Header from "./components/Header";
+import Menu from "./components/menu";
+import ProjectDetails from "./containers/projectDetails";
+import About from "./containers/about";
+import "./sass/App.css";
 
-// const App = () => (
   class App extends React.Component {
     render() {
       const Contact = () => <h2>Contact</h2>
@@ -46,6 +45,4 @@ import "./../sass/App.css";
       );
     }
   }
-
  export default App;
-// export default translate('common')(App);
