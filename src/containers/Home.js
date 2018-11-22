@@ -15,10 +15,6 @@ class Home extends Component {
       redirect: false
     }
   }
-  // //Create
-  // createTodo = (todo) => {
-  //   this.props.actions.CreateTodo(todo)
-  // }
   
   handleClick() {
     console.log('Click happened');
@@ -57,13 +53,6 @@ class Home extends Component {
   }
 
     render() {
-      const content = <div className="Something">Welcome Back</div>;
-      const non_jsx = React.createElement(
-        'div',
-        {className: 'Something'},
-        'Hello, React!',
-        'or something more then that',
-      );
       // if (this.state.redirect) {
       //   return <Redirect to='/project'/>;
       // }
@@ -75,8 +64,6 @@ class Home extends Component {
           }
         </NamespacesConsumer>
           <ProjectDataComponent data={this.state.data} onClick={this.handleClick.bind(this)}/>
-          {content}
-          {non_jsx}
           
         </div>
       );

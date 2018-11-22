@@ -1,3 +1,8 @@
 {
-    "Welcome to React": "Huānyíng lái dào React and react-i18next"
+    "Welcome to React": "Huānyíng lái dào React and react-i18next",
+    "Home": "Jiā",
+    "Login": "Dēnglù",
+    "About": "Guānyú",
+    "Contact": "Liánxì",
+    "Welcome-Header": "Huānyíng"
 }
