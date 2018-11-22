@@ -23,15 +23,16 @@ class Home extends Component {
   }
 
   componentDidMount(){
-    const url= constants.API_END_POINT,
-    endPoint = constants.API_URLS['DASHBOARD'],
-    urlEndPoint = url + endPoint,
-    self = this;
+    const { API_END_POINT, API_URLS, X_API_KEY } = constants;
+    const url = API_END_POINT,
+          endPoint = API_URLS['DASHBOARD'],
+          urlEndPoint = `${url}${endPoint}`
+    const self = this;
     axios({
       method:'GET',
       url: urlEndPoint,
       headers: {'Content-Type':'application/json',
-                'x-api-key': constants.X_API_KEY,
+                'x-api-key': X_API_KEY,
                 'Authorization':sessionStorage.getItem('IdToken')
               }
     }).then(function(response) {

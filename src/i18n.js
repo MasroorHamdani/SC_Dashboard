@@ -19,7 +19,7 @@ i18n
   .use(detector)
   .use(reactI18nextModule)
   .init({
-    debug:true,
+    // debug:true,
     resources,
     // fallbackLng: 'en', // use en if detected lng is not available
     whitelist: ['en', 'sg'],
