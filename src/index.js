@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './sass/index.css';
 import App from './App';
-import { I18nextProvider, withNamespaces } from "react-i18next";
+import { I18nextProvider } from "react-i18next";
 import i18n from "./i18n.js";
 
 
