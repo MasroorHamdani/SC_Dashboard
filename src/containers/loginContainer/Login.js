@@ -1,9 +1,10 @@
 import React from 'react';
+import { connect } from "react-redux";
+
 import { API_URLS, X_API_KEY, REACT_URLS } from "../../constants/Constant";
 import LoginComponent from "../../components/Login";
-import { getLoginConfig } from "./LoginConfig";
 import { userLogin } from "../../actions/LoginAction";
-import { connect } from "react-redux";
+import { getApiConfig } from '../../services/ApiCofig';
 
 class Login extends React.Component {
   constructor(props) {
@@ -24,13 +25,12 @@ class Login extends React.Component {
   }
 
   handleSubmit() {
-    // const { API_URLS, X_API_KEY } = constants;
     const endPoint = API_URLS['LOGIN'],
           dataToPost = {
           "uname": this.state.username,
           "passwd": this.state.password
         },
-        config = getLoginConfig(endPoint, dataToPost, X_API_KEY);
+        config = getApiConfig(endPoint, X_API_KEY, 'POST', dataToPost);
     this.props.onLogin(config);
   }
   componentDidUpdate(prevProps, prevState) {

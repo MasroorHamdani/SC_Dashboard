@@ -1,10 +1,10 @@
 import React from "react";
 import { BrowserRouter as Router, Route, Switch} from "react-router-dom";
-import Home from "./containers/Home";
+import Dashboard from "./containers/dashboardContainer/Dashboard";
 import Login from "./containers/loginContainer/Login";
 import Header from "./components/Header";
-import Menu from "./components/menu";
-import ProjectDetails from "./containers/projectDetails";
+import Menu from "./components/Menu";
+import ProjectDetails from "./containers/ProjectDetails";
 import About from "./containers/about";
 import NoMatch from "./containers/noMatch";
 import "./sass/App.css";
@@ -24,7 +24,7 @@ import "./sass/App.css";
                 <Route path="/contact" component={Contact} />
                 { sessionStorage.getItem('IdToken') &&
                 <Route>
-                  <Route exact path="/" component={Home} />
+                  <Route exact path="/" component={Dashboard} />
                 </Route>
                 }
                 <Route path="/project" component={ProjectDetails} />
