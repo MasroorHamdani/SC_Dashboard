@@ -6,21 +6,13 @@ import Header from "./components/Header";
 import Menu from "./components/menu";
 import ProjectDetails from "./containers/projectDetails";
 import About from "./containers/about";
+import NoMatch from "./containers/noMatch";
 import "./sass/App.css";
 
   class App extends React.Component {
     render() {
       const Contact = () => <h2>Contact</h2>
 
-      function NoMatch({ location }) {
-        return (
-          <div>
-            <h3>
-              No match for <code>{location.pathname}</code>
-            </h3>
-          </div>
-        );
-      }
       return(
         <Router>
             <div>
