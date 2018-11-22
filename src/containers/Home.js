@@ -4,6 +4,8 @@ import "./../sass/App.css";
 import * as constants from "../constants/Constant";
 import axios from 'axios';
 import { Redirect } from 'react-router'
+import { NamespacesConsumer } from 'react-i18next';
+// import * as DashboardActions from './../actions/dashboardAction';
 
 class Home extends Component {
   constructor(props) {
@@ -13,6 +15,10 @@ class Home extends Component {
       redirect: false
     }
   }
+  // //Create
+  // createTodo = (todo) => {
+  //   this.props.actions.CreateTodo(todo)
+  // }
   
   handleClick() {
     console.log('Click happened');
@@ -51,16 +57,7 @@ class Home extends Component {
   }
 
     render() {
-      // const { t } = this.props;
-      const content = <div className="Something">Welcome Back
-      {/* <Trans i18nKey='welcome.intro'>
-                
-            </Trans> */}
-        
-          {/* { this.props.t('welcome.title', { framework: "react-i18next" }) } */}
-            {/* { t('welcome.title', { framework: "react-i18next" }) } */}
-            {/* { t('welcome.intro', { framework: "react-i18next" }) } */}
-          </div>;
+      const content = <div className="Something">Welcome Back</div>;
       const non_jsx = React.createElement(
         'div',
         {className: 'Something'},
@@ -72,9 +69,12 @@ class Home extends Component {
       // }
       return (
         <div className="App App-header">
-          {/* <Helmet title="SmartClean" /> */}
+        <NamespacesConsumer>
+          {
+            t => <h1>{t('Welcome to React')}</h1>
+          }
+        </NamespacesConsumer>
           <ProjectDataComponent data={this.state.data} onClick={this.handleClick.bind(this)}/>
-          {/* <div className="flex-container">{data}</div> */}
           {content}
           {non_jsx}
           

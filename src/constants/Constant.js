@@ -13,3 +13,6 @@ export const REACT_URLS = {
     'DASHBOARD': '/',
     'PROJECT_DETAILS': '/project'
 }
+
+
+// process.env.REACT_APP_SECRET_CODE
