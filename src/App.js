@@ -1,7 +1,7 @@
 import React from "react";
 import { BrowserRouter as Router, Route, Switch} from "react-router-dom";
 import Home from "./containers/Home";
-import Login from "./containers/Login";
+import Login from "./containers/loginContainer/Login";
 import Header from "./components/Header";
 import Menu from "./components/menu";
 import ProjectDetails from "./containers/projectDetails";
@@ -25,7 +25,6 @@ import "./sass/App.css";
                 { sessionStorage.getItem('IdToken') &&
                 <Route>
                   <Route exact path="/" component={Home} />
-                  
                 </Route>
                 }
                 <Route path="/project" component={ProjectDetails} />

@@ -5,6 +5,19 @@ import App from './App';
 import { I18nextProvider, withNamespaces } from "react-i18next";
 import i18n from "./i18n.js";
 
+
+import { Provider } from "react-redux";
+import configureStore from "./store";
+
+const store = configureStore();
+
+ReactDOM.render(<I18nextProvider i18n={i18n}>
+              <Provider store={store}>
+                <App />
+              </Provider>
+            </I18nextProvider>,
+            document.getElementById('root'));
+
 // ReactDOM.render(<App />, document.getElementById('root'));
 
 // If you want your app to work offline and load faster, you can change
@@ -12,9 +25,9 @@ import i18n from "./i18n.js";
 // Learn more about service workers: http://bit.ly/CRA-PWA
 // serviceWorker.unregister();
 
-ReactDOM.render(
-  <I18nextProvider i18n={i18n}>
-    <App />
-  </I18nextProvider>,
-  document.getElementById("root")
-);
+// ReactDOM.render(
+//   <I18nextProvider i18n={i18n}>
+//     <App />
+//   </I18nextProvider>,
+//   document.getElementById("root")
+// );

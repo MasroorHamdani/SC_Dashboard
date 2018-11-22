@@ -21,7 +21,8 @@
     "redux-logger": "^3.0.6",
     "redux-thunk": "^2.3.0",
     "styled-components": "^4.1.1",
-    "@babel/plugin-proposal-decorators": "^7.0.0-beta.44"
+    "@babel/plugin-proposal-decorators": "^7.0.0-beta.44",
+    "redux-multi": "^0.1.12"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -44,6 +45,7 @@
     "babel-plugin-transform-class-properties": "^6.24.1",
     "babel-preset-env": "^1.6.0",
     "babel-preset-flow": "^6.23.0",
+    "lodash-es": "^4.17.11",
     "react-i18next": "^8.3.8"
   }
 }
