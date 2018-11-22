@@ -3,7 +3,7 @@ import ProjectDataComponent from "./../components/projectData";
 import "./../sass/App.css";
 import * as constants from "../constants/Constant";
 import axios from 'axios';
-import { Redirect } from 'react-router'
+// import { Redirect } from 'react-router'
 import { NamespacesConsumer } from 'react-i18next';
 // import * as DashboardActions from './../actions/dashboardAction';
 

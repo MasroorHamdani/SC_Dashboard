@@ -5,7 +5,6 @@ import { NamespacesConsumer } from 'react-i18next';
 const Menu = () => (
   <NamespacesConsumer>
           {
-            // t => <h1>{t('Welcome to React')}</h1>
             t => <ul>
             <li>
               <NavLink to="/" activeClassName="App-link-selected">{t('Home')}</NavLink>
