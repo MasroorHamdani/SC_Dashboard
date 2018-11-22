@@ -20,7 +20,7 @@ i18n
   .use(reactI18nextModule)
   .init({
     resources,
-    lng: "en",
+    // lng: "en",
     fallbackLng: "en", // use en if detected lng is not available
     keySeparator: false,
     interpolation: {

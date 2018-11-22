@@ -1,18 +1,19 @@
 import React, { Component } from 'react';
 import "./../sass/Header.css";
+import { NamespacesConsumer } from 'react-i18next';
 
 class Header extends Component {
     render() {
-        const user = "Masroor";
-        const headerContent = <div className="Header">
-            <h2>Welcome {user}</h2>
-          </div>;
+      const user = "Masroor";
       return (
         <div className="Header">
-          {headerContent}
+          <NamespacesConsumer>
+          {
+            t => <h1>{t('Welcome-Header')} {user}</h1>
+          }
+          </NamespacesConsumer>
         </div>
       );
     }
   }
-  
   export default Header;
