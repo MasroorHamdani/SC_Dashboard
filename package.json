@@ -3,12 +3,14 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@babel/plugin-proposal-decorators": "^7.0.0-beta.44",
     "axios": "^0.18.0",
     "connected-react-router": "^5.0.1",
     "history": "^4.7.2",
     "i18next": "^12.0.0",
     "i18next-browser-languagedetector": "^2.2.4",
     "i18next-xhr-backend": "^1.5.1",
+    "jwt-decode": "^2.2.0",
     "ng-i18next": "github:i18next/ng-i18next",
     "react": "^16.6.1",
     "react-dom": "^16.6.1",
@@ -19,10 +21,9 @@
     "react-scripts": "2.1.1",
     "redux": "^4.0.1",
     "redux-logger": "^3.0.6",
+    "redux-multi": "^0.1.12",
     "redux-thunk": "^2.3.0",
-    "styled-components": "^4.1.1",
-    "@babel/plugin-proposal-decorators": "^7.0.0-beta.44",
-    "redux-multi": "^0.1.12"
+    "styled-components": "^4.1.1"
   },
   "scripts": {
     "start": "react-scripts start",

@@ -22,11 +22,11 @@ import "./sass/App.css";
                 <Route path="/login" component={Login} />
                 <Route path="/about" component={About} />
                 <Route path="/contact" component={Contact} />
-                { sessionStorage.getItem('IdToken') &&
-                <Route>
+                {/* { sessionStorage.getItem('IdToken') &&
+                <Route> */}
                   <Route exact path="/" component={Dashboard} />
-                </Route>
-                }
+                {/* </Route>
+                } */}
                 <Route path="/project" component={ProjectDetails} />
                 {/* when none of the above match, <NoMatch> will be rendered */}
                 <Route component={NoMatch} />
