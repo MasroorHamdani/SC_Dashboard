@@ -2,6 +2,7 @@ export const API_END_POINT = "https://1w5tcso1ol.execute-api.ap-southeast-1.amaz
 
 export const API_URLS = {
     "LOGIN": "/login-1-time",
+    "REFRESH_TOKEN": "/refresh-token",
     "DASHBOARD": "/get-settings",
     "PROJECT_DETAILS": "/get-project"
 };
