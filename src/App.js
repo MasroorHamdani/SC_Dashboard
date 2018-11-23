@@ -4,7 +4,7 @@ import Dashboard from "./containers/Dashboard";
 import Login from "./containers/Login";
 import Header from "./components/Header";
 import Menu from "./components/Menu";
-import ProjectDetails from "./containers/ProjectDetails";
+import ProjectDetails from "./containers/ProjectDetail";
 import About from "./containers/about";
 import NoMatch from "./containers/noMatch";
 import "./sass/App.css";
