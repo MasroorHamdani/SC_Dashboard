@@ -1,7 +1,7 @@
 import React from "react";
 import { BrowserRouter as Router, Route, Switch} from "react-router-dom";
-import Dashboard from "./containers/dashboardContainer/Dashboard";
-import Login from "./containers/loginContainer/Login";
+import Dashboard from "./containers/Dashboard";
+import Login from "./containers/Login";
 import Header from "./components/Header";
 import Menu from "./components/Menu";
 import ProjectDetails from "./containers/ProjectDetails";
