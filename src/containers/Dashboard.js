@@ -17,7 +17,6 @@ class Dashboard extends Component {
   }
   
   handleClick() {
-    console.log('Click happened');
     this.props.history.push(REACT_URLS['PROJECT_DETAILS'])
   }
 
