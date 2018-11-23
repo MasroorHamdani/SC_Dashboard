@@ -1,11 +1,12 @@
 import axios from 'axios';
-import JWTDecode from 'jwt-decode';
+// import JWTDecode from 'jwt-decode';
 import { merge } from "lodash-es";
 
 // import { AuthApi } from './auth.api';
 import { config } from '../config';
-
 import {API_END_POINT} from "../constants/Constant";
+
+var jwtDecode = require('jwt-decode');
 
 function ApiService(configObject) {
     const url = API_END_POINT,
@@ -45,39 +46,42 @@ function ApiService(configObject) {
     }
 
     axios.interceptors.response.use(undefined, err => {
-        if (err.response.config.url.includes('/login'))
-            return Promise.reject(err);
-        if (err.response.status === 403) return forceLogout();
-        if (err.response.status !== 401) return Promise.reject(err);
+        if (err.response) {
+            if (err.response.config.url.includes('/login'))
+                return Promise.reject(err);
+            if (err.response.status === 403) return forceLogout();
+            if (err.response.status !== 401) return Promise.reject(err);
+        }
+        
         if (!isFetchingToken) {
             isFetchingToken = true;
 
             const refreshToken = sessionStorage.getItem('RefreshToken');
             if (!refreshToken) return forceLogout();
 
-            try {
-                const isRefreshTokenExpired =
-                  JWTDecode(refreshToken).exp < Date.now() / 1000;
+            // try {
+            //     const isRefreshTokenExpired =
+            //       jwtDecode(refreshToken).exp < Date.now() / 1000;
           
-                if (isRefreshTokenExpired) return forceLogout();
-            } catch (e) {
-            return forceLogout();
-            }
-            AuthApi.refreshAccessToken()
-                .then(newAccessToken => {
-                    isFetchingToken = false;
+            //     if (isRefreshTokenExpired) return forceLogout();
+            // } catch (e) {
+            // return forceLogout();
+            // }
+            // AuthApi.refreshAccessToken()
+            //     .then(newAccessToken => {
+            //         isFetchingToken = false;
 
-                    onTokenRefreshed(null, newAccessToken);
-                    tokenSubscribers = [];
+            //         onTokenRefreshed(null, newAccessToken);
+            //         tokenSubscribers = [];
 
-                    sessionStorage.setItem('IdToken', newAccessToken);
-                })
-                .catch(() => {
-                    onTokenRefreshed(new Error('Unable to refresh access token'), null);
-                    tokenSubscribers = [];
+            //         sessionStorage.setItem('IdToken', newAccessToken);
+            //     })
+            //     .catch(() => {
+            //         onTokenRefreshed(new Error('Unable to refresh access token'), null);
+            //         tokenSubscribers = [];
 
-                    forceLogout();
-                });
+            //         forceLogout();
+            //     });
         };
 
         const initTokenSubscriber = new Promise((resolve, reject) => {
