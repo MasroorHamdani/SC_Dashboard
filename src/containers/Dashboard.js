@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { connect } from "react-redux";
-import { NamespacesConsumer } from 'react-i18next';
 
 import "../sass/App.css";
 import ProjectDataComponent from "../components/ProjectData";

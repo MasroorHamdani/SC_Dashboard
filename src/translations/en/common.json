@@ -5,5 +5,8 @@
     "About": "About",
     "Contact": "Contact",
     "Welcome-Header": "Welcome",
-    "No Match": "No match for passed URL found"
+    "No Match": "No match for passed URL found",
+    "signin": "Sign In",
+    "username": "UserName",
+    "password": "Password"
 }
