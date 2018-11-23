@@ -14,7 +14,7 @@ class ProjectDetails extends Component {
         }
     }
     componentDidMount(){
-        const endPoint = API_URLS['DASHBOARD'],
+        const endPoint = API_URLS['PROJECT_DETAILS'],
             data_to_post = {
                 "pid": this.state.pid
             },
@@ -48,7 +48,7 @@ class ProjectDetails extends Component {
         //   });
     }
     componentDidUpdate(prevProps, prevState) {
-        console.log(this.props.state);
+        console.log(this.props.state.ProjectDataReducer.data, "*****");
     }
     render() {
         return(
