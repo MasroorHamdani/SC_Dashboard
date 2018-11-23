@@ -3,7 +3,7 @@ import "./../sass/App.css";
 
 class ProjectDataComponent extends Component {
     render() {
-        if(this.props.data.length) {
+        if(this.props.data) {
             const data = this.props.data.map((row,index) => {
                 return(
                     <div key={row.key} className="box" onClick={this.props.onClick}>
