@@ -21,7 +21,7 @@ i18n
   .init({
     // debug:true,
     resources,
-    // fallbackLng: 'en', // use en if detected lng is not available
+    fallbackLng: 'en', // use en if detected lng is not available
     whitelist: ['en', 'sg'],
     keySeparator: false,
     interpolation: {

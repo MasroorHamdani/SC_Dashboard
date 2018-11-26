@@ -1,12 +1,14 @@
 {
     "Welcome to React": "Huānyíng lái dào React and react-i18next",
-    "Home": "Jiā",
+    "Dashboard": "Jiā",
     "Login": "Dēnglù",
     "About": "Guānyú",
     "Contact": "Liánxì",
+    "Reports": "Bàogào",
     "Welcome-Header": "Huānyíng",
     "No Match": "Zhǎo bù dào pǐpèi de chuándì URL",
     "signin": "Dēngrù",
     "username": "Yònghù míng",
-    "password": "Mìmǎ"
+    "password": "Mìmǎ",
+    "footer-note": "©2018 SmartClean Technologies Pte. Bǎoliú suǒyǒu quánlì"
 }
