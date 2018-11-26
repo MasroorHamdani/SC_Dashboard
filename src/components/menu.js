@@ -1,4 +1,5 @@
 import React, {Component} from "react";
+import { connect } from "react-redux";
 import { Link, NavLink} from "react-router-dom";
 import { NamespacesConsumer } from 'react-i18next';
 import Drawer from '@material-ui/core/Drawer';
@@ -10,6 +11,7 @@ import { mainListItems, secondaryListItems } from '../containers/listItems';
 import IconButton from '@material-ui/core/IconButton';
 import { withStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
+import {ToggleClick}  from '../actions/MenuAction';
 // import { render } from "react-saga";
 
 
@@ -52,12 +54,10 @@ class Menu extends Component {
     }
   }
 
-  handleDrawerOpen = () => {
-    this.setState({ open: true });
-  };
 
   handleDrawerClose = () => {
-    this.setState({ open: false });
+    // this.setState({ open: true });
+    this.props.onToolbarClick(this.state.open)
   };
 
   render() {
@@ -102,5 +102,17 @@ class Menu extends Component {
     );
   }
 };
-
-export default withStyles(styles)(Menu);
+function mapStateToProps(state) {
+  return {
+      state
+  }
+}
+function mapDispatchToProps(dispatch) {
+  return {
+      onToolbarClick: (value) => {
+          //will dispatch the async action
+          dispatch(ToggleClick(value))
+      }
+  }
+}
+export default withStyles(styles)(connect(mapStateToProps, mapDispatchToProps)(Menu));
