@@ -1,12 +1,14 @@
 {
     "Welcome to React": "Welcome to React and react-i18next!!!!",
-    "Home": "Home",
+    "Dashboard": "Dashboard",
     "Login": "Login",
     "About": "About",
     "Contact": "Contact",
+    "Reports": "Reports",
     "Welcome-Header": "Welcome",
     "No Match": "No match for passed URL found",
     "signin": "Sign In",
     "username": "UserName",
-    "password": "Password"
+    "password": "Password",
+    "footer-note": "© 2018 SmartClean Technologies Pte. Ltd. All Rights Reserved"
 }
