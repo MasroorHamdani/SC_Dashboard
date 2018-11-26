@@ -15,7 +15,7 @@ import "./sass/App.css";
 
       return(
         <Router>
-            <div>
+            <div class="container">
               <Header/>
               <Menu />
               <Switch>
@@ -31,6 +31,7 @@ import "./sass/App.css";
                 {/* when none of the above match, <NoMatch> will be rendered */}
                 <Route component={NoMatch} />
               </Switch>
+              {/* <Menu /> */}
             </div>
           </Router>
       );
