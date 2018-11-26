@@ -59,7 +59,6 @@ class ProjectDataComponent extends Component {
                 subheader="November 26, 2018"/>
                 <CardMedia
                   className={classes.media}
-                  
                   title="Analytics"
                 />
                 <CardContent>

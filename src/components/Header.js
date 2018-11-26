@@ -82,7 +82,7 @@ class Header extends Component {
           position="absolute"
           className={classNames(classes.appBar, this.state.open && classes.appBarShift)}
         >
-        <Toolbar disableGutters={!this.state.open} className={classes.toolbar}>
+        <Toolbar  className={classes.toolbar}>
             <IconButton
               color="inherit"
               aria-label="Open drawer"
