@@ -4,28 +4,12 @@ import { withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import PropTypes from 'prop-types';
 
-import "../sass/App.css";
-import ProjectDataComponent from "../components/ProjectData";
-import { API_URLS, X_API_KEY, REACT_URLS } from "../constants/Constant";
-import { getApiConfig } from '../services/ApiCofig';
-import {dashboardData} from '../actions/DashboardAction';
-
-const drawerWidth = 240;
-const styles = theme => ({
-  root: {
-    display: 'flex',
-  },
-  appBarSpacer: theme.mixins.toolbar,
-  content: {
-    flexGrow: 1,
-    padding: theme.spacing.unit * 3,
-    height: '100vh',
-    overflow: 'auto',
-  },
-  chartContainer: {
-    marginLeft: -22,
-  },
-});
+import "../../sass/App.css";
+import styles from './DashboardStyle'
+import ProjectDataComponent from "../../components/ProjectData";
+import { API_URLS, X_API_KEY, REACT_URLS } from "../../constants/Constant";
+import { getApiConfig } from '../../services/ApiCofig';
+import {dashboardData} from '../../actions/DashboardAction';
 
 class Dashboard extends Component {
   constructor(props) {
