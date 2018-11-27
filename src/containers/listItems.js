@@ -10,37 +10,37 @@ import BarChartIcon from '@material-ui/icons/BarChart';
 import LayersIcon from '@material-ui/icons/Layers';
 import AssignmentIcon from '@material-ui/icons/Assignment';
 import { NamespacesConsumer } from 'react-i18next';
+import { Link, NavLink} from "react-router-dom";
 
 export const mainListItems = (
   <NamespacesConsumer>
   {
-    
    t=> <div>
-      <ListItem button>
+      <ListItem button component={Link} to='/'>
         <ListItemIcon>
           <DashboardIcon />
         </ListItemIcon>
         <ListItemText primary={t("Dashboard")} />
       </ListItem>
-      <ListItem button>
+      <ListItem button component={Link} to='/Login'>
         <ListItemIcon>
           <ShoppingCartIcon />
         </ListItemIcon>
         <ListItemText primary={t("Login")} />
       </ListItem>
-      <ListItem button>
+      <ListItem button component={Link} to='/Contact'>
         <ListItemIcon>
           <PeopleIcon />
         </ListItemIcon>
         <ListItemText primary={t("Contact")} />
       </ListItem>
-      <ListItem button>
+      <ListItem button component={Link} to='/Report'>
         <ListItemIcon>
           <BarChartIcon />
         </ListItemIcon>
         <ListItemText primary={t("Reports")} />
       </ListItem>
-      <ListItem button>
+      <ListItem button component={Link} to='/About'>
         <ListItemIcon>
           <LayersIcon />
         </ListItemIcon>

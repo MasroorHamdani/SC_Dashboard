@@ -16,8 +16,7 @@ import "./sass/App.css";
 
       return(
         <Router>
-            <div class="container">
-            
+            <div className="container">
               <Header/>
               <Menu />
               <Switch>
