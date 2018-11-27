@@ -15,9 +15,6 @@ import "./../sass/Header.css";
 
 const drawerWidth = 240;
 const styles = theme => ({
-  root: {
-    display: 'flex',
-  },
   toolbar: {
     paddingRight: 24, // keep right padding when drawer closed
   },
@@ -49,6 +46,9 @@ const styles = theme => ({
   },
   menuButtonHidden: {
     display: 'none',
+  },
+  title: {
+    flexGrow: 1,
   }
 });
 class Header extends Component {

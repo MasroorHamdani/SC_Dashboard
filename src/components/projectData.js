@@ -18,7 +18,7 @@ const styles = theme => ({
       maxWidth: 400,
     },
     media: {
-      height: 0,
+      height: 10,
       paddingTop: '56.25%', // 16:9
     },
     actions: {
@@ -44,57 +44,36 @@ class ProjectDataComponent extends Component {
                     //     <div>Over time: {row.alertOverTime}hr</div> */}
                     // </div>
                     <Card className={classes.card} onClick={this.props.onClick}>
-                <CardHeader
-                avatar={
-                    <Avatar aria-label="Recipe" className={classes.avatar}>
-                    P
-                    </Avatar>
-                }
-                action={
-                    <IconButton>
-                    <MoreVertIcon />
-                    </IconButton>
-                }
-                title="Project Details"
-                subheader="November 26, 2018"/>
-                <CardMedia
-                  className={classes.media}
-                  title="Analytics"
-                />
-                <CardContent>
-                    <Typography component="p">
-                    <div>{row.key}</div>
-                    <div>{row.site}</div>
-                    <div>{row.site_addr}</div>
-                    </Typography>
-                </CardContent>
+                        <CardHeader
+                        avatar={
+                            <Avatar aria-label="Recipe" className={classes.avatar}>
+                            P
+                            </Avatar>
+                        }
+                        action={
+                            <IconButton>
+                            <MoreVertIcon />
+                            </IconButton>
+                        }
+                        title="Project Details"
+                        subheader="November 26, 2018"/>
+                        <CardMedia
+                        className={classes.media}
+                        title="Analytics"
+                        image="/static/image.png"
+                        />
+                        <CardContent>
+                            <div>{row.key}</div>
+                            <div>{row.site}</div>
+                            <div>{row.site_addr}</div>
+                        </CardContent>
 
-            </Card>
+                    </Card>
                 );
             });
             return (
-            <div className="flex-container">{data}</div>);
-            // <Card className={classes.card} onClick={this.props.onClick}>
-            //     <CardHeader
-            //     avatar={
-            //         <Avatar aria-label="Recipe" className={classes.avatar}>
-            //         R
-            //         </Avatar>
-            //     }
-            //     action={
-            //         <IconButton>
-            //         <MoreVertIcon />
-            //         </IconButton>
-            //     }
-            //     title="Project Details"
-            //     subheader="Nob=vember 26, 2018"/>
-            //     <CardContent>
-            //         <Typography component="p">
-            //             {data}
-            //         </Typography>
-            //     </CardContent>
-
-            // </Card>);
+                <div className="flex-container">{data}</div>
+            );
         } else {
             return <div className="flex-container">No Data</div>
         }
