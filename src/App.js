@@ -1,10 +1,10 @@
 import React from "react";
 import { BrowserRouter as Router, Route, Switch} from "react-router-dom";
-import Dashboard from "./containers/Dashboard";
+import Dashboard from "./containers/dashboard/Dashboard";
 import Login from "./containers/Login";
-import Header from "./components/Header";
+import Header from "./components/header/Header";
 import Footer from "./components/Footer";
-import Menu from "./components/Menu";
+import Menu from "./components/menu/Menu";
 import ProjectDetails from "./containers/ProjectDetail";
 import About from "./containers/about";
 import NoMatch from "./containers/noMatch";
