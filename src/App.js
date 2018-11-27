@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Route, Switch} from "react-router-dom";
 import Dashboard from "./containers/Dashboard";
 import Login from "./containers/Login";
 import Header from "./components/Header";
-import Footer from "./components/Foo";
+import Footer from "./components/Footer";
 import Menu from "./components/Menu";
 import ProjectDetails from "./containers/ProjectDetail";
 import About from "./containers/about";
@@ -16,7 +16,7 @@ import "./sass/App.css";
 
       return(
         <Router>
-            <div class="container">
+            <div className="container">
               <Header/>
               <Menu />
               <Switch>
