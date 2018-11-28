@@ -1,12 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from "react-redux";
-import { withStyles } from '@material-ui/core/styles';
-import Typography from '@material-ui/core/Typography';
+import {withStyles, Typography} from '@material-ui/core';
 import PropTypes from 'prop-types';
-
 import "../../sass/App.css";
 import styles from './DashboardStyle'
-import ProjectDataComponent from "../../components/ProjectData";
+import ProjectDataComponent from "../../components/projectData/ProjectData";
 import { API_URLS, X_API_KEY, REACT_URLS } from "../../constants/Constant";
 import { getApiConfig } from '../../services/ApiCofig';
 import {dashboardData} from '../../actions/DashboardAction';
@@ -19,7 +17,7 @@ class Dashboard extends Component {
     }
   }
   
-  handleClick() {
+  handleClick = () => {
     this.props.history.push(REACT_URLS['PROJECT_DETAILS'])
   }
 
@@ -30,7 +28,11 @@ class Dashboard extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    console.log(this.props.state);
+    if (this.props.dashboardData &&
+      (this.props.dashboardData !== prevProps.dashboardData)) {
+        console.log(this.props.dashboardData);
+      }
+      console.log("outside");
   }
 
   render() {
@@ -43,7 +45,7 @@ class Dashboard extends Component {
             Projects
           </Typography>
           <Typography component="div" className={classes.chartContainer}>
-          <ProjectDataComponent data={this.props.state} onClick={this.handleClick.bind(this)}/>
+          <ProjectDataComponent data={this.props.dashboardData} onClick={this.handleClick}/>
           </Typography>
         </main>
       </div>
@@ -52,22 +54,22 @@ class Dashboard extends Component {
 }
 function getMappedData (state) {
   if (state.DashboardReducer.data) {
-    const mapped_data = [],
-          response_data = state.DashboardReducer.data;
-    if(response_data["Item"]) {
-      const projects = response_data["Item"]["Projects"]
+    const mappedData = [],
+    responseData = state.DashboardReducer.data;
+    if(responseData["Item"]) {
+      const projects = responseData["Item"]["Projects"]
       for (var key in projects) {
         projects[key]['key']=key;
-        mapped_data.push(projects[key])
+        mappedData.push(projects[key])
       }
     }
-    return mapped_data;
+    return mappedData;
   }
 }
 
 function mapStateToProps(state) {
   return {
-      state : getMappedData(state),
+      dashboardData : getMappedData(state),
   }
 }
 

@@ -1,13 +1,15 @@
 import { combineReducers } from "redux";
 
-import LoginReducer from "./loginReducer";
-import DashboardReducer from "./dashboardReducer";
-import ProjectDataReducer from "./projectDataReducer";
+import LoginReducer from "./LoginReducer";
+import DashboardReducer from "./DashboardReducer";
+import ProjectDataReducer from "./ProjectDataReducer";
+import MenuActionReducer from "./MenuActionReducer";
 
 const reducers = {
     LoginReducer,
     DashboardReducer,
-    ProjectDataReducer
+    ProjectDataReducer,
+    MenuActionReducer
 }
 
 // combines all the reducers which will be passed in Redux Store

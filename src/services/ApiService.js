@@ -3,7 +3,7 @@ import axios from 'axios';
 import { merge } from "lodash-es";
 
 // import { AuthApi } from './auth.api';
-import { config } from '../config';
+import { config } from '../Config';
 import {API_END_POINT} from "../constants/Constant";
 
 var jwtDecode = require('jwt-decode');
@@ -12,7 +12,7 @@ function ApiService(configObject) {
     const url = API_END_POINT,
         newUrl = `${url}${configObject.url}`;
     const config = merge({}, configObject, {
-        // headers: { "Authorization": sessionStorage.getItem('IdToken')},
+        // headers: { "Authorization": localStorage.getItem('IdToken')},
         url: newUrl.replace(/\s/g, "")
     });
     axios.defaults.baseURL = API_END_POINT;
@@ -22,9 +22,9 @@ function ApiService(configObject) {
     axios.interceptors.request.use(
         reqConfig => {
             if (!reqConfig.url.includes('/login'))
-                reqConfig.headers.authorization = sessionStorage.getItem('IdToken');
+                reqConfig.headers.authorization = localStorage.getItem('IdToken');
             if (reqConfig.url.includes('/logout'))
-                reqConfig.headers['X-REFRESH-TOKEN'] = sessionStorage.getItem(
+                reqConfig.headers['X-REFRESH-TOKEN'] = localStorage.getItem(
                     'RefreshToken',
                 );
             return reqConfig;
@@ -41,7 +41,7 @@ function ApiService(configObject) {
     }
     function forceLogout() {
         isFetchingToken = false;
-        sessionStorage.clear();
+        localStorage.clear();
         window.location = '/login';
     }
 
@@ -56,7 +56,7 @@ function ApiService(configObject) {
         if (!isFetchingToken) {
             isFetchingToken = true;
 
-            const refreshToken = sessionStorage.getItem('RefreshToken');
+            const refreshToken = localStorage.getItem('RefreshToken');
             if (!refreshToken) return forceLogout();
 
             // try {
@@ -74,7 +74,7 @@ function ApiService(configObject) {
             //         onTokenRefreshed(null, newAccessToken);
             //         tokenSubscribers = [];
 
-            //         sessionStorage.setItem('IdToken', newAccessToken);
+            //         localStorage.setItem('IdToken', newAccessToken);
             //     })
             //     .catch(() => {
             //         onTokenRefreshed(new Error('Unable to refresh access token'), null);

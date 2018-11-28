@@ -16,7 +16,7 @@ class Login extends React.Component {
     this.state = this.initialState;
   }
   
-  handleChange = event => {
+  handleChange = (event) => {
     const {name, value} = event.target;
 
     this.setState({
@@ -24,7 +24,7 @@ class Login extends React.Component {
     });
   }
 
-  handleSubmit() {
+  handleSubmit = () => {
     const endPoint = API_URLS['LOGIN'],
           dataToPost = {
           "uname": this.state.username,
@@ -34,24 +34,25 @@ class Login extends React.Component {
     this.props.onLogin(config);
   }
   componentDidUpdate(prevProps, prevState) {
-    if (this.props.state.LoginReducer.data) {
-      const response_data = this.props.state.LoginReducer.data;
-      sessionStorage.setItem('RefreshToken', response_data['AuthenticationResult']['RefreshToken']);
-      sessionStorage.setItem('IdToken', response_data['AuthenticationResult']['IdToken']);
+    if (this.props.userData.LoginReducer.data
+      && this.props.userData.LoginReducer !== prevProps.userData.LoginReducer) {
+      const response_data = this.props.userData.LoginReducer.data;
+      localStorage.setItem('IdToken', response_data['AuthenticationResult']['IdToken']);
+      localStorage.setItem('RefreshToken', response_data['AuthenticationResult']['RefreshToken']);
       this.props.history.push(REACT_URLS['DASHBOARD']);
     }
   }
   render() {
       return (
         <LoginComponent data={this.state}
-          onClick={this.handleSubmit.bind(this)}
-          onChange={this.handleChange.bind(this)}/>
+          onClick={this.handleSubmit}
+          onChange={this.handleChange}/>
       );
     }
 }
 function mapStateToProps(state) {
   return {
-      state
+      userData : state
   }
 }
 
