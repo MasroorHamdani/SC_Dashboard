@@ -6,8 +6,6 @@ export default class Logout extends React.Component {
         localStorage.clear();
         window.location = REACT_URLS['LOGIN'];
         // this.props.history.push(REACT_URLS['LOGIN']);
-        return (
-            <div></div>
-        )
+        return null
     }
 }
