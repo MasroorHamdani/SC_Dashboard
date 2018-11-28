@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { NamespacesConsumer } from 'react-i18next';
-import { withStyles } from '@material-ui/core/styles';
 import '../sass/Footer.css';
 
 class Footer extends Component {

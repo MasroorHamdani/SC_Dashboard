@@ -1,46 +1,42 @@
 import React, { Component } from 'react';
-// import { connect } from "react-redux";
+import { connect } from "react-redux";
 import { NamespacesConsumer } from 'react-i18next';
-import { withStyles } from '@material-ui/core/styles';
 import classNames from 'classnames';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
+import {AppBar, Toolbar, Badge, IconButton, Typography, withStyles} from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
-import Badge from '@material-ui/core/Badge';
-import IconButton from '@material-ui/core/IconButton';
-import Typography from '@material-ui/core/Typography';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import "../../sass/Header.css";
 import styles from "./HeaderStyle";
+import {toolbarClicked}  from '../../actions/MenuAction';
 
 class Header extends Component {
     constructor(props) {
       super(props);
       this.state = {
         open: true,
+        userName:''
       }
     }
-
     handleDrawerOpen = () => {
-      this.setState({ open: true });
+      this.props.onToolbarClick(this.state.open)
     };
+
+    componentDidUpdate(prevProps, prevState) {
+      if(this.props.data.MenuActionReducer &&
+        this.props.data.MenuActionReducer !== prevProps.data.MenuActionReducer) {
+          console.log(this.props.data.MenuActionReducer, "header data menu");
+          this.setState({open:this.props.data.MenuActionReducer.data.open})
+        }
+      if(this.props.data.LoginReducer &&
+        this.props.data.LoginReducer !== prevProps.data.LoginReducer) {
+          console.log(this.props.data.LoginReducer, "header login");
+          this.setState({userName:this.props.data.LoginReducer.data.user})
+        }
+    }
     render() {
       const { classes } = this.props;
-      // console.log(this.store);
-      
       const user = "Masroor";
       return (
-        // <div className="Header">
-        //   <NamespacesConsumer>
-        //   {
-        //     t => <h1>{t('Welcome-Header')} {user}</h1>
-        //   }
-        //   </NamespacesConsumer>
-        //   {/* <div>
-        //     {this.props.token}
-        //   </div> */}
-        // </div>
           <AppBar
             position="absolute"
             className={classNames(classes.appBar, this.state.open && classes.appBarShift)}>
@@ -64,6 +60,14 @@ class Header extends Component {
                 Dashboard
               </Typography>
               <IconButton color="inherit">
+              <Typography
+                component="h6"
+                variant="h6"
+                color="inherit"
+                noWrap
+                className={classes.title}>
+                {user}
+                </Typography>
                 <Badge badgeContent={4} color="secondary">
                   <NotificationsIcon />
                 </Badge>
@@ -73,8 +77,20 @@ class Header extends Component {
       );
     }
   }
-  
+  function mapStateToProps(state) {
+    return {
+        data : state
+    }
+  }
+  function mapDispatchToProps(dispatch) {
+    return {
+        onToolbarClick: (value) => {
+            //will dispatch the async action
+            dispatch(toolbarClicked(value))
+        }
+    }
+  }
   
   // export default Header;
-  export default withStyles(styles)(Header);
+  export default withStyles(styles)(connect(mapStateToProps, mapDispatchToProps)(Header));
   // export default connect(mapStateToProps)(Header)

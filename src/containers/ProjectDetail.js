@@ -15,40 +15,17 @@ class ProjectDetails extends Component {
     }
     componentDidMount(){
         const endPoint = API_URLS['PROJECT_DETAILS'],
-            data_to_post = {
+            dataToPost = {
                 "pid": this.state.pid
             },
-            config = getApiConfig(endPoint, X_API_KEY, 'POST', data_to_post);
+            config = getApiConfig(endPoint, X_API_KEY, 'POST', dataToPost);
         this.props.onProjectData(config);
-
-        // const url= constants.API_END_POINT,
-        // endPoint = constants.API_URLS['PROJECT_DETAILS'],
-        // urlEndPoint = url + endPoint,
-        // data_to_post = {
-        //     "pid": this.state.pid
-        // },
-        // self = this;
-        // axios({
-        //     method: 'post',
-        //     url: urlEndPoint,
-        //     data: data_to_post,
-        //     headers: {'Content-Type':'application/json',
-        //               'x-api-key': constants.X_API_KEY,
-        //               'Authorization':sessionStorage.getItem('IdToken')
-        //             }
-        //   })
-        //   .then(function (response) {
-        //     const response_data = response['data'];
-        //     self.setState({
-        //         data: response_data
-        //     })
-        //   })
-        //   .catch(function (error) {
-        //     console.log(error);
-        //   });
     }
     componentDidUpdate(prevProps, prevState) {
-        console.log(this.props.state.ProjectDataReducer.data, "*****");
+        if (this.props.projectData.ProjectDataReducer.data &&
+            this.props.projectData.ProjectDataReducer.data !== prevProps.projectData.ProjectDataReducer.data) {
+                console.log(this.props.projectData.ProjectDataReducer.data, "*****");
+            }
     }
     render() {
         return(
@@ -61,7 +38,7 @@ class ProjectDetails extends Component {
 }
 function mapStateToProps(state) {
     return {
-        state : state,
+        projectData : state,
     }
 }
 

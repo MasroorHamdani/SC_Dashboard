@@ -12,7 +12,8 @@ export const X_API_KEY = "QcbUJLoJSY2Mj1IdHNgAV6BoArOS6KHa7TlL4Qgx";
 export const REACT_URLS = {
     'LOGIN': '/login',
     'DASHBOARD': '/',
-    'PROJECT_DETAILS': '/project'
+    'PROJECT_DETAILS': '/project',
+    'LOGOUT': '/logout'
 }
 
 

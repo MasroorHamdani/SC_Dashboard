@@ -1,16 +1,10 @@
 import React, {Component} from "react";
 import { connect } from "react-redux";
-import { Link, NavLink} from "react-router-dom";
-import { NamespacesConsumer } from 'react-i18next';
-import Drawer from '@material-ui/core/Drawer';
+import {Drawer, List, Divider, IconButton, withStyles} from '@material-ui/core';
 import classNames from 'classnames';
-import List from '@material-ui/core/List';
-import Divider from '@material-ui/core/Divider';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import IconButton from '@material-ui/core/IconButton';
-import { withStyles } from '@material-ui/core/styles';
-import {ToggleClick}  from '../../actions/MenuAction';
-import { mainListItems, secondaryListItems } from '../../containers/listItems';
+import {toolbarClicked}  from '../../actions/MenuAction';
+import { mainListItems, secondaryListItems } from '../../containers/ListItems';
 import styles from "./MenuStyle";
 
 class Menu extends Component {
@@ -25,35 +19,22 @@ class Menu extends Component {
     // this.setState({ open: true });
     this.props.onToolbarClick(this.state.open)
   };
+  componentDidUpdate(prevProps, prevState) {
+    if(this.props.menuToggleData.MenuActionReducer &&
+      this.props.menuToggleData.MenuActionReducer !== prevProps. menuToggleData.MenuActionReducer) {
+        this.setState({open:this.props.menuToggleData.MenuActionReducer.data.open})
+      }
+  }
 
   render() {
     const { classes } = this.props;
     return (
-
-  // <NamespacesConsumer>
-  //         {
-  //           t => <ul>
-  //           <li>
-  //             <NavLink to="/" activeClassName="App-link-selected">{t('Home')}</NavLink>
-  //           </li>
-  //           <li>
-  //             <Link to="/Login">{t('Login')}</Link>
-  //           </li>
-  //           <li>
-  //             <Link to="/contact">{('Contact')}</Link>
-  //           </li>
-  //           <li>
-  //             <Link to="/about">{('About')}</Link>
-  //           </li>
-  //         </ul>
-  //         }
-  //       </NamespacesConsumer>
         <Drawer
           variant="permanent"
           classes={{
             paper: classNames(classes.drawerPaper, !this.state.open && classes.drawerPaperClose),
           }}
-          open={this.state.open}>
+          open={!this.state.open}>
           <div className={classes.toolbarIcon}>
             <IconButton onClick={this.handleDrawerClose}>
               <ChevronLeftIcon />
@@ -69,14 +50,14 @@ class Menu extends Component {
 };
 function mapStateToProps(state) {
   return {
-      state
+    menuToggleData: state
   }
 }
 function mapDispatchToProps(dispatch) {
   return {
       onToolbarClick: (value) => {
           //will dispatch the async action
-          dispatch(ToggleClick(value))
+          dispatch(toolbarClicked(value))
       }
   }
 }
