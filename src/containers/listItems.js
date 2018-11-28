@@ -20,11 +20,11 @@ export const mainListItems = (
         </ListItemIcon>
         <ListItemText primary={t("Dashboard")} />
       </ListItem>
-      <ListItem button component={Link} to='/Login'>
+      <ListItem button component={Link} to='/Logout'>
         <ListItemIcon>
           <ShoppingCartIcon />
         </ListItemIcon>
-        <ListItemText primary={t("Login")} />
+        <ListItemText primary={t("Logout")} />
       </ListItem>
       <ListItem button component={Link} to='/Contact'>
         <ListItemIcon>

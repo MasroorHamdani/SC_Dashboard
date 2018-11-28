@@ -5,6 +5,7 @@ import Login from "./containers/Login";
 import Header from "./components/header/Header";
 import Footer from "./components/Footer";
 import Menu from "./components/menu/Menu";
+import Logout from "./containers/Logout";
 import ProjectDetails from "./containers/ProjectDetail";
 import About from "./containers/About";
 import NoMatch from "./containers/NoMatch";
@@ -37,6 +38,7 @@ import "./sass/App.css";
                 <Switch>
                   <Route exact path="/" component={Dashboard} />
                   <Route path="/project" component={ProjectDetails} />
+                  <Route path="/logout" component={Logout} />
                   {/* when none of the above match, <NoMatch> will be rendered */}
                   <Route component={NoMatch} />
                 </Switch>
