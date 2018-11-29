@@ -14,9 +14,8 @@ class ProjectDataComponent extends Component {
         if(props.data) {
             const data = props.data.map((row,index) => {
                 return(
-                    <Card className={classes.card} onClick={props.onClick}>
-                        <CardHeader
-                        avatar={
+                    <Card className={classes.card} onClick={props.onClick} key={row.key}>
+                        <CardHeader avatar={
                             <Avatar aria-label="Recipe" className={classes.avatar}>
                             P
                             </Avatar>

@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import {API_URLS, X_API_KEY} from "../constants/Constant";
 import {getApiConfig} from "../services/ApiCofig";
 import {projectData} from '../actions/ProjectDataAction';
+import ProjectDetail from '../components/projectDetail/ProjectDetail';
 
 class ProjectDetails extends Component {
     constructor(props) {
@@ -29,10 +30,7 @@ class ProjectDetails extends Component {
     }
     render() {
         return(
-            <div>
-                {/* {this.state.data} */}
-                Welcome to Project details Page
-            </div>
+            <ProjectDetail/>
         )
     }
 }
