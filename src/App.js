@@ -27,7 +27,7 @@ const styles = theme => ({
           <Router>
           <div className="common-container">
           <CssBaseline />
-          {/* <ButtonAppBar/> */}
+          <ButtonAppBar/>
             <Switch>
               <Route path="/login" component={Login} />
               <Route path="/about" component={About} />
