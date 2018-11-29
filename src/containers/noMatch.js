@@ -1,15 +1,20 @@
-import React from "react";
-import { NamespacesConsumer } from 'react-i18next';
+import React, {Component} from "react";
+import { REACT_URLS } from "../constants/Constant";
 
-const NoMatch = () => (
-    <NamespacesConsumer>
-    {
-        t => <div>
-            <h3>{t('No Match')}</h3>
-        </div>
+class NoMatch extends Component {
+    state = {
+        data : ''
     }
-    </NamespacesConsumer>
-      
-);
+    componentDidMount() {
+        if (!localStorage.getItem('IdToken')) {
+            this.props.history.push(REACT_URLS['LOGIN']);
+        } else {
+            this.state.data = <div> 404 page not found</div>
+        }
+    }
+    render() {
+        return this.state.data;
+    }
+}
 
 export default NoMatch;
