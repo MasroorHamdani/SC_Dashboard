@@ -1,0 +1,20 @@
+.container {
+  display: flex;
+}
+.common-container {
+  display: flex;
+  // background-image: url("../static/background.jpg");
+}
+
+.flex-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
+}
+.flex-container > div {
+  margin: 10px;
+  text-align: center;
+  line-height: 30px;
+  font-size: 22px;
+  width: 20em;
+}

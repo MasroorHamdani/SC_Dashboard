@@ -14,6 +14,7 @@
     "i18next-xhr-backend": "^1.5.1",
     "jwt-decode": "^2.2.0",
     "ng-i18next": "github:i18next/ng-i18next",
+    "node-sass": "^4.10.0",
     "react": "^16.6.1",
     "react-dom": "^16.6.1",
     "react-helmet": "^5.2.0",

@@ -9,7 +9,8 @@ import Logout from "./containers/Logout";
 import ProjectDetails from "./containers/ProjectDetail";
 import About from "./containers/About";
 import NoMatch from "./containers/NoMatch";
-import "./sass/App.css";
+import ButtonAppBar from "./components/commonHeader/CommonHeader";
+import "./sass/App.scss";
 
   class App extends React.Component {
     render() {
@@ -17,7 +18,8 @@ import "./sass/App.css";
       if (!localStorage.getItem('IdToken')) { 
         return(
           <Router>
-          <div className="container">
+          <div className="common-container">
+          {/* <ButtonAppBar/> */}
             <Switch>
               <Route path="/login" component={Login} />
               <Route path="/about" component={About} />

@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import "../../sass/App.css";
 
 import PropTypes from 'prop-types';
 import {withStyles, Card, CardHeader, CardMedia, CardContent, Avatar, IconButton} from '@material-ui/core';
@@ -32,7 +31,7 @@ class ProjectDataComponent extends Component {
                         <CardMedia
                         className={classes.media}
                         title="Analytics"
-                        image="/static/image.png"
+                        image="../static/image.png"
                         />
                         <CardContent>
                             <div>{row.key}</div>

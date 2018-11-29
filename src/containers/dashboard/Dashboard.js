@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { connect } from "react-redux";
 import {withStyles, Typography} from '@material-ui/core';
 import PropTypes from 'prop-types';
-import "../../sass/App.css";
 import styles from './DashboardStyle'
 import ProjectDataComponent from "../../components/projectData/ProjectData";
 import { API_URLS, X_API_KEY, REACT_URLS } from "../../constants/Constant";
