@@ -10,21 +10,11 @@ class ProjectDetail extends Component {
         return (
             <div className={classes.root}>
             <main className={classes.content}>
-                <div className={classes.appBarSpacer} />
-                <Typography variant="h4" gutterBottom component="h2">
-                    Projects
-                </Typography>
               <Typography component="div" className={classes.chartContainer}>
               <div>Welcome to Project details Page</div>
               </Typography>
             </main>
           </div>
-            // <div className={classes.root}>
-            //     <main className={classes.content}>
-            //         <CssBaseline />
-            //         <div>Welcome to Project details Page</div>
-            //     </main>
-            // </div>
         )
     }
 }

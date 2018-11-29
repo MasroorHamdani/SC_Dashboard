@@ -16,10 +16,6 @@ class CommonHeader extends Component {
     constructor(props) {
         super(props);
     }
-    handleClick = (url) => {
-        // this.props.history.push(REACT_URLS[url])
-        console.log("url", REACT_URLS[url]);
-    }
     render() {
         const { classes } = this.props;
         return (
@@ -32,9 +28,9 @@ class CommonHeader extends Component {
                 <Typography variant="h6" color="inherit" className={classes.grow}>
                   SmartClean
                 </Typography>
-                <Button color="inherit" onClick={this.handleClick('CONTACT')}>Contact Us</Button>
-                <Button color="inherit">About Us</Button>
-                <Button color="inherit">Login</Button>
+                <Button color="inherit" component={Link} to='/contact'>Contact Us</Button>
+                <Button color="inherit" component={Link} to='/about'>About Us</Button>
+                <Button color="inherit" component={Link} to='/login'>Login</Button>
               </Toolbar>
             </AppBar>
           </div>
