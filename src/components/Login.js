@@ -1,6 +1,5 @@
 import React from 'react';
 import { NamespacesConsumer } from 'react-i18next';
-import "./../sass/App.css";
 import "./../sass/Login.css";
 
 class LoginComponent extends React.Component {

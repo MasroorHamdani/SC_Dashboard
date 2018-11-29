@@ -13,7 +13,9 @@ export const REACT_URLS = {
     'LOGIN': '/login',
     'DASHBOARD': '/',
     'PROJECT_DETAILS': '/project',
-    'LOGOUT': '/logout'
+    'LOGOUT': '/logout',
+    'CONTACT': '/contact',
+    'ABOUT': '/about'
 }
 
 

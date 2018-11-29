@@ -2,3 +2,10 @@
     display: flex;
     flex-flow: row-reverse;
   }
+
+
+/* common Header Css*/
+
+.right-align {
+  float: right
+}
