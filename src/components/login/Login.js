@@ -48,7 +48,6 @@ class LoginComponent extends React.Component {
                 fullWidth
                 variant="contained"
                 color="primary"
-                disableFocusRipple="true"
                 className={classes.submit}
                 onClick={props.onClick}
               >

@@ -1,5 +1,5 @@
 import React from 'react';
-
+import AssignmentIcon from '@material-ui/icons/Assignment';
 import {ListItem, ListItemIcon, ListItemText, ListSubheader} from '@material-ui/core';
 
 export const secondaryListItems = (
