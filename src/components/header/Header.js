@@ -5,7 +5,6 @@ import classNames from 'classnames';
 import {AppBar, Toolbar, Badge, IconButton, Typography, withStyles} from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
 import NotificationsIcon from '@material-ui/icons/Notifications';
-import "../../sass/Header.css";
 import styles from "./HeaderStyle";
 import {toolbarClicked}  from '../../actions/MenuAction';
 
@@ -91,6 +90,4 @@ class Header extends Component {
     }
   }
   
-  // export default Header;
   export default withStyles(styles)(connect(mapStateToProps, mapDispatchToProps)(Header));
-  // export default connect(mapStateToProps)(Header)
