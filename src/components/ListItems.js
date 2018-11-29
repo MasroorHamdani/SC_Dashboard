@@ -6,7 +6,7 @@ import LayersIcon from '@material-ui/icons/Layers';
 import PeopleIcon from '@material-ui/icons/People';
 import {ListItem, ListItemIcon, ListItemText} from '@material-ui/core';
 import {Link} from "react-router-dom";
-
+// import {DashboardIcon, BarChartIcon, LayersIcon, PeopleIcon} from '@material-ui/icons';
 
 class ListItems extends Component {
     renderSwitch(param) {

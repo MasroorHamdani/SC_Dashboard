@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from "react-redux";
 
 import { API_URLS, X_API_KEY, REACT_URLS } from "../constants/Constant";
-import LoginComponent from "../components/Login";
+import LoginComponent from "../components/login/Login";
 import { userLogin } from "../actions/LoginAction";
 import { getApiConfig } from '../services/ApiCofig';
 
