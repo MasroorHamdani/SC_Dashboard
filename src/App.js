@@ -10,15 +10,23 @@ import ProjectDetails from "./containers/ProjectDetail";
 import About from "./containers/About";
 import NoMatch from "./containers/NoMatch";
 import ButtonAppBar from "./components/commonHeader/CommonHeader";
+import {CssBaseline, withStyles, MuiThemeProvider} from '@material-ui/core';
+import PropTypes from 'prop-types';
 import "./sass/App.scss";
+import theme from './services/SiteTheme';
 
+const styles = theme => ({
+
+});
   class App extends React.Component {
     render() {
       const Contact = () => <h2>Contact</h2>
       if (!localStorage.getItem('IdToken')) { 
         return(
+          <MuiThemeProvider theme={theme}>
           <Router>
           <div className="common-container">
+          <CssBaseline />
           {/* <ButtonAppBar/> */}
             <Switch>
               <Route path="/login" component={Login} />
@@ -30,11 +38,14 @@ import "./sass/App.scss";
             <Footer/>
           </div>
         </Router>
+        </MuiThemeProvider>
         )
       } else {
         return(
+          <MuiThemeProvider theme={theme}>
           <Router>
               <div className="container">
+              <CssBaseline />
                 <Header/>
                 <Menu />
                 <Switch>
@@ -47,8 +58,12 @@ import "./sass/App.scss";
                 <Footer/>
               </div>
             </Router>
+            </MuiThemeProvider>
         );
       }
     }
   }
- export default App;
+  App.propTypes = {
+    classes: PropTypes.object.isRequired,
+  };
+ export default withStyles(styles)(App);

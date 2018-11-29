@@ -3,7 +3,7 @@ import { NamespacesConsumer } from 'react-i18next';
 // import "../../sass/Login.scss";
 
 import PropTypes from 'prop-types';
-import {Avatar, Button, CssBaseline, FormControl,
+import {Avatar, Button, FormControl,
   FormControlLabel, Input, InputLabel, Paper, Typography,
   Checkbox, withStyles} from '@material-ui/core';
 import LockIcon from '@material-ui/icons/LockOutlined';
@@ -21,7 +21,6 @@ class LoginComponent extends React.Component {
       const props = this.props
       return (
         <main className={classes.main}>
-          <CssBaseline />
           <Paper className={classes.paper}>
             <Avatar className={classes.avatar}>
               <LockIcon />
