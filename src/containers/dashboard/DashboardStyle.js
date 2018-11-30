@@ -9,8 +9,15 @@ const styles = theme => ({
       height: '100vh',
       overflow: 'auto',
     },
-    chartContainer: {
-      marginLeft: -22,
+    gridRoot: {
+      display: 'flex',
+      flexWrap: 'wrap',
+      justifyContent: 'space-around',
+      overflow: 'hidden',
+      backgroundColor: theme.palette.background.paper,
+    },
+    gridList: {
+      height: 570,
     },
   });
 

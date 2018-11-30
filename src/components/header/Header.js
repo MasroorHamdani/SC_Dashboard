@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from "react-redux";
+import {isEqual} from "lodash";
 import { NamespacesConsumer } from 'react-i18next';
 import classNames from 'classnames';
 import {AppBar, Toolbar, Badge, IconButton, Typography, withStyles} from '@material-ui/core';
@@ -22,12 +23,12 @@ class Header extends Component {
 
     componentDidUpdate(prevProps, prevState) {
       if(this.props.data.MenuActionReducer &&
-        this.props.data.MenuActionReducer !== prevProps.data.MenuActionReducer) {
+        !isEqual(this.props.data.MenuActionReducer,prevProps.data.MenuActionReducer)) {
           console.log(this.props.data.MenuActionReducer, "header data menu");
           this.setState({open:this.props.data.MenuActionReducer.data.open})
         }
       if(this.props.data.LoginReducer &&
-        this.props.data.LoginReducer !== prevProps.data.LoginReducer) {
+        !isEqual(this.props.data.LoginReducer, prevProps.data.LoginReducer)) {
           console.log(this.props.data.LoginReducer, "header login");
           this.setState({userName:this.props.data.LoginReducer.data.user})
         }
