@@ -5,11 +5,9 @@ import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
-import IconButton from '@material-ui/core/IconButton';
-import MenuIcon from '@material-ui/icons/Menu';
 import styles from "./CommonHeaderStyle";
 import { Link} from "react-router-dom";
-import {REACT_URLS} from '../../constants/Constant';
+import { NamespacesConsumer } from 'react-i18next';
 
 class CommonHeader extends Component {
     constructor(props) {
@@ -18,18 +16,23 @@ class CommonHeader extends Component {
     render() {
         const { classes } = this.props;
         return (
-          <div className={classes.root}>
-            <AppBar position="static">
-              <Toolbar>
-                <Typography variant="h6" color="inherit" className={classes.grow}>
-                  SmartClean
-                </Typography>
-                <Button color="inherit" component={Link} to='/contact'>Contact Us</Button>
-                <Button color="inherit" component={Link} to='/about'>About Us</Button>
-                <Button color="inherit" component={Link} to='/login'>Login</Button>
-              </Toolbar>
-            </AppBar>
-          </div>
+          <NamespacesConsumer>
+            {
+              t=><div className={classes.root}>
+                <AppBar position="static">
+                  <Toolbar>
+                    <Typography variant="h6" color="inherit" className={classes.grow}>
+                    {t('companyHeader')}
+                    </Typography>
+                    <Button color="inherit" component={Link} to='/contact'>{t('Contact')}</Button>
+                    <Button color="inherit" component={Link} to='/about'>{t('About')}</Button>
+                    <Button color="inherit" component={Link} to='/login'>{t('signIn')}</Button>
+                  </Toolbar>
+                </AppBar>
+              </div>
+            }
+          </NamespacesConsumer>
+          
         );
     }
 }

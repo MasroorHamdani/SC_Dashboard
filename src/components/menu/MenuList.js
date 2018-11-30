@@ -10,7 +10,7 @@ export const menuList= [
       icon: "LayersIcon"
     },
     {
-      name: "Report",
+      name: "Reports",
       url: "/about",
       icon: "BarChartIcon"
     },
