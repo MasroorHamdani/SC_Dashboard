@@ -8,7 +8,7 @@ import Menu from "./components/menu/Menu";
 import Logout from "./containers/Logout";
 import ProjectDetails from "./containers/ProjectDetail";
 import About from "./containers/About";
-import NoMatch from "./containers/NoMatch";
+import NoMatch from "./containers/nomatch/NoMatch";
 import ButtonAppBar from "./components/commonHeader/CommonHeader";
 import {CssBaseline, withStyles, MuiThemeProvider} from '@material-ui/core';
 import PropTypes from 'prop-types';
@@ -25,8 +25,8 @@ const styles = theme => ({
           <MuiThemeProvider theme={theme}>
             <Router>
               <div className="common-container">
-                { !localStorage.getItem('idToken') &&
-                  <div>
+                { !localStorage.getItem('idToken') ?
+                  (<div>
                     <CssBaseline />
                     <ButtonAppBar/>
                     <Switch>
@@ -36,10 +36,9 @@ const styles = theme => ({
                       {/* when none of the above match, <NoMatch> will be rendered */}
                       <Route component={NoMatch} />
                     </Switch>
-                    </div>
-                }
-                { localStorage.getItem('idToken') &&
-                  <div className="container">
+                  </div>)
+                  :
+                  (<div className="container">
                     <CssBaseline />
                     <Header/>
                     <Menu />
@@ -50,7 +49,7 @@ const styles = theme => ({
                       <Route component={NoMatch} />
                     </Switch>
                     <Footer/>
-                  </div>
+                  </div>)
                 }
               </div> 
             </Router>
