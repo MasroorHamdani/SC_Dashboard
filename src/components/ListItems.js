@@ -29,17 +29,16 @@ class ListItems extends Component {
             const menu = MenuList.map((row,index) => {
                 const icon = row.icon;
                 return (
-                        <NamespacesConsumer>
-                            {
-                                t=><ListItem button component={Link} to={row.url} key={index}>
-                                    <ListItemIcon>
-                                        {this.renderSwitch(icon)}
-                                    </ListItemIcon>
-                                    <ListItemText primary={t(row.name)} />
-                                </ListItem>
-                            }
-                        </NamespacesConsumer>
-                        
+                            <ListItem button component={Link} to={row.url} key={index}>
+                                <ListItemIcon>
+                                    {this.renderSwitch(icon)}
+                                </ListItemIcon>
+                                <NamespacesConsumer>
+                                {
+                                    t=><ListItemText primary={t(row.name)} />
+                                }
+                                </NamespacesConsumer>
+                            </ListItem>
                 )
             });
             return(
