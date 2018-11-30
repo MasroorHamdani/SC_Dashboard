@@ -18,8 +18,7 @@ class Dashboard extends Component {
   }
   
   handleClick = (e, param) => {
-    const key="CERTIS_CCK_MRT"
-    this.props.history.push(`${REACT_URLS['PROJECT_DETAILS']}/${param}`)
+    this.props.history.push(`${REACT_URLS['PROJECT_DETAILS']}/${param}`);
   }
 
   componentDidMount(){
