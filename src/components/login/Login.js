@@ -1,19 +1,19 @@
 import React from 'react';
 import { NamespacesConsumer } from 'react-i18next';
-// import "../../sass/Login.scss";
 
 import PropTypes from 'prop-types';
 import {Avatar, Button, FormControl,
   FormControlLabel, Input, InputLabel, Paper, Typography,
-  Checkbox, withStyles} from '@material-ui/core';
+  Checkbox, withStyles, CircularProgress} from '@material-ui/core';
 import LockIcon from '@material-ui/icons/LockOutlined';
+import CustomizedProgress from '../progress/Progress';
 
 import styles from './LoginStyle';
 
 class LoginComponent extends React.Component {
   
     render() {
-      const { classes, onChange, onClick } = this.props;
+      const { classes, onChange, onClick, data } = this.props;
       return (
         <main className={classes.main}>
           <Paper className={classes.paper}>
@@ -48,6 +48,8 @@ class LoginComponent extends React.Component {
               >
                 Sign in
               </Button>
+              {data.loading && <CircularProgress size={50} className={classes.buttonProgress} />}
+              {/* {data.loading && <CircularProgress size={50} className={classes.buttonProgress} />} */}
             </form>
           </Paper>
         </main>

@@ -1,3 +1,4 @@
+import {green} from '@material-ui/core/colors';
 const styles = theme => ({
     root: {
       display: 'flex',
@@ -6,6 +7,7 @@ const styles = theme => ({
     content: {
       flexGrow: 1,
       padding: theme.spacing.unit * 3,
+      marginTop: theme.spacing.unit * 8,
       height: '100vh',
       overflow: 'auto',
     },
@@ -18,6 +20,12 @@ const styles = theme => ({
     },
     gridList: {
       height: 570,
+    },
+    buttonProgress: {
+      color: green[500],
+      position: 'absolute',
+      top:'15%',
+      right:'1%',
     },
   });
 

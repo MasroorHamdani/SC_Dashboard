@@ -36,6 +36,7 @@ const styles = theme => ({
                       {/* when none of the above match, <NoMatch> will be rendered */}
                       <Route component={NoMatch} />
                     </Switch>
+                    <Footer/>
                   </div>)
                   :
                   (<div className="container">
