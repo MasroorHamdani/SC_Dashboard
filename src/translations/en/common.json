@@ -1,15 +1,18 @@
 {
     "Welcome to React": "Welcome to React and react-i18next!!!!",
     "Dashboard": "Dashboard",
-    "Login": "Login",
+    "signIn": "Sign In",
+    "signInHeader": "Sign In",
     "Logout": "Logout",
-    "About": "About",
-    "Contact": "Contact",
+    "About": "About Us",
+    "Contact": "Contact Us",
     "Reports": "Reports",
+    "Project Management": "Project Management",
     "Welcome-Header": "Welcome",
     "No Match": "No match for passed URL found",
-    "signin": "Sign In",
-    "username": "UserName",
+    "username": "Username",
     "password": "Password",
-    "footer-note": "© 2018 SmartClean Technologies Pte. Ltd. All Rights Reserved"
+    "forgotPassword": "Forgot Password",
+    "footer-note": "© 2018 SmartClean Technologies Pte. Ltd. All Rights Reserved",
+    "companyHeader": "Smart Clean"
 }
