@@ -6,7 +6,7 @@ class NoMatch extends Component {
         data : ''
     }
     componentDidMount() {
-        if (!localStorage.getItem('IdToken')) {
+        if (!localStorage.getItem('idToken')) {
             this.props.history.push(REACT_URLS['LOGIN']);
         } else {
             this.state.data = <div> 404 page not found</div>

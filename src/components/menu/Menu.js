@@ -7,13 +7,12 @@ import {toolbarClicked}  from '../../actions/MenuAction';
 import {secondaryListItems } from '../../containers/ListItems';
 import styles from "./MenuStyle";
 import ListItems from "../ListItems";
-
+import {menuList} from "./MenuList";
 class Menu extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      open: true,
-      menuList: []
+      open: true
     }
   }
 
@@ -21,30 +20,6 @@ class Menu extends Component {
     this.props.onToolbarClick(this.state.open)
   };
   componentDidMount() {
-    if (localStorage.getItem('IdToken')) {
-      this.setState({menuList: [
-        {
-          name: "Dashboard",
-          url: "/",
-          icon: "DashboardIcon"
-        },
-        {
-          name: "Project Management",
-          url: "/project",
-          icon: "LayersIcon"
-        },
-        {
-          name: "Report",
-          url: "/about",
-          icon: "BarChartIcon"
-        },
-        {
-          name: "Logout",
-          url: "/logout",
-          icon: "PeopleIcon"
-        }
-      ]})
-    }
   }
   componentDidUpdate(prevProps, prevState) {
     if(this.props.menuToggleData.MenuActionReducer &&
@@ -68,8 +43,7 @@ class Menu extends Component {
             </IconButton>
           </div>
           <Divider />
-          {/* <List>{mainListItems}</List> */}
-          <List><ListItems data={this.state.menuList} /></List>
+          <List><ListItems data={menuList} /></List>
           <Divider />
           <List>{secondaryListItems}</List>
         </Drawer>

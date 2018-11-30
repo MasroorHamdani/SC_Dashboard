@@ -1,32 +1,24 @@
 import axios from 'axios';
-// import JWTDecode from 'jwt-decode';
+import JWTDecode from 'jwt-decode';
 import { merge } from "lodash-es";
 
 // import { AuthApi } from './auth.api';
-import { config } from '../Config';
-import {API_END_POINT} from "../constants/Constant";
-
-var jwtDecode = require('jwt-decode');
+// import { config } from '../Config';
+import {API_END_POINT, API_URLS} from "../constants/Constant";
 
 function ApiService(configObject) {
     const url = API_END_POINT,
         newUrl = `${url}${configObject.url}`;
     const config = merge({}, configObject, {
-        // headers: { "Authorization": localStorage.getItem('IdToken')},
         url: newUrl.replace(/\s/g, "")
     });
     axios.defaults.baseURL = API_END_POINT;
     axios.defaults.timeout = 7000;
 
-    const AuthApi = "https://1w5tcso1ol.execute-api.ap-southeast-1.amazonaws.com/alpha/refresh-token";
     axios.interceptors.request.use(
         reqConfig => {
             if (!reqConfig.url.includes('/login'))
-                reqConfig.headers.authorization = localStorage.getItem('IdToken');
-            if (reqConfig.url.includes('/logout'))
-                reqConfig.headers['X-REFRESH-TOKEN'] = localStorage.getItem(
-                    'RefreshToken',
-                );
+                reqConfig.headers.authorization = localStorage.getItem('idToken');
             return reqConfig;
         },
         err => Promise.reject(err),
@@ -54,19 +46,47 @@ function ApiService(configObject) {
         }
         
         if (!isFetchingToken) {
+            console.log("Inside fetching**********")
             isFetchingToken = true;
 
-            const refreshToken = localStorage.getItem('RefreshToken');
+            const refreshToken = localStorage.getItem('refreshToken');
             if (!refreshToken) return forceLogout();
 
-            // try {
-            //     const isRefreshTokenExpired =
-            //       jwtDecode(refreshToken).exp < Date.now() / 1000;
+            try {
+                const isRefreshTokenExpired =
+                JWTDecode(refreshToken).exp < Date.now() / 1000;
           
-            //     if (isRefreshTokenExpired) return forceLogout();
-            // } catch (e) {
-            // return forceLogout();
-            // }
+                if (isRefreshTokenExpired) return forceLogout();
+            } catch (e) {
+            return forceLogout();
+            }
+            const urlEndPoint = `${API_END_POINT}${API_URLS['REFRESH_TOKEN']}`,
+                dataToPost = {
+                    rtoken: sessionStorage.getItem('refreshToken')
+                }
+            axios({
+                method:'POST',
+                url: urlEndPoint,
+                headers: {'Content-Type':'application/json',
+                'x-api-key':'QcbUJLoJSY2Mj1IdHNgAV6BoArOS6KHa7TlL4Qgx',
+                },
+                body: JSON.stringify(dataToPost)
+              }).then(newAccessToken => newAccessToken.json())
+              .then(newAccessToken => {
+                  isFetchingToken = false;
+
+                    onTokenRefreshed(null, newAccessToken);
+                    tokenSubscribers = [];
+
+                    localStorage.setItem('idToken', newAccessToken);
+                    return axios(err.response.config);
+                })
+                .catch(() => {
+                    onTokenRefreshed(new Error('Unable to refresh access token'), null);
+                    tokenSubscribers = [];
+
+                    forceLogout();
+                });
             // AuthApi.refreshAccessToken()
             //     .then(newAccessToken => {
             //         isFetchingToken = false;
@@ -74,7 +94,8 @@ function ApiService(configObject) {
             //         onTokenRefreshed(null, newAccessToken);
             //         tokenSubscribers = [];
 
-            //         localStorage.setItem('IdToken', newAccessToken);
+            //         localStorage.setItem('idToken', newAccessToken);
+            //         return axios(err.response.config);
             //     })
             //     .catch(() => {
             //         onTokenRefreshed(new Error('Unable to refresh access token'), null);
@@ -82,17 +103,19 @@ function ApiService(configObject) {
 
             //         forceLogout();
             //     });
-        };
-
-        const initTokenSubscriber = new Promise((resolve, reject) => {
-            subscribeTokenRefresh((errRefreshing, newToken) => {
-              if (errRefreshing) return reject(errRefreshing);
-        
-              err.config.headers.authorization = newToken;
-              return resolve(axios(err.config));
-            });
-          });
-          return initTokenSubscriber;
+        } else if(err.response.config.url.includes('/refresh-token')){
+            return forceLogout();
+        } else {
+            const initTokenSubscriber = new Promise((resolve, reject) => {
+                subscribeTokenRefresh((errRefreshing, newToken) => {
+                  if (errRefreshing) return reject(errRefreshing);
+            
+                  err.config.headers.authorization = newToken;
+                  return resolve(axios(err.config));
+                });
+              });
+              return initTokenSubscriber;
+        }        
     });
 
     return axios(config)
