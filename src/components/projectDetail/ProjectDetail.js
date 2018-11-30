@@ -10,7 +10,7 @@ class ProjectDetail extends Component {
         return (
             <div className={classes.root}>
             <main className={classes.content}>
-              <Typography component="div" className={classes.chartContainer}>
+              <Typography component="div">
               <div>Welcome to Project details Page</div>
               </Typography>
             </main>

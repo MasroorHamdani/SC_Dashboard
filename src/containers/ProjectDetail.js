@@ -10,7 +10,7 @@ class ProjectDetails extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            pid: "CERTIS_CCK_MRT",
+            pid: props.match.params.pid,
             data : {}
         }
     }
