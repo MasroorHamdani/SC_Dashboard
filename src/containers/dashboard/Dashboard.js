@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from "react-redux";
-import {withStyles, Typography, GridList} from '@material-ui/core';
+import {withStyles, Typography, GridList, CircularProgress} from '@material-ui/core';
 import PropTypes from 'prop-types';
 import {isEqual} from "lodash";
 import styles from './DashboardStyle'
@@ -8,12 +8,15 @@ import ProjectDataComponent from "../../components/projectData/ProjectData";
 import { API_URLS, X_API_KEY, REACT_URLS } from "../../constants/Constant";
 import { getApiConfig } from '../../services/ApiCofig';
 import {dashboardData} from '../../actions/DashboardAction';
+// import CustomizedProgress from '../../components/progress/Progress';
 
 class Dashboard extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      data : {}
+      data : {},
+      loading: true,
+      success: false,
     }
   }
   
@@ -32,6 +35,12 @@ class Dashboard extends Component {
       !isEqual(this.props.dashboardData, prevProps.dashboardData)) {
         console.log(this.props.dashboardData);
       }
+      if (this.state.loading) {
+        this.setState({
+          loading: false,
+          success: true,
+        });
+      }
   }
 
   render() {
@@ -39,7 +48,9 @@ class Dashboard extends Component {
     return (
       <div className={classes.root}>
         <main className={classes.content}>
-          <div className={classes.appBarSpacer} />
+        {this.state.loading ? (<CircularProgress size={50} className={classes.buttonProgress} />)
+        :
+        (<div>
           <Typography variant="h4" gutterBottom component="h2">
             Projects
           </Typography>
@@ -48,6 +59,9 @@ class Dashboard extends Component {
               <ProjectDataComponent data={this.props.dashboardData} onClick={this.handleClick}/>
             </GridList>
           </div>
+        </div>)
+        }
+          
         </main>
       </div>
     );

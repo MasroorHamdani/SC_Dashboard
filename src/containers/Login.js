@@ -12,7 +12,9 @@ class Login extends React.Component {
     super(props);
     this.initialState = {
         username: 'Username',
-        password: 'Password'
+        password: 'Password',
+        loading: false,
+        success: false,
     };
     this.state = this.initialState;
   }
@@ -26,6 +28,12 @@ class Login extends React.Component {
   }
 
   handleSubmit = () => {
+    if (!this.state.loading) {
+      this.setState(
+        {
+          success: false,
+          loading: true,
+        })
     const endPoint = API_URLS['LOGIN'],
           dataToPost = {
           "uname": this.state.username,
@@ -33,6 +41,7 @@ class Login extends React.Component {
         },
         config = getApiConfig(endPoint, X_API_KEY, 'POST', dataToPost);
     this.props.onLogin(config);
+      }
   }
   componentDidUpdate(prevProps, prevState) {
     if (this.props.userData.LoginReducer.data
@@ -41,6 +50,12 @@ class Login extends React.Component {
       localStorage.setItem('idToken', response_data['AuthenticationResult']['IdToken']);
       localStorage.setItem('refreshToken', response_data['AuthenticationResult']['RefreshToken']);
       // this.props.history.push(REACT_URLS['DASHBOARD']);
+      if (this.state.loading) {
+        this.setState({
+          loading: false,
+          success: true,
+        });
+      }
       window.location = REACT_URLS['DASHBOARD'];
     }
   }
