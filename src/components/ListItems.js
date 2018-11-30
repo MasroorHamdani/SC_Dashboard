@@ -35,9 +35,7 @@ class ListItems extends Component {
                                     <ListItemIcon>
                                         {this.renderSwitch(icon)}
                                     </ListItemIcon>
-                                    {/* <NamespacesConsumer> { */}
-                                        <ListItemText primary={t(row.name)} />
-                                    {/* }</NamespacesConsumer> */}
+                                    <ListItemText primary={t(row.name)} />
                                 </ListItem>
                             }
                         </NamespacesConsumer>
