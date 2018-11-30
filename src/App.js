@@ -13,7 +13,7 @@ import ButtonAppBar from "./components/commonHeader/CommonHeader";
 import {CssBaseline, withStyles, MuiThemeProvider} from '@material-ui/core';
 import PropTypes from 'prop-types';
 import "./sass/App.scss";
-import theme from './services/SiteTheme';
+import theme from './SiteTheme';
 
 const styles = theme => ({
 
@@ -21,7 +21,7 @@ const styles = theme => ({
   class App extends React.Component {
     render() {
       const Contact = () => <h2>Contact</h2>
-      if (!localStorage.getItem('IdToken')) { 
+      if (!localStorage.getItem('idToken')) { 
         return(
           <MuiThemeProvider theme={theme}>
           <Router>
@@ -50,7 +50,7 @@ const styles = theme => ({
                 <Menu />
                 <Switch>
                   <Route exact path="/" component={Dashboard} />
-                  <Route path="/project" component={ProjectDetails} />
+                  <Route path="/project/:pid?" component={ProjectDetails} />
                   <Route path="/logout" component={Logout} />
                   {/* when none of the above match, <NoMatch> will be rendered */}
                   <Route component={NoMatch} />

@@ -37,8 +37,8 @@ class Login extends React.Component {
     if (this.props.userData.LoginReducer.data
       && this.props.userData.LoginReducer !== prevProps.userData.LoginReducer) {
       const response_data = this.props.userData.LoginReducer.data;
-      localStorage.setItem('IdToken', response_data['AuthenticationResult']['IdToken']);
-      localStorage.setItem('RefreshToken', response_data['AuthenticationResult']['RefreshToken']);
+      localStorage.setItem('idToken', response_data['AuthenticationResult']['IdToken']);
+      localStorage.setItem('refreshToken', response_data['AuthenticationResult']['RefreshToken']);
       // this.props.history.push(REACT_URLS['DASHBOARD']);
       window.location = REACT_URLS['DASHBOARD'];
     }
