@@ -21,46 +21,41 @@ const styles = theme => ({
   class App extends React.Component {
     render() {
       const Contact = () => <h2>Contact</h2>
-      if (!localStorage.getItem('idToken')) { 
         return(
           <MuiThemeProvider theme={theme}>
-          <Router>
-          <div className="common-container">
-          <CssBaseline />
-          <ButtonAppBar/>
-            <Switch>
-              <Route path="/login" component={Login} />
-              <Route path="/about" component={About} />
-              <Route path="/contact" component={Contact} />
-              {/* when none of the above match, <NoMatch> will be rendered */}
-              <Route component={NoMatch} />
-            </Switch>
-            <Footer/>
-          </div>
-        </Router>
-        </MuiThemeProvider>
-        )
-      } else {
-        return(
-          <MuiThemeProvider theme={theme}>
-          <Router>
-              <div className="container">
-              <CssBaseline />
-                <Header/>
-                <Menu />
-                <Switch>
-                  <Route exact path="/" component={Dashboard} />
-                  <Route path="/project/:pid?" component={ProjectDetails} />
-                  <Route path="/logout" component={Logout} />
-                  {/* when none of the above match, <NoMatch> will be rendered */}
-                  <Route component={NoMatch} />
-                </Switch>
-                <Footer/>
-              </div>
+            <Router>
+              <div className="common-container">
+                { !localStorage.getItem('idToken') &&
+                  <div>
+                    <CssBaseline />
+                    <ButtonAppBar/>
+                    <Switch>
+                      <Route path="/login" component={Login} />
+                      <Route path="/about" component={About} />
+                      <Route path="/contact" component={Contact} />
+                      {/* when none of the above match, <NoMatch> will be rendered */}
+                      <Route component={NoMatch} />
+                    </Switch>
+                    </div>
+                }
+                { localStorage.getItem('idToken') &&
+                  <div className="container">
+                    <CssBaseline />
+                    <Header/>
+                    <Menu />
+                    <Switch>
+                      <Route exact path="/" component={Dashboard} />
+                      <Route path="/project/:pid?" component={ProjectDetails} />
+                      <Route path="/logout" component={Logout} />
+                      <Route component={NoMatch} />
+                    </Switch>
+                    <Footer/>
+                  </div>
+                }
+              </div> 
             </Router>
-            </MuiThemeProvider>
-        );
-      }
+          </MuiThemeProvider>
+        )
     }
   }
   App.propTypes = {
