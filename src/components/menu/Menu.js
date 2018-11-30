@@ -1,5 +1,6 @@
 import React, {Component} from "react";
 import { connect } from "react-redux";
+import {isEqual} from "lodash";
 import {Drawer, List, Divider, IconButton, withStyles} from '@material-ui/core';
 import classNames from 'classnames';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
@@ -23,7 +24,7 @@ class Menu extends Component {
   }
   componentDidUpdate(prevProps, prevState) {
     if(this.props.menuToggleData.MenuActionReducer &&
-      this.props.menuToggleData.MenuActionReducer !== prevProps. menuToggleData.MenuActionReducer) {
+      !isEqual(this.props.menuToggleData.MenuActionReducer, prevProps. menuToggleData.MenuActionReducer)) {
         this.setState({open:this.props.menuToggleData.MenuActionReducer.data.open})
       }
   }

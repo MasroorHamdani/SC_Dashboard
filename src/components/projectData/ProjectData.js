@@ -8,13 +8,12 @@ import styles from "./ProjectDataStyle";
 class ProjectDataComponent extends Component {
 
     render() {
-        const { classes } = this.props,
-        props = this.props;
+        const { classes, data, onClick } = this.props;
 
-        if(props.data) {
-            const data = props.data.map((row,index) => {
+        if(data) {
+            const returnData = data.map((row,index) => {
                 return(
-                    <Card className={classes.card} onClick={props.onClick} key={row.key}>
+                    <Card className={classes.card} onClick={e => onClick(e, row.key)} key={row.key}>
                         <CardHeader avatar={
                             <Avatar aria-label="Recipe" className={classes.avatar}>
                             P
@@ -42,7 +41,7 @@ class ProjectDataComponent extends Component {
                 );
             });
             return (
-                <div className="flex-container">{data}</div>
+                <div className="flex-container">{returnData}</div>
             );
         } else {
             return <div className="flex-container">No Data</div>

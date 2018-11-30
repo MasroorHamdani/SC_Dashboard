@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from "react-redux";
+import {isEqual} from "lodash";
 
 import { API_URLS, X_API_KEY, REACT_URLS } from "../constants/Constant";
 import LoginComponent from "../components/login/Login";
@@ -35,7 +36,7 @@ class Login extends React.Component {
   }
   componentDidUpdate(prevProps, prevState) {
     if (this.props.userData.LoginReducer.data
-      && this.props.userData.LoginReducer !== prevProps.userData.LoginReducer) {
+      && !isEqual(this.props.userData.LoginReducer, prevProps.userData.LoginReducer)) {
       const response_data = this.props.userData.LoginReducer.data;
       localStorage.setItem('idToken', response_data['AuthenticationResult']['IdToken']);
       localStorage.setItem('refreshToken', response_data['AuthenticationResult']['RefreshToken']);

@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from "react-redux";
-import {withStyles, Typography} from '@material-ui/core';
+import {withStyles, Typography, GridList} from '@material-ui/core';
 import PropTypes from 'prop-types';
+import {isEqual} from "lodash";
 import styles from './DashboardStyle'
 import ProjectDataComponent from "../../components/projectData/ProjectData";
 import { API_URLS, X_API_KEY, REACT_URLS } from "../../constants/Constant";
@@ -16,9 +17,8 @@ class Dashboard extends Component {
     }
   }
   
-  handleClick = () => {
-    const key="CERTIS_CCK_MRT"
-    this.props.history.push(`${REACT_URLS['PROJECT_DETAILS']}/${key}`)
+  handleClick = (e, param) => {
+    this.props.history.push(`${REACT_URLS['PROJECT_DETAILS']}/${param}`);
   }
 
   componentDidMount(){
@@ -29,10 +29,9 @@ class Dashboard extends Component {
 
   componentDidUpdate(prevProps, prevState) {
     if (this.props.dashboardData &&
-      (this.props.dashboardData !== prevProps.dashboardData)) {
+      !isEqual(this.props.dashboardData, prevProps.dashboardData)) {
         console.log(this.props.dashboardData);
       }
-      console.log("outside");
   }
 
   render() {
@@ -44,9 +43,11 @@ class Dashboard extends Component {
           <Typography variant="h4" gutterBottom component="h2">
             Projects
           </Typography>
-          <Typography component="div" className={classes.chartContainer}>
-          <ProjectDataComponent data={this.props.dashboardData} onClick={this.handleClick}/>
-          </Typography>
+          <div className={classes.gridRoot}>
+            <GridList cellHeight={180} className={classes.gridList}>
+              <ProjectDataComponent data={this.props.dashboardData} onClick={this.handleClick}/>
+            </GridList>
+          </div>
         </main>
       </div>
     );
