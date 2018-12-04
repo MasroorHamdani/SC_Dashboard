@@ -1,4 +1,3 @@
-const drawerWidth = 240;
 const styles = theme => ({
     appBar: {
         bottom: 0,
