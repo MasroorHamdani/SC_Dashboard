@@ -13,7 +13,6 @@ import '../../sass/App.scss';
 class ForgotPasswordComponent extends React.Component {
     render() {
         const { classes, onChange, onForgotSubmit, data } = this.props;
-        console.log(data.loading, "Inside forgot password");
         return (
             <NamespacesConsumer>
             {

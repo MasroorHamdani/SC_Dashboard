@@ -8,7 +8,6 @@ import LockIcon from '@material-ui/icons/LockOutlined';
 import PropTypes from 'prop-types';
 
 import styles from './LoginStyle';
-import '../../sass/App.scss';
 
 class ResetPasswordComponent extends React.Component {
     render() {
