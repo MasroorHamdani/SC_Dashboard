@@ -12,7 +12,11 @@
     "No Match": "No match for passed URL found",
     "username": "Username",
     "password": "Password",
+    "email": "Enter you Email",
+    "vercode": "Enter Verification code",
+    "auth-vercode": "Enter code sent tou your email ID",
     "forgotPassword": "Forgot Password",
+    "confpassword": "Confirm Password",
     "footer-note": "© 2018 SmartClean Technologies Pte. Ltd. All Rights Reserved",
     "companyHeader": "Smart Clean"
 }

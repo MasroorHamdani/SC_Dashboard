@@ -10,6 +10,7 @@ import ProjectDetails from "./containers/ProjectDetail";
 import About from "./containers/About";
 import NoMatch from "./containers/nomatch/NoMatch";
 import ButtonAppBar from "./components/commonHeader/CommonHeader";
+import AuthReset from "./containers/authReset/AuthReset";
 import {CssBaseline, withStyles, MuiThemeProvider} from '@material-ui/core';
 import PropTypes from 'prop-types';
 import "./sass/App.scss";
@@ -31,6 +32,7 @@ const styles = theme => ({
                     <ButtonAppBar/>
                     <Switch>
                       <Route path="/login" component={Login} />
+                      <Route path="/auth-reset" component={AuthReset} />
                       <Route path="/about" component={About} />
                       <Route path="/contact" component={Contact} />
                       {/* when none of the above match, <NoMatch> will be rendered */}

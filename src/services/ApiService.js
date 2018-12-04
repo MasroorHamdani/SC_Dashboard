@@ -133,6 +133,9 @@ function ApiService(configObject) {
                 // The request was made and the server responded with a status code
                 if (status === 403) {
                     // Logger.warn("session has been expired");
+                } else if (status === 400) {
+                    // Return request for any user Error, with status 400
+                    return Promise.reject(error.response);
                 } else if (isNotRobot) {
                     // Logger.error(`status : ${status} ${error.response.data}`);
                 }
