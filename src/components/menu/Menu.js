@@ -24,7 +24,7 @@ class Menu extends Component {
   }
   componentDidUpdate(prevProps, prevState) {
     if(this.props.menuToggleData.MenuActionReducer &&
-      !isEqual(this.props.menuToggleData.MenuActionReducer, prevProps. menuToggleData.MenuActionReducer)) {
+      !isEqual(this.props.menuToggleData.MenuActionReducer, prevProps.menuToggleData.MenuActionReducer)) {
         this.setState({open:this.props.menuToggleData.MenuActionReducer.data.open})
       }
   }

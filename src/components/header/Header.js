@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from "react-redux";
 import {isEqual} from "lodash";
-import { NamespacesConsumer } from 'react-i18next';
 import classNames from 'classnames';
 import {AppBar, Toolbar, Badge, IconButton, Typography, withStyles} from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';

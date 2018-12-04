@@ -1,5 +1,4 @@
 import React from 'react';
-import { NamespacesConsumer } from 'react-i18next';
 
 import SignInComponent from './SignIn';
 import ForgotPasswordComponent from './ForgotPassword';

@@ -3,7 +3,6 @@ import {AppBar, Typography, withStyles} from '@material-ui/core';
 import classNames from 'classnames';
 
 import { NamespacesConsumer } from 'react-i18next';
-// import '../sass/Footer.scss';
 import styles from './footerStyle';
 
 class Footer extends Component {

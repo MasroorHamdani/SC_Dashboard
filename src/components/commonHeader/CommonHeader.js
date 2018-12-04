@@ -10,9 +10,6 @@ import { Link} from "react-router-dom";
 import { NamespacesConsumer } from 'react-i18next';
 
 class CommonHeader extends Component {
-    constructor(props) {
-        super(props);
-    }
     render() {
         const { classes } = this.props;
         return (
