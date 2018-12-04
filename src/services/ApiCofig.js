@@ -1,4 +1,4 @@
-export const getApiConfig = (url, apikey, type, data='') => {
+export const getApiConfig = (url, apikey='', type, data='') => {
     const config = {
         method: type,
         url: url,

@@ -13,7 +13,11 @@ export function userLogin(config) {
       ApiService(config).then(data => {
           //on success we will dispatch a sync action with the data
           data.data['user']= 'Masroor';
+        //   data.data["ChallengeName"]= "NEW_PASSWORD_REQUIRED"
           dispatch(loginSuccessful(data.data))
+      })
+      .catch(error => {
+        dispatch(loginSuccessful(error.data))
       })
   }
 }

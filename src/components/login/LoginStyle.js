@@ -35,6 +35,15 @@ const styles = theme => ({
       top:'15%',
       right:'1%',
     },
+
+    container: {
+      display: 'flex',
+      flexWrap: 'wrap',
+    },
+    formControl: {
+      margin: theme.spacing.unit,
+      minWidth: 120,
+    },
   });
 
   export default styles;

@@ -18,3 +18,11 @@
   font-size: 22px;
   width: 20em;
 }
+.forgot-paswd-btn {
+  padding: 0px !important;
+  float: right;
+  &:hover, &:active
+  {
+    background-color: white !important;
+  }
+}

@@ -9,6 +9,7 @@ class NoMatch extends Component {
         const { classes } = this.props;
         if (!localStorage.getItem('idToken')) {
             this.props.history.push(REACT_URLS['LOGIN']);
+            return null
         } else {
             return (
                 <div className={classes.root}>
