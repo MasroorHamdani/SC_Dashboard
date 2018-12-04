@@ -6,9 +6,6 @@ import { NamespacesConsumer } from 'react-i18next';
 import styles from './footerStyle';
 
 class Footer extends Component {
-  constructor(props) {
-    super(props);
-  }
   render() {
     const {classes} = this.props;
     return (

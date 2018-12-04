@@ -17,6 +17,6 @@ const reducers = {
 }
 
 // combines all the reducers which will be passed in Redux Store
-const RootReducer = combineReducers(reducers);
+const rootReducer = combineReducers(reducers);
 
-export default RootReducer;
+export default rootReducer;
