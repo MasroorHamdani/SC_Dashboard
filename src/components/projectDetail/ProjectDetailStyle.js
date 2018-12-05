@@ -1,7 +1,11 @@
 const styles = theme => ({
-    root: {
-        display: 'flex',
-    },
+  root: {
+    backgroundColor: theme.palette.background.paper,
+     width: "100%",
+  },
+    // root: {
+    //     display: 'flex',
+    // },
     appBarSpacer: theme.mixins.toolbar,
     main: {
         width: 'auto',

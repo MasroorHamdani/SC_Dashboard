@@ -30,7 +30,7 @@ class ProjectDetails extends Component {
     }
     render() {
         return(
-            <ProjectDetail/>
+            <ProjectDetail data={this.props.projectData.ProjectDataReducer}/>
         )
     }
 }
