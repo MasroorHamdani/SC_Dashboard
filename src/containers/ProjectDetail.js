@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from "react-redux";
-
+import {isEqual} from "lodash";
 import {API_URLS, X_API_KEY} from "../constants/Constant";
 import {getApiConfig} from "../services/ApiCofig";
 import {projectData} from '../actions/ProjectDataAction';
@@ -14,23 +14,25 @@ class ProjectDetails extends Component {
             data : {}
         }
     }
+    
     componentDidMount(){
-        const endPoint = API_URLS['PROJECT_DETAILS'],
-            dataToPost = {
-                "pid": this.state.pid
-            },
-            config = getApiConfig(endPoint, X_API_KEY, 'POST', dataToPost);
+        const endPoint = `${API_URLS['PROJECT_DETAILS']}/${this.state.pid}/general`,
+            config = getApiConfig(endPoint, '', 'GET');
         this.props.onProjectData(config);
     }
     componentDidUpdate(prevProps, prevState) {
         if (this.props.projectData.ProjectDataReducer.data &&
-            this.props.projectData.ProjectDataReducer.data !== prevProps.projectData.ProjectDataReducer.data) {
+            !isEqual(this.props.projectData.ProjectDataReducer.data !== prevProps.projectData.ProjectDataReducer.data)) {
                 console.log(this.props.projectData.ProjectDataReducer.data, "*****");
             }
     }
     render() {
         return(
-            <ProjectDetail data={this.props.projectData.ProjectDataReducer}/>
+            <div>
+            { this.props.projectData.ProjectDataReducer.data &&
+                <ProjectDetail data={this.props.projectData.ProjectDataReducer.data[0]}/>
+            }
+            </div>
         )
     }
 }

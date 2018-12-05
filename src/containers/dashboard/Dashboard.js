@@ -26,7 +26,7 @@ class Dashboard extends Component {
 
   componentDidMount(){
     const endPoint = API_URLS['DASHBOARD'],
-          config = getApiConfig(endPoint, X_API_KEY, 'GET');
+          config = getApiConfig(endPoint, '', 'GET');
     this.props.onDashbaord(config);
   }
 
@@ -56,7 +56,7 @@ class Dashboard extends Component {
           </Typography>
           <div className={classes.gridRoot}>
             <GridList cellHeight={180} className={classes.gridList}>
-              <ProjectDataComponent data={this.props.dashboardData} onClick={this.handleClick}/>
+              <ProjectDataComponent data={this.props.dashboardData.DashboardReducer} onClick={this.handleClick}/>
             </GridList>
           </div>
         </div>)
@@ -84,7 +84,7 @@ function getMappedData (state) {
 
 function mapStateToProps(state) {
   return {
-      dashboardData : getMappedData(state),
+      dashboardData : state,//getMappedData(state),
   }
 }
 

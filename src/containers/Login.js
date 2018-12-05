@@ -82,7 +82,7 @@ handleSubmit = () => {
         "uname": this.state.username,
         "passwd": this.state.password
       },
-      config = getApiConfig(endPoint, X_API_KEY, 'POST', dataToPost);
+      config = getApiConfig(endPoint, '', 'POST', dataToPost);
   this.props.onLogin(config);
     }
 }
@@ -90,7 +90,7 @@ componentDidUpdate(prevProps, prevState) {
   if (this.props.userData.LoginReducer.data
     && !isEqual(this.props.userData.LoginReducer, prevProps.userData.LoginReducer)) {
     const responseData = this.props.userData.LoginReducer.data;
-    if (responseData['statusCode'] === 400) {
+    if (responseData['status'] === 400) {
       this.setState({
         errorMessage: responseData['message']
       });

@@ -44,7 +44,8 @@ function ApiService(configObject) {
             if (err.response.status === 403) return forceLogout();
             if (err.response.status !== 401) return Promise.reject(err);
         }
-        
+        //temporary testing code
+        // if (err.response.status === 404) return Promise.reject(err);
         if (!isFetchingToken) {
             console.log("Inside fetching**********")
             isFetchingToken = true;
@@ -132,6 +133,7 @@ function ApiService(configObject) {
                 const status = error.response.status;
                 // The request was made and the server responded with a status code
                 if (status === 403) {
+                    console.log(error.response, "403 error");
                     // Logger.warn("session has been expired");
                 } else if (status === 400) {
                     // Return request for any user Error, with status 400

@@ -17,7 +17,7 @@ export function userLogin(config) {
           dispatch(loginSuccessful(data.data))
       })
       .catch(error => {
-        dispatch(loginSuccessful(error.data))
+        dispatch(loginSuccessful(error))
       })
   }
 }
