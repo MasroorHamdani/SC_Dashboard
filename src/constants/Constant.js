@@ -16,6 +16,18 @@ export const LOGIN_STATUS = {
     "FORGOT": "forgot",
     "RESET": "reset"
 }
+
+export const PROJECT_TABS = {
+    'INSTALLATION': 'installation',
+    'TEAM': 'team',
+    'SUBSCRIBER': 'subscriber',
+    'SETTING': 'setting'
+}
+
+export const SORTING = {
+    'ASCENDING': 'asc',
+    'DECENDING': 'desc'
+}
 export const X_API_KEY = "QcbUJLoJSY2Mj1IdHNgAV6BoArOS6KHa7TlL4Qgx";
 
 export const REACT_URLS = {
