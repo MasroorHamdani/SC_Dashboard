@@ -10,10 +10,11 @@ class ProjectDataComponent extends Component {
     render() {
         const { classes, data, onClick } = this.props;
 
-        if(data) {
-            const returnData = data.map((row,index) => {
+        if(data && data.data.Projects) {
+            const newData  =data.data.Projects;
+            const returnData = newData.map((row,index) => {
                 return(
-                    <Card className={classes.card} onClick={e => onClick(e, row.key)} key={row.key}>
+                    <Card className={classes.card} onClick={e => onClick(e, row.pid)} key={row.pid}>
                         <CardHeader avatar={
                             <Avatar aria-label="Recipe" className={classes.avatar}>
                             P
@@ -32,9 +33,9 @@ class ProjectDataComponent extends Component {
                         image="../static/image.png"
                         />
                         <CardContent>
-                            <div>{row.key}</div>
-                            <div>{row.site}</div>
-                            <div>{row.site_addr}</div>
+                            <div>{row.name}</div>
+                            <div>{row.pid}</div>
+                            <div>{row.status}</div>
                         </CardContent>
 
                     </Card>

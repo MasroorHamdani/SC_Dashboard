@@ -1,11 +1,12 @@
-export const API_END_POINT = "https://1w5tcso1ol.execute-api.ap-southeast-1.amazonaws.com/alpha";
+export const API_END_POINT = "https://4l6qi5oh0h.execute-api.ap-southeast-1.amazonaws.com/prod";
+//"https://1w5tcso1ol.execute-api.ap-southeast-1.amazonaws.com/alpha";
 
 export const API_URLS = {
-    "LOGIN": "/login-1-time",
+    "LOGIN": "/unauth/login", //"/login-1-time",
     "REFRESH_TOKEN": "/refresh-token",
-    "DASHBOARD": "/get-settings",
-    "PROJECT_DETAILS": "/get-project",
-    "FORGOT_PASSWORD": "/forgot-password",
+    "DASHBOARD": "/auth/projects",//"/get-settings",
+    "PROJECT_DETAILS": "/auth/projects",//"/get-project",
+    "FORGOT_PASSWORD": "/forgot-password/%s/test",
     "RESET_PASSWORD": "/confirm-forgot-password"
 };
 
@@ -18,7 +19,7 @@ export const LOGIN_STATUS = {
 }
 
 export const PROJECT_TABS = {
-    'INSTALLATION': 'installation',
+    'INSTALLATION': 'installations',
     'TEAM': 'team',
     'SUBSCRIBER': 'subscriber',
     'SETTING': 'setting'

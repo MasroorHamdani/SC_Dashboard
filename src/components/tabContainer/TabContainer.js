@@ -1,7 +1,11 @@
 import React, { Component } from 'react';
+import { connect } from "react-redux";
+import {isEqual} from "lodash";
 import Typography from '@material-ui/core/Typography';
-import {PROJECT_TABS, SORTING} from '../../constants/Constant';
+import {PROJECT_TABS, SORTING, API_URLS} from '../../constants/Constant';
 import EnhancedTable from '../grid/Grid';
+import {projectDetailData} from '../../actions/ProjectDataAction';
+import {getApiConfig} from '../../services/ApiCofig';
 
 class TabContainer extends Component {
     constructor(props) {
@@ -19,28 +23,23 @@ class TabContainer extends Component {
         this.setState({
             [name] : value
         });
-        // this.setState({ data })
     }
-    getMappedData = (data) => {
-        let mappedData = [];
-        for (var key in data) {
-            data[key]['key']=key
-            mappedData.push(data[key])
-          }
-          return mappedData;
+   componentDidUpdate(prevProps, prevState) {
+        if (this.props.projectData.ProjectDetailsReducer.data &&
+            !isEqual(this.props.projectData.ProjectDetailsReducer.data !== prevProps.projectData.ProjectDetailsReducer.data)) {
+                console.log(this.props.projectData.ProjectDetailsReducer.data, "*****");
+            }
     }
     render() {
-        const {data, category} = this.props;
-        let tabData;
-        
-        if (data.data && category === PROJECT_TABS['INSTALLATION']) {
-            const tableData = this.getMappedData(data.data.Item.installations),
-            rows = [{ id: 'name', numeric: false, disablePadding: true, label: 'Name' },
-            { id: 'locn', numeric: true, disablePadding: false, label: 'Location' }]
+        const {category, data} = this.props;
+        let tabData, rows, tabContent;
 
-
+        if (data.ProjectDetailsReducer && data.ProjectDetailsReducer.data && category === PROJECT_TABS['INSTALLATION']) {
+            tabContent = getMappedData(data.ProjectDetailsReducer.data);
+            rows = [{ id: 'name', numeric: false, disablePadding: false, label: 'Name' },
+                    { id: 'locn', numeric: false, disablePadding: false, label: 'Location' }]
             tabData = <Typography component="div" style={{ padding: 8 * 3 }}>
-            <EnhancedTable data={tableData} rows={rows}
+            <EnhancedTable data={tabContent.details} rows={rows}
                 order={this.state.order} orderBy={this.state.orderBy}
                 rowsPerPage={this.state.rowsPerPage} page={this.state.page}
                 handleChange={this.handleChange}/>
@@ -52,9 +51,40 @@ class TabContainer extends Component {
             <div>
             {tabData}
             </div>
-
-        
         );
     }
-  }
-  export default TabContainer;
+}
+
+function getMappedData (data) {
+    let mappedData = {}, alerts = [], details = [], devices = [];
+    data.map(function(d) {
+        if (d['namespace'] === 'alerting') {
+            alerts.push(d);
+        } else if(d['namespace'] === 'details') {
+            details.push(d);
+        } else if(d['namespace'] === 'devices') {
+            devices.push(d);
+        }
+        mappedData = {};
+        mappedData['alerts'] = alerts;
+        mappedData['devices'] = devices;
+        mappedData['details'] = details;
+       });
+       return mappedData;
+}
+
+function mapStateToProps(state) {
+    return {
+        projectData : state,
+    }
+}
+
+function mapDispatchToProps(dispatch) {
+    return {
+        onProjectDetailData: (config) => {
+            //will dispatch the async action
+            dispatch(projectDetailData(config))
+        }
+    }
+}
+  export default connect(mapStateToProps, mapDispatchToProps)(TabContainer);

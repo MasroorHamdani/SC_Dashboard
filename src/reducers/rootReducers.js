@@ -6,6 +6,7 @@ import ProjectDataReducer from "./ProjectDataReducer";
 import MenuActionReducer from "./MenuActionReducer";
 import ForgotPasswordReducer from "./ForgotPasswordReducer";
 import ResetPasswordReducer from "./ResetPasswordReducer";
+import ProjectDetailsReducer from "./ProjectDataDetailsReducer";
 
 const reducers = {
     LoginReducer,
@@ -13,7 +14,8 @@ const reducers = {
     ProjectDataReducer,
     MenuActionReducer,
     ForgotPasswordReducer,
-    ResetPasswordReducer
+    ResetPasswordReducer,
+    ProjectDetailsReducer
 }
 
 // combines all the reducers which will be passed in Redux Store

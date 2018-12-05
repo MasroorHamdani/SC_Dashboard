@@ -38,11 +38,7 @@ function getSorting(order, orderBy) {
 
 class EnhancedTable extends React.Component {
   state = {
-    order: 'asc',
-    orderBy: 'calories',
     selected: [],
-    page: 0,
-    rowsPerPage: 5,
   };
 
   handleRequestSort = (event, property) => {
@@ -78,11 +74,11 @@ class EnhancedTable extends React.Component {
   };
 
   handleChangePage = (event, page) => {
-    this.setState({ page });
+    this.props.handleChange("page", page);
   };
 
   handleChangeRowsPerPage = event => {
-    this.setState({ rowsPerPage: event.target.value });
+    this.props.handleChange("rowsPerPage", event.target.value);
   };
 
   isSelected = id => this.state.selected.indexOf(id) !== -1;
@@ -91,7 +87,7 @@ class EnhancedTable extends React.Component {
     const { classes, data, rows, order, orderBy,
         rowsPerPage, page } = this.props;
     const emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
-
+    
     return (
       <Paper className={classes.root}>
         <div className={classes.tableWrapper}>
@@ -114,15 +110,14 @@ class EnhancedTable extends React.Component {
                       role="checkbox"
                       aria-checked={isSelected}
                       tabIndex={-1}
-                      key={n.key}
+                      key={n.insid}
                       selected={isSelected}
                     >
-                      <TableCell component="th" scope="row" padding="none">
+                      <TableCell component="th" scope="row">
                         {n.name}
                       </TableCell>
-                      <TableCell numeric>{n.locn}</TableCell>
-                      {/* <TableCell numeric>{n.fat}</TableCell>
-                      <TableCell numeric>{n.carbs}</TableCell>
+                      <TableCell>{n.locn}</TableCell>
+                     {/* <TableCell numeric>{n.carbs}</TableCell>
                       <TableCell numeric>{n.protein}</TableCell> */}
                     </TableRow>
                   );
