@@ -30,8 +30,8 @@ class ResetPasswordComponent extends React.Component {
                         value={data.email}/>
                         </FormControl>
                         <FormControl margin="normal" required fullWidth>
-                        <InputLabel htmlFor="vercode">{data.vercodeLabel}</InputLabel>
-                        <Input required id="vercode" name="vercode" autoFocus
+                        <InputLabel htmlFor="code">{data.codeLabel}</InputLabel>
+                        <Input required id="code" name="code" autoFocus
                         onChange={onChange}/>
                         </FormControl>
                         <FormControl margin="normal" required fullWidth>

@@ -12,7 +12,7 @@ export function resetPassword(config) {
   return function (dispatch) {
       ApiService(config).then(data => {
           //on success we will dispatch a sync action with the data
-          dispatch(passwordResetSuccessful(data.data))
+          dispatch(passwordResetSuccessful(data.status))
       })
   }
 }

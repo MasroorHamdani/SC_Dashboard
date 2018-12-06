@@ -6,11 +6,12 @@ export const API_URLS = {
     "REFRESH_TOKEN": "/refresh-token",
     "DASHBOARD": "/auth/projects",//"/get-settings",
     "PROJECT_DETAILS": "/auth/projects",//"/get-project",
-    "FORGOT_PASSWORD": "/forgot-password/%s/test",
-    "RESET_PASSWORD": "/confirm-forgot-password"
+    "FORGOT_PASSWORD": "/unauth/password/change",//"/forgot-password",
+    "RESET_PASSWORD": "/unauth/password/confirm", //"/confirm-forgot-password",
+    "AUTH_RESET_PASSWORD": "/unauth/password/authchallenge"
 };
 
-export const RESET_PASSWORD_REQUIRED = "NEW_PASSWORD_REQUIRED";
+export const NEW_PASSWORD_REQUIRED = "NEW_PASSWORD_REQUIRED";
 
 export const LOGIN_STATUS = {
     "LOGIN": "login",
