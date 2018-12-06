@@ -11,7 +11,7 @@ import styles from './LoginStyle';
 
 class ResetPasswordComponent extends React.Component {
     render() {
-        const { classes, onChange, onResetSubmit, data, errorMessage } = this.props;
+        const { classes, onChange, onResetSubmit, data } = this.props;
         return (
             <NamespacesConsumer>
             {
@@ -44,7 +44,7 @@ class ResetPasswordComponent extends React.Component {
                         <Input required id="confpassword" type="password" name="confpassword"
                         onChange={onChange}/>
                         </FormControl>
-                        <InputLabel error>{errorMessage}</InputLabel>
+                        <InputLabel error>{data.errorMessage}</InputLabel>
                         <Button
                         type="button"
                         fullWidth
