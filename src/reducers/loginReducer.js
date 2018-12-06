@@ -1,4 +1,4 @@
-import { USER_LOGIN } from "../constants/ActionTypes";
+import { USER_LOGIN, AUTH_KEY_SET } from "../constants/ActionTypes";
 /* Reducer for Login functionality */
 const login = (state = [], action) => {
     switch(action.type) {
@@ -7,6 +7,11 @@ const login = (state = [], action) => {
                 ...state,
                 data: action.data
             };
+        case AUTH_KEY_SET:
+            return{
+                ...state,
+                data: action.data
+            }
         default:
             return state
     }

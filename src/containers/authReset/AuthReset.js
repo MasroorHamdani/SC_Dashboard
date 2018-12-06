@@ -1,16 +1,21 @@
 import React, {Component} from 'react';
+import { connect } from "react-redux";
+import {isEqual} from "lodash";
 import ResetPasswordComponent from '../../components/login/ResetPassword';
+import {API_URLS, REACT_URLS} from '../../constants/Constant';
+import {getApiConfig} from '../../services/ApiCofig';
+import {setAuthKey} from '../../actions/LoginAction';
 
 class AuthReset extends Component {
     constructor(props) {
         super(props);
         this.initialState = {
-            vercode: '',
+            code: '',
             password: 'Password',
             confpassword: 'Password',
-            email: 'Email',
+            email: localStorage.getItem('username'),
             loading: false,
-            vercodeLabel: "Enter code sent tou your email ID",
+            codeLabel: "Enter code sent tou your email ID",
             errorMessage: ''
         };
         this.state = this.initialState;
@@ -24,23 +29,39 @@ class AuthReset extends Component {
     handleSubmit = () => {
         if (this.state.confpassword === this.state.password) {
             if (!this.state.loading) {
-                console.log("testing");
                 this.setState({
                     errorMessage: ''
                 })
-            //   const endPoint = API_URLS['LOGIN'],
-            //         dataToPost = {
-            //         "uname": this.state.username,
-            //         "passwd": this.state.password
-            //       },
-            //       config = getApiConfig(endPoint, X_API_KEY, 'POST', dataToPost);
-            //   this.props.onLogin(config);
-            //     }
-            }
+              const endPoint = API_URLS['AUTH_RESET_PASSWORD'],
+                    dataToPost = {
+                    "uname": this.state.email,
+                    "passwd": this.state.password,
+                    "apikey": this.state.code,
+                    "session": localStorage.getItem('session')
+                  },
+                  config = getApiConfig(endPoint, '', 'POST', dataToPost);
+              this.props.onAuthReset(config);
+                }
         } else {
             this.setState({
               errorMessage: "Password and Confirm Password should be same"
             });
+        }
+    }
+
+    componentDidUpdate(prevProps, prevState) {
+        if (this.props.userData.LoginReducer.data
+            && !isEqual(this.props.userData.LoginReducer, prevProps.userData.LoginReducer)) {
+                const responseData = this.props.userData.LoginReducer.data;
+                localStorage.setItem('idToken', responseData['AuthenticationResult']['IdToken']);
+                localStorage.setItem('refreshToken', responseData['AuthenticationResult']['RefreshToken']);
+                if (this.state.loading) {
+                    this.setState({
+                      loading: false,
+                      success: true,
+                    });
+                }
+                window.location = REACT_URLS['DASHBOARD'];
         }
     }
 
@@ -50,5 +71,18 @@ class AuthReset extends Component {
         )
     }
 }
+function mapStateToProps(state) {
+    return {
+        userData : state
+    }
+}
+  
+function mapDispatchToProps(dispatch) {
+return {
+    onAuthReset: (config) => {
+        dispatch(setAuthKey(config))
+    }
+}
+}
 
-export default AuthReset;
+export default connect(mapStateToProps, mapDispatchToProps)(AuthReset);

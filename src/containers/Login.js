@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from "react-redux";
 import {isEqual} from "lodash";
 
-import { API_URLS, X_API_KEY, REACT_URLS, RESET_PASSWORD_REQUIRED,
+import { API_URLS, X_API_KEY, REACT_URLS, NEW_PASSWORD_REQUIRED,
   LOGIN_STATUS } from "../constants/Constant";
 import LoginComponent from "../components/login/Login";
 import { userLogin } from "../actions/LoginAction";
@@ -38,11 +38,11 @@ class Login extends React.Component {
     this.setState({ status: LOGIN_STATUS['FORGOT'] });
   };
   handleForgotSubmit = () => {
-    const endPoint = API_URLS['FORGOT_PASSWORD'],
+    const endPoint = `${API_URLS['FORGOT_PASSWORD']}/${this.state.email}`,
           dataToPost = {
           "uname": this.state.email
         },
-        config = getApiConfig(endPoint, '', 'POST', dataToPost);
+        config = getApiConfig(endPoint, '', 'GET');
     this.props.onForgotPassword(config);
   }
   handleResetSubmit = () => {
@@ -57,8 +57,8 @@ class Login extends React.Component {
       const endPoint = API_URLS['RESET_PASSWORD'],
       dataToPost = {
         "uname": this.state.email,
-        "vercode": this.state.vercode,
-        "newpass": this.state.password
+        "code": this.state.vercode,
+        "passwd": this.state.password
       },
       config = getApiConfig(endPoint, '', 'POST', dataToPost);
       this.props.onResetPassword(config);
@@ -100,7 +100,9 @@ componentDidUpdate(prevProps, prevState) {
           success: true,
         });
       }
-    } else if (responseData['ChallengeName'] === RESET_PASSWORD_REQUIRED) {
+    } else if (responseData['ChallengeName'] === NEW_PASSWORD_REQUIRED) {
+      localStorage.setItem('session', responseData['Session']);
+      localStorage.setItem('username', this.state.username);
       this.props.history.push(REACT_URLS['AUTH_RESET']);
     } else {
       localStorage.setItem('idToken', responseData['AuthenticationResult']['IdToken']);
@@ -126,7 +128,7 @@ componentDidUpdate(prevProps, prevState) {
           success: true,
         });
       }
-      this.props.history.push(REACT_URLS['LOGIN'])
+      this.setState({ status: LOGIN_STATUS['LOGIN'] })
   }
 }
 render() {
