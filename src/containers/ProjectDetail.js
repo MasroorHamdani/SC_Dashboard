@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from "react-redux";
 import {isEqual} from "lodash";
-import {API_URLS, X_API_KEY, REACT_URLS, PROJECT_TABS} from "../constants/Constant";
+import {API_URLS, REACT_URLS} from "../constants/Constant";
 import {getApiConfig} from "../services/ApiCofig";
 import {projectData} from '../actions/ProjectDataAction';
 import ProjectDetail from '../components/projectDetail/ProjectDetail';

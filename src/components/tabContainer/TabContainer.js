@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Typography from '@material-ui/core/Typography';
-import {PROJECT_TABS, SORTING, REACT_URLS} from '../../constants/Constant';
+import {PROJECT_TABS, SORTING} from '../../constants/Constant';
 import EnhancedTable from '../grid/Grid';
 
 class TabContainer extends Component {
