@@ -52,26 +52,7 @@ class EnhancedTable extends React.Component {
     this.props.handleChange("order", order);
   };
 
-  handleClick = (event, id) => {
-    const { selected } = this.state;
-    const selectedIndex = selected.indexOf(id);
-    let newSelected = [];
-
-    if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, id);
-    } else if (selectedIndex === 0) {
-      newSelected = newSelected.concat(selected.slice(1));
-    } else if (selectedIndex === selected.length - 1) {
-      newSelected = newSelected.concat(selected.slice(0, -1));
-    } else if (selectedIndex > 0) {
-      newSelected = newSelected.concat(
-        selected.slice(0, selectedIndex),
-        selected.slice(selectedIndex + 1),
-      );
-    }
-
-    this.setState({ selected: newSelected });
-  };
+  
 
   handleChangePage = (event, page) => {
     this.props.handleChange("page", page);
@@ -81,13 +62,23 @@ class EnhancedTable extends React.Component {
     this.props.handleChange("rowsPerPage", event.target.value);
   };
 
-  isSelected = id => this.state.selected.indexOf(id) !== -1;
+  isSelected = id => this.props.selected.indexOf(id) !== -1;
 
   render() {
     const { classes, data, rows, order, orderBy,
-        rowsPerPage, page } = this.props;
+        rowsPerPage, page, handleClick, category} = this.props;
     const emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
     
+
+    // const rowss = data.map(d => {
+    //   let bulk = [];
+    //   rows.map(row => {
+    //     let t = `d.${row.id}`;
+    //     bulk.push(<TableCell scope="row">{t}</TableCell>)
+    //   }, this)
+    //   return bulk
+    // }, this)
+
     return (
       <Paper className={classes.root}>
         <div className={classes.tableWrapper}>
@@ -102,11 +93,11 @@ class EnhancedTable extends React.Component {
               {stableSort(data, getSorting(order, orderBy))
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map(n => {
-                  const isSelected = this.isSelected(n.id);
+                  const isSelected = this.isSelected(n.insid);
                   return (
                     <TableRow
                       hover
-                      onClick={event => this.handleClick(event, n.id)}
+                      onClick={event => handleClick(event, n.insid, category)}
                       role="checkbox"
                       aria-checked={isSelected}
                       tabIndex={-1}
@@ -117,8 +108,6 @@ class EnhancedTable extends React.Component {
                         {n.name}
                       </TableCell>
                       <TableCell>{n.locn}</TableCell>
-                     {/* <TableCell numeric>{n.carbs}</TableCell>
-                      <TableCell numeric>{n.protein}</TableCell> */}
                     </TableRow>
                   );
                 })}

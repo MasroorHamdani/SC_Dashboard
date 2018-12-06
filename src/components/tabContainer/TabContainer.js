@@ -1,11 +1,7 @@
 import React, { Component } from 'react';
-import { connect } from "react-redux";
-import {isEqual} from "lodash";
 import Typography from '@material-ui/core/Typography';
-import {PROJECT_TABS, SORTING, API_URLS} from '../../constants/Constant';
+import {PROJECT_TABS, SORTING, REACT_URLS} from '../../constants/Constant';
 import EnhancedTable from '../grid/Grid';
-import {projectDetailData} from '../../actions/ProjectDataAction';
-import {getApiConfig} from '../../services/ApiCofig';
 
 class TabContainer extends Component {
     constructor(props) {
@@ -15,7 +11,7 @@ class TabContainer extends Component {
             orderBy: 'name',
             selected: [],
             page: 0,
-            rowsPerPage: 5,
+            rowsPerPage: 5
         }
     }
 
@@ -24,28 +20,52 @@ class TabContainer extends Component {
             [name] : value
         });
     }
-   componentDidUpdate(prevProps, prevState) {
-        if (this.props.projectData.ProjectDetailsReducer.data &&
-            !isEqual(this.props.projectData.ProjectDetailsReducer.data !== prevProps.projectData.ProjectDetailsReducer.data)) {
-                console.log(this.props.projectData.ProjectDetailsReducer.data, "*****");
-            }
-    }
-    render() {
-        const {category, data} = this.props;
-        let tabData, rows, tabContent;
 
+    // handleClick = (e, param) => {
+    //     // const { selected } = this.state;
+    //     // const selectedIndex = selected.indexOf(id);
+    //     // let newSelected = [];
+    
+    //     // if (selectedIndex === -1) {
+    //     //   newSelected = newSelected.concat(selected, id);
+    //     // } else if (selectedIndex === 0) {
+    //     //   newSelected = newSelected.concat(selected.slice(1));
+    //     // } else if (selectedIndex === selected.length - 1) {
+    //     //   newSelected = newSelected.concat(selected.slice(0, -1));
+    //     // } else if (selectedIndex > 0) {
+    //     //   newSelected = newSelected.concat(
+    //     //     selected.slice(0, selectedIndex),
+    //     //     selected.slice(selectedIndex + 1),
+    //     //   );
+    //     // }
+    //     // this.setState({ selected: newSelected });
+    //   };
+
+    render() {
+        const {category, data, handleClick} = this.props;
+        let tabData, rows, tabContent;
         if (data.ProjectDetailsReducer && data.ProjectDetailsReducer.data && category === PROJECT_TABS['INSTALLATION']) {
             tabContent = getMappedData(data.ProjectDetailsReducer.data);
             rows = [{ id: 'name', numeric: false, disablePadding: false, label: 'Name' },
                     { id: 'locn', numeric: false, disablePadding: false, label: 'Location' }]
-            tabData = <Typography component="div" style={{ padding: 8 * 3 }}>
+            tabData = <Typography component="div">
             <EnhancedTable data={tabContent.details} rows={rows}
                 order={this.state.order} orderBy={this.state.orderBy}
                 rowsPerPage={this.state.rowsPerPage} page={this.state.page}
-                handleChange={this.handleChange}/>
+                selected={this.state.selected} category={category}
+                handleChange={this.handleChange} handleClick={handleClick}/>
             </Typography>
-        } else if(category === PROJECT_TABS['TEAM']) {
-            tabData = <Typography component="div" style={{ padding: 8 * 3 }}>TEAM</Typography>
+        } else if(data.ProjectTeamDataReducer && data.ProjectTeamDataReducer.data && category === PROJECT_TABS['TEAM']) {
+            tabContent = mapTeamData(data.ProjectTeamDataReducer.data[0].users);
+            rows = [{ id: 'id', numeric: false, disablePadding: false, label: 'User Id' },
+                    { id: 'status', numeric: false, disablePadding: false, label: 'Status' }]
+            tabData = <Typography component="div">
+            <EnhancedTable data={tabContent} rows={rows}
+                order={this.state.order} orderBy={this.state.orderBy}
+                rowsPerPage={this.state.rowsPerPage} page={this.state.page}
+                selected={this.state.selected} category={category}
+                handleChange={this.handleChange} handleClick={handleClick}/>
+            </Typography>
         }
         return (
             <div>
@@ -55,6 +75,15 @@ class TabContainer extends Component {
     }
 }
 
+function mapTeamData(data) {
+    data.map(function (d) {
+        d['name'] = d['id'];
+        d['locn'] = d['status'];
+        d['insid'] = d['id'];
+        return(d)
+    });
+    return data;
+}
 function getMappedData (data) {
     let mappedData = {}, alerts = [], details = [], devices = [];
     data.map(function(d) {
@@ -73,18 +102,4 @@ function getMappedData (data) {
        return mappedData;
 }
 
-function mapStateToProps(state) {
-    return {
-        projectData : state,
-    }
-}
-
-function mapDispatchToProps(dispatch) {
-    return {
-        onProjectDetailData: (config) => {
-            //will dispatch the async action
-            dispatch(projectDetailData(config))
-        }
-    }
-}
-  export default connect(mapStateToProps, mapDispatchToProps)(TabContainer);
+export default TabContainer;

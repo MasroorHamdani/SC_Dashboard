@@ -61,30 +61,15 @@ class Dashboard extends Component {
           </div>
         </div>)
         }
-          
         </main>
       </div>
     );
   }
 }
-function getMappedData (state) {
-  if (state.DashboardReducer.data) {
-    const mappedData = [],
-    responseData = state.DashboardReducer.data;
-    if(responseData["Item"]) {
-      const projects = responseData["Item"]["Projects"]
-      for (var key in projects) {
-        projects[key]['key']=key;
-        mappedData.push(projects[key])
-      }
-    }
-    return mappedData;
-  }
-}
 
 function mapStateToProps(state) {
   return {
-      dashboardData : state,//getMappedData(state),
+      dashboardData : state,
   }
 }
 
