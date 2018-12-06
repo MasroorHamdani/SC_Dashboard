@@ -7,6 +7,7 @@ import Footer from "./components/footer/Footer";
 import Menu from "./components/menu/Menu";
 import Logout from "./containers/Logout";
 import ProjectDetails from "./containers/ProjectDetail";
+import ProjectInstallationDetails from "./containers/projectInstallationDetails/ProjectInstallationDetails";
 import About from "./containers/About";
 import NoMatch from "./containers/nomatch/NoMatch";
 import ButtonAppBar from "./components/commonHeader/CommonHeader";
@@ -47,6 +48,7 @@ const styles = theme => ({
                     <Menu />
                     <Switch>
                       <Route exact path="/" component={Dashboard} />
+                      <Route path="/project/:pid/installations/:insid?" component={ProjectInstallationDetails} />
                       <Route path="/project/:pid?" component={ProjectDetails} />
                       <Route path="/logout" component={Logout} />
                       <Route component={NoMatch} />

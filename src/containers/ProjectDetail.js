@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from "react-redux";
 import {isEqual} from "lodash";
-import {API_URLS, X_API_KEY} from "../constants/Constant";
+import {API_URLS, REACT_URLS} from "../constants/Constant";
 import {getApiConfig} from "../services/ApiCofig";
 import {projectData} from '../actions/ProjectDataAction';
 import ProjectDetail from '../components/projectDetail/ProjectDetail';
@@ -14,7 +14,7 @@ class ProjectDetails extends Component {
             data : {}
         }
     }
-    
+
     componentDidMount(){
         const endPoint = `${API_URLS['PROJECT_DETAILS']}/${this.state.pid}/general`,
             config = getApiConfig(endPoint, '', 'GET');
@@ -26,11 +26,17 @@ class ProjectDetails extends Component {
                 console.log(this.props.projectData.ProjectDataReducer.data, "*****");
             }
     }
+
+    handleClick = (e, id, category) => {
+        this.props.history.push(`${REACT_URLS['PROJECT_DETAILS']}/${this.state.pid}/${category}/${id}`);
+      };
+
     render() {
         return(
             <div>
             { this.props.projectData.ProjectDataReducer.data &&
-                <ProjectDetail data={this.props.projectData.ProjectDataReducer.data[0]}/>
+                <ProjectDetail data={this.props.projectData.ProjectDataReducer.data[0]}
+                handleClick={this.handleClick}/>
             }
             </div>
         )

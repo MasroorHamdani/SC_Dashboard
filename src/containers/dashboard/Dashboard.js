@@ -5,10 +5,9 @@ import PropTypes from 'prop-types';
 import {isEqual} from "lodash";
 import styles from './DashboardStyle'
 import ProjectDataComponent from "../../components/projectData/ProjectData";
-import { API_URLS, X_API_KEY, REACT_URLS } from "../../constants/Constant";
+import { API_URLS, REACT_URLS } from "../../constants/Constant";
 import { getApiConfig } from '../../services/ApiCofig';
 import {dashboardData} from '../../actions/DashboardAction';
-// import CustomizedProgress from '../../components/progress/Progress';
 
 class Dashboard extends Component {
   constructor(props) {
@@ -61,30 +60,15 @@ class Dashboard extends Component {
           </div>
         </div>)
         }
-          
         </main>
       </div>
     );
   }
 }
-function getMappedData (state) {
-  if (state.DashboardReducer.data) {
-    const mappedData = [],
-    responseData = state.DashboardReducer.data;
-    if(responseData["Item"]) {
-      const projects = responseData["Item"]["Projects"]
-      for (var key in projects) {
-        projects[key]['key']=key;
-        mappedData.push(projects[key])
-      }
-    }
-    return mappedData;
-  }
-}
 
 function mapStateToProps(state) {
   return {
-      dashboardData : state,//getMappedData(state),
+      dashboardData : state,
   }
 }
 

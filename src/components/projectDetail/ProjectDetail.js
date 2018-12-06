@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 import TabContainer from '../tabContainer/TabContainer';
 import {PROJECT_TABS, API_URLS} from '../../constants/Constant';
 import {getApiConfig} from '../../services/ApiCofig';
-import {projectDetailData} from '../../actions/ProjectDataAction';
+import {projectDetailData, projectTeamData} from '../../actions/ProjectDataAction';
 import '../../sass/App.scss';
 
 class ProjectDetail extends Component {
@@ -18,28 +18,37 @@ class ProjectDetail extends Component {
   }
   handleChange = (event, value) => {
     this.setState({ value });
-    let url;
-    if (value === 1) {
-      url = 'installations';
-    }
-    const endPoint = `${API_URLS['PROJECT_DETAILS']}/${this.props.data.PID}/${url}`,
-            config = getApiConfig(endPoint, '', 'GET');
-        this.props.onProjectDetailData(config);
-
+    this.callApi(value);
   };
 
+  callApi = (value) => {
+    let url;
+    if (value === 0 && !this.props.projectData.ProjectTeamDataReducer.data) {
+      url = PROJECT_TABS['TEAM'];
+    } else if(value === 1 && !this.props.projectData.ProjectDetailsReducer.data) {
+      url= PROJECT_TABS['INSTALLATION'];
+    }
+    if(url) {
+      const endPoint = `${API_URLS['PROJECT_DETAILS']}/${this.props.data.PID}/${url}`,
+        config = getApiConfig(endPoint, '', 'GET');
+      this.props.onProjectDetailData(config, url);
+    }
+  }
+  componentDidMount() {
+    this.callApi(0);
+  }
   render() {
-      const { classes, data } = this.props;
+      const { classes, data, handleClick } = this.props;
       return (
           <div className={classes.root}>
           <main className={classes.content}>
             <Paper style={{ padding: 8 * 3 }}>
               <Typography component="div">
               <img
-                        className="project-image"
-                        title="Project Image"
-                        src={data.imurl}
-                        />
+                  className="project-image"
+                  title="Project Image"
+                  src={data.imurl}
+              />
               </Typography>
               <Grid container spacing={24}>
                 <Grid item xs={12} sm={12}>
@@ -81,15 +90,15 @@ class ProjectDetail extends Component {
                 >
                   <Tab label="Team" />
                   <Tab label="Installation" />
-                  <Tab label="Subscriber" />
-                  <Tab label="Setting" />
                 </Tabs>
               </AppBar>
               
-              {this.state.value === 0 && <TabContainer data={data}  category={PROJECT_TABS['TEAM']}>Team</TabContainer>}
-              {this.state.value === 1 && <TabContainer data={this.props.projectData}  category={PROJECT_TABS['INSTALLATION']}>Installation</TabContainer>}
-              {this.state.value === 2 && <TabContainer data={data}  category={PROJECT_TABS['SUBSCRIBER']}>Subscriber</TabContainer>}
-              {this.state.value === 3 && <TabContainer data={data}  category={PROJECT_TABS['SETTING']}>Setting</TabContainer>}
+              {this.state.value === 0 && <TabContainer data={this.props.projectData}
+                category={PROJECT_TABS['TEAM']}
+                handleClick={handleClick}>Team</TabContainer>}
+              {this.state.value === 1 && <TabContainer data={this.props.projectData}
+                category={PROJECT_TABS['INSTALLATION']}
+                handleClick={handleClick}>Installation</TabContainer>}
             </Paper>
           </main>
         </div>
@@ -108,9 +117,12 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
     return {
-        onProjectDetailData: (config) => {
+        onProjectDetailData: (config, url) => {
             //will dispatch the async action
-            dispatch(projectDetailData(config))
+            if(url === PROJECT_TABS['INSTALLATION'])
+              dispatch(projectDetailData(config))
+            else if(url === PROJECT_TABS['TEAM'])
+              dispatch(projectTeamData(config))
         }
     }
 }
