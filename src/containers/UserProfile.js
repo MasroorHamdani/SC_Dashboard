@@ -29,13 +29,13 @@ class UserProfile extends Component {
         });
     }
     handleSubmit = () => {
-        console.log("Update button clicked");
+        // console.log("Update button clicked");
     }
 
     componentDidUpdate(prevProps, prevState) {
         if (this.props.userProfile.UserProfileReducer.data &&
             !isEqual(this.props.userProfile.UserProfileReducer.data !== prevProps.userProfile.UserProfileReducer.data)) {
-                console.log(this.props.userProfile.UserProfileReducer.data[0], "*****");
+                // console.log(this.props.userProfile.UserProfileReducer.data[0], "*****");
             }
     }
 

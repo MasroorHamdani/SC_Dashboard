@@ -23,7 +23,7 @@ class ProjectDetails extends Component {
     componentDidUpdate(prevProps, prevState) {
         if (this.props.projectData.ProjectDataReducer.data &&
             !isEqual(this.props.projectData.ProjectDataReducer.data !== prevProps.projectData.ProjectDataReducer.data)) {
-                console.log(this.props.projectData.ProjectDataReducer.data, "*****");
+                // console.log(this.props.projectData.ProjectDataReducer.data, "*****");
             }
     }
 
