@@ -4,6 +4,7 @@ import DashboardIcon from '@material-ui/icons/Dashboard';
 import BarChartIcon from '@material-ui/icons/BarChart';
 import LayersIcon from '@material-ui/icons/Layers';
 import PeopleIcon from '@material-ui/icons/People';
+import AccountBox from '@material-ui/icons/AccountBox';
 import {ListItem, ListItemIcon, ListItemText} from '@material-ui/core';
 import {Link} from "react-router-dom";
 // import {DashboardIcon, BarChartIcon, LayersIcon, PeopleIcon} from '@material-ui/icons';
@@ -19,6 +20,8 @@ class ListItems extends Component {
                 return <LayersIcon/>;
             case 'PeopleIcon':
                 return <PeopleIcon/>
+            case 'AccountBox':
+                return <AccountBox/>;
             default:
             return 'foo';
         }

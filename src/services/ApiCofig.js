@@ -1,10 +1,9 @@
-export const getApiConfig = (url, apikey='', type, data='') => {
+export const getApiConfig = (url, type, data='') => {
     const config = {
         method: type,
         url: url,
         headers: {
-            'Content-Type': 'application/json',
-            'x-api-key': apikey,
+            'Content-Type': 'application/json'
         }
     }
     if (data) {

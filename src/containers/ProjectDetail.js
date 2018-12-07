@@ -17,7 +17,7 @@ class ProjectDetails extends Component {
 
     componentDidMount(){
         const endPoint = `${API_URLS['PROJECT_DETAILS']}/${this.state.pid}/general`,
-            config = getApiConfig(endPoint, '', 'GET');
+            config = getApiConfig(endPoint, 'GET');
         this.props.onProjectData(config);
     }
     componentDidUpdate(prevProps, prevState) {

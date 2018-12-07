@@ -8,6 +8,7 @@ import ForgotPasswordReducer from "./ForgotPasswordReducer";
 import ResetPasswordReducer from "./ResetPasswordReducer";
 import ProjectDetailsReducer from "./ProjectDataDetailsReducer";
 import ProjectTeamDataReducer from './ProjectTeamDataReducer';
+import UserProfileReducer from './UserProfileReducer';
 
 const reducers = {
     LoginReducer,
@@ -18,6 +19,7 @@ const reducers = {
     ResetPasswordReducer,
     ProjectDetailsReducer,
     ProjectTeamDataReducer,
+    UserProfileReducer,
 }
 
 // combines all the reducers which will be passed in Redux Store
