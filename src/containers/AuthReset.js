@@ -1,10 +1,10 @@
 import React, {Component} from 'react';
 import { connect } from "react-redux";
 import {isEqual} from "lodash";
-import ResetPasswordComponent from '../../components/login/ResetPassword';
-import {API_URLS, REACT_URLS} from '../../constants/Constant';
-import {getApiConfig} from '../../services/ApiCofig';
-import {setAuthKey} from '../../actions/LoginAction';
+import ResetPasswordComponent from '../components/login/ResetPassword';
+import {API_URLS, REACT_URLS} from '../constants/Constant';
+import {getApiConfig} from '../services/ApiCofig';
+import {setAuthKey} from '../actions/LoginAction';
 
 class AuthReset extends Component {
     constructor(props) {
@@ -15,7 +15,7 @@ class AuthReset extends Component {
             confpassword: 'Password',
             email: localStorage.getItem('username'),
             loading: false,
-            codeLabel: "Enter code sent tou your email ID",
+            codeLabel: "Enter Your API Key",
             errorMessage: ''
         };
         this.state = this.initialState;

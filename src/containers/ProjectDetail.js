@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from "react-redux";
 import {isEqual} from "lodash";
-import {API_URLS, REACT_URLS} from "../constants/Constant";
+import {API_URLS, REACT_URLS, PROJECT_TABS} from "../constants/Constant";
 import {getApiConfig} from "../services/ApiCofig";
 import {projectData} from '../actions/ProjectDataAction';
 import ProjectDetail from '../components/projectDetail/ProjectDetail';
@@ -16,7 +16,7 @@ class ProjectDetails extends Component {
     }
 
     componentDidMount(){
-        const endPoint = `${API_URLS['PROJECT_DETAILS']}/${this.state.pid}/general`,
+        const endPoint = `${API_URLS['PROJECT_DETAILS']}/${this.state.pid}/${PROJECT_TABS['GENERAL']}`,
             config = getApiConfig(endPoint, 'GET');
         this.props.onProjectData(config);
     }

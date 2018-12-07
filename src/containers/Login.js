@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from "react-redux";
 import {isEqual} from "lodash";
 
-import { API_URLS, X_API_KEY, REACT_URLS, NEW_PASSWORD_REQUIRED,
+import { API_URLS, REACT_URLS, NEW_PASSWORD_REQUIRED,
   LOGIN_STATUS } from "../constants/Constant";
 import LoginComponent from "../components/login/Login";
 import { userLogin } from "../actions/LoginAction";
@@ -21,8 +21,8 @@ class Login extends React.Component {
         success: false,
         email: 'Email',
         status: 'login',
-        vercode: '',
-        codeLabel: "Enter Verification code",
+        code: '',
+        codeLabel: "Enter Verification code Sent to your Email",
         errorMessage: ''
     };
     this.state = this.initialState;
@@ -39,9 +39,6 @@ class Login extends React.Component {
   };
   handleForgotSubmit = () => {
     const endPoint = `${API_URLS['FORGOT_PASSWORD']}/${this.state.email}`,
-          dataToPost = {
-          "uname": this.state.email
-        },
         config = getApiConfig(endPoint, 'GET');
     this.props.onForgotPassword(config);
   }
@@ -62,7 +59,6 @@ class Login extends React.Component {
       },
       config = getApiConfig(endPoint, 'POST', dataToPost);
       this.props.onResetPassword(config);
-      // this.setState({ status: "login" });
     }
   } else {
     this.setState({
