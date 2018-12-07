@@ -12,7 +12,7 @@ import ProjectTeamDetails from "./containers/projectTeamDetails/ProjectTeamDetai
 import About from "./containers/About";
 import NoMatch from "./containers/nomatch/NoMatch";
 import ButtonAppBar from "./components/commonHeader/CommonHeader";
-import AuthReset from "./containers/authReset/AuthReset";
+import AuthReset from "./containers/AuthReset";
 import {CssBaseline, withStyles, MuiThemeProvider} from '@material-ui/core';
 import PropTypes from 'prop-types';
 import "./sass/App.scss";

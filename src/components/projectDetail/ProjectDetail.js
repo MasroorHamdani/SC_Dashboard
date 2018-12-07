@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import { connect } from "react-redux";
 import styles from './ProjectDetailStyle';
-import {withStyles, AppBar, Tabs, Tab, Typography, Paper, Grid, TextField, CardMedia} from '@material-ui/core';
+import {withStyles, AppBar, Tabs, Tab, Typography, Paper, Grid, TextField} from '@material-ui/core';
 import PropTypes from 'prop-types';
 import TabContainer from '../tabContainer/TabContainer';
 import {PROJECT_TABS, API_URLS} from '../../constants/Constant';
@@ -26,7 +26,7 @@ class ProjectDetail extends Component {
     if (value === 0 && !this.props.projectData.ProjectTeamDataReducer.data) {
       url = PROJECT_TABS['TEAM'];
     } else if(value === 1 && !this.props.projectData.ProjectDetailsReducer.data) {
-      url= PROJECT_TABS['INSTALLATION'];
+      url= `${PROJECT_TABS['INSTALLATION']}/${PROJECT_TABS['DETAILS']}`;
     }
     if(url) {
       const endPoint = `${API_URLS['PROJECT_DETAILS']}/${this.props.data.PID}/${url}`,
@@ -46,7 +46,7 @@ class ProjectDetail extends Component {
               <Typography component="div">
               <img
                   className="project-image"
-                  title="Project Image"
+                  alt="Project"
                   src={data.imurl}
               />
               </Typography>
@@ -119,7 +119,7 @@ function mapDispatchToProps(dispatch) {
     return {
         onProjectDetailData: (config, url) => {
             //will dispatch the async action
-            if(url === PROJECT_TABS['INSTALLATION'])
+            if(url === `${PROJECT_TABS['INSTALLATION']}/${PROJECT_TABS['DETAILS']}`)
               dispatch(projectDetailData(config))
             else if(url === PROJECT_TABS['TEAM'])
               dispatch(projectTeamData(config))

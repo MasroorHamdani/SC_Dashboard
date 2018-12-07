@@ -57,13 +57,25 @@ class UserProfileData extends Component {
                             onChange={onChange}
                         />
                         </Grid>
-                        <Grid item xs={12}>
+                        <Grid item xs={12} sm={6}>
                         <TextField
                             required
                             id="Phoneno"
                             name="Phoneno"
                             label="Phone No"
+                            fullWidth
                             value={data.Phoneno}
+                            onChange={onChange}
+                        />
+                        </Grid>
+                        <Grid item xs={12} sm={6}>
+                        <TextField
+                            required
+                            id="Mute"
+                            name="Mute"
+                            label="Mute"
+                            fullWidth
+                            value={data.Mute}
                             onChange={onChange}
                         />
                         </Grid>

@@ -45,11 +45,11 @@ class TabContainer extends Component {
         const {category, data, handleClick} = this.props;
         let tabData, rows, tabContent;
         if (data.ProjectDetailsReducer && data.ProjectDetailsReducer.data && category === PROJECT_TABS['INSTALLATION']) {
-            tabContent = getMappedData(data.ProjectDetailsReducer.data);
+            tabContent = data.ProjectDetailsReducer.data;
             rows = [{ id: 'name', numeric: false, disablePadding: false, label: 'Name' },
                     { id: 'locn', numeric: false, disablePadding: false, label: 'Location' }]
             tabData = <Typography component="div">
-            <EnhancedTable data={tabContent.details} rows={rows}
+            <EnhancedTable data={tabContent} rows={rows}
                 order={this.state.order} orderBy={this.state.orderBy}
                 rowsPerPage={this.state.rowsPerPage} page={this.state.page}
                 selected={this.state.selected} category={category}
@@ -83,23 +83,6 @@ function mapTeamData(data) {
         return(d)
     });
     return data;
-}
-function getMappedData (data) {
-    let mappedData = {}, alerts = [], details = [], devices = [];
-    data.map(function(d) {
-        if (d['namespace'] === 'alerting') {
-            alerts.push(d);
-        } else if(d['namespace'] === 'details') {
-            details.push(d);
-        } else if(d['namespace'] === 'devices') {
-            devices.push(d);
-        }
-        mappedData = {};
-        mappedData['alerts'] = alerts;
-        mappedData['devices'] = devices;
-        mappedData['details'] = details;
-       });
-       return mappedData;
 }
 
 export default TabContainer;

@@ -23,14 +23,16 @@ export const LOGIN_STATUS = {
 export const PROJECT_TABS = {
     'INSTALLATION': 'installations',
     'TEAM': 'team',
-    'SUBSCRIBER': 'subscriber',
-    'SETTING': 'setting'
+    'DETAILS': 'details',
+    'GENERAL': 'general',
+    'DEVICES': 'devices'
 }
 
 export const SORTING = {
     'ASCENDING': 'asc',
     'DECENDING': 'desc'
 }
+//Remove it once it is discarded
 export const X_API_KEY = "QcbUJLoJSY2Mj1IdHNgAV6BoArOS6KHa7TlL4Qgx";
 
 export const REACT_URLS = {

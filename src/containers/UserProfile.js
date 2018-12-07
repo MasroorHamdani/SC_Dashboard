@@ -15,8 +15,9 @@ class UserProfile extends Component {
             ID: "ID",
             RFID: "RFID",
             Phoneno: "Phoneno",
-            ShiftStart: 'ShiftStart',
-            ShiftEnd: 'ShiftEnd'
+            ShiftStart: 'Shift Start',
+            ShiftEnd: 'Shift End',
+            Mute: 'Mute'
         };
         this.state = this.initialState;
     }
@@ -47,11 +48,12 @@ class UserProfile extends Component {
     render(){
         return (
             <div>
-                { this.props.userProfile.UserProfileReducer.data &&
-                    <UserProfileData data = {this.props.userProfile.UserProfileReducer.data[0]}
-                    onChange={this.handleChange}
-                    onClick={this.handleSubmit}/>
-                }
+                <UserProfileData 
+                data={this.props.userProfile.UserProfileReducer.data ?
+                    this.props.userProfile.UserProfileReducer.data[0] : 
+                    this.state}
+                onChange={this.handleChange}
+                onClick={this.handleSubmit}/>
             </div>
         )
     }
