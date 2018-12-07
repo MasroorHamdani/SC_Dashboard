@@ -8,7 +8,8 @@ export const API_URLS = {
     "PROJECT_DETAILS": "/auth/projects",//"/get-project",
     "FORGOT_PASSWORD": "/unauth/password/change",//"/forgot-password",
     "RESET_PASSWORD": "/unauth/password/confirm", //"/confirm-forgot-password",
-    "AUTH_RESET_PASSWORD": "/unauth/password/authchallenge"
+    "AUTH_RESET_PASSWORD": "/unauth/password/authchallenge",
+    "USER_PROFILE": "/auth/profile"
 };
 
 export const NEW_PASSWORD_REQUIRED = "NEW_PASSWORD_REQUIRED";
@@ -39,7 +40,8 @@ export const REACT_URLS = {
     'LOGOUT': '/logout',
     'CONTACT': '/contact',
     'ABOUT': '/about',
-    'AUTH_RESET': "/auth-reset"
+    'AUTH_RESET': "/auth-reset",
+    'USER-PROFILE': "/profile"
 }
 
 

@@ -15,6 +15,11 @@ export const menuList= [
       icon: "BarChartIcon"
     },
     {
+      name: "Profile",
+      url: "/profile",
+      icon: "AccountBox"
+    },
+    {
       name: "Logout",
       url: "/logout",
       icon: "PeopleIcon"

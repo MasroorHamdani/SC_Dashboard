@@ -8,6 +8,7 @@ import Menu from "./components/menu/Menu";
 import Logout from "./containers/Logout";
 import ProjectDetails from "./containers/ProjectDetail";
 import ProjectInstallationDetails from "./containers/projectInstallationDetails/ProjectInstallationDetails";
+import ProjectTeamDetails from "./containers/projectTeamDetails/ProjectTeamDetails";
 import About from "./containers/About";
 import NoMatch from "./containers/nomatch/NoMatch";
 import ButtonAppBar from "./components/commonHeader/CommonHeader";
@@ -16,6 +17,7 @@ import {CssBaseline, withStyles, MuiThemeProvider} from '@material-ui/core';
 import PropTypes from 'prop-types';
 import "./sass/App.scss";
 import theme from './SiteTheme';
+import UserProfile from "./containers/UserProfile";
 
 const styles = theme => ({
 
@@ -49,7 +51,9 @@ const styles = theme => ({
                     <Switch>
                       <Route exact path="/" component={Dashboard} />
                       <Route path="/project/:pid/installations/:insid?" component={ProjectInstallationDetails} />
+                      <Route path="/project/:pid/team/:insid?" component={ProjectTeamDetails} />
                       <Route path="/project/:pid?" component={ProjectDetails} />
+                      <Route path="/profile/:userid?" component={UserProfile} />
                       <Route path="/logout" component={Logout} />
                       <Route component={NoMatch} />
                     </Switch>

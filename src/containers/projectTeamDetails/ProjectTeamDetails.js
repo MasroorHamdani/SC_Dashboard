@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {withStyles} from '@material-ui/core';
-import styles from './ProjectInstallationDetailsStyle';
+import styles from './ProjectTeamDetailsStyle';
 
 class ProjectInstallationDetails extends Component {
     render(){
@@ -8,7 +8,7 @@ class ProjectInstallationDetails extends Component {
         return (
             <div className={classes.root}>
                 <main className={classes.content}>
-                <div>Installation Details</div>
+                <div>Team Details</div>
                 </main>
             </div>
         )

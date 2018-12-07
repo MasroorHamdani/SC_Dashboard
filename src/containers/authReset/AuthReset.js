@@ -39,7 +39,7 @@ class AuthReset extends Component {
                     "apikey": this.state.code,
                     "session": localStorage.getItem('session')
                   },
-                  config = getApiConfig(endPoint, '', 'POST', dataToPost);
+                  config = getApiConfig(endPoint, 'POST', dataToPost);
               this.props.onAuthReset(config);
                 }
         } else {

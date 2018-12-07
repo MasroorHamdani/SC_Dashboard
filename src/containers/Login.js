@@ -22,7 +22,7 @@ class Login extends React.Component {
         email: 'Email',
         status: 'login',
         vercode: '',
-        vercodeLabel: "Enter Verification code",
+        codeLabel: "Enter Verification code",
         errorMessage: ''
     };
     this.state = this.initialState;
@@ -42,7 +42,7 @@ class Login extends React.Component {
           dataToPost = {
           "uname": this.state.email
         },
-        config = getApiConfig(endPoint, '', 'GET');
+        config = getApiConfig(endPoint, 'GET');
     this.props.onForgotPassword(config);
   }
   handleResetSubmit = () => {
@@ -57,10 +57,10 @@ class Login extends React.Component {
       const endPoint = API_URLS['RESET_PASSWORD'],
       dataToPost = {
         "uname": this.state.email,
-        "code": this.state.vercode,
+        "code": this.state.code,
         "passwd": this.state.password
       },
-      config = getApiConfig(endPoint, '', 'POST', dataToPost);
+      config = getApiConfig(endPoint, 'POST', dataToPost);
       this.props.onResetPassword(config);
       // this.setState({ status: "login" });
     }
@@ -82,7 +82,7 @@ handleSubmit = () => {
         "uname": this.state.username,
         "passwd": this.state.password
       },
-      config = getApiConfig(endPoint, '', 'POST', dataToPost);
+      config = getApiConfig(endPoint, 'POST', dataToPost);
   this.props.onLogin(config);
     }
 }

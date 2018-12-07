@@ -30,7 +30,7 @@ class ProjectDetail extends Component {
     }
     if(url) {
       const endPoint = `${API_URLS['PROJECT_DETAILS']}/${this.props.data.PID}/${url}`,
-        config = getApiConfig(endPoint, '', 'GET');
+        config = getApiConfig(endPoint, 'GET');
       this.props.onProjectDetailData(config, url);
     }
   }

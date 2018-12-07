@@ -25,7 +25,7 @@ class Dashboard extends Component {
 
   componentDidMount(){
     const endPoint = API_URLS['DASHBOARD'],
-          config = getApiConfig(endPoint, '', 'GET');
+          config = getApiConfig(endPoint, 'GET');
     this.props.onDashbaord(config);
   }
 
