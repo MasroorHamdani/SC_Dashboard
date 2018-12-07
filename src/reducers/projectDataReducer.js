@@ -1,5 +1,5 @@
 import { PROJECT_DETAIL } from '../constants/ActionTypes';
-/* Reducer for Dashboard functionality */
+/* Reducer for Project data page */
 const projectDetail = (state = [], action) => {
     switch(action.type) {
         case PROJECT_DETAIL:

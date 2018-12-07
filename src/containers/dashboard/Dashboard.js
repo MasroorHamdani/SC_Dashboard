@@ -32,7 +32,7 @@ class Dashboard extends Component {
   componentDidUpdate(prevProps, prevState) {
     if (this.props.dashboardData &&
       !isEqual(this.props.dashboardData, prevProps.dashboardData)) {
-        console.log(this.props.dashboardData);
+        // console.log(this.props.dashboardData);
       }
       if (this.state.loading) {
         this.setState({

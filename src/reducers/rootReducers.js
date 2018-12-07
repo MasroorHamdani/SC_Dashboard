@@ -9,6 +9,7 @@ import ResetPasswordReducer from "./ResetPasswordReducer";
 import ProjectDetailsReducer from "./ProjectDataDetailsReducer";
 import ProjectTeamDataReducer from './ProjectTeamDataReducer';
 import UserProfileReducer from './UserProfileReducer';
+import InstallationDeviceReducer from './InstallationDeviceReducer';
 
 const reducers = {
     LoginReducer,
@@ -20,6 +21,7 @@ const reducers = {
     ProjectDetailsReducer,
     ProjectTeamDataReducer,
     UserProfileReducer,
+    InstallationDeviceReducer,
 }
 
 // combines all the reducers which will be passed in Redux Store
