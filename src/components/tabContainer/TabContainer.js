@@ -42,7 +42,7 @@ class TabContainer extends Component {
     //   };
 
     render() {
-        const {category, data, handleClick, classes} = this.props;
+        const {category, data, handleClick} = this.props;
         let tabData, rows, tabContent;
         if (data.ProjectDetailsReducer && data.ProjectDetailsReducer.data && category === PROJECT_TABS['INSTALLATION']) {
             tabContent = data.ProjectDetailsReducer.data;
