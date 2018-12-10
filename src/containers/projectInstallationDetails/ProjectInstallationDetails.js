@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {withStyles, Typography} from '@material-ui/core';
+import {Typography, InputLabel, Select, MenuItem, withStyles } from '@material-ui/core';
 import styles from './ProjectInstallationDetailsStyle';
 import {connect} from 'react-redux';
 import {isEqual} from 'lodash';
@@ -13,12 +13,14 @@ class ProjectInstallationDetails extends Component {
         super(props);
         this.state = {
             pid: props.match.params.pid,
+            url: props.match.url,
             insid: props.match.params.insid,
             order: SORTING['DECENDING'],
             orderBy: 'name',
             selected: [],
             page: 0,
-            rowsPerPage: 5
+            rowsPerPage: 5,
+            insidList:[]
         }
     }
     componentDidMount() {
@@ -26,6 +28,9 @@ class ProjectInstallationDetails extends Component {
             ${PROJECT_TABS['INSTALLATION']}/${PROJECT_TABS['DEVICES']}/${this.state.insid}`,
             config = getApiConfig(endPoint, 'GET');
         this.props.onProjectInstallationData(config);
+        this.setState( {
+            insidList: localStorage.getItem('installationLocations').split(',')
+        })
     }
 
     componentDidUpdate(prevProps, prevState) {
@@ -44,6 +49,13 @@ class ProjectInstallationDetails extends Component {
             [name] : value
         });
     }
+    handleSelectionChange = event => {
+        let urlParam = this.state.url.split('/');
+        urlParam[urlParam.length - 1] = event.target.value;
+        let url = urlParam.join('/')
+        window.location = url;
+      };
+
     render(){
         const {classes} = this.props;
         let installationData, tabData, rows;
@@ -53,6 +65,19 @@ class ProjectInstallationDetails extends Component {
                 rows = [{ id: 'id', numeric: false, disablePadding: false, label: 'Name' },
                         { id: 'type', numeric: false, disablePadding: false, label: 'Location' }]
                 tabData = <Typography component="div">
+                    <InputLabel htmlFor="insid">Change Location</InputLabel>
+                    <Select className={classes.select}
+                        value={this.state.insid}
+                        onChange={this.handleSelectionChange}
+                        inputProps={{
+                            name: 'insid',
+                            id: 'insid',
+                        }}
+                    >
+                    {this.state.insidList.map(function(insidValue) {
+                        return <MenuItem value={insidValue} key={insidValue}>{insidValue}</MenuItem>
+                    })}
+                    </Select>
                 <EnhancedTable data={installationData.details} rows={rows}
                     order={this.state.order} orderBy={this.state.orderBy}
                     rowsPerPage={this.state.rowsPerPage} page={this.state.page}
