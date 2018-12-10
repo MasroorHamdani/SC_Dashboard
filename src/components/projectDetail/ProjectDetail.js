@@ -48,7 +48,6 @@ class ProjectDetail extends Component {
         responseData.map(function (data) {
           insIDList.push(data['insid'])
         });
-        console.log(insIDList, "Before local storage");
         localStorage.setItem('installationLocations', insIDList);
       }
   }
