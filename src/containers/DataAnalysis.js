@@ -21,7 +21,6 @@ class DataAnalysis extends Component {
               id: "Reports"
             }
           ];
-          console.log(menuList, "***")
         return(
             <DataAnalysisComponent menuList={menuList}/>
         )

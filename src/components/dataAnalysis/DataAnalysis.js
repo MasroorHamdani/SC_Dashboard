@@ -7,7 +7,6 @@ import styles from './DataAnalysisStyle';
 class DataAnalysisComponent extends Component {
     render() {
         const {classes, menuList} = this.props;
-        console.log(menuList);
         return(
             <div className={classes.root}>
                 <main className={classes.content}>

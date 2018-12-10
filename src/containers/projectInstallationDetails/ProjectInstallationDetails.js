@@ -20,7 +20,7 @@ class ProjectInstallationDetails extends Component {
             selected: [],
             page: 0,
             rowsPerPage: 5,
-            insidList:['CERTIS_CCK_LOCN1', 'CERTIS_CCK_LOCN2']
+            insidList:[]
         }
     }
     componentDidMount() {
@@ -28,6 +28,9 @@ class ProjectInstallationDetails extends Component {
             ${PROJECT_TABS['INSTALLATION']}/${PROJECT_TABS['DEVICES']}/${this.state.insid}`,
             config = getApiConfig(endPoint, 'GET');
         this.props.onProjectInstallationData(config);
+        this.setState( {
+            insidList: localStorage.getItem('installationLocations').split(',')
+        })
     }
 
     componentDidUpdate(prevProps, prevState) {
