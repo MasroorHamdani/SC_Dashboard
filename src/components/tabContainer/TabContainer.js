@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import Typography from '@material-ui/core/Typography';
+import {Typography } from '@material-ui/core';
 import {PROJECT_TABS, SORTING} from '../../constants/Constant';
 import EnhancedTable from '../grid/Grid';
 
@@ -42,7 +42,7 @@ class TabContainer extends Component {
     //   };
 
     render() {
-        const {category, data, handleClick} = this.props;
+        const {category, data, handleClick, classes} = this.props;
         let tabData, rows, tabContent;
         if (data.ProjectDetailsReducer && data.ProjectDetailsReducer.data && category === PROJECT_TABS['INSTALLATION']) {
             tabContent = data.ProjectDetailsReducer.data;

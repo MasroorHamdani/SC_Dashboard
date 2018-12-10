@@ -5,8 +5,8 @@ export const menuList= [
       icon: "DashboardIcon"
     },
     {
-      name: "Project Management",
-      url: "/project",
+      name: "Data Analysis",
+      url: "/data",
       icon: "LayersIcon"
     },
     {

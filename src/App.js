@@ -18,6 +18,7 @@ import PropTypes from 'prop-types';
 import "./sass/App.scss";
 import theme from './SiteTheme';
 import UserProfile from "./containers/UserProfile";
+import DataAnalysis from "./containers/DataAnalysis";
 
 const styles = theme => ({
 
@@ -54,6 +55,7 @@ const styles = theme => ({
                       <Route path="/project/:pid/team/:insid?" component={ProjectTeamDetails} />
                       <Route path="/project/:pid?" component={ProjectDetails} />
                       <Route path="/profile/:userid?" component={UserProfile} />
+                      <Route path="/data" component={DataAnalysis} />
                       <Route path="/logout" component={Logout} />
                       <Route component={NoMatch} />
                     </Switch>

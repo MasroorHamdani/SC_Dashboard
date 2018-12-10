@@ -1,6 +1,7 @@
 const styles = theme => ({
     root: {
-        display: 'flex',
+        backgroundColor: theme.palette.background.paper,
+        width: "100%",
     },
     main: {
         width: 'auto',
@@ -21,10 +22,6 @@ const styles = theme => ({
         height: '100vh',
         overflow: 'auto',
     },
-    select: {
-        padding: theme.spacing.unit * 1,
-        margin: theme.spacing.unit * 1,
-    },
-});
+})
 
 export default styles;

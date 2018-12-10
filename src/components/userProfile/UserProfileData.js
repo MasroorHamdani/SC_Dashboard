@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {withStyles, Grid, TextField, Button} from '@material-ui/core';
+import {withStyles, Grid, TextField, Button, Switch, FormControlLabel} from '@material-ui/core';
 import styles from './UserProfileDataStyle';
 
 
@@ -69,15 +69,15 @@ class UserProfileData extends Component {
                         />
                         </Grid>
                         <Grid item xs={12} sm={6}>
-                        <TextField
-                            required
-                            id="Mute"
-                            name="Mute"
+                            <FormControlLabel
                             label="Mute"
-                            fullWidth
-                            value={data.Mute}
-                            onChange={onChange}
-                        />
+                            control={
+                                <Switch
+                                checked={data.Mute}
+                                onChange={onChange}
+                                value={data.Mute}
+                                />}
+                            />
                         </Grid>
                         <Grid item xs={12} sm={6}>
                         <TextField

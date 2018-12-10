@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import styles from './ProjectDetailStyle';
 import {withStyles, AppBar, Tabs, Tab, Typography, Paper, Grid, TextField} from '@material-ui/core';
 import PropTypes from 'prop-types';
+import {isEqual} from 'lodash';
 import TabContainer from '../tabContainer/TabContainer';
 import {PROJECT_TABS, API_URLS} from '../../constants/Constant';
 import {getApiConfig} from '../../services/ApiCofig';
@@ -16,6 +17,7 @@ class ProjectDetail extends Component {
       value: 0,
     };
   }
+  
   handleChange = (event, value) => {
     this.setState({ value });
     this.callApi(value);
@@ -37,6 +39,19 @@ class ProjectDetail extends Component {
   componentDidMount() {
     this.callApi(0);
   }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (this.props.projectData &&
+      !isEqual(this.props.projectData.ProjectDetailsReducer, prevProps.projectData.ProjectDetailsReducer)) {
+        const responseData = this.props.projectData.ProjectDetailsReducer.data;
+        let insIDList = [];
+        responseData.map(function (data) {
+          insIDList.push(data['insid'])
+        });
+        localStorage.setItem('installationLocations', insIDList);
+      }
+  }
+
   render() {
       const { classes, data, handleClick } = this.props;
       return (
@@ -44,11 +59,11 @@ class ProjectDetail extends Component {
           <main className={classes.content}>
             <Paper style={{ padding: 8 * 3 }}>
               <Typography component="div">
-              <img
+              {/* <img
                   className="project-image"
                   alt="Project"
                   src={data.imurl}
-              />
+              /> */}
               </Typography>
               <Grid container spacing={24}>
                 <Grid item xs={12} sm={12}>
