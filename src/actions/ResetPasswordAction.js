@@ -8,6 +8,11 @@ function passwordResetSuccessful(data) {
   }
 }
 
+/**
+ * Dispatched function to call the API service to
+ * Reset user password
+ * @param {*} config 
+ */
 export function resetPassword(config) {
   return function (dispatch) {
       ApiService(config).then(data => {

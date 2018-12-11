@@ -8,6 +8,12 @@ function forgotSuccessful(data) {
   }
 }
 
+/**
+ * Dispatched function to call the API service to
+ * send user request for forgot password.
+ * This will internall send a mail from Server side to requested user
+ * @param {*} config 
+ */
 export function forgotPassword(config) {
   return function (dispatch) {
       ApiService(config).then(data => {

@@ -18,7 +18,7 @@ import PropTypes from 'prop-types';
 import "./sass/App.scss";
 import theme from './SiteTheme';
 import UserProfile from "./containers/UserProfile";
-import DataAnalysis from "./containers/DataAnalysis";
+import DataAnalysis from "./containers/dataAnalysis/DataAnalysis";
 
 const styles = theme => ({
 

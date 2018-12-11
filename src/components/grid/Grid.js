@@ -30,6 +30,22 @@ function getSorting(order, orderBy) {
   return order === 'desc' ? (a, b) => desc(a, b, orderBy) : (a, b) => -desc(a, b, orderBy);
 }
 
+/**
+ * Main Grid component, which internally calls other component
+ * 'EnhancedTableHead' - This is a dynamic component,
+ * with all the function defined liks sorting mechanism,
+ * pagination, changing page number and size.
+ * Input passed
+ * data - Data to be displayed in Grid
+ * rows - The Row structure for columns header, which is passed to child component
+ * order - Asc/Desc
+ * orderBy - Column key which will be used by defauult for sorting
+ * rowsPerPage - By default no of rows Per Page
+ * page - Numnber of pages
+ * handleClick - Function to handle clicking on any Grid row
+ * category - Sent as return data to above function
+ */
+
 class EnhancedTable extends React.Component {
   state = {
     selected: [],
@@ -45,8 +61,6 @@ class EnhancedTable extends React.Component {
     this.props.handleChange("orderBy", orderBy);
     this.props.handleChange("order", order);
   };
-
-  
 
   handleChangePage = (event, page) => {
     this.props.handleChange("page", page);

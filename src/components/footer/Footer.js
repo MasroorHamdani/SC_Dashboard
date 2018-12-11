@@ -5,6 +5,11 @@ import classNames from 'classnames';
 import { NamespacesConsumer } from 'react-i18next';
 import styles from './footerStyle';
 
+/***
+ * Footer Component - 
+ * It is an independent component.
+ * It will be part of webapp through out the site.
+ */
 class Footer extends Component {
   render() {
     const {classes} = this.props;

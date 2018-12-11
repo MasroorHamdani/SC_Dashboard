@@ -9,6 +9,10 @@ import styles from "./CommonHeaderStyle";
 import { Link} from "react-router-dom";
 import { NamespacesConsumer } from 'react-i18next';
 
+/**
+ * This component is for the generic header which will be used
+ * through out the website when user is not authenticated
+ */
 class CommonHeader extends Component {
     render() {
         const { classes } = this.props;

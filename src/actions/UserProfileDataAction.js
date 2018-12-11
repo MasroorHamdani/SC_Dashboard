@@ -7,6 +7,13 @@ function UserDataReceived (data){
         data
     }
 }
+
+/**
+ * Dispatched function to call the API service to get
+ * the Logged in User details - Which includes: 
+ * firstname, lastname, phone number etc
+ * @param {*} config 
+ */
 export function profileData(config) {
     return function(dispatch) {
         ApiService(config).then(data => {

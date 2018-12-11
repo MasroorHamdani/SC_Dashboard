@@ -9,7 +9,8 @@ export const API_URLS = {
     "FORGOT_PASSWORD": "/unauth/password/change",//"/forgot-password",
     "RESET_PASSWORD": "/unauth/password/confirm", //"/confirm-forgot-password",
     "AUTH_RESET_PASSWORD": "/unauth/password/authchallenge",
-    "USER_PROFILE": "/auth/profile"
+    "USER_PROFILE": "/auth/profile",
+    "DEVICE_DATA": "/auth/devices"
 };
 
 export const NEW_PASSWORD_REQUIRED = "NEW_PASSWORD_REQUIRED";
@@ -25,7 +26,8 @@ export const PROJECT_TABS = {
     'TEAM': 'team',
     'DETAILS': 'details',
     'GENERAL': 'general',
-    'DEVICES': 'devices'
+    'DEVICES': 'devices',
+    'DATA': 'data'
 }
 
 export const SORTING = {
