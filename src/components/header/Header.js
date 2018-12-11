@@ -8,6 +8,10 @@ import NotificationsIcon from '@material-ui/icons/Notifications';
 import styles from "./HeaderStyle";
 import {toolbarClicked}  from '../../actions/MenuAction';
 
+/**
+ * Common Header componnet which will be
+ * visible to used after they are authenticated
+ */
 class Header extends Component {
     constructor(props) {
       super(props);

@@ -8,12 +8,15 @@ function loginSuccessful(data) {
   }
 }
 
+/**
+ * Dispatched function to call the API service to get
+ * User log in details
+ * @param {*} config 
+ */
 export function userLogin(config) {
   return function (dispatch) {
       ApiService(config).then(data => {
           //on success we will dispatch a sync action with the data
-          // data.data['user']= 'Masroor';
-        //   data.data["ChallengeName"]= "NEW_PASSWORD_REQUIRED"
           dispatch(loginSuccessful(data.data))
       })
       .catch(error => {
@@ -28,6 +31,11 @@ function authSetSuccessful(data) {
     data
   }
 }
+/**
+ * Dispatched function to call the API service to POST
+ * the new Password and API Key to server for the logged in user.
+ * @param {*} config 
+ */
 export function setAuthKey(config) {
   return function(dispatch) {
     ApiService(config).then(data => {

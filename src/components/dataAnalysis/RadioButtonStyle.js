@@ -6,12 +6,19 @@ const styles = theme => ({
         // borderWidth: "thin",
     },
     group: {
-        margin: theme.spacing.unit * 1,
-        padding: theme.spacing.unit * 1,
+        // margin: theme.spacing.unit * 1,
+        // padding: theme.spacing.unit * 1,
     },
-    legend: {
-        margin: theme.spacing.unit * 2,
-    }
+    root: {
+        width: "23%",
+        wordBreak: 'break-word',
+        backgroundColor: theme.palette.background.paper,
+        overflow: 'auto',
+        position: 'relative',
+        maxHeight: 'auto',
+        marginLeft: -theme.spacing.unit * 5,
+
+    },
 })
 
 export default styles;

@@ -8,6 +8,11 @@ function dataReceived(data) {
   }
 }
 
+/**
+ * Dispatched function to call the API service to get
+ * the Project General data - This include, name, location, image etc
+ * @param {*} config 
+ */
 export function projectData(config) {
   return function (dispatch) {
       ApiService(config).then(data => {
@@ -24,7 +29,13 @@ function detailedDataReceived(data) {
     }
 }
 
-
+/**
+ * Dispatched function to call the API service to get
+ * the Project Installation details - 
+ * This included the locations and 
+ * other details regarding intallation under a selected project
+ * @param {*} config 
+ */
 export function projectDetailData(config) {
     return function (dispatch) {
         ApiService(config).then(data => {
@@ -34,7 +45,6 @@ export function projectDetailData(config) {
     }
 }
 
-
 function teamDataReceived(data) {
     return {
         type: PROJECT_TEAM_DATA,
@@ -42,7 +52,12 @@ function teamDataReceived(data) {
     }
 }
 
-
+/**
+ * Dispatched function to call the API service to get
+ * the Project Team data - 
+ * This includes all the the team member details under selected project.
+ * @param {*} config 
+ */
 export function projectTeamData(config) {
     return function (dispatch) {
         ApiService(config).then(data => {

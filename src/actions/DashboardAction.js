@@ -8,6 +8,11 @@ function dataReceived(data) {
   }
 }
 
+/**
+ * Dispatched function to call the API service to get
+ * the Dashboard data - List of Projects for logged in User
+ * @param {*} config 
+ */
 export function dashboardData(config) {
   return function (dispatch) {
       ApiService(config).then(data => {
