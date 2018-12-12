@@ -18,6 +18,7 @@ class DataAnalysis extends Component {
   })
   handleChange = event => {
     this.setState({ value: event.target.value });
+    console.log(event.target.value);
     const endPoint = `${API_URLS['DEVICE_DATA']}/FARNEK_AQ_TR_T1/${PROJECT_TABS['DATA']}?start=2018120306&end=2018120306`,
       config = getApiConfig(endPoint, 'GET');
     this.props.onDataAnalysis(config, 'subMenu');
@@ -39,12 +40,26 @@ class DataAnalysis extends Component {
     // }
   }
   componentDidMount() {
+    // fetch('../../constants/Constant/metrics.json')
+    // .then((metricsResponse) => {
+    //   metricsResponse.json()
+    // })
+    // .then((findresponse)=>{
+    //   console.log(findresponse.title)
+    //   this.setState({
+    //     data:findresponse.title,
+    //   })
+    // })
     this.callApi(-1);
   }
   componentDidUpdate(prevProps, prevState) {
     if (this.props.projectList &&
       !isEqual(this.props.projectList, prevProps.projectList)) {
-        const responseData = this.props.projectList.DataAnalysisProjectListReducer.data.Projects;
+        let responseData = []
+        if (this.props.projectList.DataAnalysisProjectListReducer &&
+          this.props.projectList.DataAnalysisProjectListReducer.data) {
+            responseData = this.props.projectList.DataAnalysisProjectListReducer.data.Projects;
+        }
         const project = [];
         let props = this.props,
           projObj = {};
@@ -68,21 +83,21 @@ class DataAnalysis extends Component {
           }
           project.push(projObj);
         });
-        if(project[0]['devices']) {
+        if(project[0] && project[0]['devices']) {
           this.setState({
             projectList: project
           })
         }
-      }
-      if (this.props.projectList &&
-        !isEqual(this.props.projectList.DataAnalysisReducer, prevProps.projectList.DataAnalysisReducer)) {
-          const dataAnalysis = this.props.projectList.DataAnalysisReducer.data;
-          if(dataAnalysis) {
-            this.setState({
-              analysisData: dataAnalysis
-            })
-          }
+    }
+    if (this.props.projectList &&
+      !isEqual(this.props.projectList.DataAnalysisReducer, prevProps.projectList.DataAnalysisReducer)) {
+        const dataAnalysis = this.props.projectList.DataAnalysisReducer.data;
+        if(dataAnalysis) {
+          this.setState({
+            analysisData: dataAnalysis
+          })
         }
+    }
   }
   
   render () {
@@ -92,9 +107,14 @@ class DataAnalysis extends Component {
           { this.state.projectList &&
             <RadioButtonComponent data={this.state} projectList={this.state.projectList} handleChange={this.handleChange}/>
           }
-          <div className={classes.seperator}></div>
+          { this.state.projectList &&
+            <div className={classes.seperator}></div>
+          }
           { this.state.analysisData &&
-            <DataAnalysisComponent data={this.state.analysisData}/>
+            <DataAnalysisComponent data={this.state.analysisData} category={this.state.value}/>
+          }
+          { (!this.state.analysisData && !this.state.projectList) &&
+            <div>No Projects Assigned</div>
           }
           </div>
           

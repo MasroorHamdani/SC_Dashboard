@@ -12,13 +12,13 @@ import AnalysisData from './AnalysisData';
  */
 class DataAnalysisComponent extends Component {
     state = {
-        value: 0,
+        value: 4,
     };
     handleChange = (event, value) => {
         this.setState({ value });
     };
     render() {
-        const {classes, data} = this.props;
+        const {classes, data, category} = this.props;
         return(
                 <div className={classes.main}>
                 <AppBar position="static" color="default">
@@ -41,17 +41,17 @@ class DataAnalysisComponent extends Component {
                 </AppBar>
                 
                 {this.state.value === 0 && <AnalysisData
-                    category="Alerts"/>}
+                    category="Alerts" data={data}/>}
                 {this.state.value === 1 && <AnalysisData 
-                    category="NFC Logs"/>}
+                    category="NFC Logs" data={data}/>}
                 {this.state.value === 2 && <AnalysisData
-                    category="Feedback Tablet"/>}
+                    category="Feedback Tablet" data={data}/>}
                 {this.state.value === 3 && <AnalysisData 
-                    category="People counting sensor"/>}
-                {this.state.value === 4 && <AnalysisData
-                    category="Air quality sensor"/>}
+                    category="People counting sensor" data={data}/>}
+                {(this.state.value === 4  || category.includes('AQ'))&& <AnalysisData
+                    category="Air quality sensor" data={data}/>}
                 {this.state.value === 5 && <AnalysisData 
-                    category="Wetness Detection sensor"/>}
+                    category="Wetness Detection sensor" data={data}/>}
                 </div>
         )
     }
