@@ -4,25 +4,66 @@ import {isEqual} from 'lodash';
 import {withStyles} from '@material-ui/core';
 import DataAnalysisComponent from '../../components/dataAnalysis/DataAnalysis';
 import {getApiConfig} from '../../services/ApiCofig';
-import {API_URLS, PROJECT_TABS} from '../../constants/Constant';
+import {API_URLS, PROJECT_TABS, DATE_TIME_FORMAT} from '../../constants/Constant';
 import {projectMenuList, projectSubMenuList, projectAnalysisData} from '../../actions/DataAnalysis';
 import styles from './DataAvalysisStyle';
 import RadioButtonComponent from '../../components/dataAnalysis/RadioButtonController';
+import moment from 'moment';
 
 class DataAnalysis extends Component {
   state = ({
     value: '',
     header: "Devices",
     projectList: '',
-    analysisData: ''
+    analysisData: '',
+    start: 0,
+    end: 0
   })
   handleChange = event => {
     this.setState({ value: event.target.value });
-    console.log(event.target.value);
     const endPoint = `${API_URLS['DEVICE_DATA']}/FARNEK_AQ_TR_T1/${PROJECT_TABS['DATA']}?start=2018120306&end=2018120306`,
       config = getApiConfig(endPoint, 'GET');
     this.props.onDataAnalysis(config, 'subMenu');
   };
+
+  getNewAnalyticsData = () => {
+    console.log(this.state.value);
+    const endPoint = `${API_URLS['DEVICE_DATA']}/FARNEK_AQ_TR_T1/${PROJECT_TABS['DATA']}?
+    start=${this.state.start}&end=${this.state.end}`,
+      config = getApiConfig(endPoint, 'GET');
+    this.props.onDataAnalysis(config, 'subMenu');
+  }
+
+  handleDateChange = (event, param) => {
+    let now = moment(),
+      start, end;
+    if (param === '1h') {
+      end = now.format(DATE_TIME_FORMAT);
+      start = (now.subtract({ hours: 1})).format(DATE_TIME_FORMAT);
+    } else if(param === '3h') {
+      end = now.format(DATE_TIME_FORMAT);
+      start = (now.subtract({ hours: 3})).format(DATE_TIME_FORMAT);
+    } else if(param === '12h') {
+      end = now.format(DATE_TIME_FORMAT);
+      start = (now.subtract({ hours: 12})).format(DATE_TIME_FORMAT);
+    } else if(param === '1d') {
+      end = now.format(DATE_TIME_FORMAT);
+      start = (now.subtract({ days: 1})).format(DATE_TIME_FORMAT);
+    } else if(param === '3d') {
+      end = now.format(DATE_TIME_FORMAT);
+      start = (now.subtract({ days: 3})).format(DATE_TIME_FORMAT);
+    } else if(param === '1w') {
+      end = now.format(DATE_TIME_FORMAT);
+      start = (now.subtract({ weeks: 1})).format(DATE_TIME_FORMAT);
+    }
+    this.setState( {
+      start: start,
+      end: end
+    }, function() {
+      this.getNewAnalyticsData();
+    })
+  }
+  
   callApi = (value) => {
     let url;
     // if (value === 0 && !this.props.projectData.ProjectTeamDataReducer.data) {
@@ -105,19 +146,20 @@ class DataAnalysis extends Component {
       return(
         <div className={classes.root}>
           { this.state.projectList &&
-            <RadioButtonComponent data={this.state} projectList={this.state.projectList} handleChange={this.handleChange}/>
+            <RadioButtonComponent data={this.state} projectList={this.state.projectList}
+              handleChange={this.handleChange}/>
           }
           { this.state.projectList &&
             <div className={classes.seperator}></div>
           }
           { this.state.analysisData &&
-            <DataAnalysisComponent data={this.state.analysisData} category={this.state.value}/>
+            <DataAnalysisComponent data={this.state.analysisData} stateData={this.state}
+              handleDateChange={this.handleDateChange}/>
           }
           { (!this.state.analysisData && !this.state.projectList) &&
             <div>No Projects Assigned</div>
           }
           </div>
-          
       )
   }
 }

@@ -48,5 +48,6 @@ export const REACT_URLS = {
     'USER-PROFILE': "/profile"
 }
 
+export const DATE_TIME_FORMAT = "YYYYMMDDHHmm"
 
 // process.env.REACT_APP_SECRET_CODE
