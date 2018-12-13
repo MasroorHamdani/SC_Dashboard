@@ -16,6 +16,12 @@ const styles = theme => ({
     seperator: {
         border: "black",
         borderStyle: "double"
+    },
+    timeList : {
+        display: 'flex',
+        flexDirection: 'row',
+        padding: 0,
+        cursor: 'pointer'
     }
 })
 

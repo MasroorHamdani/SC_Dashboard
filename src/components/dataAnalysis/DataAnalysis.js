@@ -18,7 +18,7 @@ class DataAnalysisComponent extends Component {
         this.setState({ value });
     };
     render() {
-        const {classes, data, category} = this.props;
+        const {classes, data, stateData, handleDateChange} = this.props;
         return(
                 <div className={classes.main}>
                 <AppBar position="static" color="default">
@@ -41,17 +41,23 @@ class DataAnalysisComponent extends Component {
                 </AppBar>
                 
                 {this.state.value === 0 && <AnalysisData
-                    category="Alerts" data={data}/>}
+                    category="Alerts" data={data} handleDateChange={handleDateChange}
+                    stateData={stateData}/>}
                 {this.state.value === 1 && <AnalysisData 
-                    category="NFC Logs" data={data}/>}
+                    category="NFC Logs" data={data} handleDateChange={handleDateChange}
+                    stateData={stateData}/>}
                 {this.state.value === 2 && <AnalysisData
-                    category="Feedback Tablet" data={data}/>}
+                    category="Feedback Tablet" data={data} handleDateChange={handleDateChange}
+                    stateData={stateData}/>}
                 {this.state.value === 3 && <AnalysisData 
-                    category="People counting sensor" data={data}/>}
-                {(this.state.value === 4  || category.includes('AQ'))&& <AnalysisData
-                    category="Air quality sensor" data={data}/>}
+                    category="People counting sensor" data={data} handleDateChange={handleDateChange}
+                    stateData={stateData}/>}
+                {(this.state.value === 4  || stateData.category.includes('AQ'))&& <AnalysisData
+                    category="Air quality sensor" data={data} handleDateChange={handleDateChange}
+                    stateData={stateData}/>}
                 {this.state.value === 5 && <AnalysisData 
-                    category="Wetness Detection sensor" data={data}/>}
+                    category="Wetness Detection sensor" data={data} handleDateChange={handleDateChange}
+                    stateData={stateData}/>}
                 </div>
         )
     }
