@@ -52,7 +52,8 @@ class DataAnalysisComponent extends Component {
                 {this.state.value === 3 && <AnalysisData 
                     category="People counting sensor" data={data} handleDateChange={handleDateChange}
                     stateData={stateData}/>}
-                {(this.state.value === 4  || stateData.category.includes('AQ'))&& <AnalysisData
+                {/* {(this.state.value === 4  || stateData.category.includes('AQ'))&& <AnalysisData */}
+                {this.state.value === 4 && <AnalysisData 
                     category="Air quality sensor" data={data} handleDateChange={handleDateChange}
                     stateData={stateData}/>}
                 {this.state.value === 5 && <AnalysisData 
