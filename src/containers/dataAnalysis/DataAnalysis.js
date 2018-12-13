@@ -27,14 +27,13 @@ class DataAnalysis extends Component {
   };
 
   getNewAnalyticsData = () => {
-    console.log(this.state.value);
     const endPoint = `${API_URLS['DEVICE_DATA']}/FARNEK_AQ_TR_T1/${PROJECT_TABS['DATA']}?
     start=${this.state.start}&end=${this.state.end}`,
       config = getApiConfig(endPoint, 'GET');
     this.props.onDataAnalysis(config, 'subMenu');
   }
 
-  handleDateChange = (event, param) => {
+  handleDateChange = (param, startDate='', endDate='') => {
     let now = moment(),
       start, end;
     if (param === '1h') {
@@ -55,6 +54,9 @@ class DataAnalysis extends Component {
     } else if(param === '1w') {
       end = now.format(DATE_TIME_FORMAT);
       start = (now.subtract({ weeks: 1})).format(DATE_TIME_FORMAT);
+    } else if(param === 'custom') {
+      end = moment(endDate, DATE_TIME_FORMAT).format(DATE_TIME_FORMAT);
+      start = moment(startDate, DATE_TIME_FORMAT).format(DATE_TIME_FORMAT);
     }
     this.setState( {
       start: start,
@@ -136,6 +138,10 @@ class DataAnalysis extends Component {
         if(dataAnalysis) {
           this.setState({
             analysisData: dataAnalysis
+          })
+        } else {
+          this.setState({
+            analysisData: []
           })
         }
     }
