@@ -3,6 +3,7 @@ import {withStyles, AppBar, Tabs, Tab} from '@material-ui/core';
 
 import styles from './DataAnalysisStyle';
 import AnalysisData from './AnalysisData';
+import {ANALYTICS_TABS} from '../../constants/Constant';
 
 /**
  * It is s Child component which is in turn Parent Component with Tabs setup and
@@ -11,22 +12,22 @@ import AnalysisData from './AnalysisData';
  * Data is passed as input from Parent container.
  */
 class DataAnalysisComponent extends Component {
-    state = {
-        value: 4,
-    };
-    handleChange = (event, value) => {
-        this.setState({ value });
-    };
+    // state = {
+    //     value: 4,
+    // };
+    // handleChange = (event, value) => {
+    //     this.setState({ value });
+    // };
     render() {
-        const {classes, data, stateData, handleDateChange} = this.props;
+        const {classes, data, stateData, handleDateChange, handleTabChange} = this.props;
         return(
-                <div className={classes.main}>
+            <div className={classes.main}>
                 <AppBar position="static" color="default">
                     <Tabs
                     scrollable
                     scrollButtons="auto"
-                    value={this.state.value}
-                    onChange={this.handleChange}
+                    value={stateData.tab}
+                    onChange={handleTabChange}
                     indicatorColor="primary"
                     textColor="primary"
                     fullWidth
@@ -40,26 +41,25 @@ class DataAnalysisComponent extends Component {
                     </Tabs>
                 </AppBar>
                 
-                {this.state.value === 0 && <AnalysisData
-                    category="Alerts" data={data} handleDateChange={handleDateChange}
+                {(stateData.tab === 0 || stateData.value.includes(ANALYTICS_TABS['0'])) && <AnalysisData
+                    data={data} handleDateChange={handleDateChange}
                     stateData={stateData}/>}
-                {this.state.value === 1 && <AnalysisData 
-                    category="NFC Logs" data={data} handleDateChange={handleDateChange}
+                {(stateData.tab === 1 || stateData.value.includes(ANALYTICS_TABS['1'])) && <AnalysisData 
+                    data={data} handleDateChange={handleDateChange}
                     stateData={stateData}/>}
-                {this.state.value === 2 && <AnalysisData
-                    category="Feedback Tablet" data={data} handleDateChange={handleDateChange}
+                {(stateData.tab === 2 || stateData.value.includes(ANALYTICS_TABS['2'])) && <AnalysisData
+                    data={data} handleDateChange={handleDateChange}
                     stateData={stateData}/>}
-                {this.state.value === 3 && <AnalysisData 
-                    category="People counting sensor" data={data} handleDateChange={handleDateChange}
+                {(stateData.tab === 3 || stateData.value.includes(ANALYTICS_TABS['3'])) && <AnalysisData 
+                    data={data} handleDateChange={handleDateChange}
                     stateData={stateData}/>}
-                {/* {(this.state.value === 4  || stateData.category.includes('AQ'))&& <AnalysisData */}
-                {this.state.value === 4 && <AnalysisData 
-                    category="Air quality sensor" data={data} handleDateChange={handleDateChange}
+                {(stateData.tab === 4 || stateData.value.includes(ANALYTICS_TABS['4'])) && <AnalysisData 
+                    data={data} handleDateChange={handleDateChange}
                     stateData={stateData}/>}
-                {this.state.value === 5 && <AnalysisData 
-                    category="Wetness Detection sensor" data={data} handleDateChange={handleDateChange}
+                {(stateData.tab === 5 || stateData.value.includes(ANALYTICS_TABS['5'])) && <AnalysisData 
+                    data={data} handleDateChange={handleDateChange}
                     stateData={stateData}/>}
-                </div>
+            </div>
         )
     }
 }

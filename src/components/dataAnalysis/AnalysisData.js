@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
 import {withStyles} from '@material-ui/core';
 import {LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip,
-    Legend, ResponsiveContainer} from 'recharts';
+    Legend, ResponsiveContainer, Brush, ComposedChart, Bar} from 'recharts';
 import styles from './AnalysisDataStyle';
 import moment from 'moment';
-import {DATE_TIME_FORMAT} from '../../constants/Constant';
+import {DATE_TIME_FORMAT, ANALYTICS_TABS} from '../../constants/Constant';
 import DateRowComponent from './DateRowComponent';
+import _ from 'lodash';
+// import { map, flatMap } from 'lodash';
 
 /**
  * Component to display Analytics details for a select Device to User
@@ -48,10 +50,17 @@ class AnalysisData extends Component {
     }
 
     render() {
-        const {stateData, data, classes, handleDateChange} = this.props;
-        let graphData = []
-        data.map(function(dt){
-            dt.data.map(function(d) {
+        const {stateData, data, classes} = this.props;
+        let tabData;
+
+        if (data.DataAQAnalysisReducer && data.DataAQAnalysisReducer.data &&
+            stateData.value.includes(ANALYTICS_TABS['4'])) {
+            const dataAnalysis = data.DataAQAnalysisReducer.data;
+            let graphData = [],
+            flattedData = _.flatMap(dataAnalysis, ({ DEVICE_ID, data }) =>
+                _.map(data, dt => ({ DEVICE_ID, ...dt }))
+                );
+            flattedData.map(function(d) {
                 let graphElement = {}
                 graphElement['name'] = moment(d.t, DATE_TIME_FORMAT).format('DD/MM/YYY HH:mm');
                 graphElement['alc'] = d.v.alc;
@@ -59,9 +68,53 @@ class AnalysisData extends Component {
                 graphElement['cmo'] = d.v.cmo;
                 graphElement['no2'] = d.v.no2;
                 graphData.push(graphElement)
-            })
-        })
-        
+            });
+            tabData = <ResponsiveContainer width='100%' height={400}>
+                    <LineChart className={classes.lineChart} data={graphData}
+                        margin={{top: 5, right: 30, left: 20, bottom: 5}}>
+                        <XAxis dataKey="name" minTickGap={20}
+                            label={{ value: 'Time of day', position: 'insideBottomRight', offset: 0}}/>
+                        <YAxis label={{ value: 'Concentration (ppm)', angle: -90, position: 'insideLeft'}}
+                        />
+                        <CartesianGrid strokeDasharray="3 3"/>
+                        <Tooltip/>
+                        <Legend />
+                        <Brush dataKey='name' height={30} stroke="#8884d8"/>
+                        <Line name="VOCs" type="basis" strokeWidth={5} dataKey="alc" stroke="#008000" />
+                        <Line name="Ammonia" type="basis" strokeWidth={4} dataKey="amm" stroke="#607d8c" />
+                        <Line name="Carbon Monoxide" type="basis" strokeWidth={4} dataKey="cmo" stroke="#ffc8d1" />
+                        <Line name="Nitrogen Dioxide" type="basis" strokeWidth={4} dataKey="no2" stroke="#808080" />
+                    </LineChart>
+                </ResponsiveContainer>
+        } else if (data.DataPCAnalysisReducer && data.DataPCAnalysisReducer.data &&
+            stateData.value.includes(ANALYTICS_TABS['3'])) {
+            const dataAnalysis = data.DataPCAnalysisReducer.data;
+            let graphData = [],
+            flattedData = _.flatMap(dataAnalysis, ({ DEVICE_ID, data }) =>
+                _.map(data, dt => ({ DEVICE_ID, ...dt }))
+                );
+            flattedData.map(function(d) {
+                let graphElement = {}
+                graphElement['name'] = moment(d.t, DATE_TIME_FORMAT).format('DD/MM/YYY HH:mm');
+                graphElement['v'] = d.v
+                graphData.push(graphElement)
+            });
+            
+            tabData = <ResponsiveContainer width='100%' height={400}>
+                <ComposedChart className={classes.lineChart} data={graphData}
+                    margin={{top: 5, right: 30, left: 20, bottom: 5}}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="name" minTickGap={20}
+                        label={{ value: 'Time of day', position: 'insideBottomRight', offset: 0}}/>
+                    <YAxis label={{ value: 'Count per minute', angle: -90, position: 'insideLeft'}}/>
+                    <Tooltip />
+                    <Legend />
+                    <Brush dataKey='name' height={30} stroke="#8884d8"/>
+                    <Bar name="Per-min count" dataKey="v" fill="#8884d8" />
+                </ComposedChart>
+            </ResponsiveContainer>
+        }
+
         const timeList = [
             {
                 name: "last1Hour",
@@ -110,22 +163,7 @@ class AnalysisData extends Component {
                     timeList={timeList}
                     />
                 <div className={classes.seperator}></div>
-                <ResponsiveContainer width='100%' height={400}>
-                    <LineChart className={classes.lineChart} data={graphData}
-                        margin={{top: 5, right: 30, left: 20, bottom: 5}}>
-                        <XAxis dataKey="name" minTickGap={20}
-                            label={{ value: 'Time of day', position: 'insideBottomRight', offset: 0}}/>
-                        <YAxis label={{ value: 'Concentration (ppm)', angle: -90, position: 'insideLeft'}}
-                        />
-                        <CartesianGrid strokeDasharray="3 3"/>
-                        <Tooltip/>
-                        <Legend />
-                        <Line type="basis" strokeWidth={5} dataKey="alc" stroke="#008000" />
-                        <Line type="basis" strokeWidth={4} dataKey="amm" stroke="#607d8c" />
-                        <Line type="basis" strokeWidth={4} dataKey="cmo" stroke="#ffc8d1" />
-                        <Line type="basis" strokeWidth={4} dataKey="no2" stroke="#808080" />
-                    </LineChart>
-                </ResponsiveContainer>
+                {tabData}
             </div>
         )
     }

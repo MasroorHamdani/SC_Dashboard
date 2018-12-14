@@ -50,4 +50,13 @@ export const REACT_URLS = {
 
 export const DATE_TIME_FORMAT = "YYYYMMDDHHmm"
 
+export const ANALYTICS_TABS = {
+    0: 'Alerts',
+    1: 'NFC',
+    2: 'FD',
+    3: 'PC',
+    4: 'AQ',
+    5: 'WD'
+}
+
 // process.env.REACT_APP_SECRET_CODE

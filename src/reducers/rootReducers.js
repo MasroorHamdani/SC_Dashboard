@@ -12,7 +12,8 @@ import UserProfileReducer from './UserProfileReducer';
 import InstallationDeviceReducer from './InstallationDeviceReducer';
 import DataAnalysisProjectListReducer from './DataAnalysisProjectListReducer';
 import DataAnalysisProjectListSubMenuReducer from './DataAnalysisProjectSubMenuReducer';
-import DataAnalysisReducer from './DataAnalysisReducer';
+import DataAQAnalysisReducer from './DataAQAnalysisReducer';
+import DataPCAnalysisReducer from './DataPCAnalysisReducer';
 
 const reducers = {
     LoginReducer,
@@ -27,7 +28,8 @@ const reducers = {
     InstallationDeviceReducer,
     DataAnalysisProjectListReducer,
     DataAnalysisProjectListSubMenuReducer,
-    DataAnalysisReducer
+    DataAQAnalysisReducer,
+    DataPCAnalysisReducer
 }
 
 // combines all the reducers which will be passed in Redux Store
