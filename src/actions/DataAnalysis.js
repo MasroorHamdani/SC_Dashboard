@@ -1,13 +1,8 @@
 import ApiService from '../services/ApiService';
 import { DATA_ANALYSIS_PROJECT_LIST, DATA_ANALYSIS_PROJECT_LIST_SUB_MENU,
-  PROJECT_AQ_ANALYSIS_DATA, PROJECT_PC_ANALYSIS_DATA } from '../constants/ActionTypes';
+  PROJECT_AQ_ANALYSIS_DATA, PROJECT_PC_ANALYSIS_DATA,
+  PROJECT_PC_METRICS_DATA, PROJECT_AQ_METRICS_DATA } from '../constants/ActionTypes';
 
-function dataReceived(data) {
-  return {
-      type: DATA_ANALYSIS_PROJECT_LIST,
-      data
-  }
-}
 /**
  * Dispatched function to call the API service to get
  * the data for menu - List of all projects for a user
@@ -25,10 +20,10 @@ export function projectMenuList(config) {
   }
 }
 
-function subMenuDataReceived(data) {
+function dataReceived(data) {
   return {
-    type: DATA_ANALYSIS_PROJECT_LIST_SUB_MENU,
-    data
+      type: DATA_ANALYSIS_PROJECT_LIST,
+      data
   }
 }
 
@@ -46,9 +41,9 @@ export  function projectSubMenuList(config) {
   }
 }
 
-function AnalysisAQDataReceived(data) {
+function subMenuDataReceived(data) {
   return {
-    type: PROJECT_AQ_ANALYSIS_DATA,
+    type: DATA_ANALYSIS_PROJECT_LIST_SUB_MENU,
     data
   }
 }
@@ -67,9 +62,9 @@ export function projectAQAnalysisData(config) {
   }
 }
 
-function AnalysisPCDataReceived(data) {
+function AnalysisAQDataReceived(data) {
   return {
-    type: PROJECT_PC_ANALYSIS_DATA,
+    type: PROJECT_AQ_ANALYSIS_DATA,
     data
   }
 }
@@ -88,4 +83,49 @@ export function projectPCAnalysisData(config) {
   }
 }
 
+function AnalysisPCDataReceived(data) {
+  return {
+    type: PROJECT_PC_ANALYSIS_DATA,
+    data
+  }
+}
 
+/**
+ * Dispatched fucntion to call the API services to get
+ * the PC Metrics data - This will be used to get the path of the graph plot
+ * @param {*} config
+ */
+export function projectPCMetricsData(config) {
+  return function(dispatch) {
+    ApiService(config).then(data => {
+      dispatch(AnalysisPCMetricsReceived(data.data))
+    })
+  }
+}
+
+function AnalysisPCMetricsReceived(data) {
+  return {
+    type: PROJECT_PC_METRICS_DATA,
+    data
+  }
+}
+
+/**
+ * Dispatched fucntion to call the API services to get
+ * the AQ Metrics data - This will be used to get the path of the graph plot
+ * @param {*} config
+ */
+export function projectAQMetricsData(config) {
+  return function(dispatch) {
+    ApiService(config).then(data => {
+      dispatch(AnalysisAQMetricsReceived(data.data))
+    })
+  }
+}
+
+function AnalysisAQMetricsReceived(data) {
+  return {
+    type: PROJECT_AQ_METRICS_DATA,
+    data
+  }
+}

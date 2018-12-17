@@ -59,4 +59,34 @@ export const ANALYTICS_TABS = {
     5: 'WD'
 }
 
+export const ANALYTICS_TAB = {
+    'ALERT' : {'key': 'Alerts',
+                'value': 0,
+                'text': 'Alerts'},
+    'NFC': {'key': 'NFC',
+                'value': 1,
+                'text': 'NFC Logs'},
+    'FD': {'key': 'FD',
+                'value': 2,
+                'text': 'Feedback Tablet'},
+    'PC': {'key': 'PC',
+                'value': 3,
+                'text': 'People counting sensor'},
+    'AQ':{'key': 'AQ',
+                'value': 4,
+                'text': 'Air quality sensor'},
+    'WD': {'key': 'WD',
+                'value': 5,
+                'text': 'Wetness Detection sensor'}
+}
+
+export const ANALYTICS_DATE = {
+    'ONE_HOUR': '1h',
+    'THREE_HOUR': '3h',
+    'TWELVE_HOUR': '12h',
+    'ONE_DAY': '1d',
+    'THREE_DAY': '3d',
+    'ONE_WEEK': '1w',
+    'CUSTOM': 'custom'
+}
 // process.env.REACT_APP_SECRET_CODE
