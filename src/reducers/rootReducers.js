@@ -14,6 +14,8 @@ import DataAnalysisProjectListReducer from './DataAnalysisProjectListReducer';
 import DataAnalysisProjectListSubMenuReducer from './DataAnalysisProjectSubMenuReducer';
 import DataAQAnalysisReducer from './DataAQAnalysisReducer';
 import DataPCAnalysisReducer from './DataPCAnalysisReducer';
+import DataPCMetricsReducer from './DataPCMetricsReducer';
+import DataAQMetricsReducer from './DataAQMetricsReducer';
 
 const reducers = {
     LoginReducer,
@@ -29,7 +31,9 @@ const reducers = {
     DataAnalysisProjectListReducer,
     DataAnalysisProjectListSubMenuReducer,
     DataAQAnalysisReducer,
-    DataPCAnalysisReducer
+    DataPCAnalysisReducer,
+    DataPCMetricsReducer,
+    DataAQMetricsReducer
 }
 
 // combines all the reducers which will be passed in Redux Store
