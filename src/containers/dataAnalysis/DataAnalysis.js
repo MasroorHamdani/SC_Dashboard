@@ -145,23 +145,6 @@ class DataAnalysis extends Component {
     if (this.props.projectList &&
       !isEqual(this.props.projectList.DataPCMetricsReducer, prevProps.projectList.DataPCMetricsReducer)){
         const metricsResponse = this.props.projectList.DataPCMetricsReducer.data;
-        // let pcMetrics = {};
-        // metricsResponse.map((metrics) => {
-        //   pcMetrics['MetricType'] = metrics['Details']['MetricType'];
-        //   // pcMetrics['list'] = metrics['Details']['list'];
-        //   // let flattedData = _.flatMap(pcMetrics['list'], ({Name, Path }) =>
-        //   //       _.map(Path, dt => ({Name, ...dt }))
-        //   //       );
-        //   // pcMetrics['graphPointer'] = flattedData;
-        //   pcMetrics['vector'] = [];
-        //   metrics.Details.list.map((vector) => {
-        //     pcMetrics['vector'].push({
-        //       name: vector.Name,
-        //       Path: vector.Path,
-        //       unit: vector.Unit
-        //     })
-        //   })
-        // })
         let pcMetrics = this.getVector(metricsResponse);
         this.setState({pcMetrics: pcMetrics}, function() {
           const endPoint = `${API_URLS['DEVICE_DATA']}/${this.state.value}/${PROJECT_TABS['DATA']}?
@@ -173,18 +156,6 @@ class DataAnalysis extends Component {
     if (this.props.projectList &&
       !isEqual(this.props.projectList.DataAQMetricsReducer, prevProps.projectList.DataAQMetricsReducer)){
         const metricsResponse = this.props.projectList.DataAQMetricsReducer.data;
-        // let pcMetrics = {};
-        // metricsResponse.map((metrics) => {
-        //   pcMetrics['MetricType'] = metrics['Details']['MetricType'];
-        //   pcMetrics['vector'] = [];
-        //   metrics.Details.list.map((vector) => {
-        //     pcMetrics['vector'].push({
-        //       name: vector.Name,
-        //       Path: vector.Path,
-        //       unit: vector.Unit
-        //     })
-        //   })
-        // })
         let aqMetrics = this.getVector(metricsResponse);
         this.setState({aqMetrics: aqMetrics}, function() {
           const endPoint = `${API_URLS['DEVICE_DATA']}/${this.state.value}/${PROJECT_TABS['DATA']}?
@@ -203,8 +174,9 @@ class DataAnalysis extends Component {
       metrics.Details.list.map((vector) => {
         pcMetrics['vector'].push({
           name: vector.Name,
-          Path: vector.Path,
-          unit: vector.Unit
+          path: vector.Path,
+          unit: vector.Unit,
+          shortName: vector.ShortName
         })
       })
     })

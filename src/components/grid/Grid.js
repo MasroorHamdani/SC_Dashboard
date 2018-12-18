@@ -77,16 +77,6 @@ class EnhancedTable extends React.Component {
         rowsPerPage, page, handleClick, category} = this.props;
     const emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
     
-
-    // const rowss = data.map(d => {
-    //   let bulk = [];
-    //   rows.map(row => {
-    //     let t = `d.${row.id}`;
-    //     bulk.push(<TableCell scope="row">{t}</TableCell>)
-    //   }, this)
-    //   return bulk
-    // }, this)
-
     return (
       <Paper className={classes.root}>
         <div className={classes.tableWrapper}>

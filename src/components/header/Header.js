@@ -58,7 +58,7 @@ class Header extends Component {
                 color="inherit"
                 noWrap
                 className={classes.title}>
-                Dashboard
+                SmartClean
               </Typography>
               <IconButton color="inherit">
               <Typography
