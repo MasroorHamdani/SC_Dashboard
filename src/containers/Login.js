@@ -109,7 +109,11 @@ componentDidUpdate(prevProps, prevState) {
           success: true,
         });
       }
-      window.location = REACT_URLS['DASHBOARD'];
+      if(localStorage.getItem('previousPath') !== REACT_URLS['LOGIN']) {
+        window.location = localStorage.getItem('previousPath');
+      } else {
+        window.location = REACT_URLS['DASHBOARD'];
+      }
     }
   }
   if (this.props.userData.ForgotPasswordReducer.data
