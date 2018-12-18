@@ -28,9 +28,11 @@ class ProjectInstallationDetails extends Component {
             ${PROJECT_TABS['INSTALLATION']}/${PROJECT_TABS['DEVICES']}/${this.state.insid}`,
             config = getApiConfig(endPoint, 'GET');
         this.props.onProjectInstallationData(config);
-        this.setState( {
-            insidList: localStorage.getItem('installationLocations').split(',')
-        })
+        if(localStorage.getItem('installationLocations')) {
+            this.setState( {
+                insidList: localStorage.getItem('installationLocations').split(',')
+            })
+        }
     }
 
     componentDidUpdate(prevProps, prevState) {
