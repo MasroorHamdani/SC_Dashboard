@@ -109,12 +109,13 @@ componentDidUpdate(prevProps, prevState) {
           success: true,
         });
       }
-      if(localStorage.getItem('previousPath') !== REACT_URLS['LOGIN']) {
-        // window.location = localStorage.getItem('previousPath');
-        this.props.history.push(localStorage.getItem('previousPath'));
+      if(localStorage.getItem('previousPath') && 
+        localStorage.getItem('previousPath') !== REACT_URLS['LOGIN']) {
+        window.location = localStorage.getItem('previousPath');
+        // this.props.history.push(localStorage.getItem('previousPath'));
       } else {
-        // window.location = REACT_URLS['DASHBOARD'];
-        this.props.history.push(REACT_URLS['DASHBOARD']);
+        window.location = REACT_URLS['DASHBOARD'];
+        // this.props.history.push(REACT_URLS['DASHBOARD']);
       }
     }
   }

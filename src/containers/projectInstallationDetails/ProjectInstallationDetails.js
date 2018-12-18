@@ -63,7 +63,7 @@ class ProjectInstallationDetails extends Component {
         let installationData, tabData, rows;
         if(this.props.installationDeviceData.InstallationDeviceReducer &&
             this.props.installationDeviceData.InstallationDeviceReducer.data) {
-                installationData = mapTeamData(this.props.installationDeviceData.InstallationDeviceReducer.data[0]);
+                installationData = this.props.installationDeviceData.InstallationDeviceReducer.data[0];
                 rows = [{ id: 'id', numeric: false, disablePadding: false, label: 'Name' },
                         { id: 'type', numeric: false, disablePadding: false, label: 'Location' }]
                 tabData = <Typography component="div">
@@ -84,7 +84,7 @@ class ProjectInstallationDetails extends Component {
                     order={this.state.order} orderBy={this.state.orderBy}
                     rowsPerPage={this.state.rowsPerPage} page={this.state.page}
                     selected={this.state.selected}
-                    handleChange={this.handleChange} handleClick={this.handleClick}/>
+                    handleChange={this.handleChange} handleClick={this.handleClick} redirectID="id"/>
                 </Typography>
         }
             
@@ -97,15 +97,6 @@ class ProjectInstallationDetails extends Component {
             </div>
         )
     }
-}
-function mapTeamData(data) {
-    data['details'].map(function (d) {
-        d['name'] = d['id'];
-        d['locn'] = d['type'];
-        d['insid'] = d['id'];
-        return(d)
-    });
-    return data;
 }
 function mapStateToProps(state) {
     return {

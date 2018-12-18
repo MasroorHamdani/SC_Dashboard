@@ -2,7 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import {Table, TableBody, TableCell, TablePagination,
-  TableRow, Paper} from '@material-ui/core';
+  TableRow, Paper, TextField, Select, MenuItem} from '@material-ui/core';
+import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutlined';
+import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import EnhancedTableHead from './GridHeader';
 import styles from "./GridStyle";
 
@@ -49,6 +51,9 @@ function getSorting(order, orderBy) {
 class EnhancedTable extends React.Component {
   state = {
     selected: [],
+    queryToColumn: '',
+    query: ''
+
   };
 
   handleRequestSort = (event, property) => {
@@ -70,16 +75,40 @@ class EnhancedTable extends React.Component {
     this.props.handleChange("rowsPerPage", event.target.value);
   };
 
+  setQueryColumn = (event) => {
+      this.setState({queryToColumn: event.target.value})
+  };
+
   isSelected = id => this.props.selected.indexOf(id) !== -1;
 
   render() {
     const { classes, data, rows, order, orderBy,
-        rowsPerPage, page, handleClick, category} = this.props;
+        rowsPerPage, page, handleClick, category, redirectID, editTable,
+        deleteTable} = this.props;
     const emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
-    
+    const queryToLower = this.state.query.toLowerCase();
     return (
       <Paper className={classes.root}>
         <div className={classes.tableWrapper}>
+          <div className={classes.searchSection}>
+            <Select
+            displayEmpty
+            value={this.state.queryToColumn}
+            onChange={this.setQueryColumn}
+            >
+            <MenuItem value="" disabled>Select a Column</MenuItem>
+            {rows.map(row => {
+              return <MenuItem value={row.id} key={row.id}>{row.label}</MenuItem>
+              }, this)}
+            </Select>
+            <TextField
+            className={classes.searchField}
+            disabled={this.state.queryToColumn ? false : true}
+            placeholder="All"
+            value={this.state.query}
+            onChange={e=>this.setState({query: e.target.value})}
+            />
+          </div>
           <Table className={classes.table} aria-labelledby="tableTitle">
             <EnhancedTableHead
               order={order}
@@ -88,24 +117,31 @@ class EnhancedTable extends React.Component {
               rows={rows}
             />
             <TableBody>
-              {stableSort(data, getSorting(order, orderBy))
+              {stableSort(this.state.query ?
+              data.filter(x => x[this.state.queryToColumn].toLowerCase().includes(queryToLower)) :
+              data,
+              getSorting(order, orderBy))
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map(n => {
-                  const isSelected = this.isSelected(n.insid);
+                  const isSelected = this.isSelected(n[redirectID]);
                   return (
                     <TableRow
                       hover
-                      onClick={event => handleClick(event, n.insid, category)}
-                      role="checkbox"
+                      onClick={event => handleClick(event, n[redirectID], category)}
                       aria-checked={isSelected}
                       tabIndex={-1}
-                      key={n.insid}
-                      selected={isSelected}
-                    >
-                      <TableCell component="th" scope="row">
-                        {n.name}
-                      </TableCell>
-                      <TableCell>{n.locn}</TableCell>
+                      key={n[redirectID]}
+                      selected={isSelected}>
+                      {rows.map( test => {
+                        let id = test.id;
+                        return <TableCell key={n[id]} value={n[id]}>{n[id]}</TableCell>
+                      })}
+                      { editTable &&
+                        <TableCell><EditOutlinedIcon className={classes.icon} /></TableCell>
+                      }
+                      {deleteTable &&
+                       <TableCell><DeleteOutlinedIcon className={classes.icon} /></TableCell>
+                      }
                     </TableRow>
                   );
                 })}

@@ -34,6 +34,7 @@ function ApiService(configObject) {
     function forceLogout() {
         isFetchingToken = false;
         localStorage.clear();
+        // localStorage.setItem('previousPath', window.location.pathname);
         window.location = '/login';
     }
 
