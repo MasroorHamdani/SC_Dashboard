@@ -17,7 +17,8 @@ class EnhancedTableHead extends Component {
     // };
   
     render() {
-      const { order, orderBy, rows, onRequestSort } = this.props;
+      const { order, orderBy, rows, onRequestSort, allowDelete,
+        allowEdit } = this.props;
       return (
         <TableHead>
           <TableRow>
@@ -46,6 +47,12 @@ class EnhancedTableHead extends Component {
                 </TableCell>
               );
             }, this)}
+            {allowDelete &&
+              <TableCell/>
+            }
+            {allowEdit &&
+              <TableCell/>
+            }
           </TableRow>
         </TableHead>
       );

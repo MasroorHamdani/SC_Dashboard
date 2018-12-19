@@ -3,10 +3,11 @@ import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import {Table, TableBody, TableCell, TablePagination,
   TableRow, Paper, TextField, Select, MenuItem} from '@material-ui/core';
-import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutlined';
-import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
+import EditIcon from '@material-ui/icons/Edit';
+import DeleteIcon from '@material-ui/icons/Delete';
 import EnhancedTableHead from './GridHeader';
 import styles from "./GridStyle";
+import CustomModal from '../../components/modal/Modal';
 
 function desc(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -52,10 +53,28 @@ class EnhancedTable extends React.Component {
   state = {
     selected: [],
     queryToColumn: '',
-    query: ''
-
+    query: '',
+    open: false,
+    toDelete: ''
   };
 
+  handleOpen = (id) => {
+    this.setState({ open: true,
+    toDelete: id});
+  };
+
+  handleClose = () => {
+    this.setState({ open: false });
+  };
+  
+  onDelete = () => {
+    console.log(this.state.toDelete);
+    //API call to delete user;
+    this.handleClose();
+  };
+  onEdit = (id) => {
+    console.log(id);
+  };
   handleRequestSort = (event, property) => {
     const orderBy = property;
     let order = 'desc';
@@ -83,13 +102,12 @@ class EnhancedTable extends React.Component {
 
   render() {
     const { classes, data, rows, order, orderBy,
-        rowsPerPage, page, handleClick, category, redirectID, editTable,
-        deleteTable} = this.props;
+        rowsPerPage, page, handleClick, category, redirectID, allowDelete,
+        allowEdit} = this.props;
     const emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
     const queryToLower = this.state.query.toLowerCase();
     return (
       <Paper className={classes.root}>
-        <div className={classes.tableWrapper}>
           <div className={classes.searchSection}>
             <Select
             displayEmpty
@@ -115,6 +133,8 @@ class EnhancedTable extends React.Component {
               orderBy={orderBy}
               onRequestSort={this.handleRequestSort}
               rows={rows}
+              allowDelete
+              allowEdit
             />
             <TableBody>
               {stableSort(this.state.query ?
@@ -127,20 +147,34 @@ class EnhancedTable extends React.Component {
                   return (
                     <TableRow
                       hover
-                      onClick={event => handleClick(event, n[redirectID], category)}
+                      className={classes.pointer}
+                      onClick={!allowEdit ?event => handleClick(event, n[redirectID], category): null}
                       aria-checked={isSelected}
                       tabIndex={-1}
                       key={n[redirectID]}
-                      selected={isSelected}>
-                      {rows.map( test => {
+                      selected={isSelected}
+                      >
+                      {rows.map( (test, i) => {
                         let id = test.id;
-                        return <TableCell key={n[id]} value={n[id]}>{n[id]}</TableCell>
+                        return <TableCell key={i} value={n[id]}
+                                // onClick={test.editTable ? () => this.onEdit(i): ''}
+                                >
+                                {n[id]}
+                              </TableCell>
                       })}
-                      { editTable &&
-                        <TableCell><EditOutlinedIcon className={classes.icon} /></TableCell>
+                      { allowEdit &&
+                        <TableCell>
+                          <EditIcon className={classes.icon}
+                          onClick={event => handleClick(event, n[redirectID], category)}/>
+                        </TableCell>
                       }
-                      {deleteTable &&
-                       <TableCell><DeleteOutlinedIcon className={classes.icon} /></TableCell>
+                      {allowDelete &&
+                       <TableCell>
+                         <DeleteIcon className={classes.icon}
+                         onClick={event => this.handleOpen(n[redirectID])}
+                        //  onClick={event => this.onDelete(event, n[redirectID])}
+                        />
+                        </TableCell>
                       }
                     </TableRow>
                   );
@@ -152,7 +186,6 @@ class EnhancedTable extends React.Component {
               )}
             </TableBody>
           </Table>
-        </div>
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
@@ -167,6 +200,13 @@ class EnhancedTable extends React.Component {
           }}
           onChangePage={this.handleChangePage}
           onChangeRowsPerPage={this.handleChangeRowsPerPage}
+        />
+        <CustomModal
+          header="Remove User"
+          content="Do you Want Remove the User"
+          handleClose={this.handleClose}
+          handleClick={this.onDelete}
+          open={this.state.open}
         />
       </Paper>
     );
