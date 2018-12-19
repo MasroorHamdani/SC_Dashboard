@@ -21,6 +21,19 @@ const styles = theme => ({
         height: '100vh',
         overflow: 'auto',
     },
+    icon: {
+        fontSize: 12,
+        cursor: 'pointer'
+    },
+    addIcon: {
+        fontSize: 25,
+        // float: 'right',
+        // marginRight: theme.spacing.unit * 2,
+        cursor: 'pointer'
+    },
+    card: {
+        maxWidth: 400,
+    },
 });
 
 export default styles;

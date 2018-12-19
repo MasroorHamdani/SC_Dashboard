@@ -167,12 +167,12 @@ class DataAnalysis extends Component {
   }
 
   getVector=(metricsResponse) => {
-    let pcMetrics = {};
+    let dataMetrics = {};
     metricsResponse.map((metrics) => {
-      pcMetrics['MetricType'] = metrics['Details']['MetricType'];
-      pcMetrics['vector'] = [];
-      metrics.Details.list.map((vector) => {
-        pcMetrics['vector'].push({
+      dataMetrics['MetricType'] = metrics['Data']['MetricType'];
+      dataMetrics['vector'] = [];
+      metrics.Data.Dimensions.map((vector) => {
+        dataMetrics['vector'].push({
           name: vector.Name,
           path: vector.Path,
           unit: vector.Unit,
@@ -180,7 +180,7 @@ class DataAnalysis extends Component {
         })
       })
     })
-    return pcMetrics
+    return dataMetrics
   }
   
   render () {
