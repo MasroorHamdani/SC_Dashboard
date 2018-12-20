@@ -3,11 +3,12 @@ import {withStyles, ListItem, ListItemText, Typography, List} from '@material-ui
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import styles from './AnalysisDataStyle';
+import RefreshIcon from '@material-ui/icons/Refresh';
 
 class DateRowComponent extends Component {
     render () {
         const {classes, handleListSelection, handleChangeStart, handleChangeEnd,
-            handleDatePicker, data, timeList} = this.props;
+            handleDatePicker, data, timeList, handleRefresh} = this.props;
         return (
             <div className={classes.dateRow}>
                 <div className={classes.dateRow}>
@@ -57,6 +58,8 @@ class DateRowComponent extends Component {
                         </ListItem>
                     })}
                 </List>
+                <RefreshIcon className={classes.pointer}
+                onClick={handleRefresh}/>
             </div>
         )
     }

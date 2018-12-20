@@ -89,7 +89,7 @@ class ProjectInstallationDetails extends Component {
                         </Grid>
                         <Grid item xs={12} sm={6}>
                         <TextField
-                            disabled
+                            required
                             id="RFID"
                             name="RFID"
                             label="User RFID"

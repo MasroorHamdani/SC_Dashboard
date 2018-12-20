@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter as Router, Route, Switch} from "react-router-dom";
+import { Route, Switch} from "react-router-dom";
 import Dashboard from "./containers/dashboard/Dashboard";
 import Login from "./containers/Login";
 import Header from "./components/header/Header";
@@ -25,14 +25,12 @@ const styles = theme => ({
 });
   class App extends React.Component {
     componentWillMount() {
-      localStorage.setItem("currentPath", window.location.hash.replace("#", ""))
+      localStorage.setItem('previousPath', window.location.pathname)
     }
     render() {
       const Contact = () => <h2>Contact</h2>
-      // localStorage.setItem('previousPath', window.location.pathname)
         return(
           <MuiThemeProvider theme={theme}>
-            <Router>
               <div className="common-container">
                 { !localStorage.getItem('idToken') ?
                   (<div>
@@ -67,7 +65,6 @@ const styles = theme => ({
                   </div>)
                 }
               </div> 
-            </Router>
           </MuiThemeProvider>
         )
     }

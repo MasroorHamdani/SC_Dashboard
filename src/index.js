@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import {BrowserRouter as Router} from "react-router-dom";
 import './sass/index.scss';
 import App from './App';
 import { I18nextProvider } from "react-i18next";
@@ -13,7 +14,7 @@ const store = configureStore();
 
 ReactDOM.render(<I18nextProvider i18n={i18n}>
               <Provider store={store}>
-                <App />
+                <Router><App /></Router>
               </Provider>
             </I18nextProvider>,
             document.getElementById('root'));

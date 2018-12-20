@@ -90,3 +90,44 @@ export const ANALYTICS_DATE = {
     'CUSTOM': 'custom'
 }
 // process.env.REACT_APP_SECRET_CODE
+
+export const AUTO_REFRESH_TIMEOUT = 600000; // Time in milliseconds - 10 mins -> 10 * 60 * 1000
+
+export const TIME_LIST = [
+    {
+        name: "last1Hour",
+        key: "last1Hour",
+        value: 0,
+        text: "1h"
+    },
+    {
+        name: "last3Hour",
+        key: "last3Hour",
+        value: 1,
+        text: "3h"
+    },
+    {
+        name: "last12Hour",
+        key: "last12Hour",
+        value: 2,
+        text: "12h"
+    },
+    {
+        name: "last1Day",
+        key: "last1Day",
+        value: 3,
+        text: "1d"
+    },
+    {
+        name: "last3Day",
+        key: "last3Day",
+        value: 4,
+        text: "3d"
+    },
+    {
+        name: "last1Week",
+        key: "last1Week",
+        value: 5,
+        text: "1w"
+    },
+];
