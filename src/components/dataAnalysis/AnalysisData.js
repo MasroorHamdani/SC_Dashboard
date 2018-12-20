@@ -32,7 +32,6 @@ class AnalysisData extends Component {
         })
     }
     handleRefresh = () => {
-        console.log("Refresh token");
         this.setState({
             selectedIndex: -1
         }, function () {
@@ -57,9 +56,8 @@ class AnalysisData extends Component {
         })
     }
     componentDidMount() {
-        
-        setInterval((this.handleRefresh), AUTO_REFRESH_TIMEOUT); // 3 minutes in milliseconds
-      }
+        setInterval((this.handleRefresh), AUTO_REFRESH_TIMEOUT);
+    }
     render() {
         const {stateData, data, classes} = this.props;
         let tabData;
