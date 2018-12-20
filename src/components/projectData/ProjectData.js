@@ -10,8 +10,8 @@ class ProjectDataComponent extends Component {
     render() {
         const { classes, data, onClick } = this.props;
 
-        if(data && data.data && data.data.Projects) {
-            const newData  =data.data.Projects;
+        if(data && data.Projects) {
+            const newData  =data.Projects;
             const returnData = newData.map((row,index) => {
                 return(
                     <Card className={classes.card} onClick={e => onClick(e, row.pid)} key={row.pid}>

@@ -36,10 +36,10 @@ class ProjectInstallationDetails extends Component {
     }
 
     componentDidUpdate(prevProps, prevState) {
-        if (this.props.installationDeviceData.InstallationDeviceReducer.data &&
-        !isEqual(this.props.installationDeviceData.InstallationDeviceReducer.data !==
-            prevProps.installationDeviceData.InstallationDeviceReducer.data)) {
-            // console.log(this.props.installationDeviceData.InstallationDeviceReducer.data, "*****");
+        if (this.props.installationDeviceData &&
+        !isEqual(this.props.installationDeviceData !==
+            prevProps.installationDeviceData)) {
+            // console.log(this.props.installationDeviceData, "*****");
         }
     }
 
@@ -61,9 +61,8 @@ class ProjectInstallationDetails extends Component {
     render(){
         const {classes} = this.props;
         let installationData, tabData, rows;
-        if(this.props.installationDeviceData.InstallationDeviceReducer &&
-            this.props.installationDeviceData.InstallationDeviceReducer.data) {
-                installationData = this.props.installationDeviceData.InstallationDeviceReducer.data[0];
+        if(this.props.installationDeviceData) {
+                installationData = this.props.installationDeviceData[0];
                 rows = [{ id: 'id', numeric: false, disablePadding: false, label: 'Name' },
                         { id: 'type', numeric: false, disablePadding: false, label: 'Location' }]
                 tabData = <Typography component="div">
@@ -100,7 +99,7 @@ class ProjectInstallationDetails extends Component {
 }
 function mapStateToProps(state) {
     return {
-        installationDeviceData: state
+        installationDeviceData: state.InstallationDeviceReducer.data
     }
 }
 function mapDispatchToProps(dispatch) {

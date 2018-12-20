@@ -55,7 +55,7 @@ class Dashboard extends Component {
           </Typography>
           <div className={classes.gridRoot}>
             <GridList cellHeight={180} className={classes.gridList}>
-              <ProjectDataComponent data={this.props.dashboardData.DashboardReducer} onClick={this.handleClick}/>
+              <ProjectDataComponent data={this.props.dashboardData} onClick={this.handleClick}/>
             </GridList>
           </div>
         </div>)
@@ -68,7 +68,7 @@ class Dashboard extends Component {
 
 function mapStateToProps(state) {
   return {
-      dashboardData : state,
+      dashboardData : state.DashboardReducer.data,
   }
 }
 

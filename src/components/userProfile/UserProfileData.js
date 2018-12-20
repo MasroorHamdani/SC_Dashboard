@@ -71,6 +71,8 @@ class UserProfileData extends Component {
                         <Grid item xs={12} sm={6}>
                             <FormControlLabel
                             label="Mute"
+                            id="Mute"
+                            name="Mute"
                             control={
                                 <Switch
                                 checked={data.Mute}

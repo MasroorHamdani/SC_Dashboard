@@ -10,14 +10,13 @@ class UserProfile extends Component {
     constructor(props) {
         super(props);
         this.initialState = {
-            Firstname: 'Firstname',
-            Lastname: 'Lastname',
-            ID: "ID",
-            RFID: "RFID",
-            Phoneno: "Phoneno",
-            ShiftStart: 'Shift Start',
-            ShiftEnd: 'Shift End',
-            Mute: 'Mute'
+            Firstname: '',
+            Lastname: '',
+            ID: "",
+            RFID: "",
+            Phoneno: "",
+            ShiftStart: '',
+            ShiftEnd: '',
         };
         this.state = this.initialState;
     }
@@ -31,12 +30,20 @@ class UserProfile extends Component {
     handleSubmit = () => {
         // console.log("Update button clicked");
     }
-
     componentDidUpdate(prevProps, prevState) {
-        if (this.props.userProfile.UserProfileReducer.data &&
-            !isEqual(this.props.userProfile.UserProfileReducer.data !== prevProps.userProfile.UserProfileReducer.data)) {
-                // console.log(this.props.userProfile.UserProfileReducer.data[0], "*****");
-            }
+        if (this.props.userProfile &&
+        !isEqual(this.props.userProfile, prevProps.userProfile)) {
+            const profile = this.props.userProfile[0];
+            this.setState({'Firstname': profile.Firstname,
+                'Lastname': profile.Lastname,
+                'ID': profile.ID,
+                'RFID': profile.RFID,
+                'Phoneno': profile.Phoneno,
+                'ShiftStart': profile.ShiftStart,
+                'ShiftEnd': profile.ShiftEnd,
+                'Mute': profile.Mute
+            });
+        }
     }
 
     componentDidMount() {
@@ -49,9 +56,7 @@ class UserProfile extends Component {
         return (
             <div>
                 <UserProfileData 
-                data={this.props.userProfile.UserProfileReducer.data ?
-                    this.props.userProfile.UserProfileReducer.data[0] : 
-                    this.state}
+                data={this.state}
                 onChange={this.handleChange}
                 onClick={this.handleSubmit}/>
             </div>
@@ -61,9 +66,10 @@ class UserProfile extends Component {
 
 function mapStateToProps(state) {
     return {
-        userProfile: state
+        userProfile: state.UserProfileReducer.data
     }
 }
+
 function mapDispatchToProps(dispatch) {
     return {
         onProfileData: (config) => {
