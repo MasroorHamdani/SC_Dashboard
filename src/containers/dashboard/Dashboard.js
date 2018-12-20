@@ -18,7 +18,7 @@ class Dashboard extends Component {
       success: false,
     }
   }
-  
+
   handleClick = (e, param) => {
     this.props.history.push(`${REACT_URLS['PROJECT_DETAILS']}/${param}`);
   }

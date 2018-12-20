@@ -24,9 +24,12 @@ const styles = theme => ({
 
 });
   class App extends React.Component {
+    componentWillMount() {
+      localStorage.setItem("currentPath", window.location.hash.replace("#", ""))
+    }
     render() {
       const Contact = () => <h2>Contact</h2>
-      localStorage.setItem('previousPath', window.location.pathname)
+      // localStorage.setItem('previousPath', window.location.pathname)
         return(
           <MuiThemeProvider theme={theme}>
             <Router>
