@@ -4,7 +4,8 @@ import {LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip,
     Legend, ResponsiveContainer, Brush, ComposedChart, Bar} from 'recharts';
 import styles from './AnalysisDataStyle';
 import moment from 'moment';
-import {DATE_TIME_FORMAT, ANALYTICS_TAB} from '../../constants/Constant';
+import {DATE_TIME_FORMAT, ANALYTICS_TAB, TIME_LIST,
+    AUTO_REFRESH_TIMEOUT} from '../../constants/Constant';
 import DateRowComponent from './DateRowComponent';
 import _ from 'lodash';
 
@@ -22,12 +23,20 @@ class AnalysisData extends Component {
         })
     }
     
-    handleDatePicker = (date) => {
+    handleDatePicker = () => {
         this.setState({
             selectedIndex: -1
         }, function () {
         this.props.handleDateChange('custom',
             this.state.startDate, this.state.endDate)
+        })
+    }
+    handleRefresh = () => {
+        console.log("Refresh token");
+        this.setState({
+            selectedIndex: -1
+        }, function () {
+        this.props.handleDateChange()
         })
     }
     handleChangeStart  = (date) => {
@@ -47,7 +56,10 @@ class AnalysisData extends Component {
             this.props.handleDateChange(text)
         })
     }
-
+    componentDidMount() {
+        
+        setInterval((this.handleRefresh), AUTO_REFRESH_TIMEOUT); // 3 minutes in milliseconds
+      }
     render() {
         const {stateData, data, classes} = this.props;
         let tabData;
@@ -122,44 +134,6 @@ class AnalysisData extends Component {
             </ResponsiveContainer>
         }
 
-        const timeList = [
-            {
-                name: "last1Hour",
-                key: "last1Hour",
-                value: 0,
-                text: "1h"
-            },
-            {
-                name: "last3Hour",
-                key: "last3Hour",
-                value: 1,
-                text: "3h"
-            },
-            {
-                name: "last12Hour",
-                key: "last12Hour",
-                value: 2,
-                text: "12h"
-            },
-            {
-                name: "last1Day",
-                key: "last1Day",
-                value: 3,
-                text: "1d"
-            },
-            {
-                name: "last3Day",
-                key: "last3Day",
-                value: 4,
-                text: "3d"
-            },
-            {
-                name: "last1Week",
-                key: "last1Week",
-                value: 5,
-                text: "1w"
-            },
-        ]
         return (
             <div className={classes.graph}>
                 <DateRowComponent handleDatePicker={this.handleDatePicker}
@@ -167,7 +141,8 @@ class AnalysisData extends Component {
                     handleChangeEnd={this.handleChangeEnd}
                     handleListSelection={this.handleListSelection}
                     data={this.state}
-                    timeList={timeList}
+                    timeList={TIME_LIST}
+                    handleRefresh={this.handleRefresh}
                     />
                 <div className={classes.seperator}></div>
                 {tabData}

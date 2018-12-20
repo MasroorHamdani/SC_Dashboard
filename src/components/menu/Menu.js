@@ -20,8 +20,7 @@ class Menu extends Component {
   handleDrawerClose = () => {
     this.props.onToolbarClick(this.state.open)
   };
-  componentDidMount() {
-  }
+
   componentDidUpdate(prevProps, prevState) {
     if(this.props.menuToggleData.MenuActionReducer &&
       !isEqual(this.props.menuToggleData.MenuActionReducer, prevProps.menuToggleData.MenuActionReducer)) {
