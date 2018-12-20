@@ -21,9 +21,9 @@ class ProjectDetails extends Component {
         this.props.onProjectData(config);
     }
     componentDidUpdate(prevProps, prevState) {
-        if (this.props.projectData.ProjectDataReducer.data &&
-            !isEqual(this.props.projectData.ProjectDataReducer.data !== prevProps.projectData.ProjectDataReducer.data)) {
-                // console.log(this.props.projectData.ProjectDataReducer.data, "*****");
+        if (this.props.projectData &&
+            !isEqual(this.props.projectData !== prevProps.projectData)) {
+                // console.log(this.props.projectData, "*****");
             }
     }
 
@@ -34,8 +34,8 @@ class ProjectDetails extends Component {
     render() {
         return(
             <div>
-            { this.props.projectData.ProjectDataReducer.data &&
-                <ProjectDetail data={this.props.projectData.ProjectDataReducer.data[0]}
+            { this.props.projectData &&
+                <ProjectDetail data={this.props.projectData[0]}
                 handleClick={this.handleClick}/>
             }
             </div>
@@ -44,7 +44,7 @@ class ProjectDetails extends Component {
 }
 function mapStateToProps(state) {
     return {
-        projectData : state,
+        projectData : state.ProjectDataReducer.data,
     }
 }
 
