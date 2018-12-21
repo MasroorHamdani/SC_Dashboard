@@ -22,6 +22,6 @@ export const menuList= [
     {
       name: "Logout",
       url: "/logout",
-      icon: "PeopleIcon"
+      icon: "ExitToAppIcon"
     }
   ];

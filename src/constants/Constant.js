@@ -48,7 +48,9 @@ export const REACT_URLS = {
     'USER-PROFILE': "/profile"
 }
 
-export const DATE_TIME_FORMAT = "YYYYMMDDHHmm"
+export const DATE_TIME_FORMAT = 'YYYYMMDDHHmm'
+
+export const GRAPH_LABEL_TIME_FORMAT = 'DD/MM/YYYY HH:mm'
 
 export const ANALYTICS_TABS = {
     0: 'Alerts',
