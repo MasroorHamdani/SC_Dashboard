@@ -68,21 +68,6 @@ class AnalysisData extends Component {
             analyticsData = getFormatedGraphData(dataAnalysis, stateData.aqMetrics),
             graphData = analyticsData.graphData,
             nameMapper = analyticsData.nameMapper;
-
-            // let graphData = [], nameMapper = {};
-            // flattedData = _.flatMap(dataAnalysis, ({ DEVICE_ID, data }) =>
-            //     _.map(data, dt => ({ DEVICE_ID, ...dt }))
-            //     );
-            // flattedData.map(function(d) {
-            //     let graphElement = {}
-            //     graphElement['name'] = moment(d.t, DATE_TIME_FORMAT).format('DD/MM/YYYY HH:mm');
-            //     stateData.aqMetrics['vector'].map((vec) => {
-            //         let x = vec.path.split('.');
-            //         graphElement[vec.shortName] = d[x[0]][x[1]];
-            //         nameMapper[vec.shortName] = vec.name
-            //     })
-            //     graphData.push(graphElement)
-            // });
             tabData = <ResponsiveContainer width='100%' height={400}>
                     <LineChart className={classes.lineChart} data={graphData}
                         margin={{top: 5, right: 30, left: 20, bottom: 5}}>
