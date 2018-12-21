@@ -15,8 +15,8 @@ class CustomModal extends Component {
                 aria-describedby="alert-dialog-description"
                 aria-labelledby="responsive-dialog-title">
                 <DialogTitle id="responsive-dialog-title">{header}</DialogTitle>
-                <DialogContent>
-                    <DialogContentText id="responsive-dialog-description">
+                <DialogContent id="responsive-dialog-description">
+                    <DialogContentText >
                     {content}
                     </DialogContentText>
                 </DialogContent>

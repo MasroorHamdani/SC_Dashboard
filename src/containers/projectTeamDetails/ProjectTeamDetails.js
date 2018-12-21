@@ -1,18 +1,33 @@
 import React, { Component } from 'react';
+import { connect } from "react-redux";
 import {withStyles, Grid, TextField, FormControlLabel,
     Switch, Button, Card, CardHeader, IconButton} from '@material-ui/core';
+import {isEqual} from 'lodash';
 import ClearIcon from '@material-ui/icons/Clear';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import styles from './ProjectTeamDetailsStyle';
 import CustomModal from '../../components/modal/Modal';
+import {API_URLS, PROJECT_TABS} from '../../constants/Constant';
+import {getApiConfig} from '../../services/ApiCofig';
+import {projectDetailData} from '../../actions/ProjectDataAction';
 
 class ProjectInstallationDetails extends Component {
-    state = {
-        open: false,
-    };
+    constructor(props) {
+        super(props);
+        this.state = {
+            open: false,
+            pid: props.match.params.pid
+        };
+    }
     
     handleOpen = () => {
-        this.setState({ open: true});
+        this.setState({ open: true},
+            function() {
+                const endPoint = `${API_URLS['PROJECT_DETAILS']}/${this.state.pid}/
+                ${PROJECT_TABS['INSTALLATION']}/${PROJECT_TABS['DETAILS']}`,
+                    config = getApiConfig(endPoint, 'GET');
+                this.props.onProjectDetailData(config);
+            });
     };
     
     handleClose = () => {
@@ -32,8 +47,31 @@ class ProjectInstallationDetails extends Component {
     removeLocation = (id) => {
         console.log("remove id from user list", id);
     }
+
+    componentDidUpdate(prevProps, prevState) {
+        if (this.props.locationList &&
+            !isEqual(this.props.locationList, prevState.locationList)) {
+                console.log(this.props.locationList);
+          }
+      }
     
     render(){
+        let returnData;
+        if(this.props.locationList) {
+            returnData = this.props.locationList.map((loc, id) => {
+                return (
+                    <Card key={id}>
+                        <CardHeader action={
+                            <IconButton>
+                                <AddCircleOutlineIcon/>
+                            </IconButton>
+                            }
+                            title = {loc.name}
+                            subheader={loc.locn}/>
+                    </Card>
+                )
+              })
+        }
         const {classes} = this.props;
         const data = {'Firstname': "Chicken",
                     "ID": "chicken1",
@@ -180,7 +218,7 @@ class ProjectInstallationDetails extends Component {
                     </Grid>
                     <CustomModal
                     header="Select the location"
-                    content="List of all the locations associated with current Project"
+                    content={returnData}
                     handleClose={this.handleClose}
                     handleClick={this.onAddtion}
                     open={this.state.open}
@@ -190,4 +228,18 @@ class ProjectInstallationDetails extends Component {
         )
     }
 }
-export default withStyles(styles)(ProjectInstallationDetails);
+
+function mapStateToProps(state) {
+    return {
+        locationList : state.ProjectDetailsReducer.data,
+    }
+}
+  
+function mapDispatchToProps(dispatch) {
+    return {
+        onProjectDetailData: (config) => {
+            dispatch(projectDetailData(config))
+        }
+    }
+}
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(ProjectInstallationDetails));
