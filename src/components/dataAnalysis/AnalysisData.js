@@ -7,6 +7,7 @@ import moment from 'moment';
 import {DATE_TIME_FORMAT, ANALYTICS_TAB, TIME_LIST,
     AUTO_REFRESH_TIMEOUT} from '../../constants/Constant';
 import DateRowComponent from './DateRowComponent';
+import {getFormatedGraphData} from '../../utils/AnalyticsDataFormat';
 import _ from 'lodash';
 
 /**
@@ -61,26 +62,12 @@ class AnalysisData extends Component {
     render() {
         const {stateData, data, classes} = this.props;
         let tabData;
-
         if (data.DataAQAnalysisReducer &&
-            stateData.value.includes(ANALYTICS_TAB['AQ']['key']) && stateData.aqMetrics['vector']) {
-            const dataAnalysis = data.DataAQAnalysisReducer.data;
-            let graphData = [],
-            flattedData = _.flatMap(dataAnalysis, ({ DEVICE_ID, data }) =>
-                _.map(data, dt => ({ DEVICE_ID, ...dt }))
-                );
-            flattedData.map(function(d) {
-                let graphElement = {}
-                graphElement['name'] = moment(d.t, DATE_TIME_FORMAT).format('DD/MM/YYYY HH:mm');
-                // stateData.aqMetrics['vector'].map((vec) => {
-                //     graphElement[vec.shortName] = vec;
-                // })
-                
-                graphElement['alc'] = d.v.alc;
-                graphElement['amm'] = d.v.amm;
-                graphElement['no2'] = d.v.no2;
-                graphData.push(graphElement)
-            });
+        stateData.value.includes(ANALYTICS_TAB['AQ']['key']) && stateData.aqMetrics['vector']) {
+            let dataAnalysis = data.DataAQAnalysisReducer.data,
+            analyticsData = getFormatedGraphData(dataAnalysis, stateData.aqMetrics),
+            graphData = analyticsData.graphData,
+            nameMapper = analyticsData.nameMapper;
             tabData = <ResponsiveContainer width='100%' height={400}>
                     <LineChart className={classes.lineChart} data={graphData}
                         margin={{top: 5, right: 30, left: 20, bottom: 5}}>
@@ -92,31 +79,20 @@ class AnalysisData extends Component {
                         <Tooltip/>
                         <Legend />
                         <Brush dataKey='name' height={30} stroke="#8884d8"/>
-                        {/* {Object.keys(graphData).map((key, index) => (
-                            <div>{key}</div>
-                            // <Line name={graphData[key]['name']} type="basis" strokeWidth={5} dataKey={key} stroke="#008000" />
-                        ))} */}
-                        <Line name="VOCs" type="basis" strokeWidth={5} dataKey="alc" stroke="#008000" />
-                        <Line name="Ammonia" type="basis" strokeWidth={4} dataKey="amm" stroke="#607d8c" />
-                        <Line name="Nitrogen Dioxide" type="basis" strokeWidth={4} dataKey="no2" stroke="#808080" />
+                        {(graphData && graphData[0]) &&
+                            Object.keys(graphData[0]).map((key, index) => (
+                            (key !== 'name' &&
+                                (<Line name={nameMapper[key]} key={key} type="basis" strokeWidth={5} dataKey={key} stroke="#008000" />)
+                            )
+                        ))}
                     </LineChart>
                 </ResponsiveContainer>
         } else if (data.DataPCAnalysisReducer &&
             stateData.value.includes(ANALYTICS_TAB['PC']['key']) && stateData.pcMetrics['vector']) {
-            const dataAnalysis = data.DataPCAnalysisReducer.data;
-            let path = stateData.pcMetrics['vector'][0]['path'],
-            name = stateData.pcMetrics['vector'][0]['Name'],
-            series = stateData.pcMetrics['MetricType'];
-            let graphData = [],
-            flattedData = _.flatMap(dataAnalysis, ({ DEVICE_ID, data }) =>
-                _.map(data, dt => ({ DEVICE_ID, ...dt }))
-                );
-            flattedData.map(function(d) {
-                let graphElement = {}
-                graphElement['name'] = moment(d.t, DATE_TIME_FORMAT).format('DD/MM/YYYY HH:mm');
-                graphElement['v'] = d[path]
-                graphData.push(graphElement)
-            });
+            let dataAnalysis = data.DataPCAnalysisReducer.data,
+            analyticsData = getFormatedGraphData(dataAnalysis, stateData.pcMetrics),
+            graphData = analyticsData.graphData,
+            nameMapper = analyticsData.nameMapper;
             tabData = <ResponsiveContainer width='100%' height={400}>
                 <ComposedChart className={classes.lineChart} data={graphData}
                     margin={{top: 5, right: 30, left: 20, bottom: 5}}>
@@ -127,7 +103,12 @@ class AnalysisData extends Component {
                     <Tooltip />
                     <Legend />
                     <Brush dataKey='name' height={30} stroke="#8884d8"/>
-                    <Bar name={name} dataKey="v" fill="#8884d8" />
+                    {(graphData && graphData[0]) &&
+                        Object.keys(graphData[0]).map((key, index) => (
+                        (key !== 'name' &&
+                            (<Bar name={nameMapper[key]} key={key} dataKey={key} fill="#8884d8" />)
+                        )
+                    ))}
                 </ComposedChart>
             </ResponsiveContainer>
         }

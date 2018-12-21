@@ -147,10 +147,7 @@ class DataAnalysis extends Component {
         const metricsResponse = this.props.projectList.DataPCMetricsReducer.data;
         let pcMetrics = this.getVector(metricsResponse);
         this.setState({pcMetrics: pcMetrics}, function() {
-          const endPoint = `${API_URLS['DEVICE_DATA']}/${this.state.value}/${PROJECT_TABS['DATA']}?
-            start=${this.state.start}&end=${this.state.end}`,
-            config = getApiConfig(endPoint, 'GET');
-          this.props.onDataAnalysis(config, endPoint);
+          this.getDeviceData();
         })
       }
     if (this.props.projectList &&
@@ -158,12 +155,15 @@ class DataAnalysis extends Component {
         const metricsResponse = this.props.projectList.DataAQMetricsReducer.data;
         let aqMetrics = this.getVector(metricsResponse);
         this.setState({aqMetrics: aqMetrics}, function() {
-          const endPoint = `${API_URLS['DEVICE_DATA']}/${this.state.value}/${PROJECT_TABS['DATA']}?
-            start=${this.state.start}&end=${this.state.end}`,
-            config = getApiConfig(endPoint, 'GET');
-          this.props.onDataAnalysis(config, endPoint);
+          this.getDeviceData();
         })
     }
+  }
+  getDeviceData = () => {
+    const endPoint = `${API_URLS['DEVICE_DATA']}/${this.state.value}/${PROJECT_TABS['DATA']}?
+        start=${this.state.start}&end=${this.state.end}`,
+      config = getApiConfig(endPoint, 'GET');
+      this.props.onDataAnalysis(config, endPoint);
   }
 
   getVector=(metricsResponse) => {

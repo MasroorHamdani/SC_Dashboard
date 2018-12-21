@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import {withStyles, AppBar, Tabs, Tab} from '@material-ui/core';
-
 import styles from './DataAnalysisStyle';
 import AnalysisData from './AnalysisData';
 import {ANALYTICS_TAB} from '../../constants/Constant';
@@ -28,12 +27,6 @@ class DataAnalysisComponent extends Component {
                         textColor="primary"
                         fullWidth
                         >
-                        {/* <Tab label='Alert'/>
-                        <Tab label='NFC Logs'/>
-                        <Tab label='FD'/>
-                        <Tab label='PC counter'/>
-                        <Tab label='AQ Logs'/>
-                        <Tab label='Wetness Detection'/> */}
                             {Object.keys(ANALYTICS_TAB).map((key, index)=> (
                                 <Tab label={ANALYTICS_TAB[key]['text']}
                                     key={ANALYTICS_TAB[key]['value']}
