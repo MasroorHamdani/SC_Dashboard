@@ -11,7 +11,7 @@ export const menuList= [
     },
     {
       name: "Reports",
-      url: "/about",
+      url: "/report",
       icon: "BarChartIcon"
     },
     {

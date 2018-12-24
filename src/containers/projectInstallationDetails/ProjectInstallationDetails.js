@@ -56,7 +56,7 @@ class ProjectInstallationDetails extends Component {
         urlParam[urlParam.length - 1] = event.target.value;
         let url = urlParam.join('/')
         window.location = url;
-      };
+    };
 
     render(){
         const {classes} = this.props;

@@ -19,6 +19,7 @@ import "./sass/App.scss";
 import theme from './SiteTheme';
 import UserProfile from "./containers/UserProfile";
 import DataAnalysis from "./containers/dataAnalysis/DataAnalysis";
+import Report from "./containers/Report";
 
 const styles = theme => ({
 
@@ -58,6 +59,7 @@ const styles = theme => ({
                       <Route path="/project/:pid?" component={ProjectDetails} />
                       <Route path="/profile/:userid?" component={UserProfile} />
                       <Route path="/data" component={DataAnalysis} />
+                      <Route path="/report" component={Report} />
                       <Route path="/logout" component={Logout} />
                       <Route component={NoMatch} />
                     </Switch>

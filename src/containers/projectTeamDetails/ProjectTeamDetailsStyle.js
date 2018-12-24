@@ -22,13 +22,7 @@ const styles = theme => ({
         overflow: 'auto',
     },
     icon: {
-        fontSize: 12,
-        cursor: 'pointer'
-    },
-    addIcon: {
-        fontSize: 25,
-        // float: 'right',
-        // marginRight: theme.spacing.unit * 2,
+        fontSize: 45,
         cursor: 'pointer'
     },
     card: {

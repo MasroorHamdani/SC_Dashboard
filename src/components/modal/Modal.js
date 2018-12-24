@@ -12,13 +12,14 @@ class CustomModal extends Component {
             <Dialog
                 open={open}
                 onClose={handleClose}
+                scroll="paper"
                 aria-describedby="alert-dialog-description"
                 aria-labelledby="responsive-dialog-title">
                 <DialogTitle id="responsive-dialog-title">{header}</DialogTitle>
                 <DialogContent id="responsive-dialog-description">
-                    <DialogContentText >
+                    {/* <DialogContentText> */}
                     {content}
-                    </DialogContentText>
+                    {/* </DialogContentText> */}
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleClose} color="primary">

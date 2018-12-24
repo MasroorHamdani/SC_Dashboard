@@ -5,6 +5,7 @@ import {withStyles, Grid, TextField, FormControlLabel,
 import {isEqual} from 'lodash';
 import ClearIcon from '@material-ui/icons/Clear';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
+import LocationCityIcon from '@material-ui/icons/LocationCity';
 import styles from './ProjectTeamDetailsStyle';
 import CustomModal from '../../components/modal/Modal';
 import {API_URLS, PROJECT_TABS} from '../../constants/Constant';
@@ -47,7 +48,9 @@ class ProjectInstallationDetails extends Component {
     removeLocation = (id) => {
         console.log("remove id from user list", id);
     }
-
+    addLocation = (id) => {
+        console.log("Add selected location", id);
+    }
     componentDidUpdate(prevProps, prevState) {
         if (this.props.locationList &&
             !isEqual(this.props.locationList, prevState.locationList)) {
@@ -57,13 +60,20 @@ class ProjectInstallationDetails extends Component {
     
     render(){
         let returnData;
+        const {classes} = this.props;
         if(this.props.locationList) {
             returnData = this.props.locationList.map((loc, id) => {
                 return (
                     <Card key={id}>
-                        <CardHeader action={
+                        <CardHeader
+                            avatar={
+                                <IconButton>
+                                    <LocationCityIcon className={classes.icon}/>
+                                </IconButton>
+                                }
+                            action={
                             <IconButton>
-                                <AddCircleOutlineIcon/>
+                                <AddCircleOutlineIcon onClick={event => this.addLocation(id)}/>
                             </IconButton>
                             }
                             title = {loc.name}
@@ -72,7 +82,6 @@ class ProjectInstallationDetails extends Component {
                 )
               })
         }
-        const {classes} = this.props;
         const data = {'Firstname': "Chicken",
                     "ID": "chicken1",
                     "Lastname": "Butter",
