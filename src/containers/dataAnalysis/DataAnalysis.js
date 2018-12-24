@@ -176,7 +176,8 @@ class DataAnalysis extends Component {
           name: vector.Name,
           path: vector.Path,
           unit: vector.Unit,
-          shortName: vector.ShortName
+          shortName: vector.ShortName,
+          color: vector.Color
         })
       })
     })

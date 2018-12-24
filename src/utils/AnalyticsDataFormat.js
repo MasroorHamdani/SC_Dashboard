@@ -16,7 +16,9 @@ export function getFormatedGraphData(passedData, metrics) {
                 graphElement[vec.shortName] = d[x[0]][x[1]];
             else
                 graphElement[vec.shortName] = d[x[0]];
-            nameMapper[vec.shortName] = vec.name
+            nameMapper[vec.shortName] = {};
+            nameMapper[vec.shortName]['name'] = vec.name;
+            nameMapper[vec.shortName]['color'] = vec.color;
         })
         graphData.push(graphElement)
     });

@@ -3,8 +3,7 @@ import {withStyles} from '@material-ui/core';
 import {LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip,
     Legend, ResponsiveContainer, Brush, ComposedChart, Bar} from 'recharts';
 import styles from './AnalysisDataStyle';
-import moment from 'moment';
-import {DATE_TIME_FORMAT, ANALYTICS_TAB, TIME_LIST,
+import {ANALYTICS_TAB, TIME_LIST,
     AUTO_REFRESH_TIMEOUT} from '../../constants/Constant';
 import DateRowComponent from './DateRowComponent';
 import {getFormatedGraphData} from '../../utils/AnalyticsDataFormat';
@@ -82,7 +81,8 @@ class AnalysisData extends Component {
                         {(graphData && graphData[0]) &&
                             Object.keys(graphData[0]).map((key, index) => (
                             (key !== 'name' &&
-                                (<Line name={nameMapper[key]} key={key} type="basis" strokeWidth={5} dataKey={key} stroke="#008000" />)
+                                (<Line name={nameMapper[key]['name']} key={key} type="basis" strokeWidth={5} dataKey={key}
+                                stroke={nameMapper[key]['color']}/>)
                             )
                         ))}
                     </LineChart>
@@ -106,7 +106,7 @@ class AnalysisData extends Component {
                     {(graphData && graphData[0]) &&
                         Object.keys(graphData[0]).map((key, index) => (
                         (key !== 'name' &&
-                            (<Bar name={nameMapper[key]} key={key} dataKey={key} fill="#8884d8" />)
+                            (<Bar name={nameMapper[key]['name']} key={key} dataKey={key} fill={nameMapper[key]['color']} />)
                         )
                     ))}
                 </ComposedChart>

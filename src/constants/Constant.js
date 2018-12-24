@@ -133,3 +133,36 @@ export const TIME_LIST = [
         text: "1w"
     },
 ];
+
+export const REPORT_TABS = {
+    'SERVICE' : 'service',
+    'LOCATION': 'location',
+    'SCHEDULE': 'schedule'
+}
+
+export const SERVICES = {
+    'USER_SATISFACTION': {
+        id: 0,
+        display: 'User Satisfaction',
+        description: 'This service will get the data for User satisfaction for given date and time for schedule intervals',
+        avatar: 'US'
+    },
+    'ATTENDANT_LOG': {
+        id: 1,
+        display: 'Attendent Log',
+        description: 'This service will get the data for User satisfaction for given date and time for schedule intervals',
+        avatar: 'AL'
+    },
+    'SUPER_VISOR_AUDIT_LOG': {
+        id: 2,
+        display: 'Super Visor Audit Log',
+        description: 'This service will get the data for User satisfaction for given date and time for schedule intervals',
+        avatar: 'SVAL'
+    },
+    'PEAK_TIME': {
+        id: 3,
+        display: 'Peak Time',
+        description: 'This service will get the data for User satisfaction for given date and time for schedule intervals',
+        avatar: 'PT'
+    }
+}

@@ -19,7 +19,7 @@ const styles = theme => ({
       backgroundColor: theme.palette.background.paper,
     },
     gridList: {
-      height: 570,
+      minHeight: 400,
     },
     buttonProgress: {
       color: green[500],
