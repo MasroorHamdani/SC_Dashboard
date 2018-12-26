@@ -2,7 +2,7 @@ import red from '@material-ui/core/colors/red';
 const styles = theme => ({
     root: {
         backgroundColor: theme.palette.background.paper,
-        width: "100%",
+        width: '100%',
         display: 'flex',
     },
     content: {
@@ -17,6 +17,7 @@ const styles = theme => ({
     },
     card: {
         maxWidth: 400,
+        minWidth: 350,
         margin: theme.spacing.unit * 2,
     },
     avatar: {
@@ -32,13 +33,29 @@ const styles = theme => ({
         backgroundColor: theme.palette.background.paper,
     },
     gridList: {
-        minHeight: 400,
+        width: '100%',
         justifyContent: 'space-around',
         
     },
     formControl: {
         margin: theme.spacing.unit,
         minWidth: 120,
+    },
+    actions: {
+        display: 'flex',
+    },
+    expand: {
+        transform: 'rotate(0deg)',
+        transition: theme.transitions.create('transform', {
+            duration: theme.transitions.duration.shortest,
+        }),
+        marginLeft: 'auto',
+        [theme.breakpoints.up('sm')]: {
+            marginRight: -8,
+        },
+    },
+    expandOpen: {
+        transform: 'rotate(180deg)',
     },
 });
 

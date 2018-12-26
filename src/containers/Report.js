@@ -32,12 +32,10 @@ class Report extends Component {
       }
     render() {
         return (
-            <div>
                <ReportGeneration stateData={this.state}
                handleTabChange={this.handleTabChange}
                data={this.props.projectData}
                handleProjectSelectionChange={this.handleProjectSelectionChange}/>
-            </div>
         )
     }
 }
