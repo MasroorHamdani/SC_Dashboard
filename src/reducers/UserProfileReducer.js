@@ -1,6 +1,6 @@
 import {USER_PROFILE, USER_PROFILE_UPDATE} from '../constants/ActionTypes';
 
-export const userProfile = (state=[], action) => {
+const userProfile = (state=[], action) => {
     switch(action.type) {
         case USER_PROFILE:
             return {
