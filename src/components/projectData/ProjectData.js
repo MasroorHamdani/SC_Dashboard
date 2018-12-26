@@ -17,7 +17,7 @@ class ProjectDataComponent extends Component {
                     <Card className={classes.card} onClick={e => onClick(e, row.pid)} key={row.pid}>
                         <CardHeader avatar={
                             <Avatar aria-label="Recipe" className={classes.avatar}>
-                            P
+                            {row.pid.substr(0,1)}
                             </Avatar>
                         }
                         action={

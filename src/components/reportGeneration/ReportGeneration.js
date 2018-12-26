@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {withStyles, AppBar, Tabs, Tab, Paper} from '@material-ui/core';
-import ReportContent from './reportContent';
+import ReportContent from './ReportContent';
 import {REPORT_TABS} from '../../constants/Constant';
 
 import styles from './ReportGenerationStyle';
