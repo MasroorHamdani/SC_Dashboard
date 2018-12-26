@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import {withStyles, Card, CardHeader, Avatar,
     IconButton, GridList, Checkbox, Button,
     FormControl, InputLabel, NativeSelect,
-    FormHelperText, Input} from '@material-ui/core';
+    FormHelperText, Input, Grid} from '@material-ui/core';
 import {REPORT_TABS, SERVICES} from '../../constants/Constant';
 import styles from './ReportGenerationStyle';
 
@@ -34,9 +34,21 @@ class ReportContent extends Component {
                                 </Card>
                             ))}
                         </GridList>
-                        <Button variant="contained" color="primary" className={classes.button}>
-                            Next
-                        </Button>
+                        <Grid container spacing={24}
+                            direction="row"
+                            justify="space-between"
+                            alignItems='center'>
+                            <Grid item>
+                                <Button variant="contained" color="primary" className={classes.button}>
+                                    Previous
+                                </Button>
+                            </Grid>
+                            <Grid item>
+                                <Button variant="contained" color="primary" className={classes.button}>
+                                    Next
+                                </Button>
+                            </Grid>
+                        </Grid>
                     </div>
                 }
                 {type === REPORT_TABS['LOCATION'] &&

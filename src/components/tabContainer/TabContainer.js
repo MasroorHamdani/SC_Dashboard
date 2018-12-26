@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import {Typography } from '@material-ui/core';
-import {PROJECT_TABS, SORTING} from '../../constants/Constant';
+import {PROJECT_TABS, SORTING, HOUR_MIN_FORMAT} from '../../constants/Constant';
 import EnhancedTable from '../grid/Grid';
-import moment from 'moment';
+import {getFormatedDateTime} from '../../utils/DateFormat';
 
 class TabContainer extends Component {
     constructor(props) {
@@ -21,10 +21,10 @@ class TabContainer extends Component {
             [name] : value
         });
     }
-    getFormatedDate = (data) => {
+    formatedDateTime = (data) => {
         data.map(function (d) {
-            d.ShiftStart = moment(d.ShiftStart, 'hh:mm A').format('hh:mm A');
-            d.ShiftEnd = moment(d.ShiftEnd, 'hh:mm A').format('hh:mm A');
+            d.ShiftStart = getFormatedDateTime(d.ShiftStart, HOUR_MIN_FORMAT);
+            d.ShiftEnd = getFormatedDateTime(d.ShiftEnd, HOUR_MIN_FORMAT);
             return(d)
         })
         return(data)
@@ -44,7 +44,7 @@ class TabContainer extends Component {
                 handleChange={this.handleChange} handleClick={handleClick} redirectID="insid"/>
             </Typography>
         } else if(data.ProjectTeamDataReducer && data.ProjectTeamDataReducer.data && category === PROJECT_TABS['TEAM']) {
-            tabContent = this.getFormatedDate(data.ProjectTeamDataReducer.data[0].userdetails);
+            tabContent = this.formatedDateTime(data.ProjectTeamDataReducer.data[0].userdetails);
             rows = [{ id: 'Firstname', numeric: false, disablePadding: false, label: 'Firstname' },
                     { id: 'ShiftStart', numeric: false, disablePadding: false, label: 'Shift Start', editTable: true },
                     { id: 'ShiftEnd', numeric: false, disablePadding: false, label: 'Shift End', editTable: true}

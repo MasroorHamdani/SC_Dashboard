@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import {isEqual } from 'lodash';
-import {API_URLS} from '../constants/Constant';
+import {API_URLS, HOUR_MIN_FORMAT} from '../constants/Constant';
 import {getApiConfig} from '../services/ApiCofig';
-import {profileData} from '../actions/UserProfileDataAction';
+import {profileData, profileDataUpdate} from '../actions/UserProfileDataAction';
 import UserProfileData from '../components/userProfile/UserProfileData';
+import {getFormatedDateTime} from '../utils/DateFormat';
 
 class UserProfile extends Component {
     constructor(props) {
@@ -28,20 +29,24 @@ class UserProfile extends Component {
         });
     }
     handleSubmit = () => {
-        // console.log("Update button clicked");
+        const endPoint = `${API_URLS['USER_PROFILE']}`,
+        config = getApiConfig(endPoint, 'POST', this.state);
+        this.props.onProfileData(config, 'POST');
     }
     componentDidUpdate(prevProps, prevState) {
         if (this.props.userProfile &&
         !isEqual(this.props.userProfile, prevProps.userProfile)) {
-            const profile = this.props.userProfile[0];
+            const profile = this.props.userProfile[0] ? this.props.userProfile[0]: this.props.userProfile;
             this.setState({'Firstname': profile.Firstname,
-                'Lastname': profile.Lastname,
-                'ID': profile.ID,
-                'RFID': profile.RFID,
-                'Phoneno': profile.Phoneno,
-                'ShiftStart': profile.ShiftStart,
-                'ShiftEnd': profile.ShiftEnd,
-                'Mute': profile.Mute
+                'Lastname': profile.Lastname ? profile.Lastname : prevState.Lastname,
+                'ID': profile.ID ? profile.ID: prevState.ID,
+                'RFID': profile.RFID ? profile.RFID : prevState.RFID,
+                'Phoneno': profile.Phoneno ? profile.Phoneno : prevState.Phoneno,
+                'ShiftStart': profile.ShiftStart ? getFormatedDateTime(profile.ShiftStart, HOUR_MIN_FORMAT): 
+                    getFormatedDateTime(prevState.ShiftStart, HOUR_MIN_FORMAT),
+                'ShiftEnd': profile.ShiftEnd ? getFormatedDateTime(profile.ShiftEnd, HOUR_MIN_FORMAT) :
+                    getFormatedDateTime(prevState.ShiftEnd, HOUR_MIN_FORMAT),
+                'Mute': profile.Mute ? profile.Mute : prevState.Mute
             });
         }
     }
@@ -72,10 +77,14 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
     return {
-        onProfileData: (config) => {
-            dispatch(profileData(config))
+        onProfileData: (config, type='') => {
+            if (type === 'POST') {
+                dispatch(profileDataUpdate(config))
+            } else {
+                dispatch(profileData(config))
+            }
+            
         }
     }
-
 }
 export default connect(mapStateToProps, mapDispatchToProps)(UserProfile);
