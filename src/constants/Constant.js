@@ -52,6 +52,8 @@ export const DATE_TIME_FORMAT = 'YYYYMMDDHHmm'
 
 export const GRAPH_LABEL_TIME_FORMAT = 'DD/MM/YYYY HH:mm'
 
+export const HOUR_MIN_FORMAT = 'hh:mm A'
+
 export const ANALYTICS_TABS = {
     0: 'Alerts',
     1: 'NFC',

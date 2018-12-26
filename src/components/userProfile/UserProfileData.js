@@ -105,14 +105,19 @@ class UserProfileData extends Component {
                             onChange={onChange}
                         />
                         </Grid>
-                        <Grid item xs={12}>
-                            <Button
-                            variant="contained"
-                            color="primary"
-                            className={classes.button}
-                            onClick={onClick}
+                        <Grid item
+                            container
+                            alignItems='center'
+                            direction='row'
+                            justify='flex-end'
                             >
-                            Update
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                className={classes.button}
+                                onClick={onClick}
+                                >
+                                Update
                             </Button>
                         </Grid>
                     </Grid>
