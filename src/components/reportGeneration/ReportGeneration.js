@@ -9,7 +9,9 @@ class ReportGeneration extends Component {
     
     render() {
         const {classes, stateData, handleTabChange, data,
-            handleProjectSelectionChange} = this.props;
+            handleProjectSelectionChange, handleExpandClick,
+            handleDeviceToggle, onNextClick, onPreviousClick,
+            handleServiceToggle} = this.props;
         return (
             <div className={classes.root}>
                 <main className={classes.content}>
@@ -28,9 +30,14 @@ class ReportGeneration extends Component {
                         </Tabs>
                     </AppBar>
                     {stateData.tab === 0 && <ReportContent type={REPORT_TABS['LOCATION']} data={data}
-                        stateData={stateData} handleProjectSelectionChange={handleProjectSelectionChange}/>}
-                    {stateData.tab === 1 && <ReportContent type={REPORT_TABS['SERVICE']}/>}
-                    {stateData.tab === 2 && <ReportContent type={REPORT_TABS['SCHEDULE']}/>}
+                        stateData={stateData} handleProjectSelectionChange={handleProjectSelectionChange}
+                        handleExpandClick={handleExpandClick} handleDeviceToggle={handleDeviceToggle}
+                        onNextClick={onNextClick}/>}
+                    {stateData.tab === 1 && <ReportContent type={REPORT_TABS['SERVICE']}
+                        onPreviousClick={onPreviousClick} onNextClick={onNextClick}
+                        handleServiceToggle={handleServiceToggle} stateData={stateData}/>}
+                    {stateData.tab === 2 && <ReportContent type={REPORT_TABS['SCHEDULE']}
+                        onPreviousClick={onPreviousClick}/>}
                 </Paper>
             </main>
          </div>

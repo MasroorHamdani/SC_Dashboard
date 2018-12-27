@@ -17,7 +17,7 @@ const styles = theme => ({
     },
     card: {
         maxWidth: 400,
-        minWidth: 350,
+        minWidth: 400,
         margin: theme.spacing.unit * 2,
     },
     avatar: {
@@ -57,6 +57,20 @@ const styles = theme => ({
     expandOpen: {
         transform: 'rotate(180deg)',
     },
+    collapse: {
+        marginTop: theme.spacing.unit * -6
+    },
+    column: {
+        flexBasis: '33.33%',
+    },
+    heading: {
+        fontSize: theme.typography.pxToRem(15),
+      },
+    secondaryHeading: {
+        fontSize: theme.typography.pxToRem(15),
+        color: theme.palette.text.secondary,
+    },
+    
 });
 
 export default styles;
