@@ -9,6 +9,7 @@ import {withStyles, Card, CardHeader, Avatar,
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import {REPORT_TABS, SERVICES} from '../../constants/Constant';
 import styles from './ReportGenerationStyle';
+import { NamespacesConsumer } from 'react-i18next';
 
 class ReportContent extends Component {
     state = { };
@@ -19,25 +20,27 @@ class ReportContent extends Component {
             handleDeviceToggle, onNextClick, onPreviousClick,
             handleServiceToggle} = this.props;
         return(
-            <div>
+            <NamespacesConsumer>
+            {
+            t=><div>
                 {type === REPORT_TABS['SERVICE'] &&
                     <div>
                         <FormControl className={classes.formControl}>
                             <InputLabel shrink htmlFor="project-native-label-placeholder">
-                                Project List
+                                {t('projectList')}
                             </InputLabel>
                             <NativeSelect
                                 value={stateData.project}
                                 onChange={handleProjectSelectionChange}
                                 input={<Input name="project" id="project-native-label-placeholder" />}>
-                                <option value='' key='project' id='project'>Choose Project</option>
+                                <option value='' key='project' id='project'>{t('chooseProject')}</option>
                                 { (data.DashboardReducer.data && data.DashboardReducer.data.Projects) &&
                                     data.DashboardReducer.data.Projects.map(function(dt) {
                                         return <option value={dt.pid} key={dt.pid}>{dt.name}</option>
                                     })
                                 }
                             </NativeSelect>
-                            <FormHelperText>Please Select a Project for Report generationr</FormHelperText>
+                            <FormHelperText>{t('projectHelpText')}</FormHelperText>
                         </FormControl>
                         {stateData.project &&
                         <div className={classes.gridRoot}>
@@ -78,7 +81,7 @@ class ReportContent extends Component {
                                     color="primary"
                                     onClick={onNextClick}
                                     >
-                                    Next
+                                    {t('next')}
                                 </Button>
                             </Grid>
                             
@@ -129,7 +132,7 @@ class ReportContent extends Component {
                                     variant="contained"
                                     color="primary"
                                     className={classes.button}>
-                                    Previous
+                                    {t('previous')}
                                 </Button>
                             </Grid>
                             <Grid item>
@@ -138,7 +141,7 @@ class ReportContent extends Component {
                                     variant="contained"
                                     color="primary"
                                     className={classes.button}>
-                                    Next
+                                    {t('next')}
                                 </Button>
                             </Grid>
                         </Grid>
@@ -159,12 +162,13 @@ class ReportContent extends Component {
                             color="primary"
                             onClick={onPreviousClick}
                             >
-                            Previous
+                            {t('previous')}
                         </Button>
                     </Grid>
                 </div>
                 }
             </div>
+            }</NamespacesConsumer>
         )
     }
 }

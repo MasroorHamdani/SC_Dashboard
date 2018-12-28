@@ -9,6 +9,7 @@ import {PROJECT_TABS, API_URLS} from '../../constants/Constant';
 import {getApiConfig} from '../../services/ApiCofig';
 import {projectDetailData, projectTeamData} from '../../actions/ProjectDataAction';
 import '../../sass/App.scss';
+import { NamespacesConsumer } from 'react-i18next';
 
 class ProjectDetail extends Component {
   constructor(props) {
@@ -56,7 +57,9 @@ class ProjectDetail extends Component {
       const { classes, data, handleClick } = this.props;
       return (
           <div className={classes.root}>
-          <main className={classes.content}>
+          <NamespacesConsumer>
+            {
+            t=><main className={classes.content}>
             <Paper style={{ padding: 8 * 3 }}>
               <Typography component="div">
               {/* <img
@@ -70,7 +73,7 @@ class ProjectDetail extends Component {
                   <TextField
                     disabled
                     id="pid"
-                    label="PID"
+                    label={t('pid')}
                     name="pid"
                     value={data.PID}
                   />
@@ -79,7 +82,7 @@ class ProjectDetail extends Component {
                   <TextField
                     disabled
                     id="site"
-                    label="Site"
+                    label={t('site')}
                     name="site"
                     value={data.site}
                   />
@@ -89,7 +92,7 @@ class ProjectDetail extends Component {
                     disabled
                     id="site_addr"
                     name="site_addr"
-                    label="Site Address"
+                    label={t('siteAddr')}
                     value={data.site_addr}
                     fullWidth
                   />
@@ -103,8 +106,8 @@ class ProjectDetail extends Component {
                   textColor="primary"
                   fullWidth
                 >
-                  <Tab label="Team" />
-                  <Tab label="Installation" />
+                  <Tab label={t('team')} />
+                  <Tab label={t('installation')} />
                 </Tabs>
               </AppBar>
               
@@ -116,6 +119,7 @@ class ProjectDetail extends Component {
                 handleClick={handleClick}>Installation</TabContainer>}
             </Paper>
           </main>
+          }</NamespacesConsumer>
         </div>
       )
   }

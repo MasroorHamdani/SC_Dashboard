@@ -3,6 +3,7 @@ import {withStyles, FormControl, Radio, RadioGroup, FormControlLabel,
     ListSubheader, List, ListItem, ListItemText, Collapse} from '@material-ui/core';
 import {ExpandLess, ExpandMore} from '@material-ui/icons';
 import styles from './RadioButtonStyle';
+import { NamespacesConsumer } from 'react-i18next';
 
 /**
  * Child component to handle the left nav,
@@ -19,10 +20,11 @@ class RadioButtonComponent extends Component {
     };
     render(){
         const {classes, data, handleChange, projectList} = this.props;
-        return(
-                <List dense
+        return(<NamespacesConsumer>
+            {
+            t=><List dense
                 component="nav"
-                subheader={<ListSubheader component="div">{data.header}</ListSubheader>}
+                subheader={<ListSubheader component="div">{t(data.header)}</ListSubheader>}
                 className={classes.root}>
                 {projectList.map((project, index) => {
                     return <div key={project.id}>
@@ -53,6 +55,7 @@ class RadioButtonComponent extends Component {
                         </div>
                     })}
                 </List>
+            }</NamespacesConsumer>
         )
     }
 }

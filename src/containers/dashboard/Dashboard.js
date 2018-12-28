@@ -50,9 +50,9 @@ class Dashboard extends Component {
         {this.state.loading ? (<CircularProgress size={50} className={classes.buttonProgress} />)
         :
         (<div>
-          <Typography variant="h4" gutterBottom component="h2">
+          {/* <Typography variant="h4" gutterBottom component="h2">
             Projects
-          </Typography>
+          </Typography> */}
           <div className={classes.gridRoot}>
             <GridList cellHeight={180} className={classes.gridList}>
               <ProjectDataComponent data={this.props.dashboardData} onClick={this.handleClick}/>

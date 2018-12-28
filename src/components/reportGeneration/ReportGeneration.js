@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import {withStyles, AppBar, Tabs, Tab, Paper} from '@material-ui/core';
 import ReportContent from './ReportContent';
 import {REPORT_TABS} from '../../constants/Constant';
-
+import { NamespacesConsumer } from 'react-i18next';
 import styles from './ReportGenerationStyle';
 
 class ReportGeneration extends Component {
@@ -14,7 +14,9 @@ class ReportGeneration extends Component {
             handleServiceToggle} = this.props;
         return (
             <div className={classes.root}>
-                <main className={classes.content}>
+            <NamespacesConsumer>
+            {
+            t=><main className={classes.content}>
                 <Paper style={{ padding: 8 * 3 }}>
                     <AppBar position="static" color="default">
                         <Tabs
@@ -24,9 +26,9 @@ class ReportGeneration extends Component {
                             textColor="primary"
                             fullWidth
                             >
-                            <Tab label="Services" />
-                            <Tab label="Location" />
-                            <Tab label="Configure" />
+                            <Tab label={t('service')} />
+                            <Tab label={t('location')} />
+                            <Tab label={t('configure')} />
                         </Tabs>
                     </AppBar>
                     {stateData.tab === 0 && <ReportContent type={REPORT_TABS['SERVICE']} data={data}
@@ -41,6 +43,7 @@ class ReportGeneration extends Component {
                         onPreviousClick={onPreviousClick}/>}
                 </Paper>
             </main>
+            }</NamespacesConsumer>
          </div>
         )
     }

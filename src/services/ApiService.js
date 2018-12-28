@@ -33,8 +33,8 @@ function ApiService(configObject) {
         isFetchingToken = false;
         localStorage.clear();
         // localStorage.setItem('previousPath', window.location.pathname);
-        // window.location = '/login';
-        this.props.history.push(REACT_URLS['LOGIN']);
+        window.location = '/login';
+        // this.props.history.push(REACT_URLS['LOGIN']);
     }
 
     axios.interceptors.response.use(undefined, err => {
