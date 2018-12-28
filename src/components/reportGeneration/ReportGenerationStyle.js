@@ -41,25 +41,6 @@ const styles = theme => ({
         margin: theme.spacing.unit,
         minWidth: 120,
     },
-    actions: {
-        display: 'flex',
-    },
-    expand: {
-        transform: 'rotate(0deg)',
-        transition: theme.transitions.create('transform', {
-            duration: theme.transitions.duration.shortest,
-        }),
-        marginLeft: 'auto',
-        [theme.breakpoints.up('sm')]: {
-            marginRight: -8,
-        },
-    },
-    expandOpen: {
-        transform: 'rotate(180deg)',
-    },
-    collapse: {
-        marginTop: theme.spacing.unit * -6
-    },
     column: {
         flexBasis: '33.33%',
     },
@@ -70,7 +51,19 @@ const styles = theme => ({
         fontSize: theme.typography.pxToRem(15),
         color: theme.palette.text.secondary,
     },
-    
+    flexList: {
+        display: 'flex',
+        flexWrap: 'wrap',
+        flexDirection: 'row'
+    },
+    listItem: {
+        width: '25%',
+        wordBreak: 'break-word'
+    },
+    gridFooter: {
+        marginTop: theme.spacing.unit
+    }
+
 });
 
 export default styles;

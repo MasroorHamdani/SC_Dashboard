@@ -24,19 +24,20 @@ class ReportGeneration extends Component {
                             textColor="primary"
                             fullWidth
                             >
-                            <Tab label="Location" />
                             <Tab label="Services" />
-                            <Tab label="Schedule" />
+                            <Tab label="Location" />
+                            <Tab label="Configure" />
                         </Tabs>
                     </AppBar>
-                    {stateData.tab === 0 && <ReportContent type={REPORT_TABS['LOCATION']} data={data}
-                        stateData={stateData} handleProjectSelectionChange={handleProjectSelectionChange}
-                        handleExpandClick={handleExpandClick} handleDeviceToggle={handleDeviceToggle}
-                        onNextClick={onNextClick}/>}
-                    {stateData.tab === 1 && <ReportContent type={REPORT_TABS['SERVICE']}
+                    {stateData.tab === 0 && <ReportContent type={REPORT_TABS['SERVICE']} data={data}
+                        handleProjectSelectionChange={handleProjectSelectionChange}
                         onPreviousClick={onPreviousClick} onNextClick={onNextClick}
                         handleServiceToggle={handleServiceToggle} stateData={stateData}/>}
-                    {stateData.tab === 2 && <ReportContent type={REPORT_TABS['SCHEDULE']}
+                    {stateData.tab === 1 && <ReportContent type={REPORT_TABS['LOCATION']} data={data}
+                        stateData={stateData}
+                        handleExpandClick={handleExpandClick} handleDeviceToggle={handleDeviceToggle}
+                        onNextClick={onNextClick}/>}
+                    {stateData.tab === 2 && <ReportContent type={REPORT_TABS['CONFIGURE']}
                         onPreviousClick={onPreviousClick}/>}
                 </Paper>
             </main>

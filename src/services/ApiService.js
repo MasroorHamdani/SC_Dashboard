@@ -2,9 +2,7 @@ import axios from 'axios';
 import JWTDecode from 'jwt-decode';
 import { merge } from "lodash-es";
 
-// import { AuthApi } from './auth.api';
-// import { config } from '../Config';
-import {API_END_POINT, API_URLS} from "../constants/Constant";
+import {API_END_POINT, API_URLS, REACT_URLS} from "../constants/Constant";
 
 function ApiService(configObject) {
     const url = API_END_POINT,
@@ -35,7 +33,8 @@ function ApiService(configObject) {
         isFetchingToken = false;
         localStorage.clear();
         // localStorage.setItem('previousPath', window.location.pathname);
-        window.location = '/login';
+        // window.location = '/login';
+        this.props.history.push(REACT_URLS['LOGIN']);
     }
 
     axios.interceptors.response.use(undefined, err => {
