@@ -18,13 +18,14 @@ class DataAnalysis extends Component {
   state = ({
     value: '',
     header: "Devices",
-    projectList: '',
+    projectList: [],
     analysisAQData: '',
     start: 0,
     end: 0,
     tab: '',
     pcMetrics: {},
-    aqMetrics: {}
+    aqMetrics: {},
+    i: 0
   })
   handleTabChange = (event, value) => {
     this.setState({ tab: value }, function () {
@@ -103,56 +104,54 @@ class DataAnalysis extends Component {
     this.props.onDataAnalysisMenu(config);
   }
   componentDidUpdate(prevProps, prevState) {
-    if (this.props.projectList &&
-      !isEqual(this.props.projectList, prevProps.projectList)) {
-        let responseData = []
-        if (this.props.projectList.DataAnalysisProjectListReducer &&
-          this.props.projectList.DataAnalysisProjectListReducer.data) {
-            responseData = this.props.projectList.DataAnalysisProjectListReducer.data.Projects;
-        }
-        const project = [];
-        let props = this.props,
+    if ((this.props.projectMenuList || this.props.projectSubMenuList) &&
+      (!isEqual(this.props.projectSubMenuList, prevProps.projectSubMenuList) ||
+      !isEqual(this.props.projectMenuList, prevProps.projectMenuList))) {
+        let responseData = this.props.projectMenuList.Projects,
+          project = this.state.projectList,
           projObj = {};
-        responseData.map(function(data) {
-          const endPoint = `${API_URLS['PROJECT_DETAILS']}/${data.pid}/${PROJECT_TABS['INSTALLATION']}/${PROJECT_TABS['DEVICES']}`,
+        if(this.state.i <= responseData.length) {
+          let data = responseData[this.state.i];
+          this.setState({i: this.state.i +1});
+          if(data && data.pid) {
+            const endPoint = `${API_URLS['PROJECT_DETAILS']}/${data.pid}/${PROJECT_TABS['INSTALLATION']}/${PROJECT_TABS['DEVICES']}`,
             config = getApiConfig(endPoint, 'GET');
-          props.onDataAnalysisMenu(config, 'subMenu');
-          if (props.projectList &&
-            !isEqual(props.projectList.DataAnalysisProjectListSubMenuReducer,
-              prevProps.projectList.DataAnalysisProjectListSubMenuReducer)) {
-                const deviceResponse = props.projectList.DataAnalysisProjectListSubMenuReducer.data;
+          this.props.onDataAnalysisMenu(config, 'subMenu');
+          }
+          if (this.props.projectSubMenuList &&
+            !isEqual(this.props.projectSubMenuList, prevProps.projectSubMenuList)) {
+                const deviceResponse = this.props.projectSubMenuList;
                 let menu = [];
-                projObj['id'] = data.pid;
-                projObj['name'] = data.name;
+                projObj['id'] = deviceResponse[0].PID;//data.pid;
+                projObj['name'] = deviceResponse[0].PID; // data.name;
                 let flattedData = _.flatMap(deviceResponse, ({insid, details }) =>
                 _.map(details, dt => ({ insid, ...dt }))
                 );
-                // deviceResponse.map(function(deviceData) {
                   flattedData.map(function(device) {
                     menu.push(device);
                   });
-                // });
                 projObj['devices'] = menu;
+                project.push(projObj);
           }
-          project.push(projObj);
-        });
+        }
         if(project[0] && project[0]['devices']) {
           this.setState({
             projectList: project
           })
         }
     }
-    if (this.props.projectList &&
-      !isEqual(this.props.projectList.DataPCMetricsReducer, prevProps.projectList.DataPCMetricsReducer)){
-        const metricsResponse = this.props.projectList.DataPCMetricsReducer.data;
+
+    if (this.props.dataPCMetrics &&
+      !isEqual(this.props.dataPCMetrics, prevProps.dataPCMetrics)){
+        const metricsResponse = this.props.dataPCMetrics;
         let pcMetrics = this.getVector(metricsResponse);
         this.setState({pcMetrics: pcMetrics}, function() {
           this.getDeviceData();
         })
       }
-    if (this.props.projectList &&
-      !isEqual(this.props.projectList.DataAQMetricsReducer, prevProps.projectList.DataAQMetricsReducer)){
-        const metricsResponse = this.props.projectList.DataAQMetricsReducer.data;
+    if (this.props.dataAQMetrics &&
+      !isEqual(this.props.dataAQMetrics, prevProps.dataAQMetrics)){
+        const metricsResponse = this.props.dataAQMetrics;
         let aqMetrics = this.getVector(metricsResponse);
         this.setState({aqMetrics: aqMetrics}, function() {
           this.getDeviceData();
@@ -196,7 +195,7 @@ class DataAnalysis extends Component {
             <div className={classes.seperator}></div>
           }
           { this.state.projectList &&
-            <DataAnalysisComponent data={this.props.projectList} stateData={this.state}
+            <DataAnalysisComponent data={this.props} stateData={this.state}
               handleDateChange={this.handleDateChange} handleTabChange={this.handleTabChange}/>
           }
           { (!this.state.analysisAQData && !this.state.projectList) &&
@@ -209,7 +208,12 @@ class DataAnalysis extends Component {
 
 function mapStateToProps(state) {
   return {
-      projectList : state,
+      projectMenuList : state.DataAnalysisProjectListReducer.data,
+      projectSubMenuList : state.DataAnalysisProjectListSubMenuReducer.data,
+      dataPCMetrics : state.DataPCMetricsReducer.data,
+      dataAQMetrics : state.DataAQMetricsReducer.data,
+      dataAQAnalysis : state.DataAQAnalysisReducer.data,
+      dataPCAnalysis : state.DataPCAnalysisReducer.data
   }
 }
 

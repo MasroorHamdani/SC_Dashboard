@@ -27,6 +27,7 @@ class Report extends Component {
         // Either remove condition and let user select default 'Select Project' Option 
         // and make an API call with empty value
         // Or have this condotion added whcih won't user select the default empty option back.
+        console.log(event.target.value);
         if(event.target.value) {
             this.setState({project: event.target.value}, function() {
                 this.getLocations();
@@ -60,10 +61,10 @@ class Report extends Component {
     };
 
     handleServiceToggle = value => () => {
-        const { serviceChecked } = this.state,
-            newChecked = this.createCheckList(serviceChecked, value);
+        // const { serviceChecked } = this.state,
+        //     newChecked = this.createCheckList(serviceChecked, value);
         this.setState({
-            serviceChecked: newChecked,
+            serviceChecked: value,
         });
         
     };

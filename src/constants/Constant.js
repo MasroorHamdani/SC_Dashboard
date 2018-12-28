@@ -139,7 +139,7 @@ export const TIME_LIST = [
 export const REPORT_TABS = {
     'SERVICE' : 'service',
     'LOCATION': 'location',
-    'SCHEDULE': 'schedule'
+    'CONFIGURE': 'Configure'
 }
 
 export const SERVICES = {

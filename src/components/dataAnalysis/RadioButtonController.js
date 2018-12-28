@@ -13,30 +13,26 @@ import styles from './RadioButtonStyle';
  * handlechange function - which defined what actiuon to be done whenever an radio button is selected
  */
 class RadioButtonComponent extends Component {
-    state =({
-        open: false,
-        dense: true
-    })
-    handleClick = () => {
-        this.setState(state => ({ open: !state.open }));
+    state =({});
+    handleClick = (index) => {
+        this.setState(state => ({ [index]: !state[index] }));
     };
     render(){
         const {classes, data, handleChange, projectList} = this.props;
-        const {dense, open} = this.state,
-        handleClick = this.handleClick;
         return(
-                <List dense={dense}
+                <List dense
                 component="nav"
                 subheader={<ListSubheader component="div">{data.header}</ListSubheader>}
                 className={classes.root}>
-                {projectList.map(function(project) {
+                {projectList.map((project, index) => {
                     return <div key={project.id}>
-                        <ListItem button onClick={handleClick} >
+                        <ListItem button
+                            onClick={event => this.handleClick(index)}>
                             <ListItemText primary={project.name} />
-                            {open ? <ExpandLess /> : <ExpandMore />}
+                            {this.state[index] ? <ExpandLess /> : <ExpandMore />}
                         </ListItem>
-                        <Collapse in={open} timeout="auto" unmountOnExit>
-                            <List dense={dense} component="div" disablePadding>
+                        <Collapse in={this.state[index]} timeout="auto" unmountOnExit>
+                            <List dense component="div" disablePadding>
                                 <ListItem button>
                                     <FormControl component="fieldset" className={classes.formControl}>
                                         <RadioGroup
@@ -45,7 +41,8 @@ class RadioButtonComponent extends Component {
                                             className={classes.group}
                                             value={data.value}
                                             onChange={handleChange}>
-                                            {project.devices.map(function(key) {
+                                            {project.devices &&
+                                                project.devices.map(function(key) {
                                                 return <FormControlLabel value={key.id} key={key.id} control={<Radio />} label={key.id} />
                                             })}
                                         </RadioGroup>

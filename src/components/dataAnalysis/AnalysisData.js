@@ -61,9 +61,9 @@ class AnalysisData extends Component {
     render() {
         const {stateData, data, classes} = this.props;
         let tabData;
-        if (data.DataAQAnalysisReducer &&
+        if (data.dataAQAnalysis &&
         stateData.value.includes(ANALYTICS_TAB['AQ']['key']) && stateData.aqMetrics['vector']) {
-            let dataAnalysis = data.DataAQAnalysisReducer.data,
+            let dataAnalysis = data.dataAQAnalysis,
             analyticsData = getFormatedGraphData(dataAnalysis, stateData.aqMetrics),
             graphData = analyticsData.graphData,
             nameMapper = analyticsData.nameMapper;
@@ -87,9 +87,9 @@ class AnalysisData extends Component {
                         ))}
                     </LineChart>
                 </ResponsiveContainer>
-        } else if (data.DataPCAnalysisReducer &&
+        } else if (data.dataPCAnalysis &&
             stateData.value.includes(ANALYTICS_TAB['PC']['key']) && stateData.pcMetrics['vector']) {
-            let dataAnalysis = data.DataPCAnalysisReducer.data,
+            let dataAnalysis = data.dataPCAnalysis,
             analyticsData = getFormatedGraphData(dataAnalysis, stateData.pcMetrics),
             graphData = analyticsData.graphData,
             nameMapper = analyticsData.nameMapper;
