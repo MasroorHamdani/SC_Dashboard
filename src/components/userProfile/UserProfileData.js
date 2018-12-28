@@ -1,21 +1,23 @@
 import React, {Component} from 'react';
 import {withStyles, Grid, TextField, Button, Switch, FormControlLabel} from '@material-ui/core';
 import styles from './UserProfileDataStyle';
-
+import { NamespacesConsumer } from 'react-i18next';
 
 class UserProfileData extends Component {
     render() {
         const {classes, data, onChange, onClick} = this.props;
         return (
             <div className={classes.root}>
-                <main className={classes.content}>
+            <NamespacesConsumer>
+            {
+            t=><main className={classes.content}>
                     <Grid container spacing={24}>
                         <Grid item xs={12} sm={6}>
                             <TextField
                                 required
                                 id="data.Firstname"
                                 name="Firstname"
-                                label="First name"
+                                label={t('firstname')}
                                 fullWidth
                                 // autoComplete="Firstname"
                                 value={data.Firstname}
@@ -26,7 +28,7 @@ class UserProfileData extends Component {
                         <TextField
                             id="Lastname"
                             name="Lastname"
-                            label="Last name"
+                            label={t('lastname')}
                             fullWidth
                             autoComplete="Lastname"
                             value={data.Lastname}
@@ -38,7 +40,7 @@ class UserProfileData extends Component {
                             disabled
                             id="ID"
                             name="ID"
-                            label="User ID"
+                            label={t('userid')}
                             fullWidth
                             autoComplete="ID"
                             value={data.ID}
@@ -50,7 +52,7 @@ class UserProfileData extends Component {
                             disabled
                             id="RFID"
                             name="RFID"
-                            label="User RFID"
+                            label={t('userfid')}
                             fullWidth
                             autoComplete="RFID"
                             value={data.RFID}
@@ -62,7 +64,7 @@ class UserProfileData extends Component {
                             required
                             id="Phoneno"
                             name="Phoneno"
-                            label="Phone No"
+                            label={t('phoneno')}
                             fullWidth
                             value={data.Phoneno}
                             onChange={onChange}
@@ -70,7 +72,7 @@ class UserProfileData extends Component {
                         </Grid>
                         <Grid item xs={12} sm={6}>
                             <FormControlLabel
-                            label="Mute"
+                            label={t('mute')}
                             id="Mute"
                             name="Mute"
                             control={
@@ -86,7 +88,7 @@ class UserProfileData extends Component {
                             required
                             id="ShiftStart"
                             name="ShiftStart"
-                            label="Shift Start At"
+                            label={t('shiftStart')}
                             fullWidth
                             autoComplete="ShiftStart"
                             value={data.ShiftStart}
@@ -98,7 +100,7 @@ class UserProfileData extends Component {
                             required
                             id="ShiftEnd"
                             name="ShiftEnd"
-                            label="Shift End At"
+                            label={t('shiftEnd')}
                             fullWidth
                             autoComplete="ShiftEnd"
                             value={data.ShiftEnd}
@@ -117,11 +119,12 @@ class UserProfileData extends Component {
                                 className={classes.button}
                                 onClick={onClick}
                                 >
-                                Update
+                                {t('update')}
                             </Button>
                         </Grid>
                     </Grid>
                 </main>
+            }</NamespacesConsumer>
             </div>
         )
     }

@@ -240,6 +240,12 @@ function mapDispatchToProps(dispatch) {
         } else {
           dispatch(projectPCAnalysisData(config))
         }
+      // } else if (endPoint.includes(ANALYTICS_TAB['FD']['key'])) {
+      //   if(isMetrics) {
+      //     dispatch(projectFDMetricsData(config))
+      //   } else {
+      //     dispatch(projectFDAnalysisData(config))
+      //   }
       }
     }
   }

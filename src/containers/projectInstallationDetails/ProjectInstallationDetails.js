@@ -7,6 +7,7 @@ import {PROJECT_TABS, API_URLS, SORTING} from '../../constants/Constant';
 import {getApiConfig} from '../../services/ApiCofig';
 import {installationDeviceData} from '../../actions/InstallationDeviceData';
 import EnhancedTable from '../../components/grid/Grid';
+import { NamespacesConsumer } from 'react-i18next';
 
 class ProjectInstallationDetails extends Component {
     constructor(props) {
@@ -65,8 +66,10 @@ class ProjectInstallationDetails extends Component {
                 installationData = this.props.installationDeviceData[0];
                 rows = [{ id: 'id', numeric: false, disablePadding: false, label: 'Name' },
                         { id: 'type', numeric: false, disablePadding: false, label: 'Location' }]
-                tabData = <Typography component="div">
-                    <InputLabel htmlFor="insid">Change Location</InputLabel>
+                tabData = <NamespacesConsumer>
+                {
+                t=><Typography component="div">
+                    <InputLabel htmlFor="insid">{t('changeLocn')}</InputLabel>
                     <Select className={classes.select}
                         value={this.state.insid}
                         onChange={this.handleSelectionChange}
@@ -85,12 +88,12 @@ class ProjectInstallationDetails extends Component {
                     selected={this.state.selected}
                     handleChange={this.handleChange} handleClick={this.handleClick} redirectID="id"/>
                 </Typography>
+                }</NamespacesConsumer>
         }
             
         return (
             <div className={classes.root}>
                 <main className={classes.content}>
-                <div>Installation Details</div>
                 {tabData}
                 </main>
             </div>

@@ -8,6 +8,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import EnhancedTableHead from './GridHeader';
 import styles from "./GridStyle";
 import CustomModal from '../../components/modal/Modal';
+import { NamespacesConsumer } from 'react-i18next';
 
 function desc(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -107,14 +108,16 @@ class EnhancedTable extends React.Component {
     const emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
     const queryToLower = this.state.query.toLowerCase();
     return (
-      <Paper className={classes.root}>
+      <NamespacesConsumer>
+            {
+            t=><Paper className={classes.root}>
           <div className={classes.searchSection}>
             <Select
             displayEmpty
             value={this.state.queryToColumn}
             onChange={this.setQueryColumn}
             >
-            <MenuItem value="" disabled>Select a Column</MenuItem>
+            <MenuItem value="" disabled>{t('selectColumn')}</MenuItem>
             {rows.map(row => {
               return <MenuItem value={row.id} key={row.id}>{row.label}</MenuItem>
               }, this)}
@@ -209,6 +212,7 @@ class EnhancedTable extends React.Component {
           open={this.state.open}
         />
       </Paper>
+      }</NamespacesConsumer>
     );
   }
 }
