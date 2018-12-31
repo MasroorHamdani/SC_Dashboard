@@ -68,8 +68,7 @@ function ApiService(configObject) {
             axios({
                 method:'POST',
                 url: urlEndPoint,
-                headers: {'Content-Type':'application/json',
-                'x-api-key':'QcbUJLoJSY2Mj1IdHNgAV6BoArOS6KHa7TlL4Qgx',
+                headers: {'Content-Type':'application/json'
                 },
                 body: JSON.stringify(dataToPost)
               }).then(newAccessToken => newAccessToken.json())

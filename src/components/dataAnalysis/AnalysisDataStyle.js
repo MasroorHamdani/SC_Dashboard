@@ -32,7 +32,8 @@ const styles = theme => ({
     dateRow: {
         display: 'flex',
         flexDirection: 'row',
-        justifyContent: 'space-between'
+        justifyContent: 'space-between',
+        alignItems: 'center'
     },
     pointer: {
         cursor: 'pointer'

@@ -8,7 +8,7 @@
     "Contact": "Contact Us",
     "Reports": "Reports",
     "Profile": "Profile",
-    "Data Analysis": "Data Avalysis",
+    "Data Analysis": "Data Analysis",
     "Project Management": "Project Management",
     "Welcome-Header": "Welcome",
     "No Match": "No match for passed URL found",
@@ -46,5 +46,13 @@
     "site": "Site",
     "siteAddr": "Site Address",
     "installationDetails": "Installation Details",
-    "changeLocn": "Change Location"
+    "changeLocn": "Change Location",
+    "unit": "Unit",
+    "chooseUnit": "choose Unit",
+    "statistic": "Stats",
+    "chooseSggregate": "choose Stats",
+    "samplingRate": "Sampling Rate",
+    "func": "Function",
+    "chooseFunc": "Choose a Function"
+
 }
