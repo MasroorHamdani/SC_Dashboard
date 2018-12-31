@@ -5,7 +5,7 @@ import {withStyles} from '@material-ui/core';
 import DataAnalysisComponent from '../../components/dataAnalysis/DataAnalysis';
 import {getApiConfig} from '../../services/ApiCofig';
 import {API_URLS, PROJECT_TABS, DATE_TIME_FORMAT,
-  ANALYTICS_DATE, ANALYTICS_TAB} from '../../constants/Constant';
+  ANALYTICS_DATE, ANALYTICS_TAB, DEVICE_METRICS} from '../../constants/Constant';
 import {projectMenuList, projectSubMenuList, projectAQAnalysisData,
   projectPCAnalysisData, projectPCMetricsData,
   projectAQMetricsData} from '../../actions/DataAnalysis';
@@ -52,13 +52,31 @@ class DataAnalysis extends Component {
 
   getNewAnalyticsData = (isMetric) => {
     if (isMetric === true) {
-      const endPoint = `${API_URLS['DEVICE_DATA']}/${this.state.value}/metrics`,
+      const endPoint = `${API_URLS['DEVICE_METRICS']}/${this.state.value}`,
         config = getApiConfig(endPoint, 'GET');
       this.props.onDataAnalysis(config, endPoint, true);
     } else {
-      const endPoint = `${API_URLS['DEVICE_DATA']}/${this.state.value}/${PROJECT_TABS['DATA']}?
-      start=${this.state.start}&end=${this.state.end}`,
-        config = getApiConfig(endPoint, 'GET');
+      let metrics = [];
+      if(this.state.value.includes(ANALYTICS_TAB['ALERT']['key']))
+        metrics = this.state.alertMetrics.vector;
+      else if(this.state.value.includes(ANALYTICS_TAB['NFC']['key']))
+        metrics = this.state.nfcMetrics.vector;
+      else if(this.state.value.includes(ANALYTICS_TAB['FD']['key']))
+        metrics = this.state.fdMetrics.vector;
+      else if(this.state.value.includes(ANALYTICS_TAB['PC']['key']))
+        metrics = this.state.pcMetrics.vector;
+      else if(this.state.value.includes(ANALYTICS_TAB['AQ']['key']))
+        metrics = this.state.aqMetrics.vector;
+      else if(this.state.value.includes(ANALYTICS_TAB['WD']['key']))
+        metrics = this.state.wdMetrics.vector;
+
+      let dataToPost = {"fn": {}};
+      metrics.map((dt) => {
+        dataToPost['fn'][dt.path] = dt.statistic;
+      })
+      const endPoint = `${API_URLS['DEVICE_DATA']}/${this.state.value}`,
+        params = {'start' : this.state.start, 'end': this.state.end},
+        config = getApiConfig(endPoint, 'POST', dataToPost, params);
       this.props.onDataAnalysis(config, endPoint);
     }
   }
@@ -146,7 +164,7 @@ class DataAnalysis extends Component {
         const metricsResponse = this.props.dataPCMetrics;
         let pcMetrics = this.getVector(metricsResponse);
         this.setState({pcMetrics: pcMetrics}, function() {
-          this.getDeviceData();
+          this.getNewAnalyticsData();
         })
       }
     if (this.props.dataAQMetrics &&
@@ -154,15 +172,9 @@ class DataAnalysis extends Component {
         const metricsResponse = this.props.dataAQMetrics;
         let aqMetrics = this.getVector(metricsResponse);
         this.setState({aqMetrics: aqMetrics}, function() {
-          this.getDeviceData();
+          this.getNewAnalyticsData();
         })
     }
-  }
-  getDeviceData = () => {
-    const endPoint = `${API_URLS['DEVICE_DATA']}/${this.state.value}/${PROJECT_TABS['DATA']}?
-        start=${this.state.start}&end=${this.state.end}`,
-      config = getApiConfig(endPoint, 'GET');
-      this.props.onDataAnalysis(config, endPoint);
   }
 
   getVector=(metricsResponse) => {
@@ -176,7 +188,8 @@ class DataAnalysis extends Component {
           path: vector.Path,
           unit: vector.Unit,
           shortName: vector.ShortName,
-          color: vector.Color
+          color: vector.Color,
+          statistic: vector.Statistic
         })
       })
     })

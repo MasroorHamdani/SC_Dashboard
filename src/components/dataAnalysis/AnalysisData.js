@@ -7,6 +7,7 @@ import {ANALYTICS_TAB, TIME_LIST,
     AUTO_REFRESH_TIMEOUT} from '../../constants/Constant';
 import DateRowComponent from './DateRowComponent';
 import {getFormatedGraphData} from '../../utils/AnalyticsDataFormat';
+import DataProcessingComponent from './DataProcessComponent';
 import _ from 'lodash';
 
 /**
@@ -32,11 +33,7 @@ class AnalysisData extends Component {
         })
     }
     handleRefresh = () => {
-        this.setState({
-            selectedIndex: -1
-        }, function () {
         this.props.handleDateChange()
-        })
     }
     handleChangeStart  = (date) => {
         this.setState({
@@ -63,9 +60,9 @@ class AnalysisData extends Component {
         let tabData;
         if (data.dataAQAnalysis &&
         stateData.value.includes(ANALYTICS_TAB['AQ']['key']) && stateData.aqMetrics['vector']) {
-            let dataAnalysis = data.dataAQAnalysis,
-            analyticsData = getFormatedGraphData(dataAnalysis, stateData.aqMetrics),
-            graphData = analyticsData.graphData,
+            let dataAnalysis = data.dataAQAnalysis;
+            let analyticsData = getFormatedGraphData(dataAnalysis, stateData.aqMetrics);
+            let graphData = analyticsData.graphData,
             nameMapper = analyticsData.nameMapper;
             tabData = <ResponsiveContainer width='100%' height={400}>
                     <LineChart className={classes.lineChart} data={graphData}
@@ -123,6 +120,7 @@ class AnalysisData extends Component {
                     timeList={TIME_LIST}
                     handleRefresh={this.handleRefresh}
                     />
+                <DataProcessingComponent stateData={stateData}/>
                 <div className={classes.seperator}></div>
                 {tabData}
             </div>

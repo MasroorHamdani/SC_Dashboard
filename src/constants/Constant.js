@@ -3,14 +3,15 @@ export const API_END_POINT = "https://4l6qi5oh0h.execute-api.ap-southeast-1.amaz
 
 export const API_URLS = {
     "LOGIN": "/unauth/login", //"/login-1-time",
-    "REFRESH_TOKEN": "/refresh-token",
+    "REFRESH_TOKEN": "/refreshtoken",
     "DASHBOARD": "/auth/projects",//"/get-settings",
     "PROJECT_DETAILS": "/auth/projects",//"/get-project",
     "FORGOT_PASSWORD": "/unauth/password/change",//"/forgot-password",
     "RESET_PASSWORD": "/unauth/password/confirm", //"/confirm-forgot-password",
     "AUTH_RESET_PASSWORD": "/unauth/password/authchallenge",
     "USER_PROFILE": "/auth/profile",
-    "DEVICE_DATA": "/auth/devices"
+    "DEVICE_DATA": "/auth/devices/data",
+    "DEVICE_METRICS": "/auth/devices/metrics"
 };
 
 export const NEW_PASSWORD_REQUIRED = "NEW_PASSWORD_REQUIRED";
@@ -136,6 +137,21 @@ export const TIME_LIST = [
     },
 ];
 
+export const FUNCTION_LIST = [
+    {
+        name: 'Count',
+        value: 'count'
+    },
+    {
+        name: 'Sum',
+        value: 'sum'
+    },
+    {
+        name: 'Mean',
+        value: 'mean'
+    }
+
+]
 export const REPORT_TABS = {
     'SERVICE' : 'service',
     'LOCATION': 'location',
