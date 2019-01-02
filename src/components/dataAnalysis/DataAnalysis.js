@@ -12,7 +12,8 @@ import {ANALYTICS_TAB} from '../../constants/Constant';
  */
 class DataAnalysisComponent extends Component {
     render() {
-        const {classes, data, stateData, handleDateChange, handleTabChange} = this.props;
+        const {classes, data, stateData, handleDateChange,
+            handleTabChange, handleSamplingChange, getMetric} = this.props;
         return(
             <div className={classes.main}>
             {stateData.value &&
@@ -37,22 +38,28 @@ class DataAnalysisComponent extends Component {
 
                     {(stateData.tab === 0 || stateData.value.includes(ANALYTICS_TAB['ALERT']['key'])) && <AnalysisData
                         data={data} handleDateChange={handleDateChange}
-                        stateData={stateData}/>}
+                        stateData={stateData} handleSamplingChange={handleSamplingChange}
+                        getMetric={getMetric}/>}
                     {(stateData.tab === 1 || stateData.value.includes(ANALYTICS_TAB['NFC']['key'])) && <AnalysisData 
                         data={data} handleDateChange={handleDateChange}
-                        stateData={stateData}/>}
+                        stateData={stateData} handleSamplingChange={handleSamplingChange}
+                        getMetric={getMetric}/>}
                     {(stateData.tab === 2 || stateData.value.includes(ANALYTICS_TAB['FD']['key'])) && <AnalysisData
                         data={data} handleDateChange={handleDateChange}
-                        stateData={stateData}/>}
+                        stateData={stateData} handleSamplingChange={handleSamplingChange}
+                        getMetric={getMetric}/>}
                     {(stateData.tab === 3 || stateData.value.includes(ANALYTICS_TAB['PC']['key'])) && <AnalysisData 
                         data={data} handleDateChange={handleDateChange}
-                        stateData={stateData}/>}
+                        stateData={stateData} handleSamplingChange={handleSamplingChange}
+                        getMetric={getMetric}/>}
                     {(stateData.tab === 4 || stateData.value.includes(ANALYTICS_TAB['AQ']['key'])) && <AnalysisData 
                         data={data} handleDateChange={handleDateChange}
-                        stateData={stateData}/>}
+                        stateData={stateData} handleSamplingChange={handleSamplingChange}
+                        getMetric={getMetric}/>}
                     {(stateData.tab === 5 || stateData.value.includes(ANALYTICS_TAB['WD']['key'])) && <AnalysisData 
                         data={data} handleDateChange={handleDateChange}
-                        stateData={stateData}/>}
+                        stateData={stateData} handleSamplingChange={handleSamplingChange}
+                        getMetric={getMetric}/>}
                 </div>
             }
             </div>
