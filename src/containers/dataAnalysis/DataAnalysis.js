@@ -25,7 +25,11 @@ class DataAnalysis extends Component {
     tab: '',
     pcMetrics: {},
     aqMetrics: {},
-    i: 0
+    i: 0,
+    sampling: '',
+    unit: '',
+    stats: '',
+    func: ''
   })
   handleTabChange = (event, value) => {
     this.setState({ tab: value }, function () {
@@ -50,35 +54,58 @@ class DataAnalysis extends Component {
     });
   };
 
+  getMetric = () => {
+    let metrics = [];
+    if(this.state.value.includes(ANALYTICS_TAB['ALERT']['key']) && this.state.alertMetrics)
+      metrics = this.state.alertMetrics.vector;
+    else if(this.state.value.includes(ANALYTICS_TAB['NFC']['key']) && this.state.nfcMetrics)
+      metrics = this.state.nfcMetrics.vector;
+    else if(this.state.value.includes(ANALYTICS_TAB['FD']['key']) && this.state.fdMetrics)
+      metrics = this.state.fdMetrics.vector;
+    else if(this.state.value.includes(ANALYTICS_TAB['PC']['key']) && this.state.pcMetrics)
+      metrics = this.state.pcMetrics.vector;
+    else if(this.state.value.includes(ANALYTICS_TAB['AQ']['key']) && this.state.aqMetrics)
+      metrics = this.state.aqMetrics.vector;
+    else if(this.state.value.includes(ANALYTICS_TAB['WD']['key']) && this.state.wdMetrics)
+      metrics = this.state.wdMetrics.vector;
+    return metrics
+  }
   getNewAnalyticsData = (isMetric) => {
     if (isMetric === true) {
       const endPoint = `${API_URLS['DEVICE_METRICS']}/${this.state.value}`,
         config = getApiConfig(endPoint, 'GET');
       this.props.onDataAnalysis(config, endPoint, true);
     } else {
-      let metrics = [];
-      if(this.state.value.includes(ANALYTICS_TAB['ALERT']['key']))
-        metrics = this.state.alertMetrics.vector;
-      else if(this.state.value.includes(ANALYTICS_TAB['NFC']['key']))
-        metrics = this.state.nfcMetrics.vector;
-      else if(this.state.value.includes(ANALYTICS_TAB['FD']['key']))
-        metrics = this.state.fdMetrics.vector;
-      else if(this.state.value.includes(ANALYTICS_TAB['PC']['key']))
-        metrics = this.state.pcMetrics.vector;
-      else if(this.state.value.includes(ANALYTICS_TAB['AQ']['key']))
-        metrics = this.state.aqMetrics.vector;
-      else if(this.state.value.includes(ANALYTICS_TAB['WD']['key']))
-        metrics = this.state.wdMetrics.vector;
-
-      let dataToPost = {"fn": {}};
-      metrics.map((dt) => {
-        dataToPost['fn'][dt.path] = dt.statistic;
+      let metrics = this.getMetric(),
+        dataToPost = {'fn': {}};
+      metrics.map((dt, index) => {
+        if (dt.path === this.state.stats) {
+          dataToPost['fn'][dt.path] = this.state.func ? this.state.func : dt.statistic;
+        }
+        else{
+          dataToPost['fn'][dt.path] = dt.statistic;
+        }
       })
       const endPoint = `${API_URLS['DEVICE_DATA']}/${this.state.value}`,
-        params = {'start' : this.state.start, 'end': this.state.end},
+        params = {
+          'start' : this.state.start,
+          'end': this.state.end,
+          'aggregateby': this.state.sampling,
+          'unit': this.state.unit,
+        },
         config = getApiConfig(endPoint, 'POST', dataToPost, params);
       this.props.onDataAnalysis(config, endPoint);
     }
+  }
+
+  handleSamplingChange = (event) => {
+    const {name, value} = event.target;
+    this.setState({
+        [name] : value
+    }, function() {
+      if(name === 'func')
+        this.getNewAnalyticsData();
+    });
   }
 
   handleDateChange = (param='', startDate='', endDate='') => {
@@ -180,7 +207,8 @@ class DataAnalysis extends Component {
   getVector=(metricsResponse) => {
     let dataMetrics = {};
     metricsResponse.map((metrics) => {
-      dataMetrics['MetricType'] = metrics['Data']['MetricType'];
+      dataMetrics['metricType'] = metrics['Data']['MetricType'];
+      dataMetrics['name'] = metrics['Data']['Name'];
       dataMetrics['vector'] = [];
       metrics.Data.Dimensions.map((vector) => {
         dataMetrics['vector'].push({
@@ -209,7 +237,10 @@ class DataAnalysis extends Component {
           }
           { this.state.projectList &&
             <DataAnalysisComponent data={this.props} stateData={this.state}
-              handleDateChange={this.handleDateChange} handleTabChange={this.handleTabChange}/>
+              handleDateChange={this.handleDateChange}
+              handleTabChange={this.handleTabChange}
+              handleSamplingChange={this.handleSamplingChange}
+              getMetric={this.getMetric}/>
           }
           { (!this.state.analysisAQData && !this.state.projectList) &&
             <div>No Projects Assigned</div>

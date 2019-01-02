@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {withStyles} from '@material-ui/core';
+import {withStyles, Typography} from '@material-ui/core';
 import {LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip,
     Legend, ResponsiveContainer, Brush, ComposedChart, Bar} from 'recharts';
 import styles from './AnalysisDataStyle';
@@ -20,7 +20,7 @@ class AnalysisData extends Component {
         this.state =({
             selectedIndex: 0,
             startDate: new Date(),
-            endDate: new Date()
+            endDate: new Date(),
         })
     }
     
@@ -56,7 +56,8 @@ class AnalysisData extends Component {
         setInterval((this.handleRefresh), AUTO_REFRESH_TIMEOUT);
     }
     render() {
-        const {stateData, data, classes} = this.props;
+        const {stateData, data, classes, handleSamplingChange,
+            getMetric} = this.props;
         let tabData;
         if (data.dataAQAnalysis &&
         stateData.value.includes(ANALYTICS_TAB['AQ']['key']) && stateData.aqMetrics['vector']) {
@@ -64,7 +65,11 @@ class AnalysisData extends Component {
             let analyticsData = getFormatedGraphData(dataAnalysis, stateData.aqMetrics);
             let graphData = analyticsData.graphData,
             nameMapper = analyticsData.nameMapper;
-            tabData = <ResponsiveContainer width='100%' height={400}>
+            tabData = <div>
+                <Typography gutterBottom variant="h5">
+                    {stateData.aqMetrics.name} - {stateData.aqMetrics.metricType}
+                </Typography>
+                <ResponsiveContainer width='100%' height={400}>
                     <LineChart className={classes.lineChart} data={graphData}
                         margin={{top: 5, right: 30, left: 20, bottom: 5}}>
                         <XAxis dataKey="name" minTickGap={20}
@@ -84,30 +89,36 @@ class AnalysisData extends Component {
                         ))}
                     </LineChart>
                 </ResponsiveContainer>
+            </div>
         } else if (data.dataPCAnalysis &&
             stateData.value.includes(ANALYTICS_TAB['PC']['key']) && stateData.pcMetrics['vector']) {
             let dataAnalysis = data.dataPCAnalysis,
             analyticsData = getFormatedGraphData(dataAnalysis, stateData.pcMetrics),
             graphData = analyticsData.graphData,
             nameMapper = analyticsData.nameMapper;
-            tabData = <ResponsiveContainer width='100%' height={400}>
-                <ComposedChart className={classes.lineChart} data={graphData}
-                    margin={{top: 5, right: 30, left: 20, bottom: 5}}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="name" minTickGap={20}
-                        label={{ value: 'Time of day', position: 'insideBottomRight', offset: 0}}/>
-                    <YAxis label={{ value: 'Count per minute', angle: -90, position: 'insideLeft'}}/>
-                    <Tooltip />
-                    <Legend />
-                    <Brush dataKey='name' height={30} stroke="#8884d8"/>
-                    {(graphData && graphData[0]) &&
-                        Object.keys(graphData[0]).map((key, index) => (
-                        (key !== 'name' &&
-                            (<Bar name={nameMapper[key]['name']} key={key} dataKey={key} fill={nameMapper[key]['color']} />)
-                        )
-                    ))}
-                </ComposedChart>
-            </ResponsiveContainer>
+            tabData = <div>
+                <Typography gutterBottom variant="h5">
+                    {stateData.pcMetrics.name} - {stateData.pcMetrics.metricType}
+                </Typography>
+                <ResponsiveContainer width='100%' height={400}>
+                    <ComposedChart className={classes.lineChart} data={graphData}
+                        margin={{top: 5, right: 30, left: 20, bottom: 5}}>
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis dataKey="name" minTickGap={20}
+                            label={{ value: 'Time of day', position: 'insideBottomRight', offset: 0}}/>
+                        <YAxis label={{ value: 'Count per minute', angle: -90, position: 'insideLeft'}}/>
+                        <Tooltip />
+                        <Legend />
+                        <Brush dataKey='name' height={30} stroke="#8884d8"/>
+                        {(graphData && graphData[0]) &&
+                            Object.keys(graphData[0]).map((key, index) => (
+                            (key !== 'name' &&
+                                (<Bar name={nameMapper[key]['name']} key={key} dataKey={key} fill={nameMapper[key]['color']} />)
+                            )
+                        ))}
+                    </ComposedChart>
+                </ResponsiveContainer>
+            </div>
         }
 
         return (
@@ -120,7 +131,9 @@ class AnalysisData extends Component {
                     timeList={TIME_LIST}
                     handleRefresh={this.handleRefresh}
                     />
-                <DataProcessingComponent stateData={stateData}/>
+                <DataProcessingComponent stateData={stateData}
+                    handleSamplingChange={handleSamplingChange}
+                    getMetric={getMetric}/>
                 <div className={classes.seperator}></div>
                 {tabData}
             </div>
