@@ -98,12 +98,13 @@ class DataAnalysis extends Component {
     }
   }
 
+  // handleSamplingChange = (event, value) => {
   handleSamplingChange = (event) => {
-    const {name, value} = event.target;
+    const {name, value, id} = event.target;
     this.setState({
         [name] : value
     }, function() {
-      if(name === 'func')
+      if(id === 'update')
         this.getNewAnalyticsData();
     });
   }
