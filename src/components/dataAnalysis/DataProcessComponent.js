@@ -18,12 +18,13 @@ class DataProcessingComponent extends Component {
             t=><div >
                 { metrics &&
                     metrics.map((dt, index) => {
-                        // return <option name="stats" value={dt.path} key={index}>{dt.name}</option>
                     return <div className={classes.dateRow} key={index}>
                         <TextField
                             id="sampling"
                             label="Sampling Rate"
                             name="sampling"
+                             // value={stateData[dt.name] ? stateData[dt.name].sampling: ''}
+                            // onChange={e => handleSamplingChange(e, dt.name)}
                             value={stateData.sampling}
                             onChange={handleSamplingChange}
                             margin="normal"
@@ -44,8 +45,8 @@ class DataProcessingComponent extends Component {
                         <TextField
                             disabled
                             id={dt.shortName}
-                            label={t('dimention')}
-                            name="dimention"
+                            label={t('dimension')}
+                            name="dimension"
                             value={dt.path}
                             margin="normal"
                         />
@@ -59,17 +60,11 @@ class DataProcessingComponent extends Component {
                                 input={<Input name="func" id="func-native-label-placeholder" />}>
                                 <option value='' key='func' name="func" id='func'>{t('chooseFunc')}</option>
                                 { FUNCTION_LIST.map((dt) => {
-                                        return <option value={dt.value} name="func" key={dt.value}>{dt.name}</option>
+                                        return <option value={dt.value} name="func" id='func' key={dt.value}>{dt.name}</option>
                                 })}
                             </NativeSelect>
                         </FormControl>
-                        <Button size="small" color="primary"
-                            aria-label="Update"
-                            id="update"
-                            onClick={handleSamplingChange}
-                            >
-                            <ArrowForwardIcon />
-                        </Button>
+                        <ArrowForwardIcon id="update" onClick={handleSamplingChange}/>
                     </div>
                 })}
             </div>
