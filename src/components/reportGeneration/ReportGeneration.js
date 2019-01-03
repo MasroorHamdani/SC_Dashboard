@@ -11,7 +11,7 @@ class ReportGeneration extends Component {
         const {classes, stateData, handleTabChange, data,
             handleProjectSelectionChange, handleExpandClick,
             handleDeviceToggle, onNextClick, onPreviousClick,
-            handleServiceToggle} = this.props;
+            handleServiceToggle, shouldDisableCheckbox} = this.props;
         return (
             <div className={classes.root}>
             <NamespacesConsumer>
@@ -35,10 +35,11 @@ class ReportGeneration extends Component {
                         handleProjectSelectionChange={handleProjectSelectionChange}
                         onPreviousClick={onPreviousClick} onNextClick={onNextClick}
                         handleServiceToggle={handleServiceToggle} stateData={stateData}/>}
-                    {stateData.tab === 1 && <ReportContent type={REPORT_TABS['LOCATION']} data={data}
+                    {(stateData.tab === 1 && stateData.device === true && stateData.location) &&
+                        <ReportContent type={REPORT_TABS['LOCATION']} data={data}
                         stateData={stateData}
                         handleExpandClick={handleExpandClick} handleDeviceToggle={handleDeviceToggle}
-                        onNextClick={onNextClick}/>}
+                        onNextClick={onNextClick} shouldDisableCheckbox={shouldDisableCheckbox}/>}
                     {stateData.tab === 2 && <ReportContent type={REPORT_TABS['CONFIGURE']}
                         onPreviousClick={onPreviousClick}/>}
                 </Paper>
