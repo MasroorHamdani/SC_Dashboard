@@ -11,7 +11,8 @@ export const API_URLS = {
     "AUTH_RESET_PASSWORD": "/unauth/password/authchallenge",
     "USER_PROFILE": "/auth/profile",
     "DEVICE_DATA": "/auth/devices/data",
-    "DEVICE_METRICS": "/auth/devices/metrics"
+    "DEVICE_METRICS": "/auth/devices/metrics",
+    "SERVICE_REQUIREMENTS": "/auth/algorithms"
 };
 
 export const NEW_PASSWORD_REQUIRED = "NEW_PASSWORD_REQUIRED";
@@ -35,8 +36,6 @@ export const SORTING = {
     'ASCENDING': 'asc',
     'DECENDING': 'desc'
 }
-//Remove it once it is discarded
-export const X_API_KEY = "QcbUJLoJSY2Mj1IdHNgAV6BoArOS6KHa7TlL4Qgx";
 
 export const REACT_URLS = {
     'LOGIN': '/login',
@@ -160,7 +159,7 @@ export const REPORT_TABS = {
 
 export const SERVICES = {
     'USER_SATISFACTION': {
-        id: 0,
+        id: 'sg.smartclean.usersatisfaction',
         display: 'User Satisfaction',
         description: 'This service will get the data for User satisfaction for given date and time for schedule intervals',
         avatar: 'US'
@@ -183,4 +182,14 @@ export const SERVICES = {
         description: 'This service will get the data for User satisfaction for given date and time for schedule intervals',
         avatar: 'PT'
     }
+}
+
+export const SERVICE_ATTR = {
+    'INPUT': 'input',
+    'OUTPUT': 'output'
+}
+
+export const SERVICE_TABS = {
+    'LOCATION': 'locn',
+    'DEVICE': 'devid'
 }

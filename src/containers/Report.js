@@ -2,19 +2,20 @@ import React, { Component } from 'react';
 import {connect} from 'react-redux';
 import {isEqual} from 'lodash';
 import ReportGeneration from '../components/reportGeneration/ReportGeneration';
-import {API_URLS, PROJECT_TABS} from '../constants/Constant';
+import {API_URLS, PROJECT_TABS, SERVICE_ATTR,
+    SERVICE_TABS} from '../constants/Constant';
 import {getApiConfig} from '../services/ApiCofig';
 import {dashboardData} from '../actions/DashboardAction';
 import {projectDetailData} from '../actions/ProjectDataAction';
 import {installationDeviceData} from '../actions/InstallationDeviceData';
+import {serviceRequirementData} from '../actions/ReportDataAction';
 
 
 class Report extends Component {
     state = ({
         tab: 0,
         project: '',
-        deviceChecked: [0],
-        page: 0,
+        deviceChecked: [],
         serviceChecked: [-1]
     });
 
@@ -54,9 +55,10 @@ class Report extends Component {
     handleDeviceToggle = value => () => {
         const { deviceChecked } = this.state,
             newChecked = this.createCheckList(deviceChecked, value);
-        this.setState({
-            deviceChecked: newChecked,
-        });
+        if(!this.shouldDisableCheckbox(value) || newChecked.length < deviceChecked.length)
+            this.setState({
+                deviceChecked: newChecked,
+            });
     };
 
     handleServiceToggle = value => () => {
@@ -64,6 +66,10 @@ class Report extends Component {
         //     newChecked = this.createCheckList(serviceChecked, value);
         this.setState({
             serviceChecked: value,
+        }, function() {
+            const endPoint = `${API_URLS['SERVICE_REQUIREMENTS']}/${value}`,
+                config = getApiConfig(endPoint, 'GET');
+            this.props.onServiceRequirement(config);
         });
         
     };
@@ -80,6 +86,12 @@ class Report extends Component {
         return newChecked;
     }
 
+    shouldDisableCheckbox = value => {
+        const maxAllowed = 1;
+        const { deviceChecked } = this.state;
+        console.log(deviceChecked.length >= maxAllowed && deviceChecked.indexOf(value) === -1);
+        return deviceChecked.length >= maxAllowed //&& deviceChecked.indexOf(value) === -1;
+    }
     onNextClick = () => {
         this.setState({tab: this.state.tab + 1});
     };
@@ -95,9 +107,27 @@ class Report extends Component {
     };
 
     componentDidUpdate(prevProps, prevState) {
-        if (this.props.projectData.InstallationDeviceReducer.data &&
-        !isEqual(this.props.projectData.InstallationDeviceReducer, prevProps.projectData.InstallationDeviceReducer)) {
-            this.setState({[this.state.insid] : this.props.projectData.InstallationDeviceReducer.data[0]});
+        if (this.props.installationDevice &&
+        !isEqual(this.props.installationDevice, prevProps.installationDevice)) {
+            this.setState({[this.state.insid] : this.props.installationDevice[0]});
+        }
+        if (this.props.serviceRequirements &&
+        !isEqual(this.props.serviceRequirements, prevProps.serviceRequirements)) {
+            this.props.serviceRequirements.map((row) => {
+                if(row.ATTR.includes(SERVICE_ATTR['INPUT'])) {
+                    this.setState({inputFields: row.data})
+                    row.data.map((dt) => {
+                        if(dt.Key === SERVICE_TABS['DEVICE'])
+                            this.setState({'device': true});
+                        else if(dt.Key === SERVICE_TABS['LOCATION']) {
+                            this.setState({'location': true});
+                        }
+                    })
+                } else if(row.ATTR.includes(SERVICE_ATTR['OUTPUT'])) {
+                    this.setState({outputFields: row.data})
+                }
+            });
+            
         }
     };
 
@@ -105,19 +135,23 @@ class Report extends Component {
         return (
             <ReportGeneration stateData={this.state}
             handleTabChange={this.handleTabChange}
-            data={this.props.projectData}
+            data={this.props}
             handleProjectSelectionChange={this.handleProjectSelectionChange}
             handleExpandClick={this.handleExpandClick}
             handleDeviceToggle={this.handleDeviceToggle}
             onNextClick={this.onNextClick}
             onPreviousClick={this.onPreviousClick}
-            handleServiceToggle={this.handleServiceToggle}/>
+            handleServiceToggle={this.handleServiceToggle}
+            shouldDisableCheckbox={this.shouldDisableCheckbox}/>
         )
     }
 }
 function mapStateToProps(state) {
     return {
-        projectData : state,
+        installationDevice : state.InstallationDeviceReducer.data,
+        projectList : state.DashboardReducer.data,
+        projectDetails : state.ProjectDetailsReducer.data,
+        serviceRequirements : state.ServiceRequirementReducer.data
     }
 }
   
@@ -132,6 +166,9 @@ function mapDispatchToProps(dispatch) {
         },
         onProjectInstallationData: (config) => {
             dispatch(installationDeviceData(config))
+        },
+        onServiceRequirement: (config) => {
+            dispatch(serviceRequirementData(config))
         }
     }
 }

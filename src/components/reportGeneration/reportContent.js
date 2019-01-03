@@ -10,6 +10,7 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import {REPORT_TABS, SERVICES} from '../../constants/Constant';
 import styles from './ReportGenerationStyle';
 import { NamespacesConsumer } from 'react-i18next';
+import _ from 'lodash';
 
 class ReportContent extends Component {
     state = { };
@@ -18,7 +19,7 @@ class ReportContent extends Component {
         const {type, classes, data, stateData,
             handleProjectSelectionChange, handleExpandClick,
             handleDeviceToggle, onNextClick, onPreviousClick,
-            handleServiceToggle} = this.props;
+            handleServiceToggle, shouldDisableCheckbox} = this.props;
         return(
             <NamespacesConsumer>
             {
@@ -34,8 +35,8 @@ class ReportContent extends Component {
                                 onChange={handleProjectSelectionChange}
                                 input={<Input name="project" id="project-native-label-placeholder" />}>
                                 <option value='' key='project' id='project'>{t('chooseProject')}</option>
-                                { (data.DashboardReducer.data && data.DashboardReducer.data.Projects) &&
-                                    data.DashboardReducer.data.Projects.map(function(dt) {
+                                { (data.projectList && data.projectList.Projects) &&
+                                    data.projectList.Projects.map(function(dt) {
                                         return <option value={dt.pid} key={dt.pid}>{dt.name}</option>
                                     })
                                 }
@@ -91,8 +92,8 @@ class ReportContent extends Component {
                 }
                 {type === REPORT_TABS['LOCATION'] &&
                     <div>
-                        {data.ProjectDetailsReducer.data &&
-                            data.ProjectDetailsReducer.data.map((row, index) => {
+                        {data.projectDetails &&
+                            data.projectDetails.map((row, index) => {
                                 return <ExpansionPanel key={index}>
                                 <ExpansionPanelSummary
                                     onClick={event => handleExpandClick(index, row.insid, row.PID)}
@@ -108,9 +109,11 @@ class ReportContent extends Component {
                                     <List dense className={classes.flexList}>
                                     {stateData[row.insid] &&
                                         stateData[row.insid].details.map((dt, index) => {
-                                        return<ListItem className={classes.listItem} button key={index} button onClick={handleDeviceToggle(dt.id)}>
+                                        return<ListItem className={classes.listItem} button key={index} button
+                                        onClick={handleDeviceToggle(dt.id)}>
                                                 <Checkbox
                                                     checked={stateData.deviceChecked.indexOf(dt.id) !== -1}
+                                                    disabled={shouldDisableCheckbox(dt.id)}
                                                 />
                                                 <ListItemText primary={dt.id} />
                                             </ListItem>
