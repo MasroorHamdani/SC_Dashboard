@@ -15,7 +15,6 @@ class Report extends Component {
     state = ({
         tab: 0,
         project: '',
-        deviceChecked: [],
         serviceChecked: [-1]
     });
 
@@ -23,7 +22,13 @@ class Report extends Component {
         this.setState({ tab: value }, function () {
         });
     };
+    handleChange = (event) => {
+        const {name, value} = event.target;
+        this.setState({
+            [name] : value
+        });
 
+    }
     handleProjectSelectionChange = event => {
         // Either remove condition and let user select default 'Select Project' Option 
         // and make an API call with empty value
@@ -53,12 +58,15 @@ class Report extends Component {
     };
 
     handleDeviceToggle = value => () => {
-        const { deviceChecked } = this.state,
-            newChecked = this.createCheckList(deviceChecked, value);
-        if(!this.shouldDisableCheckbox(value) || newChecked.length < deviceChecked.length)
-            this.setState({
-                deviceChecked: newChecked,
-            });
+        const device = {...this.state.device},
+            {Key} = this.state.device,
+            deviceSelected = device[Key],
+            newChecked = this.createCheckList(deviceSelected, value);
+
+        if(!this.shouldDisableCheckbox(value) || newChecked.length < deviceSelected.length) {
+            device[Key] = newChecked;
+            this.setState({device});
+        }
     };
 
     handleServiceToggle = value => () => {
@@ -87,11 +95,11 @@ class Report extends Component {
     }
 
     shouldDisableCheckbox = value => {
-        const maxAllowed = 1;
-        const { deviceChecked } = this.state;
-        console.log(deviceChecked.length >= maxAllowed && deviceChecked.indexOf(value) === -1);
-        return deviceChecked.length >= maxAllowed //&& deviceChecked.indexOf(value) === -1;
+        const maxDeviceAllowed = this.state.device['Max'];
+        const {Key} = this.state.device;
+        return this.state.device[Key].length >= maxDeviceAllowed //&& deviceChecked.indexOf(value) === -1;
     }
+
     onNextClick = () => {
         this.setState({tab: this.state.tab + 1});
     };
@@ -100,6 +108,9 @@ class Report extends Component {
         this.setState({tab: this.state.tab - 1});
     };
 
+    generateReport = () => {
+        console.log("generate report function");
+    }
     componentDidMount(){
         const endPoint = API_URLS['DASHBOARD'],
               config = getApiConfig(endPoint, 'GET');
@@ -117,17 +128,18 @@ class Report extends Component {
                 if(row.ATTR.includes(SERVICE_ATTR['INPUT'])) {
                     this.setState({inputFields: row.data})
                     row.data.map((dt) => {
-                        if(dt.Key === SERVICE_TABS['DEVICE'])
-                            this.setState({'device': true});
+                        if(dt.Key === SERVICE_TABS['DEVICE']) {
+                            dt[dt.Key] = [];
+                            this.setState({'device': dt})
+                        }
                         else if(dt.Key === SERVICE_TABS['LOCATION']) {
-                            this.setState({'location': true});
+                            this.setState({'location': dt})
                         }
                     })
                 } else if(row.ATTR.includes(SERVICE_ATTR['OUTPUT'])) {
                     this.setState({outputFields: row.data})
                 }
             });
-            
         }
     };
 
@@ -142,7 +154,9 @@ class Report extends Component {
             onNextClick={this.onNextClick}
             onPreviousClick={this.onPreviousClick}
             handleServiceToggle={this.handleServiceToggle}
-            shouldDisableCheckbox={this.shouldDisableCheckbox}/>
+            shouldDisableCheckbox={this.shouldDisableCheckbox}
+            onChange={this.handleChange}
+            generateReport={this.generateReport}/>
         )
     }
 }

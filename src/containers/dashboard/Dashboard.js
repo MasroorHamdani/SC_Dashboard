@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from "react-redux";
-import {withStyles, Typography, GridList, CircularProgress} from '@material-ui/core';
+import {withStyles, GridList, CircularProgress} from '@material-ui/core';
 import PropTypes from 'prop-types';
 import {isEqual} from "lodash";
 import styles from './DashboardStyle'
@@ -50,9 +50,6 @@ class Dashboard extends Component {
         {this.state.loading ? (<CircularProgress size={50} className={classes.buttonProgress} />)
         :
         (<div>
-          {/* <Typography variant="h4" gutterBottom component="h2">
-            Projects
-          </Typography> */}
           <div className={classes.gridRoot}>
             <GridList cellHeight={180} className={classes.gridList}>
               <ProjectDataComponent data={this.props.dashboardData} onClick={this.handleClick}/>
