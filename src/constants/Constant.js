@@ -193,3 +193,8 @@ export const SERVICE_TABS = {
     'LOCATION': 'locn',
     'DEVICE': 'devid'
 }
+
+export const FIELD_TYPE = {
+    'STRING': 'string',
+    'BOOLEAN': 'boolean'
+}

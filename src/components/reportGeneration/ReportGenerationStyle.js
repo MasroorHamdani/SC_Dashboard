@@ -35,7 +35,6 @@ const styles = theme => ({
     gridList: {
         width: '100%',
         justifyContent: 'space-around',
-        
     },
     formControl: {
         margin: theme.spacing.unit,
@@ -54,7 +53,8 @@ const styles = theme => ({
     flexList: {
         display: 'flex',
         flexWrap: 'wrap',
-        flexDirection: 'row'
+        flexDirection: 'row',
+        width: '100%'
     },
     listItem: {
         width: '25%',
@@ -62,6 +62,9 @@ const styles = theme => ({
     },
     gridFooter: {
         marginTop: theme.spacing.unit
+    },
+    seperator: {
+        marginTop: theme.spacing.unit * 3
     }
 
 });

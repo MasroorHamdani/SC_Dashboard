@@ -5,12 +5,13 @@ import {withStyles, Card, CardHeader, Avatar,
     FormHelperText, Input, Grid, List,
     ListItem, ListItemText, ExpansionPanelDetails,
     ExpansionPanel, ExpansionPanelSummary, Typography,
-    Radio} from '@material-ui/core';
+    Radio, TextField} from '@material-ui/core';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import {REPORT_TABS, SERVICES} from '../../constants/Constant';
+import {REPORT_TABS, SERVICES, SERVICE_TABS} from '../../constants/Constant';
 import styles from './ReportGenerationStyle';
 import { NamespacesConsumer } from 'react-i18next';
 import _ from 'lodash';
+import ReportComponent from './ReportComponent';
 
 class ReportContent extends Component {
     state = { };
@@ -19,7 +20,8 @@ class ReportContent extends Component {
         const {type, classes, data, stateData,
             handleProjectSelectionChange, handleExpandClick,
             handleDeviceToggle, onNextClick, onPreviousClick,
-            handleServiceToggle, shouldDisableCheckbox} = this.props;
+            handleServiceToggle, shouldDisableCheckbox,
+            onChange, generateReport} = this.props;
         return(
             <NamespacesConsumer>
             {
@@ -94,6 +96,9 @@ class ReportContent extends Component {
                     <div>
                         {data.projectDetails &&
                             data.projectDetails.map((row, index) => {
+                                let {Key} = stateData.device,
+                                    type = stateData.device.Accept[0]['V'],
+                                    deviceSelected = stateData.device[Key]
                                 return <ExpansionPanel key={index}>
                                 <ExpansionPanelSummary
                                     onClick={event => handleExpandClick(index, row.insid, row.PID)}
@@ -102,21 +107,23 @@ class ReportContent extends Component {
                                         <Typography className={classes.heading}>{row.name}, {row.locn}</Typography>
                                     </div>
                                     <div className={classes.column}>
-                                        <Typography className={classes.secondaryHeading}>Select Sensor Location</Typography>
+                                        <Typography className={classes.secondaryHeading}>{stateData.device['Disp']}</Typography>
                                     </div>
                                 </ExpansionPanelSummary>
                                 <ExpansionPanelDetails>
                                     <List dense className={classes.flexList}>
                                     {stateData[row.insid] &&
                                         stateData[row.insid].details.map((dt, index) => {
-                                        return<ListItem className={classes.listItem} button key={index} button
-                                        onClick={handleDeviceToggle(dt.id)}>
-                                                <Checkbox
-                                                    checked={stateData.deviceChecked.indexOf(dt.id) !== -1}
-                                                    disabled={shouldDisableCheckbox(dt.id)}
-                                                />
-                                                <ListItemText primary={dt.id} />
-                                            </ListItem>
+                                            if(dt.type === type)
+                                                return<ListItem className={classes.listItem} button key={index} button
+                                                onClick={handleDeviceToggle(dt.id)}>
+                                                    <Checkbox
+                                                        checked={deviceSelected.indexOf(dt.id) !== -1}
+                                                        disabled={shouldDisableCheckbox(dt.id)}
+                                                    />
+                                                    <ListItemText primary={dt.id} />
+                                                </ListItem>
+                                            
                                         })
                                     }
                                     </List>
@@ -152,21 +159,52 @@ class ReportContent extends Component {
                 }
                 
                 {type === REPORT_TABS['CONFIGURE'] &&
-                <div>
-                    <Grid className={classes.gridFooter} 
-                        item
-                        container
+                <div className={classes.formControl}>
+                    <div>
+                        <Typography variant="h6">Input Parameters required</Typography>
+                        {(stateData && stateData.inputFields) &&
+                            stateData.inputFields.map((dt, index) => {
+                                if(dt.Key !== SERVICE_TABS['DEVICE'] && dt.Key !== SERVICE_TABS['LOCATION'])
+                                    return <ReportComponent index={index} value={dt.Key} disp={dt.Disp}
+                                        format={dt.Accept[0]['V']} stateData={stateData}
+                                        onChange={onChange} type={dt.Type}/>
+                            })
+                        }
+                    </div>
+                    <div className={classes.seperator}>
+                        <Typography variant="h6">Select the Report format type</Typography>
+                        {(stateData && stateData.outputFields) &&
+                            stateData.outputFields.map((dt, index) => {
+                                if(dt.Key !== SERVICE_TABS['DEVICE'] && dt.Key !== SERVICE_TABS['LOCATION'])
+                                    return <ReportComponent index={index} value={dt.Key} disp={dt.Disp}
+                                        stateData={stateData} onChange={onChange}
+                                        type={dt.Type}/>
+                            })
+                        }
+                    </div>
+                    <Grid container spacing={24}
+                        direction="row"
+                        justify="space-between"
                         alignItems='center'
-                        direction='row'
-                        justify='flex-start'
-                        >
-                        <Button
-                            variant="contained"
-                            color="primary"
-                            onClick={onPreviousClick}
-                            >
-                            {t('previous')}
-                        </Button>
+                        className={classes.gridFooter}>
+                        <Grid item>
+                            <Button
+                                onClick={onPreviousClick}
+                                variant="contained"
+                                color="primary"
+                                className={classes.button}>
+                                {t('previous')}
+                            </Button>
+                        </Grid>
+                        <Grid item>
+                            <Button
+                                onClick={generateReport}
+                                variant="contained"
+                                color="primary"
+                                className={classes.button}>
+                                Generate
+                            </Button>
+                        </Grid>
                     </Grid>
                 </div>
                 }
