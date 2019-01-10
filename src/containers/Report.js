@@ -26,6 +26,8 @@ class Report extends Component {
         const {name, value} = event.target;
         this.setState({
             [name] : value
+        }, function() {
+            console.log(this.state);
         });
 
     }
