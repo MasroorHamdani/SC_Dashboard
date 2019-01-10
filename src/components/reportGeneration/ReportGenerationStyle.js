@@ -64,8 +64,13 @@ const styles = theme => ({
         marginTop: theme.spacing.unit
     },
     seperator: {
-        marginTop: theme.spacing.unit * 3
-    }
+        marginTop: theme.spacing.unit * 2
+    },
+    timePickerTextField: {
+        // marginLeft: theme.spacing.unit,
+        // marginRight: theme.spacing.unit,
+        width: '50%',
+    },
 
 });
 

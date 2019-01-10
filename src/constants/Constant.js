@@ -3,7 +3,7 @@ export const API_END_POINT = "https://4l6qi5oh0h.execute-api.ap-southeast-1.amaz
 
 export const API_URLS = {
     "LOGIN": "/unauth/login", //"/login-1-time",
-    "REFRESH_TOKEN": "/refreshtoken",
+    "REFRESH_TOKEN": "/unauth/login/refreshtoken",
     "DASHBOARD": "/auth/projects",//"/get-settings",
     "PROJECT_DETAILS": "/auth/projects",//"/get-project",
     "FORGOT_PASSWORD": "/unauth/password/change",//"/forgot-password",
@@ -53,6 +53,8 @@ export const DATE_TIME_FORMAT = 'YYYYMMDDHHmm'
 export const GRAPH_LABEL_TIME_FORMAT = 'DD/MM/YYYY HH:mm'
 
 export const HOUR_MIN_FORMAT = 'hh:mm A'
+
+export const HOUR_FORMAT = 'HH:mm'
 
 export const ANALYTICS_TABS = {
     0: 'Alerts',
@@ -161,7 +163,7 @@ export const SERVICES = {
     'USER_SATISFACTION': {
         id: 'sg.smartclean.usersatisfaction',
         display: 'User Satisfaction',
-        description: 'This service will get the data for User satisfaction for given date and time for schedule intervals',
+        description: 'This service calculates feedback data metrics for a location.',
         avatar: 'US'
     },
     'ATTENDANT_LOG': {
@@ -177,10 +179,16 @@ export const SERVICES = {
         avatar: 'SVAL'
     },
     'PEAK_TIME': {
-        id: 3,
+        id: 'sg.smartclean.peaktime',
         display: 'Peak Time',
         description: 'This service will get the data for User satisfaction for given date and time for schedule intervals',
         avatar: 'PT'
+    },
+    'PEOPLE_COUNT': {
+        id: 'sg.smartclean.pcanalytics',
+        display: 'People Count',
+        description: 'This service calculates people density analytics for an installation',
+        avatar: 'PC'
     }
 }
 
@@ -196,5 +204,10 @@ export const SERVICE_TABS = {
 
 export const FIELD_TYPE = {
     'STRING': 'string',
-    'BOOLEAN': 'boolean'
+    'BOOLEAN': 'boolean',
+    'DROPDOWN': 'dropdown',
+    'STRDROPDOWN': 'strdropdown'
+}
+export const STRING_FIELD_FORMAT = {
+    'TIME': 'HHmm'
 }

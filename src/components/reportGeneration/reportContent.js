@@ -22,6 +22,10 @@ class ReportContent extends Component {
             handleDeviceToggle, onNextClick, onPreviousClick,
             handleServiceToggle, shouldDisableCheckbox,
             onChange, generateReport} = this.props;
+            let rtypeOptions = [
+                {key: 'PDF', value: 'pdf'},
+                {key: 'Email', value: 'email'}
+            ]
         return(
             <NamespacesConsumer>
             {
@@ -159,15 +163,17 @@ class ReportContent extends Component {
                 }
                 
                 {type === REPORT_TABS['CONFIGURE'] &&
+                
                 <div className={classes.formControl}>
                     <div>
                         <Typography variant="h6">Input Parameters required</Typography>
                         {(stateData && stateData.inputFields) &&
                             stateData.inputFields.map((dt, index) => {
                                 if(dt.Key !== SERVICE_TABS['DEVICE'] && dt.Key !== SERVICE_TABS['LOCATION'])
-                                    return <ReportComponent index={index} value={dt.Key} disp={dt.Disp}
+                                    return <ReportComponent key={index} value={dt.Key} disp={dt.Disp}
                                         format={dt.Accept[0]['V']} stateData={stateData}
-                                        onChange={onChange} type={dt.Type}/>
+                                        onChange={onChange} type={dt.Type} defaultVal={dt.Default}
+                                        toolTip={dt.Description}/>
                             })
                         }
                     </div>
@@ -176,10 +182,32 @@ class ReportContent extends Component {
                         {(stateData && stateData.outputFields) &&
                             stateData.outputFields.map((dt, index) => {
                                 if(dt.Key !== SERVICE_TABS['DEVICE'] && dt.Key !== SERVICE_TABS['LOCATION'])
-                                    return <ReportComponent index={index} value={dt.Key} disp={dt.Disp}
+                                    return <ReportComponent key={index} value={dt.Key} disp={dt.Disp}
                                         stateData={stateData} onChange={onChange}
-                                        type={dt.Type}/>
+                                        type={dt.Type} toolTip={dt.Description}/>
                             })
+                        }
+                        <ReportComponent value='title' disp="Enter Report Title"
+                            stateData={stateData} onChange={onChange}
+                            type='string' toolTip="This name will be used while sharing the report"/>
+                        <ReportComponent value='schedule' disp="Schedule Report Generation"
+                            stateData={stateData} onChange={onChange}
+                            type='strdropdown' toolTip="This depicts the report scheduling time."/>
+                        <ReportComponent value='rtype' disp="Generated Report type"
+                            stateData={stateData} onChange={onChange}
+                            type='dropdown' menu={rtypeOptions} toolTip="Select the type of report sharing procedure"/>
+                        {stateData.rtype === 'email' &&
+                            <Grid item xs={12} sm={6}>
+                                <TextField
+                                    required
+                                    id='email'
+                                    name='email'
+                                    label='Enter Email to receive generated Reports' 
+                                    fullWidth
+                                    autoComplete='email'
+                                    value={stateData.email}
+                                    onChange={onChange}/>
+                            </Grid>
                         }
                     </div>
                     <Grid container spacing={24}
@@ -202,7 +230,7 @@ class ReportContent extends Component {
                                 variant="contained"
                                 color="primary"
                                 className={classes.button}>
-                                Generate
+                                Create Report
                             </Button>
                         </Grid>
                     </Grid>

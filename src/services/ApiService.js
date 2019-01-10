@@ -54,14 +54,14 @@ function ApiService(configObject) {
             const refreshToken = localStorage.getItem('refreshToken');
             if (!refreshToken) return forceLogout();
 
-            try {
-                const isRefreshTokenExpired =
-                JWTDecode(refreshToken).exp < Date.now() / 1000;
+            // try {
+            //     const isRefreshTokenExpired =
+            //     JWTDecode(refreshToken).exp < Date.now() / 1000;
           
-                if (isRefreshTokenExpired) return forceLogout();
-            } catch (e) {
-            return forceLogout();
-            }
+            //     if (isRefreshTokenExpired) return forceLogout();
+            // } catch (e) {
+            // return forceLogout();
+            // }
             const urlEndPoint = `${API_END_POINT}${API_URLS['REFRESH_TOKEN']}`,
                 dataToPost = {
                     rtoken: sessionStorage.getItem('refreshToken')
