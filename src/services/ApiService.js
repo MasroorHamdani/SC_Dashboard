@@ -64,14 +64,14 @@ function ApiService(configObject) {
             // }
             const urlEndPoint = `${API_END_POINT}${API_URLS['REFRESH_TOKEN']}`,
                 dataToPost = {
-                    rtoken: sessionStorage.getItem('refreshToken')
+                    rtoken: refreshToken
                 }
             axios({
                 method:'POST',
                 url: urlEndPoint,
                 headers: {'Content-Type':'application/json'
                 },
-                body: JSON.stringify(dataToPost)
+                data: JSON.stringify(dataToPost)
               }).then(newAccessToken => newAccessToken.json())
               .then(newAccessToken => {
                   isFetchingToken = false;
@@ -104,7 +104,7 @@ function ApiService(configObject) {
 
             //         forceLogout();
             //     });
-        } else if(err.response.config.url.includes('/refresh-token')){
+        } else if(err.response.config.url.includes('/refreshtoken')){
             return forceLogout();
         } else {
             const initTokenSubscriber = new Promise((resolve, reject) => {

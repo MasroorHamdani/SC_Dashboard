@@ -25,6 +25,10 @@ class ReportContent extends Component {
             let rtypeOptions = [
                 {key: 'PDF', value: 'pdf'},
                 {key: 'Email', value: 'email'}
+            ],
+            dynamicDateOptions = [
+                {key: 'Yesterday', value: 'yesterday'},
+                {key: 'Today', value: 'today'}
             ]
         return(
             <NamespacesConsumer>
@@ -173,7 +177,7 @@ class ReportContent extends Component {
                                     return <ReportComponent key={index} value={dt.Key} disp={dt.Disp}
                                         format={dt.Accept[0]['V']} stateData={stateData}
                                         onChange={onChange} type={dt.Type} defaultVal={dt.Default}
-                                        toolTip={dt.Description}/>
+                                        toolTip={dt.Description} data={dynamicDateOptions}/>
                             })
                         }
                     </div>
@@ -192,22 +196,14 @@ class ReportContent extends Component {
                             type='string' toolTip="This name will be used while sharing the report"/>
                         <ReportComponent value='schedule' disp="Schedule Report Generation"
                             stateData={stateData} onChange={onChange}
-                            type='strdropdown' toolTip="This depicts the report scheduling time."/>
+                            type='string' format='strdropdown' toolTip="This depicts the report scheduling time."/>
                         <ReportComponent value='rtype' disp="Generated Report type"
                             stateData={stateData} onChange={onChange}
-                            type='dropdown' menu={rtypeOptions} toolTip="Select the type of report sharing procedure"/>
+                            type='string' format='dropdown' data={rtypeOptions} toolTip="Select the type of report sharing procedure"/>
                         {stateData.rtype === 'email' &&
-                            <Grid item xs={12} sm={6}>
-                                <TextField
-                                    required
-                                    id='email'
-                                    name='email'
-                                    label='Enter Email to receive generated Reports' 
-                                    fullWidth
-                                    autoComplete='email'
-                                    value={stateData.email}
-                                    onChange={onChange}/>
-                            </Grid>
+                            <ReportComponent value='email' disp="Enter Email to receive generated Reports"
+                                stateData={stateData} onChange={onChange}
+                                type='string' toolTip="Email enter will recveive the Report generated"/>
                         }
                     </div>
                     <Grid container spacing={24}
