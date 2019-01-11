@@ -40,6 +40,7 @@ export function projectDetailData(config) {
     return function (dispatch) {
         ApiService(config).then(data => {
             //on success we will dispatch a sync action with the data
+            // if(data)
             dispatch(detailedDataReceived(data.data))
         })
     }

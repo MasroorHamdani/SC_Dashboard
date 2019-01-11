@@ -205,9 +205,11 @@ export const SERVICE_TABS = {
 export const FIELD_TYPE = {
     'STRING': 'string',
     'BOOLEAN': 'boolean',
-    'DROPDOWN': 'dropdown',
-    'STRDROPDOWN': 'strdropdown'
+    
 }
 export const STRING_FIELD_FORMAT = {
-    'TIME': 'HHmm'
+    'TIME': 'HHmm',
+    'DROPDOWN': 'dropdown',
+    'STRDROPDOWN': 'strdropdown',
+    'DELTADAYS': 'DD'
 }
