@@ -57,33 +57,36 @@ export const HOUR_MIN_FORMAT = 'hh:mm A'
 export const HOUR_FORMAT = 'HH:mm'
 
 export const ANALYTICS_TABS = {
-    0: 'Alerts',
-    1: 'NFC',
-    2: 'FD',
-    3: 'PC',
-    4: 'AQ',
-    5: 'WD'
+    0: 'FD',
+    1: 'PC',
+    2: 'AQ',
+    3: 'WD'
+}
+
+export const ANALYTICS_SUB_TABS = {
+    'ALERT' : { 'key': 'alert',
+                'display': 'Alert'},
+    'DISPENSER' : {'key': 'dispenser',
+                'display': 'Dispenser'
+                },
+    'INSTALLATION_DETAILS' : {'key': 'installation',
+                            'display': "Installation Details"
+                            }
 }
 
 export const ANALYTICS_TAB = {
-    'ALERT' : {'key': 'Alerts',
-                'value': 0,
-                'text': 'Alerts'},
-    'NFC': {'key': 'NFC',
-                'value': 1,
-                'text': 'NFC Logs'},
     'FD': {'key': 'FD',
-                'value': 2,
+                'value': 0,
                 'text': 'Feedback Tablet'},
     'PC': {'key': 'PC',
-                'value': 3,
+                'value': 1,
                 'text': 'People counting sensor'},
     'AQ':{'key': 'AQ',
-                'value': 4,
+                'value': 2,
                 'text': 'Air quality sensor'},
     'WD': {'key': 'WD',
-                'value': 5,
-                'text': 'Wetness Detection sensor'}
+                'value': 3,
+                'text': 'Wetness Detection sensor'},
 }
 
 export const ANALYTICS_DATE = {

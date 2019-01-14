@@ -59,9 +59,9 @@ class AnalysisData extends Component {
         const {stateData, data, classes, handleSamplingChange,
             getMetric} = this.props;
         let tabData;
-        if (data.dataAQAnalysis &&
+        if (data.dataAQAnalysis && data.dataAQAnalysis.data &&
         stateData.value.includes(ANALYTICS_TAB['AQ']['key']) && stateData.aqMetrics['vector']) {
-            let dataAnalysis = data.dataAQAnalysis;
+            let dataAnalysis = data.dataAQAnalysis.data;
             let analyticsData = getFormatedGraphData(dataAnalysis, stateData.aqMetrics);
             let graphData = analyticsData.graphData,
             nameMapper = analyticsData.nameMapper;
@@ -90,9 +90,9 @@ class AnalysisData extends Component {
                     </LineChart>
                 </ResponsiveContainer>
             </div>
-        } else if (data.dataPCAnalysis &&
+        } else if (data.dataPCAnalysis && data.dataPCAnalysis.data &&
             stateData.value.includes(ANALYTICS_TAB['PC']['key']) && stateData.pcMetrics['vector']) {
-            let dataAnalysis = data.dataPCAnalysis,
+            let dataAnalysis = data.dataPCAnalysis.data,
             analyticsData = getFormatedGraphData(dataAnalysis, stateData.pcMetrics),
             graphData = analyticsData.graphData,
             nameMapper = analyticsData.nameMapper;

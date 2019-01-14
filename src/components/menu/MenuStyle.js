@@ -3,6 +3,7 @@ const styles = theme => ({
   drawerPaper: {
     position: 'relative',
     whiteSpace: 'nowrap',
+    // backgroundColor: '#262f3e',
     width: drawerWidth,
     transition: theme.transitions.create('width', {
       easing: theme.transitions.easing.sharp,
@@ -11,6 +12,7 @@ const styles = theme => ({
   },
   drawerPaperClose: {
     overflowX: 'hidden',
+    // backgroundColor: '#262f3e',
     transition: theme.transitions.create('width', {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,

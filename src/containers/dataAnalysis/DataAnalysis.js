@@ -2,17 +2,21 @@ import React, { Component } from 'react';
 import {connect} from 'react-redux';
 import {isEqual} from 'lodash';
 import {withStyles} from '@material-ui/core';
+
+import moment from 'moment';
+import _ from 'lodash';
+
 import DataAnalysisComponent from '../../components/dataAnalysis/DataAnalysis';
 import {getApiConfig} from '../../services/ApiCofig';
 import {API_URLS, PROJECT_TABS, DATE_TIME_FORMAT,
-  ANALYTICS_DATE, ANALYTICS_TAB, DEVICE_METRICS} from '../../constants/Constant';
+  ANALYTICS_DATE, ANALYTICS_TAB, DEVICE_METRICS, ANALYTICS_SUB_TABS} from '../../constants/Constant';
 import {projectMenuList, projectSubMenuList, projectAQAnalysisData,
   projectPCAnalysisData, projectPCMetricsData,
   projectAQMetricsData} from '../../actions/DataAnalysis';
 import styles from './DataAvalysisStyle';
 import RadioButtonComponent from '../../components/dataAnalysis/RadioButtonController';
-import moment from 'moment';
-import _ from 'lodash';
+import AlertAnalysis from '../../components/dataAnalysis/AlertAnalysis';
+import DispenserAnalysis from '../../components/dataAnalysis/DispenserAnalysis';
 
 class DataAnalysis extends Component {
   state = ({
@@ -28,39 +32,40 @@ class DataAnalysis extends Component {
     i: 0,
     sampling: '',
     unit: '',
-    stats: '',
-    func: ''
+    func: '',
+    page: ''
   })
   handleTabChange = (event, value) => {
     this.setState({ tab: value }, function () {
     });
   };
 
+  handleSelect = (event) => {
+    this.setState({page: event})
+  }
   handleChange = event => {
-    this.setState({ value: event.target.value, }, function() {
-      if(this.state.value.includes(ANALYTICS_TAB['ALERT']['key']))
-        this.setState({ tab: ANALYTICS_TAB['ALERT']['value']});
-      else if(this.state.value.includes(ANALYTICS_TAB['NFC']['key']))
-        this.setState({ tab: ANALYTICS_TAB['NFC']['value']});
-      else if(this.state.value.includes(ANALYTICS_TAB['FD']['key']))
-        this.setState({ tab: ANALYTICS_TAB['FD']['value']});
+    this.setState({ value: event.target.value,
+                    page: ANALYTICS_SUB_TABS['INSTALLATION_DETAILS']['key']},
+                    function() {
+      if(this.state.value.includes(ANALYTICS_TAB['FD']['key']))
+        this.setState({ tab: ANALYTICS_TAB['FD']['value'],
+        test: ANALYTICS_TAB['FD']['key']});
       else if(this.state.value.includes(ANALYTICS_TAB['PC']['key']))
-        this.setState({ tab: ANALYTICS_TAB['PC']['value']});
+        this.setState({ tab: ANALYTICS_TAB['PC']['value'],
+        test: ANALYTICS_TAB['PC']['key']});
       else if(this.state.value.includes(ANALYTICS_TAB['AQ']['key']))
-        this.setState({ tab: ANALYTICS_TAB['AQ']['value']});
+        this.setState({ tab: ANALYTICS_TAB['AQ']['value'],
+        test: ANALYTICS_TAB['AQ']['key']});
       else if(this.state.value.includes(ANALYTICS_TAB['WD']['key']))
-        this.setState({ tab: ANALYTICS_TAB['WD']['value']});
+        this.setState({ tab: ANALYTICS_TAB['WD']['value'],
+        test: ANALYTICS_TAB['WD']['key']});
       this.handleDateChange(true);
     });
   };
 
   getMetric = () => {
     let metrics = [];
-    if(this.state.value.includes(ANALYTICS_TAB['ALERT']['key']) && this.state.alertMetrics)
-      metrics = this.state.alertMetrics.vector;
-    else if(this.state.value.includes(ANALYTICS_TAB['NFC']['key']) && this.state.nfcMetrics)
-      metrics = this.state.nfcMetrics.vector;
-    else if(this.state.value.includes(ANALYTICS_TAB['FD']['key']) && this.state.fdMetrics)
+    if(this.state.value.includes(ANALYTICS_TAB['FD']['key']) && this.state.fdMetrics)
       metrics = this.state.fdMetrics.vector;
     else if(this.state.value.includes(ANALYTICS_TAB['PC']['key']) && this.state.pcMetrics)
       metrics = this.state.pcMetrics.vector;
@@ -79,12 +84,7 @@ class DataAnalysis extends Component {
       let metrics = this.getMetric(),
         dataToPost = {'fn': {}};
       metrics.map((dt, index) => {
-        if (dt.path === this.state.stats) {
-          dataToPost['fn'][dt.path] = this.state.func ? this.state.func : dt.statistic;
-        }
-        else{
-          dataToPost['fn'][dt.path] = dt.statistic;
-        }
+        dataToPost['fn'][dt.path] = this.state[dt.path] ? this.state[dt.path] : dt.statistic;
       })
       const endPoint = `${API_URLS['DEVICE_DATA']}/${this.state.value}`,
         params = {
@@ -92,20 +92,25 @@ class DataAnalysis extends Component {
           'end': this.state.end,
           'aggregateby': this.state.sampling,
           'unit': this.state.unit,
-        },
-        config = getApiConfig(endPoint, 'POST', dataToPost, params);
+        };
+      let headers, config;
+      // if(this.state[`${this.state.test}SessionHeader`])
+      headers = {
+        'x-sc-session-token': this.state[`${this.state.test}SessionHeader`]? this.state[`${this.state.test}SessionHeader`]: ''
+      };
+      config = getApiConfig(endPoint, 'POST', dataToPost, params, headers);
       this.props.onDataAnalysis(config, endPoint);
     }
   }
 
-  // handleSamplingChange = (event, value) => {
   handleSamplingChange = (event) => {
     const {name, value, id} = event.target;
     this.setState({
         [name] : value
     }, function() {
-      if(id === 'update')
+      if(id === 'update') {
         this.getNewAnalyticsData();
+      }
     });
   }
 
@@ -139,7 +144,9 @@ class DataAnalysis extends Component {
     }
     this.setState( {
       start: start,
-      end: end
+      end: end,
+      PCSessionHeader: '',
+      AQSessionHeader: ''
     }, function() {
       this.getNewAnalyticsData(param);
     })
@@ -203,6 +210,14 @@ class DataAnalysis extends Component {
           this.getNewAnalyticsData();
         })
     }
+    if (this.props.dataAQAnalysis &&
+      !isEqual(this.props.dataAQAnalysis, prevProps.dataAQAnalysis)){
+        this.setState({AQSessionHeader: this.props.dataAQAnalysis.headers['x-sc-session-token']});
+    }
+    if (this.props.dataPCAnalysis &&
+      !isEqual(this.props.dataPCAnalysis, prevProps.dataPCAnalysis)){
+        this.setState({PCSessionHeader: this.props.dataPCAnalysis.headers['x-sc-session-token']});
+    }
   }
 
   getVector=(metricsResponse) => {
@@ -229,14 +244,17 @@ class DataAnalysis extends Component {
     const {classes} = this.props;
       return(
         <div className={classes.root}>
-          { this.state.projectList &&
             <RadioButtonComponent data={this.state} projectList={this.state.projectList}
-              handleChange={this.handleChange}/>
-          }
-          { this.state.projectList &&
+              handleChange={this.handleChange} handleSelect={this.handleSelect}/>
             <div className={classes.seperator}></div>
+          { this.state.page === ANALYTICS_SUB_TABS['ALERT']['key'] &&
+            <AlertAnalysis/>
           }
-          { this.state.projectList &&
+          { this.state.page === ANALYTICS_SUB_TABS['DISPENSER']['key'] &&
+            <DispenserAnalysis/>
+          }
+          { (this.state.projectList &&
+            this.state.page === ANALYTICS_SUB_TABS['INSTALLATION_DETAILS']['key'] ) &&
             <DataAnalysisComponent data={this.props} stateData={this.state}
               handleDateChange={this.handleDateChange}
               handleTabChange={this.handleTabChange}
