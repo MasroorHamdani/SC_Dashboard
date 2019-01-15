@@ -13,6 +13,7 @@ export function getFormatedGraphData(passedData, metrics) {
             nameMapper[vec.shortName] = {};
             nameMapper[vec.shortName]['name'] = vec.name;
             nameMapper[vec.shortName]['color'] = vec.color;
+            nameMapper[vec.shortName]['chartType'] = vec.chartType;
         })
         graphData.push(graphElement)
     });

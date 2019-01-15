@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from "react-redux";
 import {isEqual} from "lodash";
-
+import JWTDecode from 'jwt-decode';
 import { API_URLS, REACT_URLS, NEW_PASSWORD_REQUIRED,
   LOGIN_STATUS } from "../constants/Constant";
 import LoginComponent from "../components/login/Login";
@@ -9,6 +9,7 @@ import { userLogin } from "../actions/LoginAction";
 import { getApiConfig } from '../services/ApiCofig';
 import {forgotPassword} from '../actions/ForgotPasswordAction';
 import {resetPassword} from '../actions/ResetPasswordAction';
+import _ from 'lodash';
 
 class Login extends React.Component {
   constructor(props) {
@@ -82,6 +83,14 @@ handleSubmit = () => {
   this.props.onLogin(config);
     }
 }
+getTokenData = (token, attr) => {
+  let tokenDict = JSON.parse(token['R']), data;
+  if(tokenDict && tokenDict.length >0) 
+  {
+    data = _.find(tokenDict, attr)
+  }
+  return data;
+}
 componentDidUpdate(prevProps, prevState) {
   if (this.props.userData.LoginReducer.data
     && !isEqual(this.props.userData.LoginReducer, prevProps.userData.LoginReducer)) {
@@ -103,6 +112,10 @@ componentDidUpdate(prevProps, prevState) {
     } else {
       localStorage.setItem('idToken', responseData['AuthenticationResult']['IdToken']);
       localStorage.setItem('refreshToken', responseData['AuthenticationResult']['RefreshToken']);
+      let idTokenDecoded = JWTDecode(responseData['AuthenticationResult']['IdToken']),
+        userData = this.getTokenData(idTokenDecoded, "Firstname");
+      if (userData)
+        localStorage.setItem('userName', userData['SUB2']);
       if (this.state.loading) {
         this.setState({
           loading: false,

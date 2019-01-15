@@ -95,9 +95,9 @@ class DataAnalysis extends Component {
         };
       let headers, config;
       // if(this.state[`${this.state.test}SessionHeader`])
-      headers = {
-        'x-sc-session-token': this.state[`${this.state.test}SessionHeader`]? this.state[`${this.state.test}SessionHeader`]: ''
-      };
+      // headers = {
+      //   'x-sc-session-token': this.state[`${this.state.test}SessionHeader`]? this.state[`${this.state.test}SessionHeader`]: ''
+      // };
       config = getApiConfig(endPoint, 'POST', dataToPost, params, headers);
       this.props.onDataAnalysis(config, endPoint);
     }
@@ -233,7 +233,8 @@ class DataAnalysis extends Component {
           unit: vector.Unit,
           shortName: vector.ShortName,
           color: vector.Color,
-          statistic: vector.Statistic
+          statistic: vector.Statistic,
+          chartType: vector.ChartType
         })
       })
     })
