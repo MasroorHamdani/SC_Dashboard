@@ -36,27 +36,19 @@ class DataAnalysisComponent extends Component {
                         </Tabs>
                     </AppBar>
 
-                    {(stateData.tab === 0 || stateData.value.includes(ANALYTICS_TAB['ALERT']['key'])) && <AnalysisData
+                    {(stateData.tab === 0 || stateData.value.includes(ANALYTICS_TAB['FD']['key'])) && <AnalysisData
                         data={data} handleDateChange={handleDateChange}
                         stateData={stateData} handleSamplingChange={handleSamplingChange}
                         getMetric={getMetric}/>}
-                    {(stateData.tab === 1 || stateData.value.includes(ANALYTICS_TAB['NFC']['key'])) && <AnalysisData 
+                    {(stateData.tab === 1 || stateData.value.includes(ANALYTICS_TAB['PC']['key'])) && <AnalysisData 
                         data={data} handleDateChange={handleDateChange}
                         stateData={stateData} handleSamplingChange={handleSamplingChange}
                         getMetric={getMetric}/>}
-                    {(stateData.tab === 2 || stateData.value.includes(ANALYTICS_TAB['FD']['key'])) && <AnalysisData
+                    {(stateData.tab === 2 || stateData.value.includes(ANALYTICS_TAB['AQ']['key'])) && <AnalysisData 
                         data={data} handleDateChange={handleDateChange}
                         stateData={stateData} handleSamplingChange={handleSamplingChange}
                         getMetric={getMetric}/>}
-                    {(stateData.tab === 3 || stateData.value.includes(ANALYTICS_TAB['PC']['key'])) && <AnalysisData 
-                        data={data} handleDateChange={handleDateChange}
-                        stateData={stateData} handleSamplingChange={handleSamplingChange}
-                        getMetric={getMetric}/>}
-                    {(stateData.tab === 4 || stateData.value.includes(ANALYTICS_TAB['AQ']['key'])) && <AnalysisData 
-                        data={data} handleDateChange={handleDateChange}
-                        stateData={stateData} handleSamplingChange={handleSamplingChange}
-                        getMetric={getMetric}/>}
-                    {(stateData.tab === 5 || stateData.value.includes(ANALYTICS_TAB['WD']['key'])) && <AnalysisData 
+                    {(stateData.tab === 3 || stateData.value.includes(ANALYTICS_TAB['WD']['key'])) && <AnalysisData 
                         data={data} handleDateChange={handleDateChange}
                         stateData={stateData} handleSamplingChange={handleSamplingChange}
                         getMetric={getMetric}/>}

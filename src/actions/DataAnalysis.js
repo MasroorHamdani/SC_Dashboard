@@ -57,7 +57,7 @@ function subMenuDataReceived(data) {
 export function projectAQAnalysisData(config) {
   return function(dispatch) {
     ApiService(config).then(data => {
-      dispatch(AnalysisAQDataReceived(data.data))
+      dispatch(AnalysisAQDataReceived(data))
     })
   }
 }
@@ -78,7 +78,7 @@ function AnalysisAQDataReceived(data) {
 export function projectPCAnalysisData(config) {
   return function(dispatch) {
     ApiService(config).then(data => {
-      dispatch(AnalysisPCDataReceived(data.data))
+      dispatch(AnalysisPCDataReceived(data))
     })
   }
 }

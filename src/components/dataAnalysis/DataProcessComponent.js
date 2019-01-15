@@ -23,8 +23,6 @@ class DataProcessingComponent extends Component {
                             id="sampling"
                             label="Sampling Rate"
                             name="sampling"
-                             // value={stateData[dt.name] ? stateData[dt.name].sampling: ''}
-                            // onChange={e => handleSamplingChange(e, dt.name)}
                             value={stateData.sampling}
                             onChange={handleSamplingChange}
                             margin="normal"
@@ -55,16 +53,16 @@ class DataProcessingComponent extends Component {
                                 {t('func')}
                             </InputLabel>
                             <NativeSelect
-                                value={stateData.func}
+                                value={stateData[dt.path]}
                                 onChange={handleSamplingChange}
-                                input={<Input name="func" id="func-native-label-placeholder" />}>
-                                <option value='' key='func' name="func" id='func'>{t('chooseFunc')}</option>
+                                input={<Input name={dt.path} id="func-native-label-placeholder" />}>
+                                <option value='' key='func' >{t('chooseFunc')}</option>
                                 { FUNCTION_LIST.map((dt) => {
-                                        return <option value={dt.value} name="func" id='func' key={dt.value}>{dt.name}</option>
+                                        return <option value={dt.value} key={dt.value}>{dt.name}</option>
                                 })}
                             </NativeSelect>
                         </FormControl>
-                        <ArrowForwardIcon id="update" onClick={handleSamplingChange}/>
+                        <ArrowForwardIcon className={classes.pointer} id="update" onClick={handleSamplingChange}/>
                     </div>
                 })}
             </div>

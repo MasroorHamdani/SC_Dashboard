@@ -10,7 +10,6 @@ class ReportComponent extends Component {
     render() {
         const {classes, value, disp, format, stateData, onChange,
             type, defaultVal, data, toolTip} = this.props;
-            console.log(format, type, disp, "format, type, disp");
         return (
             <Grid item xs={12} sm={6}>
                 {(type === FIELD_TYPE['STRING'] && format === STRING_FIELD_FORMAT['TIME']) &&

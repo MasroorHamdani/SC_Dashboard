@@ -11,13 +11,16 @@ const styles = theme => ({
     },
     root: {
         width: "23%",
+        maxWidth: 360,
         wordBreak: 'break-word',
         backgroundColor: theme.palette.background.paper,
         overflow: 'auto',
         position: 'relative',
         maxHeight: 'auto',
         marginLeft: -theme.spacing.unit * 5,
-
+    },
+    nested: {
+        paddingLeft: theme.spacing.unit * 4,
     },
 })
 

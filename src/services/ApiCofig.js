@@ -1,4 +1,4 @@
-export const getApiConfig = (url, type, data='', params='') => {
+export const getApiConfig = (url, type, data='', params='', header='') => {
     const config = {
         method: type,
         url: url,
@@ -8,6 +8,11 @@ export const getApiConfig = (url, type, data='', params='') => {
     }
     if (data) {
         config['data'] = data;
+    }
+    if (header) {
+        Object.keys(header).map((key) => (
+            config['headers'][key] = header[key]
+        ));
     }
     let parameter = '';
     if (params) {
