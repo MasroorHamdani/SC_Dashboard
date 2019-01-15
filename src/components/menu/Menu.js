@@ -33,6 +33,7 @@ class Menu extends Component {
     return (
         <Drawer
           variant="permanent"
+          // color="default"
           classes={{
             paper: classNames(classes.drawerPaper, !this.state.open && classes.drawerPaperClose),
           }}

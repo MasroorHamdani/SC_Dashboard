@@ -14,8 +14,8 @@ class Dashboard extends Component {
     super(props);
     this.state = {
       data : {},
-      loading: true,
-      success: false,
+      // loading: false,
+      // success: true,
     }
   }
 
@@ -29,18 +29,14 @@ class Dashboard extends Component {
     this.props.onDashbaord(config);
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    if (this.props.dashboardData &&
-      !isEqual(this.props.dashboardData, prevProps.dashboardData)) {
-        // console.log(this.props.dashboardData);
-      }
-      if (this.state.loading) {
-        this.setState({
-          loading: false,
-          success: true,
-        });
-      }
-  }
+  // componentDidUpdate(prevProps, prevState) {
+  //   if (this.state.loading) {
+  //     this.setState({
+  //       loading: false,
+  //       success: true,
+  //     });
+  //   }
+  // }
 
   render() {
     const { classes } = this.props;

@@ -15,13 +15,14 @@ class Footer extends Component {
     const {classes} = this.props;
     return (
       <AppBar
-        position="fixed" color="primary"
-        className={classNames(classes.appBar)}>
+        position="fixed"
+        color="primary"
+        className={classNames(classes.appBar)}
+        >
         <NamespacesConsumer>
           {
             t=> <Typography
-                component="h1"
-                variant="h6"
+                component="h6"
                 color="inherit"
                 noWrap
                 className={classes.title}>

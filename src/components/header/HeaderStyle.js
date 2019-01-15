@@ -12,6 +12,8 @@ const styles = theme => ({
     },
     appBar: {
       zIndex: theme.zIndex.drawer + 1,
+      background: 'linear-gradient(0.25turn, #fff, #6577de, #3e50b8)',
+      // background: 'linear-gradient(0.25turn, #fff, #ebf8e1, #3f51b5) 3e50b8',
       transition: theme.transitions.create(['width', 'margin'], {
         easing: theme.transitions.easing.sharp,
         duration: theme.transitions.duration.leavingScreen,
@@ -34,6 +36,9 @@ const styles = theme => ({
     },
     title: {
       flexGrow: 1,
+    },
+    logo: {
+      width: '20%'
     }
   });
 

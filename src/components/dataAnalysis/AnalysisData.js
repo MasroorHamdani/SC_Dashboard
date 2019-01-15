@@ -55,22 +55,19 @@ class AnalysisData extends Component {
     componentDidMount() {
         setInterval((this.handleRefresh), AUTO_REFRESH_TIMEOUT);
     }
-    render() {
-        const {stateData, data, classes, handleSamplingChange,
-            getMetric} = this.props;
-        let tabData;
-        if (data.dataAQAnalysis && data.dataAQAnalysis.data &&
-        stateData.value.includes(ANALYTICS_TAB['AQ']['key']) && stateData.aqMetrics['vector']) {
-            let dataAnalysis = data.dataAQAnalysis.data;
-            let analyticsData = getFormatedGraphData(dataAnalysis, stateData.aqMetrics);
-            let graphData = analyticsData.graphData,
-            nameMapper = analyticsData.nameMapper;
+
+    generateDataAnalytics = (data, metrics, classes) => {
+        let dataAnalysis = data.data,
+            analyticsData = getFormatedGraphData(dataAnalysis, metrics),
+            graphData = analyticsData.graphData,
+            nameMapper = analyticsData.nameMapper,
             tabData = <div>
-                <Typography gutterBottom variant="h5">
-                    {stateData.aqMetrics.name} - {stateData.aqMetrics.metricType}
-                </Typography>
-                <ResponsiveContainer width='100%' height={400}>
-                    <LineChart className={classes.lineChart} data={graphData}
+            <Typography gutterBottom variant="h5">
+                {metrics.name} - {metrics.metricType}
+            </Typography>
+            <ResponsiveContainer width='100%' height={400}>
+                {metrics.metricType=== 'timeseries' &&
+                    <ComposedChart className={classes.lineChart} data={graphData}
                         margin={{top: 5, right: 30, left: 20, bottom: 5}}>
                         <XAxis dataKey="name" minTickGap={20}
                             label={{ value: 'Time of day', position: 'insideBottomRight', offset: 0}}/>
@@ -81,44 +78,34 @@ class AnalysisData extends Component {
                         <Legend />
                         <Brush dataKey='name' height={30} stroke="#8884d8"/>
                         {(graphData && graphData[0]) &&
-                            Object.keys(graphData[0]).map((key, index) => (
-                            (key !== 'name' &&
-                                (<Line name={nameMapper[key]['name']} key={key} type="basis" strokeWidth={5} dataKey={key}
-                                stroke={nameMapper[key]['color']}/>)
+                            Object.keys(graphData[0]).map(key =>
+                            key !== 'name' &&
+                                (nameMapper[key]['chartType'] === 'line' ?
+                                    <Line name={nameMapper[key]['name']} key={key} type="basis" strokeWidth={5} dataKey={key}
+                                        stroke={nameMapper[key]['color']}/>
+                                :
+                                // )
+                                // (nameMapper[key]['chartType'] === 'bar' &&
+                                    (<Bar name={nameMapper[key]['name']} key={key} dataKey={key} fill={nameMapper[key]['color']} />)
+                                )
                             )
-                        ))}
-                    </LineChart>
-                </ResponsiveContainer>
-            </div>
+                        }
+                    </ComposedChart>
+                }
+            </ResponsiveContainer>
+        </div>
+        return tabData;
+    }
+    render() {
+        const {stateData, data, classes, handleSamplingChange,
+            getMetric} = this.props;
+        let tabData;
+        if (data.dataAQAnalysis && data.dataAQAnalysis.data &&
+        stateData.value.includes(ANALYTICS_TAB['AQ']['key']) && stateData.aqMetrics['vector']) {
+            tabData = this.generateDataAnalytics(data.dataAQAnalysis, stateData.aqMetrics, classes);
         } else if (data.dataPCAnalysis && data.dataPCAnalysis.data &&
             stateData.value.includes(ANALYTICS_TAB['PC']['key']) && stateData.pcMetrics['vector']) {
-            let dataAnalysis = data.dataPCAnalysis.data,
-            analyticsData = getFormatedGraphData(dataAnalysis, stateData.pcMetrics),
-            graphData = analyticsData.graphData,
-            nameMapper = analyticsData.nameMapper;
-            tabData = <div>
-                <Typography gutterBottom variant="h5">
-                    {stateData.pcMetrics.name} - {stateData.pcMetrics.metricType}
-                </Typography>
-                <ResponsiveContainer width='100%' height={400}>
-                    <ComposedChart className={classes.lineChart} data={graphData}
-                        margin={{top: 5, right: 30, left: 20, bottom: 5}}>
-                        <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis dataKey="name" minTickGap={20}
-                            label={{ value: 'Time of day', position: 'insideBottomRight', offset: 0}}/>
-                        <YAxis label={{ value: 'Count per minute', angle: -90, position: 'insideLeft'}}/>
-                        <Tooltip />
-                        <Legend />
-                        <Brush dataKey='name' height={30} stroke="#8884d8"/>
-                        {(graphData && graphData[0]) &&
-                            Object.keys(graphData[0]).map((key, index) => (
-                            (key !== 'name' &&
-                                (<Bar name={nameMapper[key]['name']} key={key} dataKey={key} fill={nameMapper[key]['color']} />)
-                            )
-                        ))}
-                    </ComposedChart>
-                </ResponsiveContainer>
-            </div>
+            tabData = this.generateDataAnalytics(data.dataPCAnalysis, stateData.pcMetrics, classes);
         }
 
         return (

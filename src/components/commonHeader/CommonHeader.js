@@ -20,10 +20,10 @@ class CommonHeader extends Component {
           <NamespacesConsumer>
             {
               t=><div className={classes.root}>
-                <AppBar position="static">
+                <AppBar position="static" className={classes.appBar}>
                   <Toolbar>
                     <Typography variant="h6" color="inherit" className={classes.grow}>
-                    {t('companyHeader')}
+                    <img src="https://www.smartclean.sg/images/sc-logo.png" alt="logo" className={classes.logo}/>
                     </Typography>
                     <Button color="inherit" component={Link} to='/contact'>{t('Contact')}</Button>
                     <Button color="inherit" component={Link} to='/about'>{t('About')}</Button>
