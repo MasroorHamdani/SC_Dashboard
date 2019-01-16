@@ -1,6 +1,6 @@
 const styles = theme => ({
   root: {
-    backgroundColor: theme.palette.background.paper,
+    // backgroundColor: theme.palette.background.paper,
     width: "100%",
   },
     // root: {
@@ -18,14 +18,14 @@ const styles = theme => ({
           marginLeft: 'auto',
           marginRight: 'auto',
         },
-      },
-      content: {
-        flexGrow: 1,
-        padding: theme.spacing.unit * 3,
-        marginTop: theme.spacing.unit * 8,
-        height: '100vh',
-        overflow: 'auto',
-      },
+    },
+    content: {
+      flexGrow: 1,
+      padding: theme.spacing.unit * 3,
+      marginTop: theme.spacing.unit * 8,
+      height: '100vh',
+      overflow: 'auto',
+    },
 });
 
 export default styles;

@@ -49,16 +49,16 @@ class DataAnalysis extends Component {
                     function() {
       if(this.state.value.includes(ANALYTICS_TAB['FD']['key']))
         this.setState({ tab: ANALYTICS_TAB['FD']['value'],
-        test: ANALYTICS_TAB['FD']['key']});
+        deviceKey: ANALYTICS_TAB['FD']['key']});
       else if(this.state.value.includes(ANALYTICS_TAB['PC']['key']))
         this.setState({ tab: ANALYTICS_TAB['PC']['value'],
-        test: ANALYTICS_TAB['PC']['key']});
+        deviceKey: ANALYTICS_TAB['PC']['key']});
       else if(this.state.value.includes(ANALYTICS_TAB['AQ']['key']))
         this.setState({ tab: ANALYTICS_TAB['AQ']['value'],
-        test: ANALYTICS_TAB['AQ']['key']});
+        deviceKey: ANALYTICS_TAB['AQ']['key']});
       else if(this.state.value.includes(ANALYTICS_TAB['WD']['key']))
         this.setState({ tab: ANALYTICS_TAB['WD']['value'],
-        test: ANALYTICS_TAB['WD']['key']});
+        deviceKey: ANALYTICS_TAB['WD']['key']});
       this.handleDateChange(true);
     });
   };
@@ -94,10 +94,10 @@ class DataAnalysis extends Component {
           'unit': this.state.unit,
         };
       let headers, config;
-      // if(this.state[`${this.state.test}SessionHeader`])
-      // headers = {
-      //   'x-sc-session-token': this.state[`${this.state.test}SessionHeader`]? this.state[`${this.state.test}SessionHeader`]: ''
-      // };
+      // if(this.state[`${this.state.deviceKey}SessionHeader`])
+      headers = {
+        'x-sc-session-token': this.state[`${this.state.deviceKey}SessionHeader`]? this.state[`${this.state.deviceKey}SessionHeader`]: ''
+      };
       config = getApiConfig(endPoint, 'POST', dataToPost, params, headers);
       this.props.onDataAnalysis(config, endPoint);
     }
