@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {withStyles, Typography} from '@material-ui/core';
-import {LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip,
+import {Line, XAxis, YAxis, CartesianGrid, Tooltip,
     Legend, ResponsiveContainer, Brush, ComposedChart, Bar} from 'recharts';
 import styles from './AnalysisDataStyle';
 import {ANALYTICS_TAB, TIME_LIST,
