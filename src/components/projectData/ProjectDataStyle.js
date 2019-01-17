@@ -6,12 +6,16 @@ const styles = theme => ({
     media: {
       height: 10,
       paddingTop: '56.25%', // 16:9
+      cursor: 'pointer'
     },
     actions: {
       display: 'flex',
     },
     avatar: {
       backgroundColor: red[500],
+    },
+    pointer: {
+      cursor: 'pointer'
     }
 });
 

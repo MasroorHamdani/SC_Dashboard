@@ -12,7 +12,8 @@ export const API_URLS = {
     "USER_PROFILE": "/auth/profile",
     "DEVICE_DATA": "/auth/devices/data",
     "DEVICE_METRICS": "/auth/devices/metrics",
-    "SERVICE_REQUIREMENTS": "/auth/algorithms"
+    "SERVICE_REQUIREMENTS": "/auth/algorithms",
+    "PROJECT_LOCATION": "/installations/devices"
 };
 
 export const NEW_PASSWORD_REQUIRED = "NEW_PASSWORD_REQUIRED";
@@ -44,8 +45,10 @@ export const REACT_URLS = {
     'LOGOUT': '/logout',
     'CONTACT': '/contact',
     'ABOUT': '/about',
-    'AUTH_RESET': "/auth-reset",
-    'USER-PROFILE': "/profile"
+    'AUTH_RESET': '/auth-reset',
+    'USER-PROFILE': '/profile',
+    'ALERT': '/alert',
+    'DISPENSER': '/dispenser'
 }
 
 export const DATE_TIME_FORMAT = 'YYYYMMDDHHmm'

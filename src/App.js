@@ -20,6 +20,8 @@ import theme from './SiteTheme';
 import UserProfile from "./containers/UserProfile";
 import DataAnalysis from "./containers/dataAnalysis/DataAnalysis";
 import Report from "./containers/Report";
+import AlertDetails from "./containers/AlertDetails";
+import DispenserDetails from "./containers/DispenserDetails";
 
 const styles = theme => ({
 
@@ -58,6 +60,8 @@ const styles = theme => ({
                       <Route path="/project/:pid/team/:insid?" component={ProjectTeamDetails} />
                       <Route path="/project/:pid?" component={ProjectDetails} />
                       <Route path="/profile/:userid?" component={UserProfile} />
+                      <Route path="/alert/:pid?" component={AlertDetails} />
+                      <Route path="/dispenser/:pid?" component={DispenserDetails} />
                       <Route path="/data" component={DataAnalysis} />
                       <Route path="/report" component={Report} />
                       <Route path="/logout" component={Logout} />
