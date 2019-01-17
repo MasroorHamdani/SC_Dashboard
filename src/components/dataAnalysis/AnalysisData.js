@@ -79,16 +79,18 @@ class AnalysisData extends Component {
                         <Brush dataKey='name' height={30} stroke="#8884d8"/>
                         {(graphData && graphData[0]) &&
                             Object.keys(graphData[0]).map(key =>
-                            key !== 'name' &&
-                                (nameMapper[key]['chartType'] === 'line' ?
-                                    <Line name={nameMapper[key]['name']} key={key} type="basis" strokeWidth={5} dataKey={key}
-                                        stroke={nameMapper[key]['color']}/>
-                                :
-                                // )
-                                // (nameMapper[key]['chartType'] === 'bar' &&
-                                    (<Bar name={nameMapper[key]['name']} key={key} dataKey={key} fill={nameMapper[key]['color']} />)
-                                )
-                            )
+                            {
+                                if(key !== 'name') {
+                                    if(nameMapper[key]['chartType'] === 'line') {
+                                        return <Line name={nameMapper[key]['name']} key={key} type="basis" strokeWidth={5} dataKey={key}
+                                            stroke={nameMapper[key]['color']}/>
+                                    }
+                                    // )
+                                    if (nameMapper[key]['chartType'] === 'bar') {
+                                        return(<Bar name={nameMapper[key]['name']} key={key} dataKey={key} fill={nameMapper[key]['color']} />)
+                                    }
+                                }
+                            })
                         }
                     </ComposedChart>
                 }

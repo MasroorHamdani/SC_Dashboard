@@ -93,11 +93,9 @@ class DataAnalysis extends Component {
           'aggregateby': this.state.sampling,
           'unit': this.state.unit,
         };
-      let headers, config;
-      // if(this.state[`${this.state.deviceKey}SessionHeader`])
-      headers = {
+      let headers = {
         'x-sc-session-token': this.state[`${this.state.deviceKey}SessionHeader`]? this.state[`${this.state.deviceKey}SessionHeader`]: ''
-      };
+      },
       config = getApiConfig(endPoint, 'POST', dataToPost, params, headers);
       this.props.onDataAnalysis(config, endPoint);
     }
@@ -167,9 +165,9 @@ class DataAnalysis extends Component {
           let data = responseData[this.state.i];
           this.setState({i: this.state.i +1});
           if(data && data.pid) {
-            const endPoint = `${API_URLS['PROJECT_DETAILS']}/${data.pid}/${PROJECT_TABS['INSTALLATION']}/${PROJECT_TABS['DEVICES']}`,
+            const endPoint = `${API_URLS['PROJECT_DETAILS']}/${data.pid}${API_URLS['PROJECT_LOCATION']}`,
             config = getApiConfig(endPoint, 'GET');
-          this.props.onDataAnalysisMenu(config, 'subMenu');
+            this.props.onDataAnalysisMenu(config, 'subMenu');
           }
           if (this.props.projectSubMenuList &&
             !isEqual(this.props.projectSubMenuList, prevProps.projectSubMenuList)) {
@@ -201,7 +199,7 @@ class DataAnalysis extends Component {
         this.setState({pcMetrics: pcMetrics}, function() {
           this.getNewAnalyticsData();
         })
-      }
+    }
     if (this.props.dataAQMetrics &&
       !isEqual(this.props.dataAQMetrics, prevProps.dataAQMetrics)){
         const metricsResponse = this.props.dataAQMetrics;

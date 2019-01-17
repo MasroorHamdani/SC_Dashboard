@@ -35,18 +35,18 @@ class RadioButtonComponent extends Component {
             t=><List dense
                 component="nav"
                 className={classes.root}>
-                <ListItem button onClick={event => handleSelect(ANALYTICS_SUB_TABS['ALERT']['key'])}>
+                {/* <ListItem button onClick={event => handleSelect(ANALYTICS_SUB_TABS['ALERT']['key'])}>
                     <ListItemText primary={ANALYTICS_SUB_TABS['ALERT']['display']} />
                 </ListItem>
                 <ListItem button onClick={event => handleSelect(ANALYTICS_SUB_TABS['DISPENSER']['key'])}>
                     <ListItemText primary={ANALYTICS_SUB_TABS['DISPENSER']['display']} />
-                </ListItem>
-                <ListItem button onClick={this.handleClickDropDown}>
+                </ListItem> */}
+                {/* <ListItem button onClick={this.handleClickDropDown}>
                     <ListItemText primary={ANALYTICS_SUB_TABS['INSTALLATION_DETAILS']['display']} />
                     {this.state.open ? <ExpandLess /> : <ExpandMore />}
-                </ListItem>
-                <Collapse in={this.state.open} timeout="auto" unmountOnExit>
-                    <List component="div" disablePadding>
+                </ListItem> */}
+                {/* <Collapse in={this.state.open} timeout="auto" unmountOnExit> */}
+                    {/* <List component="div" disablePadding> */}
                         {projectList &&
                             projectList.map((project, index) => {
                             return <div key={project.id}>
@@ -76,8 +76,8 @@ class RadioButtonComponent extends Component {
                                 </Collapse>
                                 </div>
                             })}
-                        </List>
-                    </Collapse>
+                        {/* </List> */}
+                    {/* </Collapse> */}
                 </List>
             }</NamespacesConsumer>
         )

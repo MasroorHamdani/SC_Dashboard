@@ -23,6 +23,9 @@ class Dashboard extends Component {
     this.props.history.push(`${REACT_URLS['PROJECT_DETAILS']}/${param}`);
   }
 
+  projectActionRedirection = (e, param) => {
+    this.props.history.push(`${e.target.id}/${param}`);
+  }
   componentDidMount(){
     const endPoint = API_URLS['DASHBOARD'],
           config = getApiConfig(endPoint, 'GET');
@@ -45,12 +48,12 @@ class Dashboard extends Component {
         <main className={classes.content}>
         {this.state.loading ? (<CircularProgress size={50} className={classes.buttonProgress} />)
         :
-        (<div>
+        (
           <div className={classes.gridRoot}>
             <GridList cellHeight={180} className={classes.gridList}>
-              <ProjectDataComponent data={this.props.dashboardData} onClick={this.handleClick}/>
+              <ProjectDataComponent data={this.props.dashboardData} onClick={this.handleClick}
+              projectActionRedirection={this.projectActionRedirection}/>
             </GridList>
-          </div>
         </div>)
         }
         </main>
