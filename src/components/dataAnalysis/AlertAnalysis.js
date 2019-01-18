@@ -7,7 +7,7 @@ class AlertAnalysis extends Component {
     render() {
         const {classes} = this.props;
         return (
-            <div className={classes.main}>alert Box</div>
+            <div className={classes.root}>alert Box</div>
         )
     }
 }

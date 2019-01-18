@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
 import { connect } from "react-redux";
 import {isEqual} from "lodash";
-import {API_URLS, REACT_URLS, PROJECT_TABS} from "../constants/Constant";
-import {getApiConfig} from "../services/ApiCofig";
-import {projectData} from '../actions/ProjectDataAction';
-import ProjectDetail from '../components/projectDetail/ProjectDetail';
+import {withStyles} from '@material-ui/core';
+import {API_URLS, REACT_URLS, PROJECT_TABS} from "../../constants/Constant";
+import {getApiConfig} from "../../services/ApiCofig";
+import {projectData} from '../../actions/ProjectDataAction';
+import ProjectDetail from '../../components/projectDetail/ProjectDetail';
+import styles from './ProjectDetailStyle';
 
 class ProjectDetails extends Component {
     constructor(props) {
@@ -32,8 +34,9 @@ class ProjectDetails extends Component {
       };
 
     render() {
+        const {classes} = this.props;
         return(
-            <div>
+            <div className={classes.root}>
             { this.props.projectData &&
                 <ProjectDetail data={this.props.projectData[0]}
                 handleClick={this.handleClick}/>
@@ -56,4 +59,4 @@ function mapDispatchToProps(dispatch) {
         }
     }
 }
-export default connect(mapStateToProps, mapDispatchToProps)(ProjectDetails);
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(ProjectDetails));

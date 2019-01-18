@@ -43,8 +43,6 @@ class DataCard extends Component{
                     <CardContent className={classes.pointer}
                         onClick={e => onClick(e, row.pid)}>
                         <div>{row.name}</div>
-                        <div>{row.pid}</div>
-                        <div>{row.status}</div>
                     </CardContent>
                 </Card>
                 <Menu
