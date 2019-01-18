@@ -2,6 +2,7 @@ import red from '@material-ui/core/colors/red';
 const styles = theme => ({
     card: {
       maxWidth: 400,
+      height: '100%'
     },
     media: {
       height: 10,
@@ -16,6 +17,9 @@ const styles = theme => ({
     },
     pointer: {
       cursor: 'pointer'
+    },
+    flexContainer: {
+      width: '100%'
     }
 });
 

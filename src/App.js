@@ -6,7 +6,7 @@ import Header from "./components/header/Header";
 import Footer from "./components/footer/Footer";
 import Menu from "./components/menu/Menu";
 import Logout from "./containers/Logout";
-import ProjectDetails from "./containers/ProjectDetail";
+import ProjectDetails from "./containers/projectDetails/ProjectDetail";
 import ProjectInstallationDetails from "./containers/projectInstallationDetails/ProjectInstallationDetails";
 import ProjectTeamDetails from "./containers/projectTeamDetails/ProjectTeamDetails";
 import About from "./containers/About";

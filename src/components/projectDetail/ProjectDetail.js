@@ -8,7 +8,7 @@ import TabContainer from '../tabContainer/TabContainer';
 import {PROJECT_TABS, API_URLS} from '../../constants/Constant';
 import {getApiConfig} from '../../services/ApiCofig';
 import {projectDetailData, projectTeamData} from '../../actions/ProjectDataAction';
-import '../../sass/App.scss';
+// import '../../sass/App.scss';
 import { NamespacesConsumer } from 'react-i18next';
 
 class ProjectDetail extends Component {
