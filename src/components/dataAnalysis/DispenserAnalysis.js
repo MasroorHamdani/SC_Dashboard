@@ -27,6 +27,9 @@ class DispenserAnalysis extends Component {
     componentDidMount() {
         // this.ref.onSnapshot(this.onCollectionUpdate);
     }
+    handleBarClick = (key) => {
+        console.log("Clicked", key);
+    }
     generateDispenserData(dataPassed, classes) {
         let dataMetrics= {}, tabData;
             dataMetrics['metricType'] = 'timeseries';
@@ -43,10 +46,9 @@ class DispenserAnalysis extends Component {
             });
             let nameMapper = {};
             let graphData = [];
-            
             dataPassed.map((d) => {
                 let graphElement = {}
-                graphElement['name'] = moment(d.t, DATE_TIME_FORMAT).format(GRAPH_LABEL_TIME_FORMAT);
+                graphElement['name'] = d['v']['d'];
                 dataMetrics['vector'].map((vec) => {
                     graphElement[vec.shortName] = d['v']['d'];
                     nameMapper[vec.shortName] = {};
@@ -68,19 +70,18 @@ class DispenserAnalysis extends Component {
                     <ComposedChart layout="vertical" className={classes.lineChart} data={graphData}
                         margin={{top: 5, right: 30, left: 20, bottom: 5}}>
                         <YAxis dataKey="name" minTickGap={20} type="category"
-                            label={{ value: 'Time of day', angle: -90, position: 'insideLeft'}}/>
-                        <XAxis type="number" label={{ value: 'Concentration (ppm)', position: 'insideBottomRight', offset: 0}}
+                            label={{ value: 'Dispenser', angle: -90, position: 'insideLeft'}}/>
+                        <XAxis type="number" label={{ value: 'Value', position: 'insideBottomRight', offset: 0}}
                         />
                         <CartesianGrid strokeDasharray="3 3"/>
                         <Tooltip/>
                         <Legend />
-                        <Brush dataKey='name' height={30} stroke="#8884d8"/>
                         {(graphData && graphData[0]) &&
                             Object.keys(graphData[0]).map(key =>
                             {
                                 if(key !== 'name') {
                                     return <Bar name={nameMapper[key]['name']} barSize={50} key={key}
-                                        dataKey={key}>
+                                        dataKey={key} >
                                     {
                                         graphData.map((entry, index) => {
                                         let color;
@@ -90,7 +91,7 @@ class DispenserAnalysis extends Component {
                                             color = '#ea2d1f';
                                         else if(entry[key] < 80 && entry[key] > 40)
                                             color = '#c3b025';
-                                        return <Cell key={index} fill={color} />;
+                                        return <Cell key={index} fill={color} onClick={e => this.handleBarClick(entry[key])}/>;
                                         })
                                     }
                                     </Bar>
@@ -113,7 +114,7 @@ class DispenserAnalysis extends Component {
             tabData = this.generateDispenserData(stateData.dispenserData, classes);
         }
         return (
-            <div className={classes.root}>
+            <div className={classes.rootDispenser}>
                 <FormControl className={classes.formControl}>
                     <InputLabel shrink htmlFor="location-native-label-placeholder">
                         Location List

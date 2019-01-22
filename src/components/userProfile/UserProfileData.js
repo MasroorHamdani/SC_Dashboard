@@ -6,6 +6,7 @@ import { NamespacesConsumer } from 'react-i18next';
 class UserProfileData extends Component {
     render() {
         const {classes, data, onChange, onClick} = this.props;
+        console.log(data);
         return (
             <div className={classes.root}>
             <NamespacesConsumer>
@@ -19,7 +20,6 @@ class UserProfileData extends Component {
                                 name="Firstname"
                                 label={t('firstname')}
                                 fullWidth
-                                // autoComplete="Firstname"
                                 value={data.Firstname}
                                 onChange={onChange}
                             />
@@ -62,11 +62,11 @@ class UserProfileData extends Component {
                         <Grid item xs={12} sm={6}>
                         <TextField
                             required
-                            id="Phoneno"
-                            name="Phoneno"
+                            id="Phonenum"
+                            name="Phonenum"
                             label={t('phoneno')}
                             fullWidth
-                            value={data.Phoneno}
+                            value={data.Phonenum}
                             onChange={onChange}
                         />
                         </Grid>
@@ -79,33 +79,9 @@ class UserProfileData extends Component {
                                 <Switch
                                 checked={data.Mute}
                                 onChange={onChange}
-                                value={data.Mute}
+                                value="Mute"
                                 />}
                             />
-                        </Grid>
-                        <Grid item xs={12} sm={6}>
-                        <TextField
-                            required
-                            id="ShiftStart"
-                            name="ShiftStart"
-                            label={t('shiftStart')}
-                            fullWidth
-                            autoComplete="ShiftStart"
-                            value={data.ShiftStart}
-                            onChange={onChange}
-                        />
-                        </Grid>
-                        <Grid item xs={12} sm={6}>
-                        <TextField
-                            required
-                            id="ShiftEnd"
-                            name="ShiftEnd"
-                            label={t('shiftEnd')}
-                            fullWidth
-                            autoComplete="ShiftEnd"
-                            value={data.ShiftEnd}
-                            onChange={onChange}
-                        />
                         </Grid>
                         <Grid item
                             container

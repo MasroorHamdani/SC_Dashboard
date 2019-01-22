@@ -9,8 +9,9 @@ class ProjectDataComponent extends Component {
     render() {
         const { data, onClick,
             projectActionRedirection } = this.props;
-        if(data && data.Projects) {
-            const newData = data.Projects;
+        // if(data && data.Projects) {
+            if(data){
+            const newData = data; //data.Projects;
             const returnData = newData.map((row,index) => {
                 return <DataCard key={index} onClick={onClick} row={row}
                     projectActionRedirection={projectActionRedirection}/>

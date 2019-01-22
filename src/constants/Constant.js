@@ -4,16 +4,20 @@ export const API_END_POINT = "https://4l6qi5oh0h.execute-api.ap-southeast-1.amaz
 export const API_URLS = {
     "LOGIN": "/unauth/login", //"/login-1-time",
     "REFRESH_TOKEN": "/unauth/login/refreshtoken",
-    "DASHBOARD": "/auth/projects",//"/get-settings",
-    "PROJECT_DETAILS": "/auth/projects",//"/get-project",
+    // "DASHBOARD": "/auth/projects",
+    "DASHBOARD": "/authV2/projects",
+    "PROJECT_DETAILS": "/auth/projects",
+    // "PROJECT_DETAILS": "/authV2/projects",
     "FORGOT_PASSWORD": "/unauth/password/change",//"/forgot-password",
     "RESET_PASSWORD": "/unauth/password/confirm", //"/confirm-forgot-password",
     "AUTH_RESET_PASSWORD": "/unauth/password/authchallenge",
-    "USER_PROFILE": "/auth/profile",
+    // "USER_PROFILE": "/auth/profile",
+    "USER_PROFILE": "/authV2/profile",
     "DEVICE_DATA": "/auth/devices/data",
     "DEVICE_METRICS": "/auth/devices/metrics",
     "SERVICE_REQUIREMENTS": "/auth/algorithms",
-    "PROJECT_LOCATION": "/installations/devices"
+    "PROJECT_LOCATION": "/installations/devices",
+    "PROJECT_ALERT": "/authV2/alerts/projects"
 };
 
 export const NEW_PASSWORD_REQUIRED = "NEW_PASSWORD_REQUIRED";
@@ -218,4 +222,11 @@ export const STRING_FIELD_FORMAT = {
     'DROPDOWN': 'dropdown',
     'STRDROPDOWN': 'strdropdown',
     'DELTADAYS': 'DD'
+}
+
+export const NAMESPACE_MAPPER = {
+    'USER_PROFILE' : {
+        'SUB1': 'RFID',
+        'SUB2': 'ID'
+    }
 }

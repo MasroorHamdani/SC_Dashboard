@@ -158,14 +158,15 @@ class DataAnalysis extends Component {
     if ((this.props.projectMenuList || this.props.projectSubMenuList) &&
       (!isEqual(this.props.projectSubMenuList, prevProps.projectSubMenuList) ||
       !isEqual(this.props.projectMenuList, prevProps.projectMenuList))) {
-        let responseData = this.props.projectMenuList.Projects,
+        console.log(this.props.projectMenuList, "****");
+        let responseData = this.props.projectMenuList,//.Projects,
           project = this.state.projectList,
           projObj = {};
         if(this.state.i <= responseData.length) {
           let data = responseData[this.state.i];
           this.setState({i: this.state.i +1});
-          if(data && data.pid) {
-            const endPoint = `${API_URLS['PROJECT_DETAILS']}/${data.pid}${API_URLS['PROJECT_LOCATION']}`,
+          if(data && data.PID) {
+            const endPoint = `${API_URLS['PROJECT_DETAILS']}/${data.PID}${API_URLS['PROJECT_LOCATION']}`,
             config = getApiConfig(endPoint, 'GET');
             this.props.onDataAnalysisMenu(config, 'subMenu');
           }

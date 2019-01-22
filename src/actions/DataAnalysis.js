@@ -1,7 +1,8 @@
 import ApiService from '../services/ApiService';
 import { DATA_ANALYSIS_PROJECT_LIST, DATA_ANALYSIS_PROJECT_LIST_SUB_MENU,
   PROJECT_AQ_ANALYSIS_DATA, PROJECT_PC_ANALYSIS_DATA,
-  PROJECT_PC_METRICS_DATA, PROJECT_AQ_METRICS_DATA } from '../constants/ActionTypes';
+  PROJECT_PC_METRICS_DATA, PROJECT_AQ_METRICS_DATA,
+  PROJECT_ALERT_LIST } from '../constants/ActionTypes';
 
 /**
  * Dispatched function to call the API service to get
@@ -13,9 +14,9 @@ export function projectMenuList(config) {
       ApiService(config).then(data => {
           //on success we will dispatch a sync action with the data
           if(data && data.data)
-            dispatch(dataReceived(data.data[0]))
-          else
-          dispatch(dataReceived(data.data))
+            dispatch(dataReceived(data.data))
+          // else
+          // dispatch(dataReceived(data.data))
       })
   }
 }
@@ -126,6 +127,28 @@ export function projectAQMetricsData(config) {
 function AnalysisAQMetricsReceived(data) {
   return {
     type: PROJECT_AQ_METRICS_DATA,
+    data
+  }
+}
+
+
+/**
+ * Dispatched fucntion to call the API services to get
+ * the Alert data for selected project
+ * for selected time slot
+ * @param {*} config
+ */
+export function projectAlertList(config) {
+  return function(dispatch) {
+    ApiService(config).then(data => {
+      dispatch(projectAlertListReceived(data.data))
+    })
+  }
+}
+
+function projectAlertListReceived(data) {
+  return {
+    type: PROJECT_ALERT_LIST,
     data
   }
 }
