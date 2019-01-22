@@ -18,7 +18,7 @@ export function dashboardData(config) {
       ApiService(config).then(data => {
           //on success we will dispatch a sync action with the data
           if(data && data.data)
-            dispatch(dataReceived(data.data[0]))
+            dispatch(dataReceived(data.data))
           else
           dispatch(dataReceived(data.data))
       })

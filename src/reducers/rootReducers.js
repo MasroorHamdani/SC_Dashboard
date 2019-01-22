@@ -17,6 +17,7 @@ import DataPCAnalysisReducer from './DataPCAnalysisReducer';
 import DataPCMetricsReducer from './DataPCMetricsReducer';
 import DataAQMetricsReducer from './DataAQMetricsReducer';
 import ServiceRequirementReducer from './ServiceRequirementReducer';
+import ProjectAlertReducer from './ProjectAlertReducer';
 
 const reducers = {
     LoginReducer,
@@ -35,7 +36,8 @@ const reducers = {
     DataPCAnalysisReducer,
     DataPCMetricsReducer,
     DataAQMetricsReducer,
-    ServiceRequirementReducer
+    ServiceRequirementReducer,
+    ProjectAlertReducer
 }
 
 // combines all the reducers which will be passed in Redux Store

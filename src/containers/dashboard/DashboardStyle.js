@@ -18,7 +18,6 @@ const styles = theme => ({
       flexWrap: 'wrap',
       justifyContent: 'space-around',
       overflow: 'hidden',
-      // width: '100%'
       // backgroundColor: theme.palette.background.paper,
     },
     gridList: {

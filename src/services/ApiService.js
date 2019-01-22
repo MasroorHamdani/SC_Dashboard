@@ -39,7 +39,7 @@ function ApiService(configObject) {
 
     axios.interceptors.response.use(undefined, err => {
         if (err.response) {
-            console.log(err.response.status, "err.response.status");
+            console.log(err, err.response.status, "err.response.status");
             if (err.response.config.url.includes('/login'))
                 return Promise.reject(err);
             if (err.response.status === 403) return forceLogout();

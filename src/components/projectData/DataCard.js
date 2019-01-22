@@ -21,11 +21,11 @@ class DataCard extends Component{
         const {classes, projectActionRedirection, onClick, row} = this.props;
         const { anchorEl } = this.state;
         return (
-            <div key={row.pid}>
+            <div key={row.PID}>
                 <Card className={classes.card}>
                     <CardHeader avatar={
                         <Avatar aria-label="Recipe" className={classes.avatar}>
-                        {row.pid.substr(0,1)}
+                        {row.PID.substr(0,1)}
                         </Avatar>
                     }
                     action={
@@ -35,13 +35,13 @@ class DataCard extends Component{
                     }
                     title="Project Details"
                     subheader="November 26, 2018"/>
-                    <CardMedia onClick={e => onClick(e, row.pid)}
+                    <CardMedia onClick={e => onClick(e, row.PID)}
                     className={classes.media}
                     title="Analytics"
                     image="../static/image.png"
                     />
                     <CardContent className={classes.pointer}
-                        onClick={e => onClick(e, row.pid)}>
+                        onClick={e => onClick(e, row.PID)}>
                         <div>{row.name}</div>
                     </CardContent>
                 </Card>
@@ -50,9 +50,9 @@ class DataCard extends Component{
                     open={Boolean(anchorEl)}
                     onClose={this.handleClose}>
                     <MenuItem value='alert' id={REACT_URLS['ALERT']}
-                        onClick={e => projectActionRedirection(e, row.pid)}>Alert</MenuItem>
+                        onClick={e => projectActionRedirection(e, row.PID)}>Alert</MenuItem>
                     <MenuItem value='dispenser' id={REACT_URLS['DISPENSER']}
-                        onClick={e => projectActionRedirection(e, row.pid)}>Dispenser</MenuItem>
+                        onClick={e => projectActionRedirection(e, row.PID)}>Dispenser</MenuItem>
                 </Menu>
             </div>
         )
