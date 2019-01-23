@@ -31,7 +31,7 @@ class AlertAnalysis extends Component {
         return (
             <div className={classes.root}>
             {/* <div> */}
-                <PieChart width={400} height={400}>
+                <PieChart width={600} height={250}>
                     <Pie isAnimationActive={false}
                     dataKey='value'
                     data={piedata}
