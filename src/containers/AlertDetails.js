@@ -16,8 +16,8 @@ class AlertDetails extends Component {
     componentDidMount() {
         const endPoint = `${API_URLS['PROJECT_ALERT']}/${this.state.pid}`,
             params = {
-                'start' : '20190116160000', //'20190116160831',//'20190116160000',
-                'end' : '20190116200000' //'20190116162831'//'20190122141401'//'20190116200000'
+                'start' : '20190116162831',//'20190122000000', //'20190116160831',//'20190116160000',
+                'end' : '20190122153519'//'20190123200000' //'20190116162831'//'20190122141401'//'20190116200000'
             },
             config = getApiConfig(endPoint, 'GET', '', params);
             this.props.onProjectAlert(config);
@@ -25,13 +25,11 @@ class AlertDetails extends Component {
     componentDidUpdate(prevProps, prevState) {
         if(this.props.projectAlert &&
             !isEqual(this.props.projectAlert, prevProps.projectAlert)) {
-            // console.log(groupBy(this.props.projectAlert,'ID'));
             let finalDict = [];
             const data = groupBy(this.props.projectAlert,'ID');
             Object.keys(data).map((key, index) => {
                 let test = {};
                 test['data'] = [];
-                // console.log(data[key], "bhhb");
                 data[key].map((row) => {
                     if(row.SortKey.includes('status')) {
                         test['header'] = row;
