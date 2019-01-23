@@ -230,3 +230,11 @@ export const NAMESPACE_MAPPER = {
         'SUB2': 'ID'
     }
 }
+
+export const ALERT_STATUS = {
+    'not_resolved': 'Not Resovled',
+    'pending': 'Pending',
+    'resolved': 'Resolved',
+    'not_sent': 'Not Sent',
+    'blocked': 'Blocked'
+}

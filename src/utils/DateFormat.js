@@ -6,3 +6,10 @@ export function getFormatedDateTime(dateTime, format) {
     }
     return(dateTime);
 }
+
+export function formatDateTime(dateTime, inputFormat, outFormat) {
+    if(dateTime) {
+        dateTime = moment( dateTime, inputFormat).format(outFormat)
+    }
+    return dateTime
+}
