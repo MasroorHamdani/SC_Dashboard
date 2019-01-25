@@ -10,18 +10,13 @@ const styles = theme => ({
         width: '100%',
         height: '100vh',
     },
-    // root: {
-    //     padding: theme.spacing.unit * 3,
-    //     marginTop: theme.spacing.unit * 8,
-    //     width: '100%',
-    // },
     expansionRoot: {
-        backgroundColor: grey[300],
+        backgroundColor: grey[200],
         borderBottom: '1px solid rgba(0,0,0,.125)',
         marginBottom: -1,
         minHeight: 56,
         '&$expanded': {
-        minHeight: 56,
+            minHeight: 56,
         },
     },
     heading: {
@@ -32,29 +27,44 @@ const styles = theme => ({
     pending: {
         color: '#fff',
         backgroundColor: yellow[700],
-        padding:'0px !important'
+        padding:'0px !important',
+        flexBasis: '10%'
     },
     resolved: {
         color: '#fff',
         backgroundColor: green[500],
-        padding:'0px !important'
+        padding:'0px !important',
+        flexBasis: '10%'
     },
     blocked: {
         color: '#fff',
         backgroundColor: red[500],
-        padding:'0px !important'
+        padding:'0px !important',
+        flexBasis: '10%'
     },
     not_resolved: {
         color: '#fff',
         backgroundColor: orange[300],
-        padding:'0px !important'
+        padding:'0px !important',
+        flexBasis: '10%'
     },
     not_sent: {
-        padding:'0px !important'
+        padding:'0px !important',
+        flexBasis: '10%'
     },
     content: {
         flexBasis: '15%',
         flexShrink: 0,
+    },
+    //Dispenser date picker
+    dateRow: {
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        width: '35%',
+        margin: '16px',
+        marginLeft: '0px'
     },
 })
 
