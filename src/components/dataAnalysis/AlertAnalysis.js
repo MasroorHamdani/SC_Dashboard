@@ -3,7 +3,9 @@ import {withStyles, ExpansionPanel, ExpansionPanelSummary,
     Typography, ExpansionPanelDetails, Chip} from '@material-ui/core';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
-import {PieChart, Pie, Legend, Cell, Tooltip} from 'recharts';
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+
 import {getFormatedDateTime, formatDateTime} from '../../utils/DateFormat';
 import {ALERT_STATUS} from '../../constants/Constant';
 
@@ -11,47 +13,48 @@ import styles from './DataAnalysisStyle';
 
 class AlertAnalysis extends Component {
     render() {
-        const {classes, data} = this.props;
-        const RADIAN = Math.PI / 180; 
-        const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#AA8045'];
-        const piedata = [{name: 'Resolved', value: 400}, {name: 'Not resolved', value: 300},
-                  {name: 'Not Sent', value: 300}, {name: 'Pending', value: 200},
-                  {name: 'Blocked', value: 100}];
-        const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent, index }) => {
-            const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
-            const x  = cx + radius * Math.cos(-midAngle * RADIAN);
-            const y = cy  + radius * Math.sin(-midAngle * RADIAN);
-            
-            return (
-            <text x={x} y={y} fill="white" textAnchor={x > cx ? 'start' : 'end'} dominantBaseline="central">
-                {`${(percent * 100).toFixed(0)}%`}
-            </text>
-            );
-        };
+        const {classes, stateData, handleChangeStart,
+            handleChangeEnd, getAlertData} = this.props;
+        
         return (
             <div className={classes.root}>
-            {/* <div> */}
-                <PieChart width={600} height={250}>
-                    <Pie isAnimationActive={false}
-                    dataKey='value'
-                    data={piedata}
-                    // cx={300}
-                    // cy={200}
-                    outerRadius={80}
-                    fill="#8884d8"
-                    labelLine={false}
-                    label={renderCustomizedLabel}
-                    >
-                    {
-                        piedata.map((entry, index) => <Cell key={index} fill={COLORS[index % COLORS.length]}/>)
-                    }
-                    </Pie>
-                    <Legend/>
-                    <Tooltip/>
-                </PieChart>
-            {/* </div> */}
-            {data &&
-                    data.map((row, index) => {
+            <div className={classes.dateRow}>
+                <Typography>Custom</Typography>
+                <DatePicker
+                    selected={stateData.startDate}
+                    selectsStart
+                    startDate={stateData.startDate}
+                    endDate={stateData.endDate}
+                    onChange={handleChangeStart}
+                    showMonthDropdown
+                    showYearDropdown
+                    showTimeSelect
+                    timeFormat="HH:mm"
+                    timeIntervals={15}
+                    dateFormat="MM/d/YY HH:mm"
+                    timeCaption="Time"
+                    maxDate={new Date()}
+                />
+                <DatePicker
+                    selected={stateData.endDate}
+                    selectsEnd
+                    startDate={stateData.startDate}
+                    endDate={stateData.endDate}
+                    onChange={handleChangeEnd}
+                    showMonthDropdown
+                    showYearDropdown
+                    showTimeSelect
+                    timeFormat="HH:mm"
+                    timeIntervals={15}
+                    dateFormat="MM/d/YY HH:mm"
+                    timeCaption="Time"
+                    minDate={stateData.startDate}
+                    maxDate={new Date()}
+                />
+                <button onClick={getAlertData}>Go</button>
+            </div>
+            {stateData.alertData &&
+                    stateData.alertData.map((row, index) => {
                         return (<ExpansionPanel key={index}>
                             {row.header &&
                                 <ExpansionPanelSummary className={classes.expansionRoot} expandIcon={<ExpandMoreIcon />}>

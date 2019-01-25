@@ -1,9 +1,10 @@
+import {blueGrey} from '@material-ui/core/colors';
 const drawerWidth = 240;
 const styles = theme => ({
   drawerPaper: {
     position: 'relative',
     whiteSpace: 'nowrap',
-    backgroundColor: '#262f3e',//'#404854',
+    backgroundColor: blueGrey[900],//'#262f3e',//'#404854',
     '& *': { color: 'rgba(255, 255, 255, 0.7)' },
     width: drawerWidth,
     transition: theme.transitions.create('width', {
