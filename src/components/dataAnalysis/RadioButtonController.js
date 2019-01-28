@@ -18,7 +18,7 @@ class RadioButtonComponent extends Component {
         this.props.handleChange();
     }
     render(){
-        const {classes, data, handleChange, projectList, handleSelect,
+        const {classes, data, handleChange, projectList,
             handleClick} = this.props;
         return(<NamespacesConsumer>
             {

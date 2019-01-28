@@ -12,6 +12,7 @@ class DataProcessingComponent extends Component {
         const {classes, stateData, handleSamplingChange,
             getMetric} = this.props;
         let metrics = getMetric();
+        metrics = metrics.metric;
         return (
             <NamespacesConsumer>
             {
@@ -23,8 +24,8 @@ class DataProcessingComponent extends Component {
                             id="sampling"
                             label="Sampling Rate"
                             name="sampling"
-                            value={stateData.sampling}
-                            onChange={handleSamplingChange}
+                            value={stateData[dt.path].sampling}
+                            onChange={event => handleSamplingChange(event, dt.path)}
                             margin="normal"
                         />
                         <FormControl className={classes.formControl}>
@@ -32,11 +33,11 @@ class DataProcessingComponent extends Component {
                                 {t('unit')}
                             </InputLabel>
                             <NativeSelect
-                                value={stateData.unit}
-                                onChange={handleSamplingChange}
+                                value={stateData[dt.path].unit}
+                                onChange={event => handleSamplingChange(event, dt.path)}
                                 input={<Input name="unit" id="unit-native-label-placeholder" />}>
                                 <option value='' name="unit" key='unit'>{t('chooseUnit')}</option>
-                                <option value='min' name="unit" key='min'>Mins</option>
+                                <option value='T' name="unit" key='min'>Mins</option>
                                 <option value='hour' name="unit" key='hour'>Hour</option>
                             </NativeSelect>
                         </FormControl>
@@ -53,9 +54,9 @@ class DataProcessingComponent extends Component {
                                 {t('func')}
                             </InputLabel>
                             <NativeSelect
-                                value={stateData[dt.path]}
-                                onChange={handleSamplingChange}
-                                input={<Input name={dt.path} id="func-native-label-placeholder" />}>
+                                value={stateData[dt.path].func}
+                                onChange={event => handleSamplingChange(event, dt.path)}
+                                input={<Input name='func' id="func-native-label-placeholder" />}>
                                 <option value='' key='func' >{t('chooseFunc')}</option>
                                 { FUNCTION_LIST.map((dt) => {
                                         return <option value={dt.value} key={dt.value}>{dt.name}</option>

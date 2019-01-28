@@ -14,8 +14,8 @@ import DataAnalysisProjectListReducer from './DataAnalysisProjectListReducer';
 import DataAnalysisProjectListSubMenuReducer from './DataAnalysisProjectSubMenuReducer';
 import DataAQAnalysisReducer from './DataAQAnalysisReducer';
 import DataPCAnalysisReducer from './DataPCAnalysisReducer';
-import DataPCMetricsReducer from './DataPCMetricsReducer';
-import DataAQMetricsReducer from './DataAQMetricsReducer';
+// import DataPCMetricsReducer from './DataPCMetricsReducer';
+// import DataAQMetricsReducer from './DataAQMetricsReducer';
 import ServiceRequirementReducer from './ServiceRequirementReducer';
 import ProjectAlertReducer from './ProjectAlertReducer';
 
@@ -34,8 +34,8 @@ const reducers = {
     DataAnalysisProjectListSubMenuReducer,
     DataAQAnalysisReducer,
     DataPCAnalysisReducer,
-    DataPCMetricsReducer,
-    DataAQMetricsReducer,
+    // DataPCMetricsReducer,
+    // DataAQMetricsReducer,
     ServiceRequirementReducer,
     ProjectAlertReducer
 }

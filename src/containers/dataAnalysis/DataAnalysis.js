@@ -11,8 +11,7 @@ import {getApiConfig} from '../../services/ApiCofig';
 import {API_URLS, DATE_TIME_FORMAT,
   ANALYTICS_DATE, ANALYTICS_TAB, ANALYTICS_SUB_TABS} from '../../constants/Constant';
 import {projectMenuList, projectSubMenuList, projectAQAnalysisData,
-  projectPCAnalysisData, projectPCMetricsData,
-  projectAQMetricsData} from '../../actions/DataAnalysis';
+  projectPCAnalysisData} from '../../actions/DataAnalysis';
 import styles from './DataAvalysisStyle';
 import RadioButtonComponent from '../../components/dataAnalysis/RadioButtonController';
 
@@ -28,7 +27,7 @@ class DataAnalysis extends Component {
     pcMetrics: {},
     aqMetrics: {},
     i: 0,
-    sampling: 'sum',
+    sampling: '',
     unit: '',
     func: '',
     page: ''
@@ -41,12 +40,13 @@ class DataAnalysis extends Component {
     this.setState(state => ({ [index]: !state[index],
                             'pid': pid}));
   };
-  handleSelect = (event) => {
-    this.setState({page: event})
-  }
+  // handleSelect = (event) => {
+  //   this.setState({page: event})
+  // }
   handleChange = event => {
     this.setState({ value: event.target.value,
-                    page: ANALYTICS_SUB_TABS['INSTALLATION_DETAILS']['key']},
+                    // page: ANALYTICS_SUB_TABS['INSTALLATION_DETAILS']['key']
+                  },
                     function() {
       if(this.state.value.includes(ANALYTICS_TAB['FD']['key']))
         this.setState({ tab: ANALYTICS_TAB['FD']['value'],
@@ -65,98 +65,76 @@ class DataAnalysis extends Component {
   };
 
   getMetric = () => {
-    let metrics = [];
-    if(this.state.value.includes(ANALYTICS_TAB['FD']['key']) && this.state.fdMetrics)
+    let metrics = [], allMetrics = [];
+    if(this.state.value.includes(ANALYTICS_TAB['FD']['key']) && this.state.fdMetrics) {
       metrics = this.state.fdMetrics.vector;
-    else if(this.state.value.includes(ANALYTICS_TAB['PC']['key']) && this.state.pcMetrics)
+      allMetrics = this.state.fdAllMetrics;
+    }
+    else if(this.state.value.includes(ANALYTICS_TAB['PC']['key']) && this.state.pcMetrics) {
       metrics = this.state.pcMetrics.vector;
-    else if(this.state.value.includes(ANALYTICS_TAB['AQ']['key']) && this.state.aqMetrics)
+      allMetrics = this.state.pcAllMetrics;
+    }
+    else if(this.state.value.includes(ANALYTICS_TAB['AQ']['key']) && this.state.aqMetrics) {
       metrics = this.state.aqMetrics.vector;
-    else if(this.state.value.includes(ANALYTICS_TAB['WD']['key']) && this.state.wdMetrics)
+      allMetrics = this.state.aqAllMetrics;
+    }
+    else if(this.state.value.includes(ANALYTICS_TAB['WD']['key']) && this.state.wdMetrics) {
       metrics = this.state.wdMetrics.vector;
-    return metrics
+      allMetrics = this.state.wdAllMetrics;
+    }
+      
+    return {'metric' : metrics,
+            'allMetrics': allMetrics}
   }
   getNewAnalyticsData = (isMetric) => {
-    // if (isMetric === true) {
-    //   const endPoint = `${API_URLS['DEVICE_METRICS']}/${this.state.value}`,
-    //     config = getApiConfig(endPoint, 'GET');
-    //   this.props.onDataAnalysis(config, endPoint, true);
-    // } else {
       let metrics = this.getMetric(),
       dataToPost = {
-        "metrics": [
-        {
-          "metricID": "pcNum",
-          "metricName": "Number of People: Sampled",
-          "metricType": "timeseries",
-          "metricDataKey": "t",
-          "dimensions": [
-            {
-              "type": "resampler",
-              "key": "v",
-              "statistic": "sum",
-              "window_type": "constant",
-              "window": "360T",
-              "filterop": "none",
-              "operand": 4,
-              "name": "Number of People",
-              "showSamplingWidget": true,
-              "ctype": "bar",
-              "id": "did1"
-            }
-          ]
-        },
-        {
-          "metricID": "mid2",
-          "metricName": "Total Number of People",
-          "metricType": "categorical",
-          "dimensions": [
-            {
-              "type": "resampler",
-              "key": "v",
-              "statistic": "sum",
-              "window_type": "constant",
-              "window": "Y",
-              "filterop": "none",
-              "operand": 3,
-              "name": "People Count",
-              "showSamplingWidget": false,
-              "ctype": "tile",
-              "id": "did2"
-            }
-          ]
-        }
-        ]
+        // "ReqType": "default",
+        // "Type": "PC",
+        // "SubType": "GRIDEYEv0"
+        "ReqType": "default",
+        "Type": "FD",
+        "SubType": "FD_V0"
       };
-    //     dataToPost = {'fn': {}};
-    if(metrics) {
-      console.log(metrics);
-    //   metrics.map((dt, index) => {
-    //     // dataToPost['fn'][dt.path] = this.state[dt.path] ? this.state[dt.path] : dt.statistic;
-    //     dataToPost['metrics']['dimensions']['statistic'] = this.state[dt.path] ? this.state[dt.path] : dt.statistic;
-    //     dataToPost['metrics']['dimensions']['window'] = this.state.sampling+this.state.unit;
+    // console.log(metrics);
+    if(metrics && metrics.metric.length>0 && metrics.allMetrics.length>0) {
+      dataToPost = {};
+      dataToPost["metrics"] = metrics.allMetrics;
+      metrics.metric.map((dt) => {
+        dataToPost.metrics.map((rows) => {
+          rows.dimensions.map((row) => {
+            if(row.key === dt.path && row.showSamplingWidget) {
+              row.statistic = this.state[dt.path]['func'] ? this.state[dt.path]['func'] : dt.statistic;
+              row.window = this.state[dt.path]['sampling'] + this.state[dt.path]['unit'];
+            }
+          })
+        })
+      //   // dataToPost['fn'][dt.path] = this.state[dt.path] ? this.state[dt.path] : dt.statistic;
+      //   // dataToPost['metrics']['dimensions']['statistic'] = this.state[dt.path] ? this.state[dt.path] : dt.statistic;
+      // //   // dataToPost['metrics']['dimensions']['window'] = this.state.sampling+this.state.unit;
       
-    //   })
+      })
+      // console.log(dataToPost, "dataToPost");
     }
       const endPoint = `${API_URLS['DEVICE_DATA']}/${this.state.pid}/${this.state.value}`,
         params = {
           'start' : '2019010100',//this.state.start,
           'end': '2019010123',//this.state.end,
-          'aggregateby': this.state.sampling,
-          'unit': this.state.unit,
         };
       let headers = {
-        'x-sc-session-token': this.state[`${this.state.deviceKey}SessionHeader`]? this.state[`${this.state.deviceKey}SessionHeader`]: ''
+        // 'x-sc-session-token': this.state[`${this.state.deviceKey}SessionHeader`]? this.state[`${this.state.deviceKey}SessionHeader`]: ''
+        'x-sc-session-token': this.state.sessionHeader ? this.state.sessionHeader : ''
       },
       config = getApiConfig(endPoint, 'POST', dataToPost, params, headers);
       this.props.onDataAnalysis(config, endPoint);
-    // }
   }
 
-  handleSamplingChange = (event) => {
+  handleSamplingChange = (event, path) => {
     const {name, value, id} = event.target;
     this.setState({
-        [name] : value
+        [path]: {...this.state[path],
+          [name]: value
+          }
     }, function() {
       if(id === 'update') {
         this.getNewAnalyticsData();
@@ -244,37 +222,27 @@ class DataAnalysis extends Component {
         }
     }
 
-    // if (this.props.dataPCMetrics &&
-    //   !isEqual(this.props.dataPCMetrics, prevProps.dataPCMetrics)){
-    //     const metricsResponse = this.props.dataPCMetrics;
-    //     let pcMetrics = this.getVector(metricsResponse);
-    //     this.setState({pcMetrics: pcMetrics}, function() {
-    //       this.getNewAnalyticsData();
-    //     })
-    // }
-    // if (this.props.dataAQMetrics &&
-    //   !isEqual(this.props.dataAQMetrics, prevProps.dataAQMetrics)){
-    //     const metricsResponse = this.props.dataAQMetrics;
-    //     let aqMetrics = this.getVector(metricsResponse);
-    //     this.setState({aqMetrics: aqMetrics}, function() {
-    //       this.getNewAnalyticsData();
-    //     })
-    // }
     if (this.props.dataAQAnalysis &&
       !isEqual(this.props.dataAQAnalysis, prevProps.dataAQAnalysis)){
-        this.setState({AQSessionHeader: this.props.dataAQAnalysis.headers['x-sc-session-token']});
-        this.setState({aqMetrics: this.props.dataAQAnalysis.data.data.allMetrics});
+        this.setState({AQSessionHeader: this.props.dataAQAnalysis.headers['x-sc-session-token'],
+          aqMetrics: this.props.dataAQAnalysis.data.data.allMetrics});
+        
     }
     if (this.props.dataPCAnalysis &&
       !isEqual(this.props.dataPCAnalysis, prevProps.dataPCAnalysis)){
-        this.setState({PCSessionHeader: this.props.dataPCAnalysis.headers['x-sc-session-token'],
-          pcMetrics: this.getVector(this.props.dataPCAnalysis.data.data.allMetrics)});
-        // console.log(this.getVector(this.props.dataPCAnalysis.data.data.allMetrics));
+        this.setState({
+          // PCSessionHeader: this.props.dataPCAnalysis.headers['x-sc-session-token'],
+          sessionHeader: this.props.dataPCAnalysis.headers['x-sc-session-token'],
+          pcMetrics: this.getVector(this.props.dataPCAnalysis.data.data.allMetrics).dataMetrics,
+          pcAllMetrics: this.props.dataPCAnalysis.data.data.allMetrics});
+        this.getVector(this.props.dataPCAnalysis.data.data.allMetrics).path.map((val) => {
+          this.setState({[val]: {}});
+        })
     }
   }
 
   getVector=(metricsResponse) => {
-    let dataMetrics = {};
+    let dataMetrics = {}, path = [];
     metricsResponse.map((metrics) => {
       dataMetrics['metricType'] = metrics['MetricType'];
       dataMetrics['name'] = metrics['metricName'];
@@ -285,15 +253,17 @@ class DataAnalysis extends Component {
           path: vector.key,
           unit: vector.Unit,
           shortName: vector.id,
-          // color: vector.Color,
+          color: vector.color,
           statistic: vector.statistic,
           chartType: vector.ctype,
           showSamplingWidget: vector.showSamplingWidget,
           window: vector.window
         })
+        path.push(vector.key);
       })
     })
-    return dataMetrics
+    return {'dataMetrics': dataMetrics,
+            'path': path}
   }
   
   render () {
@@ -301,11 +271,14 @@ class DataAnalysis extends Component {
       return(
         <div className={classes.root}>
             <RadioButtonComponent data={this.state} projectList={this.state.projectList}
-              handleChange={this.handleChange} handleSelect={this.handleSelect}
+              handleChange={this.handleChange}
+              // handleSelect={this.handleSelect}
               handleClick={this.handleClick}/>
             <div className={classes.seperator}></div>
-          { (this.state.projectList &&
-            this.state.page === ANALYTICS_SUB_TABS['INSTALLATION_DETAILS']['key'] ) &&
+          { 
+            // (
+              this.state.projectList &&
+            // this.state.page === ANALYTICS_SUB_TABS['INSTALLATION_DETAILS']['key'] ) &&
             <DataAnalysisComponent data={this.props} stateData={this.state}
               handleDateChange={this.handleDateChange}
               handleTabChange={this.handleTabChange}
@@ -324,8 +297,8 @@ function mapStateToProps(state) {
   return {
       projectMenuList : state.DataAnalysisProjectListReducer.data,
       projectSubMenuList : state.DataAnalysisProjectListSubMenuReducer.data,
-      dataPCMetrics : state.DataPCMetricsReducer.data,
-      dataAQMetrics : state.DataAQMetricsReducer.data,
+      // dataPCMetrics : state.DataPCMetricsReducer.data,
+      // dataAQMetrics : state.DataAQMetricsReducer.data,
       dataAQAnalysis : state.DataAQAnalysisReducer.data,
       dataPCAnalysis : state.DataPCAnalysisReducer.data
   }
@@ -342,13 +315,13 @@ function mapDispatchToProps(dispatch) {
       }
     },
     onDataAnalysis: (config, endPoint, isMetrics=false) => {
-      if (endPoint.includes(ANALYTICS_TAB['AQ']['key'])) {
-        // if(isMetrics) {
-        //   dispatch(projectAQMetricsData(config))
-        // } else {
-          dispatch(projectAQAnalysisData(config))
-        // }
-      } else if (endPoint.includes(ANALYTICS_TAB['PC']['key'])) {
+      // if (endPoint.includes(ANALYTICS_TAB['AQ']['key'])) {
+      //   // if(isMetrics) {
+      //   //   dispatch(projectAQMetricsData(config))
+      //   // } else {
+      //     dispatch(projectAQAnalysisData(config))
+      //   // }
+      // } else if (endPoint.includes(ANALYTICS_TAB['PC']['key'])) {
         // if(isMetrics) {
         //   dispatch(projectPCMetricsData(config))
         // } else {
@@ -360,7 +333,7 @@ function mapDispatchToProps(dispatch) {
       //   } else {
       //     dispatch(projectFDAnalysisData(config))
       //   }
-      }
+      // }
     }
   }
 }

@@ -35,7 +35,7 @@ export function getFormatedGraphData(passedData, metrics) {
                     graphElement[dim.id] = vec[dim.key];
                     nameMapper[dim.id] = {};
                     nameMapper[dim.id]['name'] = dim.name;
-                    nameMapper[dim.id]['color'] = '#8884d8';
+                    nameMapper[dim.id]['color'] = dim.color;
                     nameMapper[dim.id]['chartType'] = dim.ctype;
                     
                 })
