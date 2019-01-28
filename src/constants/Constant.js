@@ -239,3 +239,14 @@ export const ALERT_STATUS = {
     'not_sent': 'Not Sent',
     'blocked': 'Blocked'
 }
+
+export const METRIC_TYPE = {
+    'TIMESERIES' : 'timeseries',
+    'CATEGORICAL' : 'categorical'
+}
+
+export const DATA_VIEW_TYPE = {
+    'LINE': 'line',
+    'BAR': 'bar',
+    'SCATTER': 'sactter'
+}

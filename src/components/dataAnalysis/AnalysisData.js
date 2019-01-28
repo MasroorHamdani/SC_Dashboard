@@ -62,72 +62,30 @@ class AnalysisData extends Component {
             analyticsData = getFormatedGraphData(dataAnalysis, metrics),
             graphData = analyticsData.graphData,
             nameMapper = analyticsData.nameMapper,
-            tabData = 'hello';
-            // console.log(graphData, nameMapper, metrics);
+            // tabData = 'hello';
             tabData = <GraphPlot graphData={graphData}
                         nameMapper={nameMapper} metrics={metrics}
                         classes={classes}/>;
-            // tabData =
-                // metrics.map((metric, index) => {
-                //     return <div key={index}>
-                //         <Typography gutterBottom variant="h5">
-                //             {metric.metricName} - {metric.metricType}
-                //         </Typography>
-                //         <ResponsiveContainer width='100%' height={400}>
-                //             {metric.metricType === 'timeseries' ?
-                //                 <ComposedChart className={classes.lineChart} data={graphData[metric.metricID]}
-                //                     margin={{top: 5, right: 30, left: 20, bottom: 5}}>
-                //                     <XAxis dataKey="name" 
-                //                         minTickGap={20}
-                //                         label={{ value: 'Time of day', position: 'insideBottomRight', offset: 0}}
-                //                         />
-                //                     <YAxis 
-                //                     label={{ value: 'Concentration (ppm)', angle: -90, position: 'insideLeft'}}
-                //                     />
-                //                     <CartesianGrid strokeDasharray="3 3"/>
-                //                     <Tooltip/>
-                //                     <Legend />
-                //                     <Brush dataKey='name' height={30} stroke="#8884d8"/>
-                //                     {(graphData && graphData[metric.metricID]) &&
-                //                         Object.keys(graphData[metric.metricID][0]).map(key =>
-                //                         {
-                //                             if(key !== 'name') {
-                //                                 if(nameMapper[key]['chartType'] === 'line') {
-                //                                     return(<Line name={nameMapper[key]['name']} key={key} type="basis"
-                //                                     strokeWidth={5} dataKey={key}
-                //                                     stroke={nameMapper[key]['color']}/>)
-                //                                 }
-                //                                 if (nameMapper[key]['chartType'] === 'bar') {
-                //                                         return <Bar name={nameMapper[key]['name']} key={key} dataKey={key}
-                //                                         fill={nameMapper[key]['color']} />
-                //                                 }
-                //                             }
-                //                         })
-                //                     }
-                //                 </ComposedChart>
-                //             : <div>validate</div>
-                //             }
-                //         </ResponsiveContainer>
-                //     </div>
-                // })
         return tabData;
     }
     render() {
         const {stateData, data, classes, handleSamplingChange,
             getMetric} = this.props;
         let tabData;
-        if (data.dataAQAnalysis && data.dataAQAnalysis.data.data.metrics &&
-        stateData.value.includes(ANALYTICS_TAB['AQ']['key']) &&  stateData.aqMetrics) {
-            tabData = this.generateDataAnalytics(data.dataAQAnalysis.data.data.metrics, stateData.aqMetrics, classes);
-        } else if (data.dataPCAnalysis && data.dataPCAnalysis.data.data.metrics &&
-            stateData.value.includes(ANALYTICS_TAB['PC']['key']) && stateData.pcMetrics){//stateData.pcMetrics['vector']) {
-            // console.log(stateData.pcMetrics, "stateData.pcMetrics");
+        // if (data.dataAQAnalysis && data.dataAQAnalysis.data.data.metrics &&
+        // stateData.value.includes(ANALYTICS_TAB['AQ']['key']) &&  stateData.aqMetrics) {
+        //     tabData = this.generateDataAnalytics(data.dataAQAnalysis.data.data.metrics, stateData.aqMetrics, classes);
+        // } else if (data.dataPCAnalysis && data.dataPCAnalysis.data.data.metrics &&
+        //     stateData.value.includes(ANALYTICS_TAB['PC']['key']) && stateData.pcMetrics){
+        //     tabData = this.generateDataAnalytics(data.dataPCAnalysis.data.data.metrics,
+        //         data.dataPCAnalysis.data.data.allMetrics,
+        //         classes);
+        // }
+        if (data.dataPCAnalysis && data.dataPCAnalysis.data.data.metrics){
             tabData = this.generateDataAnalytics(data.dataPCAnalysis.data.data.metrics,
-                // stateData.pcMetrics,
                 data.dataPCAnalysis.data.data.allMetrics,
                 classes);
         }
-
         return (
             <div className={classes.graph}>
                 <DateRowComponent handleDatePicker={this.handleDatePicker}

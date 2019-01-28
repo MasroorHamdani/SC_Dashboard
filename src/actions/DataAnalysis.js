@@ -91,45 +91,45 @@ function AnalysisPCDataReceived(data) {
   }
 }
 
-/**
- * Dispatched fucntion to call the API services to get
- * the PC Metrics data - This will be used to get the path of the graph plot
- * @param {*} config
- */
-export function projectPCMetricsData(config) {
-  return function(dispatch) {
-    ApiService(config).then(data => {
-      dispatch(AnalysisPCMetricsReceived(data.data))
-    })
-  }
-}
+// /**
+//  * Dispatched fucntion to call the API services to get
+//  * the PC Metrics data - This will be used to get the path of the graph plot
+//  * @param {*} config
+//  */
+// export function projectPCMetricsData(config) {
+//   return function(dispatch) {
+//     ApiService(config).then(data => {
+//       dispatch(AnalysisPCMetricsReceived(data.data))
+//     })
+//   }
+// }
 
-function AnalysisPCMetricsReceived(data) {
-  return {
-    type: PROJECT_PC_METRICS_DATA,
-    data
-  }
-}
+// function AnalysisPCMetricsReceived(data) {
+//   return {
+//     type: PROJECT_PC_METRICS_DATA,
+//     data
+//   }
+// }
 
-/**
- * Dispatched fucntion to call the API services to get
- * the AQ Metrics data - This will be used to get the path of the graph plot
- * @param {*} config
- */
-export function projectAQMetricsData(config) {
-  return function(dispatch) {
-    ApiService(config).then(data => {
-      dispatch(AnalysisAQMetricsReceived(data.data))
-    })
-  }
-}
+// /**
+//  * Dispatched fucntion to call the API services to get
+//  * the AQ Metrics data - This will be used to get the path of the graph plot
+//  * @param {*} config
+//  */
+// export function projectAQMetricsData(config) {
+//   return function(dispatch) {
+//     ApiService(config).then(data => {
+//       dispatch(AnalysisAQMetricsReceived(data.data))
+//     })
+//   }
+// }
 
-function AnalysisAQMetricsReceived(data) {
-  return {
-    type: PROJECT_AQ_METRICS_DATA,
-    data
-  }
-}
+// function AnalysisAQMetricsReceived(data) {
+//   return {
+//     type: PROJECT_AQ_METRICS_DATA,
+//     data
+//   }
+// }
 
 
 /**
