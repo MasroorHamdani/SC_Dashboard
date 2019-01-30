@@ -12,10 +12,7 @@ import UserProfileReducer from './UserProfileReducer';
 import InstallationDeviceReducer from './InstallationDeviceReducer';
 import DataAnalysisProjectListReducer from './DataAnalysisProjectListReducer';
 import DataAnalysisProjectListSubMenuReducer from './DataAnalysisProjectSubMenuReducer';
-import DataAQAnalysisReducer from './DataAQAnalysisReducer';
-import DataPCAnalysisReducer from './DataPCAnalysisReducer';
-// import DataPCMetricsReducer from './DataPCMetricsReducer';
-// import DataAQMetricsReducer from './DataAQMetricsReducer';
+import DataAnalysisReducer from './DataAnalysisReducer';
 import ServiceRequirementReducer from './ServiceRequirementReducer';
 import ProjectAlertReducer from './ProjectAlertReducer';
 
@@ -32,10 +29,7 @@ const reducers = {
     InstallationDeviceReducer,
     DataAnalysisProjectListReducer,
     DataAnalysisProjectListSubMenuReducer,
-    DataAQAnalysisReducer,
-    DataPCAnalysisReducer,
-    // DataPCMetricsReducer,
-    // DataAQMetricsReducer,
+    DataAnalysisReducer,
     ServiceRequirementReducer,
     ProjectAlertReducer
 }

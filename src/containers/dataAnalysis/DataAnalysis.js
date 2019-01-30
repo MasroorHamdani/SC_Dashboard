@@ -10,8 +10,8 @@ import DataAnalysisComponent from '../../components/dataAnalysis/DataAnalysis';
 import {getApiConfig} from '../../services/ApiCofig';
 import {API_URLS, DATE_TIME_FORMAT,
   ANALYTICS_DATE, ANALYTICS_TAB, ANALYTICS_SUB_TABS} from '../../constants/Constant';
-import {projectMenuList, projectSubMenuList, projectAQAnalysisData,
-  projectPCAnalysisData} from '../../actions/DataAnalysis';
+import {projectMenuList, projectSubMenuList,
+  projectAnalysisData} from '../../actions/DataAnalysis';
 import styles from './DataAvalysisStyle';
 import RadioButtonComponent from '../../components/dataAnalysis/RadioButtonController';
 
@@ -66,22 +66,26 @@ class DataAnalysis extends Component {
 
   getMetric = () => {
     let metrics = [], allMetrics = [];
-    if(this.state.value.includes(ANALYTICS_TAB['FD']['key']) && this.state.fdMetrics) {
-      metrics = this.state.fdMetrics.vector;
-      allMetrics = this.state.fdAllMetrics;
+    if(this.state.metrics) {
+      metrics = this.state.metrics.vector;
+      allMetrics = this.state.allMetrics;
     }
-    else if(this.state.value.includes(ANALYTICS_TAB['PC']['key']) && this.state.pcMetrics) {
-      metrics = this.state.pcMetrics.vector;
-      allMetrics = this.state.pcAllMetrics;
-    }
-    else if(this.state.value.includes(ANALYTICS_TAB['AQ']['key']) && this.state.aqMetrics) {
-      metrics = this.state.aqMetrics.vector;
-      allMetrics = this.state.aqAllMetrics;
-    }
-    else if(this.state.value.includes(ANALYTICS_TAB['WD']['key']) && this.state.wdMetrics) {
-      metrics = this.state.wdMetrics.vector;
-      allMetrics = this.state.wdAllMetrics;
-    }
+    // if(this.state.value.includes(ANALYTICS_TAB['FD']['key']) && this.state.pcMetrics) {
+    //   metrics = this.state.pcMetrics.vector;
+    //   allMetrics = this.state.pcAllMetrics;
+    // }
+    // else if(this.state.value.includes(ANALYTICS_TAB['PC']['key']) && this.state.pcMetrics) {
+    //   metrics = this.state.pcMetrics.vector;
+    //   allMetrics = this.state.pcAllMetrics;
+    // }
+    // else if(this.state.value.includes(ANALYTICS_TAB['AQ']['key']) && this.state.aqMetrics) {
+    //   metrics = this.state.aqMetrics.vector;
+    //   allMetrics = this.state.aqAllMetrics;
+    // }
+    // else if(this.state.value.includes(ANALYTICS_TAB['WD']['key']) && this.state.wdMetrics) {
+    //   metrics = this.state.wdMetrics.vector;
+    //   allMetrics = this.state.wdAllMetrics;
+    // }
       
     return {'metric' : metrics,
             'allMetrics': allMetrics}
@@ -96,7 +100,6 @@ class DataAnalysis extends Component {
         "Type": "FD",
         "SubType": "FD_V0"
       };
-    // console.log(metrics);
     if(metrics && metrics.metric.length>0 && metrics.allMetrics.length>0) {
       dataToPost = {};
       dataToPost["metrics"] = metrics.allMetrics;
@@ -109,24 +112,19 @@ class DataAnalysis extends Component {
             }
           })
         })
-      //   // dataToPost['fn'][dt.path] = this.state[dt.path] ? this.state[dt.path] : dt.statistic;
-      //   // dataToPost['metrics']['dimensions']['statistic'] = this.state[dt.path] ? this.state[dt.path] : dt.statistic;
-      // //   // dataToPost['metrics']['dimensions']['window'] = this.state.sampling+this.state.unit;
-      
       })
-      // console.log(dataToPost, "dataToPost");
     }
-      const endPoint = `${API_URLS['DEVICE_DATA']}/${this.state.pid}/${this.state.value}`,
-        params = {
-          'start' : '2019010100',//this.state.start,
-          'end': '2019010123',//this.state.end,
-        };
-      let headers = {
-        // 'x-sc-session-token': this.state[`${this.state.deviceKey}SessionHeader`]? this.state[`${this.state.deviceKey}SessionHeader`]: ''
-        'x-sc-session-token': this.state.sessionHeader ? this.state.sessionHeader : ''
-      },
-      config = getApiConfig(endPoint, 'POST', dataToPost, params, headers);
-      this.props.onDataAnalysis(config, endPoint);
+    const endPoint = `${API_URLS['DEVICE_DATA']}/${this.state.pid}/${this.state.value}`,
+      params = {
+        'start' : '2019010100',//this.state.start,
+        'end': '2019010123',//this.state.end,
+      };
+    let headers = {
+      // 'x-sc-session-token': this.state[`${this.state.deviceKey}SessionHeader`]? this.state[`${this.state.deviceKey}SessionHeader`]: ''
+      'x-sc-session-token': this.state.sessionHeader ? this.state.sessionHeader : ''
+    },
+    config = getApiConfig(endPoint, 'POST', dataToPost, params, headers);
+    this.props.onDataAnalysis(config, endPoint);
   }
 
   handleSamplingChange = (event, path) => {
@@ -222,36 +220,39 @@ class DataAnalysis extends Component {
         }
     }
 
-    if (this.props.dataAQAnalysis &&
-      !isEqual(this.props.dataAQAnalysis, prevProps.dataAQAnalysis)){
-        this.setState({AQSessionHeader: this.props.dataAQAnalysis.headers['x-sc-session-token'],
-          aqMetrics: this.props.dataAQAnalysis.data.data.allMetrics});
-        
-    }
-    if (this.props.dataPCAnalysis &&
-      !isEqual(this.props.dataPCAnalysis, prevProps.dataPCAnalysis)){
+    if (this.props.dataAnalysis &&
+      !isEqual(this.props.dataAnalysis, prevProps.dataAnalysis)){
+        let metricsData = this.getVector(this.props.dataAnalysis.data.data.allMetrics);
         this.setState({
-          // PCSessionHeader: this.props.dataPCAnalysis.headers['x-sc-session-token'],
-          sessionHeader: this.props.dataPCAnalysis.headers['x-sc-session-token'],
-          pcMetrics: this.getVector(this.props.dataPCAnalysis.data.data.allMetrics).dataMetrics,
-          pcAllMetrics: this.props.dataPCAnalysis.data.data.allMetrics});
-        this.getVector(this.props.dataPCAnalysis.data.data.allMetrics).path.map((val) => {
-          this.setState({[val]: {}});
+          sessionHeader: this.props.dataAnalysis.headers['x-sc-session-token'],
+          metrics: metricsData.dataMetrics,
+          allMetrics: this.props.dataAnalysis.data.data.allMetrics});
+
+        Object.keys(metricsData.metric).map((key) => {
+          let value = {}
+          metricsData.metric[key].map((dt) => {
+            Object.keys(dt).map((d) => {
+              value[d] = {};
+            })
+          })
+          this.setState({[key]: value})
         })
     }
   }
 
   getVector=(metricsResponse) => {
-    let dataMetrics = {}, path = [];
+    let dataMetrics = {}, path = [], metric = {};
     metricsResponse.map((metrics) => {
-      dataMetrics['metricType'] = metrics['MetricType'];
+      dataMetrics['metricType'] = metrics['metricType'];
       dataMetrics['name'] = metrics['metricName'];
       dataMetrics['vector'] = [];
+      metric[metrics['metricID']] = {};
+      path=[];
       metrics.dimensions.map((vector) => {
         dataMetrics['vector'].push({
           name: vector.name,
           path: vector.key,
-          unit: vector.Unit,
+          // unit: vector.Unit,
           shortName: vector.id,
           color: vector.color,
           statistic: vector.statistic,
@@ -259,11 +260,13 @@ class DataAnalysis extends Component {
           showSamplingWidget: vector.showSamplingWidget,
           window: vector.window
         })
-        path.push(vector.key);
+        if(vector.showSamplingWidget)
+          path.push({[vector.id] : vector.key});
       })
+      metric[metrics['metricID']] = path;
     })
     return {'dataMetrics': dataMetrics,
-            'path': path}
+            'metric': metric}
   }
   
   render () {
@@ -297,10 +300,7 @@ function mapStateToProps(state) {
   return {
       projectMenuList : state.DataAnalysisProjectListReducer.data,
       projectSubMenuList : state.DataAnalysisProjectListSubMenuReducer.data,
-      // dataPCMetrics : state.DataPCMetricsReducer.data,
-      // dataAQMetrics : state.DataAQMetricsReducer.data,
-      dataAQAnalysis : state.DataAQAnalysisReducer.data,
-      dataPCAnalysis : state.DataPCAnalysisReducer.data
+      dataAnalysis : state.DataAnalysisReducer.data
   }
 }
 
@@ -314,26 +314,8 @@ function mapDispatchToProps(dispatch) {
         dispatch(projectMenuList(config))
       }
     },
-    onDataAnalysis: (config, endPoint, isMetrics=false) => {
-      // if (endPoint.includes(ANALYTICS_TAB['AQ']['key'])) {
-      //   // if(isMetrics) {
-      //   //   dispatch(projectAQMetricsData(config))
-      //   // } else {
-      //     dispatch(projectAQAnalysisData(config))
-      //   // }
-      // } else if (endPoint.includes(ANALYTICS_TAB['PC']['key'])) {
-        // if(isMetrics) {
-        //   dispatch(projectPCMetricsData(config))
-        // } else {
-          dispatch(projectPCAnalysisData(config))
-        // }
-      // } else if (endPoint.includes(ANALYTICS_TAB['FD']['key'])) {
-      //   if(isMetrics) {
-      //     dispatch(projectFDMetricsData(config))
-      //   } else {
-      //     dispatch(projectFDAnalysisData(config))
-      //   }
-      // }
+    onDataAnalysis: (config) => {
+        dispatch(projectAnalysisData(config))
     }
   }
 }

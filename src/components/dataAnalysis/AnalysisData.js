@@ -62,10 +62,12 @@ class AnalysisData extends Component {
             analyticsData = getFormatedGraphData(dataAnalysis, metrics),
             graphData = analyticsData.graphData,
             nameMapper = analyticsData.nameMapper,
-            // tabData = 'hello';
             tabData = <GraphPlot graphData={graphData}
                         nameMapper={nameMapper} metrics={metrics}
-                        classes={classes}/>;
+                        classes={classes}
+                        stateData={this.props.stateData}
+                        handleSamplingChange={this.props.handleSamplingChange}
+                        getMetric={this.props.getMetric}/>;
         return tabData;
     }
     render() {
@@ -81,9 +83,9 @@ class AnalysisData extends Component {
         //         data.dataPCAnalysis.data.data.allMetrics,
         //         classes);
         // }
-        if (data.dataPCAnalysis && data.dataPCAnalysis.data.data.metrics){
-            tabData = this.generateDataAnalytics(data.dataPCAnalysis.data.data.metrics,
-                data.dataPCAnalysis.data.data.allMetrics,
+        if (data.dataAnalysis && data.dataAnalysis.data.data.metrics){
+            tabData = this.generateDataAnalytics(data.dataAnalysis.data.data.metrics,
+                data.dataAnalysis.data.data.allMetrics,
                 classes);
         }
         return (
@@ -96,10 +98,10 @@ class AnalysisData extends Component {
                     timeList={TIME_LIST}
                     handleRefresh={this.handleRefresh}
                     />
-                <DataProcessingComponent stateData={stateData}
+                {/* <DataProcessingComponent stateData={stateData}
                     handleSamplingChange={handleSamplingChange}
                     getMetric={getMetric}/>
-                <div className={classes.seperator}></div>
+                <div className={classes.seperator}></div> */}
                 {tabData}
             </div>
         )
