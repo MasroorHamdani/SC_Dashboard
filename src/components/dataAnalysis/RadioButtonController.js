@@ -42,10 +42,12 @@ class RadioButtonComponent extends Component {
                                                 name={data.header}
                                                 className={classes.group}
                                                 value={data.value}
-                                                onChange={handleChange}>
+                                                >
                                                 {project.devices &&
                                                     project.devices.map(function(key) {
-                                                    return <FormControlLabel value={key.id} key={key.id} control={<Radio />} label={key.id} />
+                                                    return <FormControlLabel value={key.Devid} key={key.Devid}
+                                                    control={<Radio 
+                                                        onChange={event => handleChange(event, key.SubType)}/>} label={key.Display} />
                                                 })}
                                             </RadioGroup>
                                         </FormControl>

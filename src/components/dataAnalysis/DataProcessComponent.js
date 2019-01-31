@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {withStyles, FormControl, InputLabel, Input,
-    NativeSelect, TextField, Button} from '@material-ui/core';
+    NativeSelect, TextField} from '@material-ui/core';
 import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
 import "react-datepicker/dist/react-datepicker.css";
 import {FUNCTION_LIST} from '../../constants/Constant';
@@ -10,10 +10,7 @@ import { NamespacesConsumer } from 'react-i18next';
 class DataProcessingComponent extends Component {
     render () {
         const {classes, stateData, handleSamplingChange,
-            getMetric, metrics} = this.props;
-        // let metrics = getMetric();
-        // metrics = metrics.metric;
-        console.log(stateData);
+                metrics} = this.props;
         return (
             <NamespacesConsumer>
             {
@@ -27,7 +24,7 @@ class DataProcessingComponent extends Component {
                                     label="Sampling Rate"
                                     name="sampling"
                                     value={stateData[metrics.metricID][dt.id].sampling}
-                                    onChange={event => handleSamplingChange(event, dt.id)}
+                                    onChange={event => handleSamplingChange(event, metrics.metricID, dt.id)}
                                     margin="normal"
                                 />
                                 <FormControl className={classes.formControl}>
@@ -36,7 +33,7 @@ class DataProcessingComponent extends Component {
                                     </InputLabel>
                                     <NativeSelect
                                         value={stateData[metrics.metricID][dt.id].unit}
-                                        onChange={event => handleSamplingChange(event, dt.id)}
+                                        onChange={event => handleSamplingChange(event, metrics.metricID, dt.id)}
                                         input={<Input name="unit" id="unit-native-label-placeholder" />}>
                                         <option value='' name="unit" key='unit'>{t('chooseUnit')}</option>
                                         <option value='T' name="unit" key='min'>Mins</option>
@@ -57,7 +54,7 @@ class DataProcessingComponent extends Component {
                                     </InputLabel>
                                     <NativeSelect
                                         value={stateData[metrics.metricID][dt.id].func}
-                                        onChange={event => handleSamplingChange(event, dt.id)}
+                                        onChange={event => handleSamplingChange(event, metrics.metricID, dt.id)}
                                         input={<Input name='func' id="func-native-label-placeholder" />}>
                                         <option value='' key='func' >{t('chooseFunc')}</option>
                                         { FUNCTION_LIST.map((func) => {
@@ -65,7 +62,8 @@ class DataProcessingComponent extends Component {
                                         })}
                                     </NativeSelect>
                                 </FormControl>
-                                <ArrowForwardIcon className={classes.pointer} id="update" onClick={handleSamplingChange}/>
+                                <ArrowForwardIcon className={classes.pointer} name="update" id="update"
+                                    onClick={event => handleSamplingChange(event, 'update')}/>
                             </div>
                         }
                     }

@@ -6,8 +6,8 @@ export const API_URLS = {
     "REFRESH_TOKEN": "/unauth/login/refreshtoken",
     // "DASHBOARD": "/auth/projects",
     "DASHBOARD": "/authV2/projects",
-    "PROJECT_DETAILS": "/auth/projects",
-    // "PROJECT_DETAILS": "/authV2/projects",
+    // "PROJECT_DETAILS": "/auth/projects",
+    "PROJECT_DETAILS": "/authV2/projects",
     "FORGOT_PASSWORD": "/unauth/password/change",//"/forgot-password",
     "RESET_PASSWORD": "/unauth/password/confirm", //"/confirm-forgot-password",
     "AUTH_RESET_PASSWORD": "/unauth/password/authchallenge",
@@ -248,5 +248,7 @@ export const METRIC_TYPE = {
 export const DATA_VIEW_TYPE = {
     'LINE': 'line',
     'BAR': 'bar',
-    'SCATTER': 'sactter'
+    'SCATTER': 'sactter',
+    'PIE': 'pie',
+    'TILE': 'tile'
 }

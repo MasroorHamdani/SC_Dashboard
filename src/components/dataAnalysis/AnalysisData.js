@@ -1,13 +1,10 @@
 import React, { Component } from 'react';
-import {withStyles, Typography} from '@material-ui/core';
-import {Line, XAxis, YAxis, CartesianGrid, Tooltip,
-    Legend, ResponsiveContainer, Brush, ComposedChart, Bar} from 'recharts';
+import {withStyles} from '@material-ui/core';
 import styles from './AnalysisDataStyle';
-import {ANALYTICS_TAB, TIME_LIST,
+import {TIME_LIST,
     AUTO_REFRESH_TIMEOUT} from '../../constants/Constant';
 import DateRowComponent from './DateRowComponent';
 import {getFormatedGraphData} from '../../utils/AnalyticsDataFormat';
-import DataProcessingComponent from './DataProcessComponent';
 import _ from 'lodash';
 import GraphPlot from './GraphPlot';
 
@@ -66,28 +63,18 @@ class AnalysisData extends Component {
                         nameMapper={nameMapper} metrics={metrics}
                         classes={classes}
                         stateData={this.props.stateData}
-                        handleSamplingChange={this.props.handleSamplingChange}
-                        getMetric={this.props.getMetric}/>;
+                        handleSamplingChange={this.props.handleSamplingChange}/>;
         return tabData;
     }
     render() {
-        const {stateData, data, classes, handleSamplingChange,
-            getMetric} = this.props;
+        const {data, classes } = this.props;
         let tabData;
-        // if (data.dataAQAnalysis && data.dataAQAnalysis.data.data.metrics &&
-        // stateData.value.includes(ANALYTICS_TAB['AQ']['key']) &&  stateData.aqMetrics) {
-        //     tabData = this.generateDataAnalytics(data.dataAQAnalysis.data.data.metrics, stateData.aqMetrics, classes);
-        // } else if (data.dataPCAnalysis && data.dataPCAnalysis.data.data.metrics &&
-        //     stateData.value.includes(ANALYTICS_TAB['PC']['key']) && stateData.pcMetrics){
-        //     tabData = this.generateDataAnalytics(data.dataPCAnalysis.data.data.metrics,
-        //         data.dataPCAnalysis.data.data.allMetrics,
-        //         classes);
-        // }
         if (data.dataAnalysis && data.dataAnalysis.data.data.metrics){
             tabData = this.generateDataAnalytics(data.dataAnalysis.data.data.metrics,
                 data.dataAnalysis.data.data.allMetrics,
                 classes);
         }
+
         return (
             <div className={classes.graph}>
                 <DateRowComponent handleDatePicker={this.handleDatePicker}
@@ -98,10 +85,6 @@ class AnalysisData extends Component {
                     timeList={TIME_LIST}
                     handleRefresh={this.handleRefresh}
                     />
-                {/* <DataProcessingComponent stateData={stateData}
-                    handleSamplingChange={handleSamplingChange}
-                    getMetric={getMetric}/>
-                <div className={classes.seperator}></div> */}
                 {tabData}
             </div>
         )
