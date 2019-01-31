@@ -3,6 +3,8 @@ const styles = theme => ({
         margin: theme.spacing.unit * 4,
         padding: theme.spacing.unit * 4,
         width: '100%',
+        height: '100vh',
+        overflow: 'auto',
     },
     lineChart: {
         width: "80%",

@@ -11,7 +11,8 @@ const styles = theme => ({
     },
     seperator: {
         border: "black",
-        borderStyle: "double"
+        borderStyle: "double",
+        height: '100vh',
     }
 })
 

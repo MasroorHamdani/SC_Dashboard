@@ -9,7 +9,7 @@ import _ from 'lodash';
 import DataAnalysisComponent from '../../components/dataAnalysis/DataAnalysis';
 import {getApiConfig} from '../../services/ApiCofig';
 import {API_URLS, DATE_TIME_FORMAT,
-  ANALYTICS_DATE, ANALYTICS_TAB, ANALYTICS_SUB_TABS} from '../../constants/Constant';
+  ANALYTICS_DATE, ANALYTICS_TAB} from '../../constants/Constant';
 import {projectMenuList, projectSubMenuList,
   projectAnalysisData} from '../../actions/DataAnalysis';
 import styles from './DataAvalysisStyle';
@@ -36,32 +36,35 @@ class DataAnalysis extends Component {
     this.setState({ tab: value }, function () {
     });
   };
+
   handleClick = (index, pid) => {
     this.setState(state => ({ [index]: !state[index],
                             'pid': pid}));
   };
-  // handleSelect = (event) => {
-  //   this.setState({page: event})
-  // }
-  handleChange = event => {
-    this.setState({ value: event.target.value,
-                    // page: ANALYTICS_SUB_TABS['INSTALLATION_DETAILS']['key']
-                  },
-                    function() {
-      if(this.state.value.includes(ANALYTICS_TAB['FD']['key']))
+
+  handleChange = (event, subType) => {
+    let targetValue = event.target.value;
+    if(targetValue.includes(ANALYTICS_TAB['FD']['key']))
         this.setState({ tab: ANALYTICS_TAB['FD']['value'],
-        deviceKey: ANALYTICS_TAB['FD']['key']});
-      else if(this.state.value.includes(ANALYTICS_TAB['PC']['key']))
-        this.setState({ tab: ANALYTICS_TAB['PC']['value'],
-        deviceKey: ANALYTICS_TAB['PC']['key']});
-      else if(this.state.value.includes(ANALYTICS_TAB['AQ']['key']))
-        this.setState({ tab: ANALYTICS_TAB['AQ']['value'],
-        deviceKey: ANALYTICS_TAB['AQ']['key']});
-      else if(this.state.value.includes(ANALYTICS_TAB['WD']['key']))
-        this.setState({ tab: ANALYTICS_TAB['WD']['value'],
-        deviceKey: ANALYTICS_TAB['WD']['key']});
-      this.handleDateChange(true);
-    });
+        deviceKey: ANALYTICS_TAB['FD']['key'],
+        value: targetValue,
+        subType:subType});
+    else if(targetValue.includes(ANALYTICS_TAB['PC']['key']))
+      this.setState({ tab: ANALYTICS_TAB['PC']['value'],
+      deviceKey: ANALYTICS_TAB['PC']['key'],
+      value: targetValue,
+      subType:subType});
+    else if(targetValue.includes(ANALYTICS_TAB['AQ']['key']))
+      this.setState({ tab: ANALYTICS_TAB['AQ']['value'],
+      deviceKey: ANALYTICS_TAB['AQ']['key'],
+      value: targetValue,
+      subType:subType});
+    else if(targetValue.includes(ANALYTICS_TAB['WD']['key']))
+      this.setState({ tab: ANALYTICS_TAB['WD']['value'],
+      deviceKey: ANALYTICS_TAB['WD']['key'],
+      value: targetValue,
+      subType:subType});
+    this.handleDateChange(true);
   };
 
   getMetric = () => {
@@ -70,47 +73,31 @@ class DataAnalysis extends Component {
       metrics = this.state.metrics.vector;
       allMetrics = this.state.allMetrics;
     }
-    // if(this.state.value.includes(ANALYTICS_TAB['FD']['key']) && this.state.pcMetrics) {
-    //   metrics = this.state.pcMetrics.vector;
-    //   allMetrics = this.state.pcAllMetrics;
-    // }
-    // else if(this.state.value.includes(ANALYTICS_TAB['PC']['key']) && this.state.pcMetrics) {
-    //   metrics = this.state.pcMetrics.vector;
-    //   allMetrics = this.state.pcAllMetrics;
-    // }
-    // else if(this.state.value.includes(ANALYTICS_TAB['AQ']['key']) && this.state.aqMetrics) {
-    //   metrics = this.state.aqMetrics.vector;
-    //   allMetrics = this.state.aqAllMetrics;
-    // }
-    // else if(this.state.value.includes(ANALYTICS_TAB['WD']['key']) && this.state.wdMetrics) {
-    //   metrics = this.state.wdMetrics.vector;
-    //   allMetrics = this.state.wdAllMetrics;
-    // }
-      
     return {'metric' : metrics,
             'allMetrics': allMetrics}
   }
-  getNewAnalyticsData = (isMetric) => {
+
+  getNewAnalyticsData = () => {
       let metrics = this.getMetric(),
       dataToPost = {
-        // "ReqType": "default",
-        // "Type": "PC",
-        // "SubType": "GRIDEYEv0"
         "ReqType": "default",
-        "Type": "FD",
-        "SubType": "FD_V0"
+        "Type": this.state.deviceKey,
+        "SubType": this.state.subType
       };
-    if(metrics && metrics.metric.length>0 && metrics.allMetrics.length>0) {
+      
+    if(metrics && metrics.metric.length > 0 &&
+        metrics.allMetrics.length > 0 &&
+        metrics.metric[0].type === this.state.deviceKey) {
       dataToPost = {};
       dataToPost["metrics"] = metrics.allMetrics;
-      metrics.metric.map((dt) => {
-        dataToPost.metrics.map((rows) => {
-          rows.dimensions.map((row) => {
-            if(row.key === dt.path && row.showSamplingWidget) {
-              row.statistic = this.state[dt.path]['func'] ? this.state[dt.path]['func'] : dt.statistic;
-              row.window = this.state[dt.path]['sampling'] + this.state[dt.path]['unit'];
-            }
-          })
+      dataToPost.metrics.map((rows) => {
+        rows.dimensions.map((row) => {
+          if(row.showSamplingWidget) {
+            row.statistic = this.state[rows.metricID][row.id]['func'] ? this.state[rows.metricID][row.id]['func'] : row.statistic;
+            row.window = this.state[rows.metricID][row.id]['sampling'] && this.state[rows.metricID][row.id]['unit'] ?
+              this.state[rows.metricID][row.id]['sampling'] + this.state[rows.metricID][row.id]['unit'] :
+              row.window;
+          }
         })
       })
     }
@@ -127,17 +114,19 @@ class DataAnalysis extends Component {
     this.props.onDataAnalysis(config, endPoint);
   }
 
-  handleSamplingChange = (event, path) => {
-    const {name, value, id} = event.target;
-    this.setState({
-        [path]: {...this.state[path],
-          [name]: value
+  handleSamplingChange = (event, mainPath='', path='') => {
+    const {name, value} = event.target;
+    if(mainPath === 'update') {
+      this.getNewAnalyticsData();
+    } else {
+      this.setState({
+        [mainPath]: {...this.state[mainPath],
+          [path]: {...this.state[mainPath][path],
+            [name]: value
           }
-    }, function() {
-      if(id === 'update') {
-        this.getNewAnalyticsData();
-      }
-    });
+        }
+      });
+    }
   }
 
   handleDateChange = (param='', startDate='', endDate='') => {
@@ -174,19 +163,21 @@ class DataAnalysis extends Component {
       PCSessionHeader: '',
       AQSessionHeader: ''
     }, function() {
-      this.getNewAnalyticsData(param);
+      this.getNewAnalyticsData();
     })
   }
+
   componentDidMount() {
     const endPoint = API_URLS['DASHBOARD'],
     config = getApiConfig(endPoint, 'GET');
     this.props.onDataAnalysisMenu(config);
   }
+
   componentDidUpdate(prevProps, prevState) {
     if ((this.props.projectMenuList || this.props.projectSubMenuList) &&
       (!isEqual(this.props.projectSubMenuList, prevProps.projectSubMenuList) ||
       !isEqual(this.props.projectMenuList, prevProps.projectMenuList))) {
-        let responseData = this.props.projectMenuList,//.Projects,
+        let responseData = this.props.projectMenuList,
           project = this.state.projectList,
           projObj = {};
         if(this.state.i <= responseData.length) {
@@ -200,16 +191,9 @@ class DataAnalysis extends Component {
           if (this.props.projectSubMenuList &&
             !isEqual(this.props.projectSubMenuList, prevProps.projectSubMenuList)) {
                 const deviceResponse = this.props.projectSubMenuList;
-                let menu = [];
-                projObj['id'] = deviceResponse[0].PID;//data.pid;
-                projObj['name'] = deviceResponse[0].PID; // data.name;
-                let flattedData = _.flatMap(deviceResponse, ({insid, details }) =>
-                _.map(details, dt => ({ insid, ...dt }))
-                );
-                  flattedData.map(function(device) {
-                    menu.push(device);
-                  });
-                projObj['devices'] = menu;
+                projObj['id'] = deviceResponse[0].PID;
+                projObj['name'] = deviceResponse[0].PID;
+                projObj['devices'] = deviceResponse;
                 project.push(projObj);
           }
         }
@@ -258,7 +242,8 @@ class DataAnalysis extends Component {
           statistic: vector.statistic,
           chartType: vector.ctype,
           showSamplingWidget: vector.showSamplingWidget,
-          window: vector.window
+          window: vector.window,
+          type: this.state.deviceKey
         })
         if(vector.showSamplingWidget)
           path.push({[vector.id] : vector.key});
@@ -275,18 +260,14 @@ class DataAnalysis extends Component {
         <div className={classes.root}>
             <RadioButtonComponent data={this.state} projectList={this.state.projectList}
               handleChange={this.handleChange}
-              // handleSelect={this.handleSelect}
               handleClick={this.handleClick}/>
             <div className={classes.seperator}></div>
           { 
-            // (
               this.state.projectList &&
-            // this.state.page === ANALYTICS_SUB_TABS['INSTALLATION_DETAILS']['key'] ) &&
             <DataAnalysisComponent data={this.props} stateData={this.state}
               handleDateChange={this.handleDateChange}
               handleTabChange={this.handleTabChange}
-              handleSamplingChange={this.handleSamplingChange}
-              getMetric={this.getMetric}/>
+              handleSamplingChange={this.handleSamplingChange}/>
           }
           { (!this.state.analysisAQData && !this.state.projectList) &&
             <div>No Projects Assigned</div>
