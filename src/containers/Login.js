@@ -96,9 +96,14 @@ componentDidUpdate(prevProps, prevState) {
     && !isEqual(this.props.userData.LoginReducer, prevProps.userData.LoginReducer)) {
     const responseData = this.props.userData.LoginReducer.data;
     if (responseData['status'] === 400) {
-      this.setState({
-        errorMessage: responseData['message']
-      });
+      if(responseData['data'].includes('UserNotFoundException'))
+        this.setState({
+          errorMessage: 'User Does not Exist'
+        });
+      else if(responseData['data'].includes('NotAuthorizedException'))
+        this.setState({
+          errorMessage: 'Incorrect username or password'
+        });
       if (this.state.loading) {
         this.setState({
           loading: false,

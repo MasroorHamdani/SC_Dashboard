@@ -93,6 +93,7 @@ class DataAnalysis extends Component {
       dataToPost.metrics.map((rows) => {
         rows.dimensions.map((row) => {
           if(row.showSamplingWidget) {
+            console.log(this.state[rows.metricID]);
             row.statistic = this.state[rows.metricID][row.id]['func'] ? this.state[rows.metricID][row.id]['func'] : row.statistic;
             row.window = this.state[rows.metricID][row.id]['sampling'] && this.state[rows.metricID][row.id]['unit'] ?
               this.state[rows.metricID][row.id]['sampling'] + this.state[rows.metricID][row.id]['unit'] :
@@ -103,11 +104,10 @@ class DataAnalysis extends Component {
     }
     const endPoint = `${API_URLS['DEVICE_DATA']}/${this.state.pid}/${this.state.value}`,
       params = {
-        'start' : '2019010100',//this.state.start,
-        'end': '2019010123',//this.state.end,
+        'start' : '2019010100',//this.state.start,//
+        'end': '2019010123',//this.state.end,//
       };
     let headers = {
-      // 'x-sc-session-token': this.state[`${this.state.deviceKey}SessionHeader`]? this.state[`${this.state.deviceKey}SessionHeader`]: ''
       'x-sc-session-token': this.state.sessionHeader ? this.state.sessionHeader : ''
     },
     config = getApiConfig(endPoint, 'POST', dataToPost, params, headers);
@@ -116,6 +116,7 @@ class DataAnalysis extends Component {
 
   handleSamplingChange = (event, mainPath='', path='') => {
     const {name, value} = event.target;
+    console.log(this.state[mainPath], "before");
     if(mainPath === 'update') {
       this.getNewAnalyticsData();
     } else {
@@ -127,6 +128,7 @@ class DataAnalysis extends Component {
         }
       });
     }
+    console.log(this.state[mainPath], "afetr");
   }
 
   handleDateChange = (param='', startDate='', endDate='') => {
@@ -160,8 +162,7 @@ class DataAnalysis extends Component {
     this.setState( {
       start: start,
       end: end,
-      PCSessionHeader: '',
-      AQSessionHeader: ''
+      sessionHeader: ''
     }, function() {
       this.getNewAnalyticsData();
     })
@@ -219,7 +220,8 @@ class DataAnalysis extends Component {
               value[d] = {};
             })
           })
-          this.setState({[key]: value})
+          if(!this.state[key])
+            this.setState({[key]: value})
         })
     }
   }

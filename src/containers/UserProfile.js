@@ -28,7 +28,6 @@ class UserProfile extends Component {
         if (name === 'Mute') {
             value = event.target.checked
         }
-        console.log({name, value});
         this.setState({
             [name] : value
         });

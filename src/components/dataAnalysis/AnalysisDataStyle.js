@@ -1,3 +1,4 @@
+import {blueGrey} from '@material-ui/core/colors';
 const styles = theme => ({
     graph: {
         margin: theme.spacing.unit * 4,
@@ -39,6 +40,15 @@ const styles = theme => ({
     },
     pointer: {
         cursor: 'pointer'
+    },
+    //tile dimentions
+    tile: {
+        width: '160px',
+        height: '160px',
+        backgroundColor: blueGrey[900],//'#262f3e',//'#404854',
+        '& *': { color: 'rgba(255, 255, 255, 0.7)' },
+        textAlign: 'center',
+        padding: theme.spacing.unit * 2
     }
 })
 

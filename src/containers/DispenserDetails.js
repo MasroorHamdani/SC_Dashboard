@@ -4,7 +4,7 @@ import {isEqual} from 'lodash-es';
 import * as firebase from 'firebase';
 
 import DispenserAnalysis from "../components/dataAnalysis/DispenserAnalysis";
-import {API_URLS} from '../constants/Constant';
+import {API_URLS, NAMESPACE_MAPPER} from '../constants/Constant';
 import {getApiConfig} from '../services/ApiCofig';
 import {projectSubMenuList} from '../actions/DataAnalysis';
 // import FirebaseData from '../services/Firebase';
@@ -31,12 +31,20 @@ class DispenserDetails extends Component {
             config = getApiConfig(endPoint, 'GET');
             this.props.onProjectLocation(config);
     }
-    // componentDidUpdate(prevProps, prevState) {
-    //     if(this.props.projectLocation &&
-    //         !isEqual(this.props.projectLocation, prevProps.projectLocation)) {
-    //             // console.log(this.props.projectLocation);
-    //     }
-    // }
+    componentDidUpdate(prevProps, prevState) {
+        if(this.props.projectLocation &&
+            !isEqual(this.props.projectLocation, prevProps.projectLocation)) {
+                let deviceList = this.props.projectLocation;
+                deviceList.map((row) => {
+                    let SUB1 = NAMESPACE_MAPPER[row['NS']].SUB1,
+                    SUB2 = NAMESPACE_MAPPER[row['NS']].SUB2;
+                    row[SUB2] =  row.SUB2 ? row.SUB2 : '';
+                    row[SUB1] = row.SUB1 ? row.SUB1 : '';
+                })
+                // console.log(this.props.projectLocation, deviceList);
+                this.setState({deviceList: deviceList})
+        }
+    }
     handleLocationSelectionChange = event => {
         // Either remove condition and let user select default 'Select Project' Option 
         // and make an API call with empty value
@@ -45,6 +53,7 @@ class DispenserDetails extends Component {
             this.setState({location: event.target.value}, function() {
                 // this.fbRef = fbObj.getReference(this.state.pid, `${this.state.location}:DM`);
                 // let dispenserData = this.fbRef.onSnapshot(fbObj.onCollectionUpdate);
+                console.log(this.state.pid, `${this.state.location}:DM`);
                 this.fbRef = firebase.firestore().collection(this.state.pid).doc(`${this.state.location}:DM`).collection('DATA');
                 this.fbRef.onSnapshot(this.onCollectionUpdate);
                 
@@ -54,7 +63,7 @@ class DispenserDetails extends Component {
     };
     render() {
         return(
-            <DispenserAnalysis data={this.props.projectLocation}
+            <DispenserAnalysis
                 stateData={this.state}
                 handleLocationSelectionChange={this.handleLocationSelectionChange}/>
         )

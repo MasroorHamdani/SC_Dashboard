@@ -2,24 +2,70 @@ import React, {Component} from 'react';
 import {Typography} from '@material-ui/core';
 import {Line, XAxis, YAxis, CartesianGrid, Tooltip,
     Legend, ResponsiveContainer, Brush, ComposedChart,
-    Bar, PieChart, Pie, Cell} from 'recharts';
+    Bar, PieChart, Pie, Cell, Sector} from 'recharts';
 import {METRIC_TYPE, DATA_VIEW_TYPE} from '../../constants/Constant';
 import DataProcessingComponent from './DataProcessComponent';
 
 class GraphPlot extends Component {
+    state = ({
+        activeIndex: 0
+    });
+    getInitialState = () =>{
+        return {
+          activeIndex: 0,
+        };
+    }
+    
+    onPieEnter = (data, index) => {
+    this.setState({
+        activeIndex: index,
+    });
+    }
     render() {
         const {classes, metrics, graphData, nameMapper,
             stateData, handleSamplingChange} = this.props;
-        const RADIAN = Math.PI / 180;
-        const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent, index }) => {
-            const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
-            const x  = cx + radius * Math.cos(-midAngle * RADIAN);
-            const y = cy  + radius * Math.sin(-midAngle * RADIAN);
-            
+        const renderActiveShape = (props) => {
+            const RADIAN = Math.PI / 180;
+            const { cx, cy, midAngle, innerRadius, outerRadius, startAngle,
+            endAngle, fill, payload, percent, value } = props;
+            const sin = Math.sin(-RADIAN * midAngle);
+            const cos = Math.cos(-RADIAN * midAngle);
+            const sx = cx + (outerRadius + 10) * cos;
+            const sy = cy + (outerRadius + 10) * sin;
+            const mx = cx + (outerRadius + 30) * cos;
+            const my = cy + (outerRadius + 30) * sin;
+            const ex = mx + (cos >= 0 ? 1 : -1) * 22;
+            const ey = my;
+            const textAnchor = cos >= 0 ? 'start' : 'end';
+        
             return (
-                <text x={x} y={y} fill="white" textAnchor={x > cx ? 'start' : 'end'} 	dominantBaseline="central">
-                    {`${(percent * 100).toFixed(0)}%`}
+                <g>
+                <text x={cx} y={cy} dy={8} textAnchor="middle" fill={fill}>{payload.name}</text>
+                <Sector
+                    cx={cx}
+                    cy={cy}
+                    innerRadius={innerRadius}
+                    outerRadius={outerRadius}
+                    startAngle={startAngle}
+                    endAngle={endAngle}
+                    fill={fill}
+                />
+                <Sector
+                    cx={cx}
+                    cy={cy}
+                    startAngle={startAngle}
+                    endAngle={endAngle}
+                    innerRadius={outerRadius + 6}
+                    outerRadius={outerRadius + 10}
+                    fill={fill}
+                />
+                <path d={`M${sx},${sy}L${mx},${my}L${ex},${ey}`} stroke={fill} fill="none"/>
+                <circle cx={ex} cy={ey} r={2} fill={fill} stroke="none"/>
+                <text x={ex + (cos >= 0 ? 1 : -1) * 12} y={ey} textAnchor={textAnchor} fill="#333">{value}</text>
+                <text x={ex + (cos >= 0 ? 1 : -1) * 12} y={ey} dy={18} textAnchor={textAnchor} fill="#999">
+                    {`(Rate ${(percent * 100).toFixed(2)}%)`}
                 </text>
+                </g>
             );
         };
         return(
@@ -73,16 +119,19 @@ class GraphPlot extends Component {
                             </ResponsiveContainer>
                         }
                         {(metric.metricType === METRIC_TYPE['CATEGORICAL']) &&
-                            <ResponsiveContainer width='100%' height={320}>
+                            <ResponsiveContainer width='100%' height={400}>
                                 {metric.dimensions[0].ctype === DATA_VIEW_TYPE['PIE'] ?
-                                    <PieChart width="50%" height={320}>
+                                    <PieChart height={320}>
                                         <Pie
+                                            activeIndex={this.state.activeIndex}
+                                            activeShape={renderActiveShape}
                                             isAnimationActive={true}
                                             data={graphData[metric.metricID]} 
                                             labelLine={false}
-                                            label={renderCustomizedLabel}
-                                            outerRadius={80} 
+                                            outerRadius={120} 
                                             fill="#8884d8"
+                                            innerRadius={100}
+                                            onMouseEnter={this.onPieEnter}
                                             >
                                             {
                                                 graphData[metric.metricID].map((entry, index) =>
@@ -90,16 +139,19 @@ class GraphPlot extends Component {
                                                 )
                                             }
                                         </Pie>
-                                        <Tooltip/>
                                         <Legend/>
                                     </PieChart>
                                 :
                                     (metric.dimensions[0].ctype === DATA_VIEW_TYPE['TILE'] ?
-                                        <div>
-                                            {console.log(graphData[metric.metricID][0], metric.dimensions[0])}
-                                                    {graphData[metric.metricID][0].name}
-                                                    {graphData[metric.metricID][0].value}
-                                            </div>
+                                        <div className={classes.tile}
+                                            style={{backgroundColor:graphData[metric.metricID][0].color}}>
+                                            <Typography gutterBottom variant="h6">
+                                                {graphData[metric.metricID][0].name}
+                                            </Typography>
+                                            <Typography gutterBottom variant="h6">
+                                                {graphData[metric.metricID][0].value}
+                                            </Typography>
+                                        </div>
                                     :
                                         <div>Firgure out other options</div>
                                     )
