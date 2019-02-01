@@ -3,7 +3,7 @@ export const API_END_POINT = "https://4l6qi5oh0h.execute-api.ap-southeast-1.amaz
 
 export const API_URLS = {
     "LOGIN": "/unauth/login", //"/login-1-time",
-    "REFRESH_TOKEN": "/unauth/login/refreshtoken",
+    "REFRESH_TOKEN": "/unauth/login",///refreshtoken",
     // "DASHBOARD": "/auth/projects",
     "DASHBOARD": "/authV2/projects",
     // "PROJECT_DETAILS": "/auth/projects",
@@ -229,6 +229,10 @@ export const NAMESPACE_MAPPER = {
     'USER_PROFILE' : {
         'SUB1': 'RFID',
         'SUB2': 'ID'
+    },
+    'DEVICE_INFO_GENERAL' : {
+        'SUB1': 'insid',
+        'SUB2': 'pid'
     }
 }
 

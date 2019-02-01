@@ -88,24 +88,8 @@ function ApiService(configObject) {
 
                     forceLogout();
                 });
-            // AuthApi.refreshAccessToken()
-            //     .then(newAccessToken => {
-            //         isFetchingToken = false;
-
-            //         onTokenRefreshed(null, newAccessToken);
-            //         tokenSubscribers = [];
-
-            //         localStorage.setItem('idToken', newAccessToken);
-            //         return axios(err.response.config);
-            //     })
-            //     .catch(() => {
-            //         onTokenRefreshed(new Error('Unable to refresh access token'), null);
-            //         tokenSubscribers = [];
-
-            //         forceLogout();
-            //     });
-        } else if(err.response.config.url.includes('/refreshtoken')){
-            return forceLogout();
+        // } else if(err.response.config.url.includes('/refreshtoken')){
+        //     return forceLogout();
         } else {
             const initTokenSubscriber = new Promise((resolve, reject) => {
                 subscribeTokenRefresh((errRefreshing, newToken) => {

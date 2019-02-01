@@ -13,20 +13,21 @@ import {DATE_TIME_FORMAT, GRAPH_LABEL_TIME_FORMAT} from '../../constants/Constan
 class DispenserAnalysis extends Component {
     constructor() {
         super()
-        this.state = {
-            dispenser: []
-        };
+        // this.state = {
+        //     dispenser: []
+        // };
         // this.ref = firebase.firestore().collection('JTC_TIM_F1').doc('JTC_LOCN2:DM').collection('DATA');
     }
-    onCollectionUpdate = (querySnapshot) => {
-        const dispenser = [];
-        querySnapshot.forEach((doc) => {
-            console.log(doc.data());
-        });
-    }
-    componentDidMount() {
-        // this.ref.onSnapshot(this.onCollectionUpdate);
-    }
+    // onCollectionUpdate = (querySnapshot) => {
+    //     const dispenser = [];
+    //     querySnapshot.forEach((doc) => {
+    //         console.log(doc.data());
+    //     });
+    // }
+    // componentDidMount() {
+    //     this.ref.onSnapshot(this.onCollectionUpdate);
+    // }
+
     handleBarClick = (key) => {
         console.log("Clicked", key);
     }
@@ -107,14 +108,14 @@ class DispenserAnalysis extends Component {
     }
     
     render() {
-        const {classes, data, stateData,
+        const {classes, stateData,
             handleLocationSelectionChange} = this.props;
         let tabData;
         if(stateData.dispenserData) {
             tabData = this.generateDispenserData(stateData.dispenserData, classes);
         }
         return (
-            <div className={classes.rootDispenser}>
+            <div className={classes.root}>
                 <FormControl className={classes.formControl}>
                     <InputLabel shrink htmlFor="location-native-label-placeholder">
                         Location List
@@ -124,9 +125,9 @@ class DispenserAnalysis extends Component {
                         onChange={handleLocationSelectionChange}
                         input={<Input name="location" id="location-native-label-placeholder" />}>
                         <option value='' key='location' id='location'>Choose Location</option>
-                        { data &&
-                            data.map(function(dt) {
-                                return <option value={dt.insid} key={dt.insid}>{dt.insid}</option>
+                        { stateData.deviceList &&
+                            stateData.deviceList.map(function(dt) {
+                                return <option value={dt.insid} key={dt.Devid}>{dt.Display}</option>
                             })
                         }
                     </NativeSelect>
