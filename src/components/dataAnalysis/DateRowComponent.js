@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import {withStyles, ListItem, ListItemText, Typography, List} from '@material-ui/core';
+import {withStyles, ListItem, ListItemText, Typography,
+    List} from '@material-ui/core';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import styles from './AnalysisDataStyle';
@@ -58,8 +59,10 @@ class DateRowComponent extends Component {
                         </ListItem>
                     })}
                 </List>
-                <RefreshIcon className={classes.pointer}
-                onClick={handleRefresh}/>
+                {handleRefresh &&
+                    <RefreshIcon className={classes.pointer}
+                    onClick={handleRefresh}/>
+                }
             </div>
         )
     }

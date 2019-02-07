@@ -36,7 +36,9 @@ class DataAnalysisComponent extends Component {
                         </Tabs>
                     </AppBar>
 
-                    {(stateData.tab === 0 || stateData.value.includes(ANALYTICS_TAB['FD']['key'])) && <AnalysisData
+                    {(stateData.tab === 0 || 
+                        (stateData.value.includes(ANALYTICS_TAB['FD']['key']) && 
+                            !stateData.value.includes(ANALYTICS_TAB['CLOGS']['key']))) && <AnalysisData
                         data={data} handleDateChange={handleDateChange}
                         stateData={stateData} handleSamplingChange={handleSamplingChange}/>}
                     {(stateData.tab === 1 || stateData.value.includes(ANALYTICS_TAB['PC']['key'])) && <AnalysisData 
@@ -46,6 +48,9 @@ class DataAnalysisComponent extends Component {
                         data={data} handleDateChange={handleDateChange}
                         stateData={stateData} handleSamplingChange={handleSamplingChange}/>}
                     {(stateData.tab === 3 || stateData.value.includes(ANALYTICS_TAB['WD']['key'])) && <AnalysisData 
+                        data={data} handleDateChange={handleDateChange}
+                        stateData={stateData} handleSamplingChange={handleSamplingChange}/>}
+                    {(stateData.tab === 4 || stateData.value.includes(ANALYTICS_TAB['CLOGS']['key'])) && <AnalysisData 
                         data={data} handleDateChange={handleDateChange}
                         stateData={stateData} handleSamplingChange={handleSamplingChange}/>}
                 </div>

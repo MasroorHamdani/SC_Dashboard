@@ -6,13 +6,13 @@ import {Button, Dialog, DialogTitle, DialogContent,
 
 class CustomModal extends Component {
     render() {
-        const {classes, handleClose, handleClick, open, header,
-            content} = this.props;
+        const {handleClose, handleClick, open, header,
+            content, showFooter, classes} = this.props;
         return(
             <Dialog
                 open={open}
                 onClose={handleClose}
-                scroll="paper"
+                // scroll="paper"
                 aria-describedby="alert-dialog-description"
                 aria-labelledby="responsive-dialog-title">
                 <DialogTitle id="responsive-dialog-title">{header}</DialogTitle>
@@ -21,14 +21,16 @@ class CustomModal extends Component {
                     {content}
                     {/* </DialogContentText> */}
                 </DialogContent>
-                <DialogActions>
-                    <Button onClick={handleClose} color="primary">
-                    Cancel
-                    </Button>
-                    <Button onClick={handleClick} color="primary" autoFocus>
-                    Confirm
-                    </Button>
-                </DialogActions>
+                {showFooter &&
+                    <DialogActions>
+                        <Button onClick={handleClose} color="primary">
+                        Cancel
+                        </Button>
+                        <Button onClick={handleClick} color="primary" autoFocus>
+                        Confirm
+                        </Button>
+                    </DialogActions>
+                }
             </Dialog>
         )
     }

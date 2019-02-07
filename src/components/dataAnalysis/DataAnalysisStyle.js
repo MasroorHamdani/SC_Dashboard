@@ -3,12 +3,13 @@ const styles = theme => ({
     main: {
         width: '80%',
     },
-    // Dispenser Data view
+    // Alert Data view
     root: {
         padding: theme.spacing.unit * 3,
         marginTop: theme.spacing.unit * 8,
         width: '100%',
         height: '100vh',
+        overflow: 'auto',
     },
     expansionRoot: {
         backgroundColor: grey[200],
@@ -65,6 +66,14 @@ const styles = theme => ({
         width: '35%',
         margin: '16px',
         marginLeft: '0px'
+    },
+    //Dispenser Model
+    graph: {
+        margin: theme.spacing.unit * 4,
+        padding: theme.spacing.unit * 4,
+        width: '100%',
+        height: '100vh',
+        overflow: 'auto',
     },
 })
 

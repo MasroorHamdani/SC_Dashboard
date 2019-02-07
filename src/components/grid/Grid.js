@@ -210,6 +210,7 @@ class EnhancedTable extends React.Component {
           handleClose={this.handleClose}
           handleClick={this.onDelete}
           open={this.state.open}
+          showFooter={true}
         />
       </Paper>
       }</NamespacesConsumer>

@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import {withStyles} from '@material-ui/core';
 import styles from './AnalysisDataStyle';
-import {TIME_LIST,
-    AUTO_REFRESH_TIMEOUT} from '../../constants/Constant';
+import {TIME_LIST, AUTO_REFRESH_TIMEOUT} from '../../constants/Constant';
 import DateRowComponent from './DateRowComponent';
 import {getFormatedGraphData} from '../../utils/AnalyticsDataFormat';
 import _ from 'lodash';
@@ -74,7 +73,6 @@ class AnalysisData extends Component {
                 data.dataAnalysis.data.data.allMetrics,
                 classes);
         }
-
         return (
             <div className={classes.graph}>
                 <DateRowComponent handleDatePicker={this.handleDatePicker}
