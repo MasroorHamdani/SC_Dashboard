@@ -1,37 +1,19 @@
 import React, { Component } from 'react';
 import {withStyles, FormControl, InputLabel,
     NativeSelect, Input, FormHelperText, Typography} from '@material-ui/core';
-import {Line, XAxis, YAxis, CartesianGrid, Tooltip,
-        Legend, ResponsiveContainer, Brush,
+import {XAxis, YAxis, CartesianGrid, Tooltip,
+        Legend, ResponsiveContainer,
         ComposedChart, Bar, Cell} from 'recharts';
-// import * as firebase from 'firebase';
-import styles from './DataAnalysisStyle';
+import styles from './AnalysisDataStyle';
+import CustomModal from '../modal/Modal';
 import GraphPlot from './GraphPlot';
-import moment from 'moment';
-import {DATE_TIME_FORMAT, GRAPH_LABEL_TIME_FORMAT} from '../../constants/Constant';
+import DateRowComponent from './DateRowComponent';
+import {getFormatedGraphData} from '../../utils/AnalyticsDataFormat';
+import {TIME_LIST} from '../../constants/Constant';
 
 class DispenserAnalysis extends Component {
-    constructor() {
-        super()
-        // this.state = {
-        //     dispenser: []
-        // };
-        // this.ref = firebase.firestore().collection('JTC_TIM_F1').doc('JTC_LOCN2:DM').collection('DATA');
-    }
-    // onCollectionUpdate = (querySnapshot) => {
-    //     const dispenser = [];
-    //     querySnapshot.forEach((doc) => {
-    //         console.log(doc.data());
-    //     });
-    // }
-    // componentDidMount() {
-    //     this.ref.onSnapshot(this.onCollectionUpdate);
-    // }
-
-    handleBarClick = (key) => {
-        console.log("Clicked", key);
-    }
-    generateDispenserData(dataPassed, classes) {
+    
+    generateDispenserData = (dataPassed, classes) => {
         let dataMetrics= {}, tabData;
             dataMetrics['metricType'] = 'timeseries';
             dataMetrics['name'] = 'Raw Data';
@@ -59,14 +41,11 @@ class DispenserAnalysis extends Component {
                 })
                 graphData.push(graphElement);
             });
-            // tabData = <GraphPlot graphData={graphData}
-            //     nameMapper={nameMapper} metrics={dataMetrics}
-            //     classes={classes}/>
             tabData = <div>
             <Typography gutterBottom variant="h5">
                 {dataMetrics.name} - {dataMetrics.metricType}
             </Typography>
-            <ResponsiveContainer width='100%' height={600}>
+            <ResponsiveContainer width='30%' height={400}>
                 {dataMetrics.metricType=== 'timeseries' &&
                     <ComposedChart layout="vertical" className={classes.lineChart} data={graphData}
                         margin={{top: 5, right: 30, left: 20, bottom: 5}}>
@@ -81,20 +60,20 @@ class DispenserAnalysis extends Component {
                             Object.keys(graphData[0]).map(key =>
                             {
                                 if(key !== 'name') {
-                                    return <Bar name={nameMapper[key]['name']} barSize={50} key={key}
+                                    return <Bar name={nameMapper[key]['name']} barSize={60} key={key}
                                         dataKey={key} >
-                                    {
-                                        graphData.map((entry, index) => {
-                                        let color;
-                                        if(entry[key] >= 80)
-                                            color = '#16a085';
-                                        else if(entry[key] <= 40)
-                                            color = '#ea2d1f';
-                                        else if(entry[key] < 80 && entry[key] > 40)
-                                            color = '#c3b025';
-                                        return <Cell key={index} fill={color} onClick={e => this.handleBarClick(entry[key])}/>;
-                                        })
-                                    }
+                                        {
+                                            graphData.map((entry, index) => {
+                                            let color;
+                                            if(entry[key] >= 80)
+                                                color = '#1b5e20';
+                                            else if(entry[key] <= 40)
+                                                color = '#dd2c00';
+                                            else if(entry[key] < 80 && entry[key] > 40)
+                                                color = '#ffeb3b';
+                                            return <Cell key={index} fill={color} onClick={e => this.props.handleBarClick(entry[key])}/>;
+                                            })
+                                        }
                                     </Bar>
                                 }
                             })
@@ -106,13 +85,44 @@ class DispenserAnalysis extends Component {
 
         return tabData;
     }
-    
+
+    generateDispenserDataAnalytics = (data, metrics, classes, handleChangeStart,
+        handleChangeEnd, stateData, handleListSelection, handleDatePicker,
+        handleSamplingChange) => {
+        let dataAnalysis = data,
+            analyticsData = getFormatedGraphData(dataAnalysis, metrics),
+            graphData = analyticsData.graphData,
+            nameMapper = analyticsData.nameMapper,
+            tabData = <div className={classes.dispenserGraph}>
+                        <DateRowComponent handleDatePicker={handleDatePicker}
+                            handleChangeStart={handleChangeStart}
+                            handleChangeEnd={handleChangeEnd}
+                            handleListSelection={handleListSelection}
+                            data={stateData}
+                            timeList={TIME_LIST}/>
+                        <GraphPlot graphData={graphData}
+                        nameMapper={nameMapper} metrics={metrics}
+                        classes={classes}
+                        stateData={stateData}
+                        handleSamplingChange={handleSamplingChange}/>
+                    </div>;
+        return tabData;
+    }
+
     render() {
         const {classes, stateData,
-            handleLocationSelectionChange} = this.props;
-        let tabData;
+            handleLocationSelectionChange, handleClose,
+            handleChangeStart, handleChangeEnd, handleDatePicker,
+            handleListSelection, handleSamplingChange} = this.props;
+        let tabData, deviceData;
         if(stateData.dispenserData) {
             tabData = this.generateDispenserData(stateData.dispenserData, classes);
+        }
+        if(stateData.dispenserDetails) {
+            deviceData = this.generateDispenserDataAnalytics(stateData.dispenserDetails.data.metrics,
+                stateData.dispenserDetails.data.allMetrics,
+                classes, handleChangeStart, handleChangeEnd, stateData,
+                handleDatePicker, handleListSelection, handleSamplingChange);
         }
         return (
             <div className={classes.root}>
@@ -134,6 +144,12 @@ class DispenserAnalysis extends Component {
                     <FormHelperText>Please select Location to get Dispenser data</FormHelperText>
                 </FormControl>
                 {tabData}
+                <CustomModal
+                    header="Dispenser Details"
+                    content={deviceData}
+                    handleClose={handleClose}
+                    open={stateData.open}
+                    />
             </div>
         )
     }

@@ -1,6 +1,6 @@
 import ApiService from '../services/ApiService';
 import { DATA_ANALYSIS_PROJECT_LIST, DATA_ANALYSIS_PROJECT_LIST_SUB_MENU,
-  PROJECT_ANALYSIS_DATA, PROJECT_ALERT_LIST } from '../constants/ActionTypes';
+  PROJECT_ANALYSIS_DATA, PROJECT_ALERT_LIST, DISPENSER_DATA} from '../constants/ActionTypes';
 
 /**
  * Dispatched function to call the API service to get
@@ -86,6 +86,27 @@ export function projectAlertList(config) {
 function projectAlertListReceived(data) {
   return {
     type: PROJECT_ALERT_LIST,
+    data
+  }
+}
+
+/**
+ * Dispatched fucntion to call the API services to get
+ * the Dispenser data for selected/ passed dispenser id
+ * for selected time slot
+ * @param {*} config
+ */
+export function dispenserData(config) {
+  return function(dispatch) {
+    ApiService(config).then(data => {
+      dispatch(dispenserDataReceived(data))
+    })
+  }
+}
+
+function dispenserDataReceived(data) {
+  return {
+    type: DISPENSER_DATA,
     data
   }
 }

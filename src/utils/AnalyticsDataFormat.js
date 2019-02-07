@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import moment from 'moment';
 import {DATE_TIME_FORMAT, GRAPH_LABEL_TIME_FORMAT,
-    METRIC_TYPE} from '../constants/Constant';
+    METRIC_TYPE, ANALYTICS_DATE} from '../constants/Constant';
 
 export function getFormatedGraphData(passedData, metrics) {
     let graphData = [], nameMapper = {};
@@ -59,3 +59,68 @@ export function getFormatedGraphData(passedData, metrics) {
         nameMapper: nameMapper
     }
 }
+
+
+export function getStartEndTime(param='', startDate='', endDate='') {
+    let now = moment(),
+      start, end;
+    if (param === ANALYTICS_DATE['ONE_HOUR']) {
+      end = now.format(DATE_TIME_FORMAT);
+      start = (now.subtract({ hours: 1})).format(DATE_TIME_FORMAT);
+    } else if(param === ANALYTICS_DATE['THREE_HOUR']) {
+      end = now.format(DATE_TIME_FORMAT);
+      start = (now.subtract({ hours: 3})).format(DATE_TIME_FORMAT);
+    } else if(param === ANALYTICS_DATE['TWELVE_HOUR']) {
+      end = now.format(DATE_TIME_FORMAT);
+      start = (now.subtract({ hours: 12})).format(DATE_TIME_FORMAT);
+    } else if(param === ANALYTICS_DATE['ONE_DAY']) {
+      end = now.format(DATE_TIME_FORMAT);
+      start = (now.subtract({ days: 1})).format(DATE_TIME_FORMAT);
+    } else if(param === ANALYTICS_DATE['THREE_DAY']) {
+      end = now.format(DATE_TIME_FORMAT);
+      start = (now.subtract({ days: 3})).format(DATE_TIME_FORMAT);
+    } else if(param === ANALYTICS_DATE['ONE_WEEK']) {
+      end = now.format(DATE_TIME_FORMAT);
+      start = (now.subtract({ weeks: 1})).format(DATE_TIME_FORMAT);
+    } else if(param === ANALYTICS_DATE['CUSTOM']) {
+      end = moment(endDate, DATE_TIME_FORMAT).format(DATE_TIME_FORMAT);
+      start = moment(startDate, DATE_TIME_FORMAT).format(DATE_TIME_FORMAT);
+    } else {
+      end = now.format(DATE_TIME_FORMAT);
+      start = (now.subtract({ hours: 1})).format(DATE_TIME_FORMAT);
+    }
+    return {
+        'start': start,
+        'end': end
+    }
+}
+
+export function getVector(metricsResponse, deviceKey) {
+    let dataMetrics = {}, path = [], metric = {};
+    metricsResponse.map((metrics) => {
+      dataMetrics['metricType'] = metrics['metricType'];
+      dataMetrics['name'] = metrics['metricName'];
+      dataMetrics['vector'] = [];
+      metric[metrics['metricID']] = {};
+      path=[];
+      metrics.dimensions.map((vector) => {
+        dataMetrics['vector'].push({
+          name: vector.name,
+          path: vector.key,
+          // unit: vector.Unit,
+          shortName: vector.id,
+          color: vector.color,
+          statistic: vector.statistic,
+          chartType: vector.ctype,
+          showSamplingWidget: vector.showSamplingWidget,
+          window: vector.window,
+          type: deviceKey
+        })
+        if(vector.showSamplingWidget)
+          path.push({[vector.id] : vector.key});
+      })
+      metric[metrics['metricID']] = path;
+    })
+    return {'dataMetrics': dataMetrics,
+            'metric': metric}
+  }

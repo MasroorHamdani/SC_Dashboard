@@ -1,7 +1,7 @@
 import {blueGrey} from '@material-ui/core/colors';
 const styles = theme => ({
     graph: {
-        margin: theme.spacing.unit * 4,
+        // margin: theme.spacing.unit * 4,
         padding: theme.spacing.unit * 4,
         width: '100%',
         height: '100vh',
@@ -36,20 +36,36 @@ const styles = theme => ({
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'space-between',
-        alignItems: 'center'
+        alignItems: 'center',
+        flexWrap: 'wrap'
     },
     pointer: {
         cursor: 'pointer'
     },
     //tile dimentions
     tile: {
-        width: '160px',
-        height: '160px',
+        // width: '160px',
+        // height: '160px',
+        display: 'flex',
+        flexDirection: 'column',
         backgroundColor: blueGrey[900],//'#262f3e',//'#404854',
         '& *': { color: 'rgba(255, 255, 255, 0.7)' },
         textAlign: 'center',
         padding: theme.spacing.unit * 2
-    }
+    },
+    // Temporary for Dispenser
+    root: {
+        padding: theme.spacing.unit * 3,
+        marginTop: theme.spacing.unit * 8,
+        width: '100%',
+        height: '100vh',
+        overflow: 'auto',
+    },
+    dispenserGraph: {
+        width: '100%',
+        height: '100vh',
+        overflow: 'auto',
+    },
 })
 
 export default styles;

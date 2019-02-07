@@ -2,18 +2,16 @@ import React, { Component } from 'react';
 import {connect} from 'react-redux';
 import {isEqual} from 'lodash';
 import {withStyles} from '@material-ui/core';
-
-import moment from 'moment';
 import _ from 'lodash';
 
 import DataAnalysisComponent from '../../components/dataAnalysis/DataAnalysis';
 import {getApiConfig} from '../../services/ApiCofig';
-import {API_URLS, DATE_TIME_FORMAT,
-  ANALYTICS_DATE, ANALYTICS_TAB} from '../../constants/Constant';
+import {API_URLS, ANALYTICS_TAB} from '../../constants/Constant';
 import {projectMenuList, projectSubMenuList,
   projectAnalysisData} from '../../actions/DataAnalysis';
 import styles from './DataAvalysisStyle';
 import RadioButtonComponent from '../../components/dataAnalysis/RadioButtonController';
+import {getStartEndTime, getVector} from '../../utils/AnalyticsDataFormat';
 
 class DataAnalysis extends Component {
   state = ({
@@ -24,48 +22,69 @@ class DataAnalysis extends Component {
     start: 0,
     end: 0,
     tab: '',
-    pcMetrics: {},
-    aqMetrics: {},
     i: 0,
     sampling: '',
     unit: '',
     func: '',
-    page: ''
+    page: '',
   })
   handleTabChange = (event, value) => {
     this.setState({ tab: value }, function () {
     });
   };
 
-  handleClick = (index, pid) => {
-    this.setState(state => ({ [index]: !state[index],
-                            'pid': pid}));
+  handleClick = (index) => {
+    this.setState(state => ({
+      [index]: !state[index]
+    }));
   };
 
-  handleChange = (event, subType) => {
+  handleChange = (event, subType, pid) => {
     let targetValue = event.target.value;
-    if(targetValue.includes(ANALYTICS_TAB['FD']['key']))
-        this.setState({ tab: ANALYTICS_TAB['FD']['value'],
-        deviceKey: ANALYTICS_TAB['FD']['key'],
-        value: targetValue,
-        subType:subType});
-    else if(targetValue.includes(ANALYTICS_TAB['PC']['key']))
-      this.setState({ tab: ANALYTICS_TAB['PC']['value'],
-      deviceKey: ANALYTICS_TAB['PC']['key'],
-      value: targetValue,
-      subType:subType});
-    else if(targetValue.includes(ANALYTICS_TAB['AQ']['key']))
-      this.setState({ tab: ANALYTICS_TAB['AQ']['value'],
-      deviceKey: ANALYTICS_TAB['AQ']['key'],
-      value: targetValue,
-      subType:subType});
-    else if(targetValue.includes(ANALYTICS_TAB['WD']['key']))
-      this.setState({ tab: ANALYTICS_TAB['WD']['value'],
-      deviceKey: ANALYTICS_TAB['WD']['key'],
-      value: targetValue,
-      subType:subType});
-    this.handleDateChange(true);
+    if(targetValue.includes(ANALYTICS_TAB['CLOGS']['key'])) {
+      this.setStateValue(ANALYTICS_TAB['CLOGS']['value'], ANALYTICS_TAB['CLOGS']['key'],
+        targetValue, subType, pid)
+    }
+    else if(targetValue.includes(ANALYTICS_TAB['FD']['key'])) {
+      this.setStateValue(ANALYTICS_TAB['FD']['value'], ANALYTICS_TAB['FD']['key'],
+        targetValue, subType, pid)
+    }
+    else if(targetValue.includes(ANALYTICS_TAB['PC']['key'])) {
+      this.setStateValue(ANALYTICS_TAB['PC']['value'], ANALYTICS_TAB['PC']['key'],
+        targetValue, subType, pid)
+    }
+    else if(targetValue.includes(ANALYTICS_TAB['AQ']['key'])) {
+      this.setStateValue(ANALYTICS_TAB['AQ']['value'], ANALYTICS_TAB['AQ']['key'],
+        targetValue, subType, pid)
+    }
+    else if(targetValue.includes(ANALYTICS_TAB['WD']['key'])) {
+      this.setStateValue(ANALYTICS_TAB['WD']['value'], ANALYTICS_TAB['WD']['key'],
+        targetValue, subType, pid)
+    }
   };
+
+  setStateValue(tab, deviceKey, value, subType, pid) {
+    this.setState({
+      tab: tab,
+      deviceKey: deviceKey,
+      value: value,
+      subType: subType,
+      pid: pid
+    }, function() {
+      this.handleDateChange(true);
+    });
+  }
+
+  handleDateChange = (param='', startDate='', endDate='') => {
+    let formatedDate = getStartEndTime(param, startDate, endDate);
+    this.setState({
+      start: formatedDate.start,
+      end: formatedDate.end,
+      sessionHeader: ''
+    }, function() {
+      this.getNewAnalyticsData();
+    })
+  }
 
   getMetric = () => {
     let metrics = [], allMetrics = [];
@@ -78,13 +97,12 @@ class DataAnalysis extends Component {
   }
 
   getNewAnalyticsData = () => {
-      let metrics = this.getMetric(),
-      dataToPost = {
-        "ReqType": "default",
-        "Type": this.state.deviceKey,
-        "SubType": this.state.subType
-      };
-      
+    let metrics = this.getMetric(),
+    dataToPost = {
+      "ReqType": "default",
+      "Type": this.state.deviceKey,
+      "SubType": this.state.subType
+    };
     if(metrics && metrics.metric.length > 0 &&
         metrics.allMetrics.length > 0 &&
         metrics.metric[0].type === this.state.deviceKey) {
@@ -93,19 +111,18 @@ class DataAnalysis extends Component {
       dataToPost.metrics.map((rows) => {
         rows.dimensions.map((row) => {
           if(row.showSamplingWidget) {
-            console.log(this.state[rows.metricID]);
-            row.statistic = this.state[rows.metricID][row.id]['func'] ? this.state[rows.metricID][row.id]['func'] : row.statistic;
-            row.window = this.state[rows.metricID][row.id]['sampling'] && this.state[rows.metricID][row.id]['unit'] ?
-              this.state[rows.metricID][row.id]['sampling'] + this.state[rows.metricID][row.id]['unit'] :
-              row.window;
+            let rowData = this.state[this.state.deviceKey][rows.metricID][row.id];
+            row.statistic = rowData['func'] ? rowData['func'] : row.statistic;
+            row.window = rowData['sampling'] && rowData['unit'] ?
+              rowData['sampling'] + rowData['unit'] : row.window;
           }
         })
       })
     }
     const endPoint = `${API_URLS['DEVICE_DATA']}/${this.state.pid}/${this.state.value}`,
       params = {
-        'start' : '2019010100',//this.state.start,//
-        'end': '2019010123',//this.state.end,//
+        'start' : '2019020100',//this.state.start,//'2019010100',//
+        'end': '2019020423',//this.state.end,//'2019010123',//
       };
     let headers = {
       'x-sc-session-token': this.state.sessionHeader ? this.state.sessionHeader : ''
@@ -116,56 +133,19 @@ class DataAnalysis extends Component {
 
   handleSamplingChange = (event, mainPath='', path='') => {
     const {name, value} = event.target;
-    console.log(this.state[mainPath], "before");
     if(mainPath === 'update') {
       this.getNewAnalyticsData();
     } else {
       this.setState({
-        [mainPath]: {...this.state[mainPath],
-          [path]: {...this.state[mainPath][path],
-            [name]: value
+        [this.state.deviceKey]: {...this.state[this.state.deviceKey],
+          [mainPath]: {...this.state[this.state.deviceKey][mainPath],
+            [path]: {...this.state[this.state.deviceKey][mainPath][path],
+              [name]: value
+            }
           }
         }
       });
     }
-    console.log(this.state[mainPath], "afetr");
-  }
-
-  handleDateChange = (param='', startDate='', endDate='') => {
-    let now = moment(),
-      start, end;
-    if (param === ANALYTICS_DATE['ONE_HOUR']) {
-      end = now.format(DATE_TIME_FORMAT);
-      start = (now.subtract({ hours: 1})).format(DATE_TIME_FORMAT);
-    } else if(param === ANALYTICS_DATE['THREE_HOUR']) {
-      end = now.format(DATE_TIME_FORMAT);
-      start = (now.subtract({ hours: 3})).format(DATE_TIME_FORMAT);
-    } else if(param === ANALYTICS_DATE['TWELVE_HOUR']) {
-      end = now.format(DATE_TIME_FORMAT);
-      start = (now.subtract({ hours: 12})).format(DATE_TIME_FORMAT);
-    } else if(param === ANALYTICS_DATE['ONE_DAY']) {
-      end = now.format(DATE_TIME_FORMAT);
-      start = (now.subtract({ days: 1})).format(DATE_TIME_FORMAT);
-    } else if(param === ANALYTICS_DATE['THREE_DAY']) {
-      end = now.format(DATE_TIME_FORMAT);
-      start = (now.subtract({ days: 3})).format(DATE_TIME_FORMAT);
-    } else if(param === ANALYTICS_DATE['ONE_WEEK']) {
-      end = now.format(DATE_TIME_FORMAT);
-      start = (now.subtract({ weeks: 1})).format(DATE_TIME_FORMAT);
-    } else if(param === ANALYTICS_DATE['CUSTOM']) {
-      end = moment(endDate, DATE_TIME_FORMAT).format(DATE_TIME_FORMAT);
-      start = moment(startDate, DATE_TIME_FORMAT).format(DATE_TIME_FORMAT);
-    } else {
-      end = now.format(DATE_TIME_FORMAT);
-      start = (now.subtract({ hours: 1})).format(DATE_TIME_FORMAT);
-    }
-    this.setState( {
-      start: start,
-      end: end,
-      sessionHeader: ''
-    }, function() {
-      this.getNewAnalyticsData();
-    })
   }
 
   componentDidMount() {
@@ -207,12 +187,12 @@ class DataAnalysis extends Component {
 
     if (this.props.dataAnalysis &&
       !isEqual(this.props.dataAnalysis, prevProps.dataAnalysis)){
-        let metricsData = this.getVector(this.props.dataAnalysis.data.data.allMetrics);
+        let metricsData = getVector(this.props.dataAnalysis.data.data.allMetrics, this.state.deviceKey);
         this.setState({
           sessionHeader: this.props.dataAnalysis.headers['x-sc-session-token'],
           metrics: metricsData.dataMetrics,
           allMetrics: this.props.dataAnalysis.data.data.allMetrics});
-
+        let referData = {};
         Object.keys(metricsData.metric).map((key) => {
           let value = {}
           metricsData.metric[key].map((dt) => {
@@ -220,42 +200,13 @@ class DataAnalysis extends Component {
               value[d] = {};
             })
           })
-          if(!this.state[key])
-            this.setState({[key]: value})
+          referData[key] = value;
         })
+        if(!this.state[this.state.deviceKey])
+            this.setState({[this.state.deviceKey]: referData})
     }
   }
 
-  getVector=(metricsResponse) => {
-    let dataMetrics = {}, path = [], metric = {};
-    metricsResponse.map((metrics) => {
-      dataMetrics['metricType'] = metrics['metricType'];
-      dataMetrics['name'] = metrics['metricName'];
-      dataMetrics['vector'] = [];
-      metric[metrics['metricID']] = {};
-      path=[];
-      metrics.dimensions.map((vector) => {
-        dataMetrics['vector'].push({
-          name: vector.name,
-          path: vector.key,
-          // unit: vector.Unit,
-          shortName: vector.id,
-          color: vector.color,
-          statistic: vector.statistic,
-          chartType: vector.ctype,
-          showSamplingWidget: vector.showSamplingWidget,
-          window: vector.window,
-          type: this.state.deviceKey
-        })
-        if(vector.showSamplingWidget)
-          path.push({[vector.id] : vector.key});
-      })
-      metric[metrics['metricID']] = path;
-    })
-    return {'dataMetrics': dataMetrics,
-            'metric': metric}
-  }
-  
   render () {
     const {classes} = this.props;
       return(

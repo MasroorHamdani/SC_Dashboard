@@ -29,7 +29,7 @@ class RadioButtonComponent extends Component {
                         projectList.map((project, index) => {
                         return <div key={project.id}>
                             <ListItem button className={classes.nested}
-                                onClick={event => handleClick(index, project.name)}>
+                                onClick={event => handleClick(index)}>
                                 <ListItemText primary={project.name}/>
                                 {data[index] ? <ExpandLess /> : <ExpandMore />}
                             </ListItem>
@@ -47,7 +47,7 @@ class RadioButtonComponent extends Component {
                                                     project.devices.map(function(key) {
                                                     return <FormControlLabel value={key.Devid} key={key.Devid}
                                                     control={<Radio 
-                                                        onChange={event => handleChange(event, key.SubType)}/>} label={key.Display} />
+                                                        onChange={event => handleChange(event, key.SubType, project.name)}/>} label={key.Display} />
                                                 })}
                                             </RadioGroup>
                                         </FormControl>

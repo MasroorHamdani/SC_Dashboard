@@ -56,9 +56,9 @@ export const REACT_URLS = {
     'DISPENSER': '/dispenser'
 }
 
-export const DATE_TIME_FORMAT = 'YYYYMMDDHHmm'
+export const DATE_TIME_FORMAT = 'YYYYMMDDHHmmss'
 
-export const GRAPH_LABEL_TIME_FORMAT = 'DD/MM/YYYY HH:mm'
+export const GRAPH_LABEL_TIME_FORMAT = 'DD/MM/YYYY HH:mm:ss'
 
 export const HOUR_MIN_FORMAT = 'hh:mm A'
 
@@ -68,7 +68,8 @@ export const ANALYTICS_TABS = {
     0: 'FD',
     1: 'PC',
     2: 'AQ',
-    3: 'WD'
+    3: 'WD',
+    4: 'CLOGS'
 }
 
 export const ANALYTICS_SUB_TABS = {
@@ -95,6 +96,9 @@ export const ANALYTICS_TAB = {
     'WD': {'key': 'WD',
                 'value': 3,
                 'text': 'Wetness Detection sensor'},
+    'CLOGS': {'key': 'CLOGS',
+                'value': 4,
+                'text': 'Cleaner Logs'},
 }
 
 export const ANALYTICS_DATE = {
@@ -252,7 +256,8 @@ export const METRIC_TYPE = {
 export const DATA_VIEW_TYPE = {
     'LINE': 'line',
     'BAR': 'bar',
-    'SCATTER': 'sactter',
+    'SCATTER': 'scatter',
     'PIE': 'pie',
-    'TILE': 'tile'
+    'TILE': 'tile',
+    'AREA': 'area'
 }

@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {Typography} from '@material-ui/core';
 import {Line, XAxis, YAxis, CartesianGrid, Tooltip,
     Legend, ResponsiveContainer, Brush, ComposedChart,
-    Bar, PieChart, Pie, Cell, Sector} from 'recharts';
+    Bar, PieChart, Pie, Cell, Sector, Area} from 'recharts';
 import {METRIC_TYPE, DATA_VIEW_TYPE} from '../../constants/Constant';
 import DataProcessingComponent from './DataProcessComponent';
 
@@ -87,9 +87,14 @@ class GraphPlot extends Component {
                                         minTickGap={20}
                                         label={{ value: 'Time of day', position: 'insideBottomRight', offset: 0}}
                                         />
-                                    <YAxis 
-                                    label={{ value: 'Concentration (ppm)', angle: -90, position: 'insideLeft'}}
-                                    />
+                                    {metric.dimensions[0].type === 'derivedDim' ?
+                                        <YAxis type="category" width={120}
+                                        />
+                                    :
+                                        <YAxis
+                                        // label={{ value: 'Concentration (ppm)', angle: -90, position: 'insideLeft'}}
+                                        />
+                                    }
                                     <CartesianGrid strokeDasharray="3 3"/>
                                     <Tooltip/>
                                     <Legend />
@@ -98,8 +103,9 @@ class GraphPlot extends Component {
                                         Object.keys(nameMapper[metric.metricID]).map(key => {
                                             let mapper = nameMapper[metric.metricID][key];
                                             if(mapper['chartType'] === DATA_VIEW_TYPE['LINE']) {
-                                                return(<Line name={mapper['name']} key={key} type="basis"
+                                                return(<Line name={mapper['name']} key={key} type="monotone"
                                                     strokeWidth={5} dataKey={key}
+                                                    dot={false}
                                                     stroke={mapper['color']}/>)
                                             }
                                             if (mapper['chartType'] === DATA_VIEW_TYPE['BAR']) {
@@ -113,13 +119,21 @@ class GraphPlot extends Component {
                                                     dot={{stroke: mapper['color']}}
                                                     stroke="none"/>
                                             }
+                                            if (mapper['chartType'] === DATA_VIEW_TYPE['AREA']) {
+                                                return <Area type='monotone'
+                                                    name={mapper['name']}
+                                                    key={key}
+                                                    dataKey={key}
+                                                    fill={mapper['color']}
+                                                    stroke={mapper['color']}/>
+                                            }
                                         })
                                     }
                                 </ComposedChart>
                             </ResponsiveContainer>
                         }
                         {(metric.metricType === METRIC_TYPE['CATEGORICAL']) &&
-                            <ResponsiveContainer width='100%' height={400}>
+                            <ResponsiveContainer>
                                 {metric.dimensions[0].ctype === DATA_VIEW_TYPE['PIE'] ?
                                     <PieChart height={320}>
                                         <Pie

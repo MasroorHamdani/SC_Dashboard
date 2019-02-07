@@ -226,11 +226,12 @@ class ProjectInstallationDetails extends Component {
                         </Grid>
                     </Grid>
                     <CustomModal
-                    header="Select the location"
-                    content={returnData}
-                    handleClose={this.handleClose}
-                    handleClick={this.onAddtion}
-                    open={this.state.open}
+                        header="Select the location"
+                        content={returnData}
+                        handleClose={this.handleClose}
+                        handleClick={this.onAddtion}
+                        open={this.state.open}
+                        showFooter={true}
                     />
                 </main>
             </div>
