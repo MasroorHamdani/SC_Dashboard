@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import {isEqual} from "lodash";
 import styles from './DashboardStyle'
 import ProjectDataComponent from "../../components/projectData/ProjectData";
-import { API_URLS, REACT_URLS } from "../../constants/Constant";
+import { API_URLS, REACT_URLS, NAMESPACE } from "../../constants/Constant";
 import { getApiConfig } from '../../services/ApiCofig';
 import {dashboardData} from '../../actions/DashboardAction';
 
@@ -13,14 +13,10 @@ class Dashboard extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      data : {},
+      data : [],
       // loading: false,
       // success: true,
     }
-  }
-
-  handleClick = (e, param) => {
-    this.props.history.push(`${REACT_URLS['PROJECT_DETAILS']}/${param}`);
   }
 
   projectActionRedirection = (e, param) => {
@@ -32,30 +28,39 @@ class Dashboard extends Component {
     this.props.onDashbaord(config);
   }
 
-  // componentDidUpdate(prevProps, prevState) {
-  //   if (this.state.loading) {
-  //     this.setState({
-  //       loading: false,
-  //       success: true,
-  //     });
-  //   }
-  // }
+  componentDidUpdate(prevProps, prevState) {
+    if (this.props.dashboardData &&
+      (!isEqual(this.props.dashboardData, prevProps.dashboardData) ||
+        !this.state.data.length > 0)) {
+          let projData = []
+          this.props.dashboardData.map((row) => {
+            if(row.NS === NAMESPACE['PROJECT_TEAM_ALLMEMBERS'])
+            projData.push(row);
+          });
+          this.setState({
+            data: projData
+          })
+    }
+  }
 
   render() {
     const { classes } = this.props;
     return (
       <div className={classes.root}>
         <main className={classes.content}>
-        {this.state.loading ? (<CircularProgress size={50} className={classes.buttonProgress} />)
-        :
-        (
+        {this.state.data &&
+        // {this.state.loading ? (<CircularProgress size={50} className={classes.buttonProgress} />)
+        // :
+        // (
           <div className={classes.gridRoot}>
             <GridList cellHeight={180} className={classes.gridList}>
-              <ProjectDataComponent data={this.props.dashboardData} onClick={this.handleClick}
+              <ProjectDataComponent data={this.state.data}
               projectActionRedirection={this.projectActionRedirection}/>
             </GridList>
-        </div>)
-        }
+        </div>
+        // )
+        // }
+      }
         </main>
       </div>
     );

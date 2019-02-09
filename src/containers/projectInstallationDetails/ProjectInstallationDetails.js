@@ -38,14 +38,14 @@ class ProjectInstallationDetails extends Component {
 
     componentDidUpdate(prevProps, prevState) {
         if (this.props.installationDeviceData &&
-        !isEqual(this.props.installationDeviceData !==
+        !isEqual(this.props.installationDeviceData,
             prevProps.installationDeviceData)) {
             // console.log(this.props.installationDeviceData, "*****");
         }
     }
 
     handleClick = (e, id, category) => {
-        // console.log('clicked');
+        // console.log('clicked', id);
     };
     handleChange = (name, value) => {
         this.setState({
@@ -63,9 +63,10 @@ class ProjectInstallationDetails extends Component {
         const {classes} = this.props;
         let installationData, tabData, rows;
         if(this.props.installationDeviceData) {
-                installationData = this.props.installationDeviceData[0];
-                rows = [{ id: 'id', numeric: false, disablePadding: false, label: 'Name' },
-                        { id: 'type', numeric: false, disablePadding: false, label: 'Location' }]
+                installationData = this.props.installationDeviceData;
+                rows = [{ id: 'Display', numeric: false, disablePadding: false, label: 'Name' },
+                        { id: 'Devid', numeric: false, disablePadding: false, label: 'Device Id' },
+                        { id: 'Type', numeric: false, disablePadding: false, label: 'Type' }]
                 tabData = <NamespacesConsumer>
                 {
                 t=><Typography component="div">
@@ -82,11 +83,11 @@ class ProjectInstallationDetails extends Component {
                         return <MenuItem value={insidValue} key={insidValue}>{insidValue}</MenuItem>
                     })}
                     </Select>
-                <EnhancedTable data={installationData.details} rows={rows}
+                <EnhancedTable data={installationData} rows={rows}
                     order={this.state.order} orderBy={this.state.orderBy}
                     rowsPerPage={this.state.rowsPerPage} page={this.state.page}
                     selected={this.state.selected}
-                    handleChange={this.handleChange} handleClick={this.handleClick} redirectID="id"/>
+                    handleChange={this.handleChange} handleClick={this.handleClick} redirectID="Devid"/>
                 </Typography>
                 }</NamespacesConsumer>
         }

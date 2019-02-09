@@ -104,9 +104,14 @@ class GraphPlot extends Component {
                                             let mapper = nameMapper[metric.metricID][key];
                                             if(mapper['chartType'] === DATA_VIEW_TYPE['LINE']) {
                                                 return(<Line name={mapper['name']} key={key} type="monotone"
-                                                    strokeWidth={5} dataKey={key}
+                                                    strokeWidth={5}
+                                                    dataKey={key}
                                                     dot={false}
-                                                    stroke={mapper['color']}/>)
+                                                    // dot={{stroke: mapper['color']}}
+                                                    // fill={mapper['color']}
+                                                    stroke={mapper['color']}
+                                                     // stroke="none"
+                                                    />)
                                             }
                                             if (mapper['chartType'] === DATA_VIEW_TYPE['BAR']) {
                                                 return <Bar name={mapper['name']} key={key} dataKey={key}
@@ -117,6 +122,7 @@ class GraphPlot extends Component {
                                                     key={key}
                                                     dataKey={key}
                                                     dot={{stroke: mapper['color']}}
+                                                    fill={mapper['color']}
                                                     stroke="none"/>
                                             }
                                             if (mapper['chartType'] === DATA_VIEW_TYPE['AREA']) {

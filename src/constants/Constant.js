@@ -32,10 +32,11 @@ export const LOGIN_STATUS = {
 export const PROJECT_TABS = {
     'INSTALLATION': 'installations',
     'TEAM': 'team',
-    'DETAILS': 'details',
+    'DETAILS': 'info',
     'GENERAL': 'general',
     'DEVICES': 'devices',
-    'DATA': 'data'
+    'DATA': 'data',
+    'TEAM_MEMBERS': 'team/members',
 }
 
 export const SORTING = {
@@ -229,12 +230,21 @@ export const STRING_FIELD_FORMAT = {
     'DELTADAYS': 'DD'
 }
 
+export const NAMESPACE = {
+    'USER_PROFILE' : 'USER_PROFILE',
+    'PROJECT_TEAM_ALLMEMBERS' : 'PROJECT_TEAM_ALLMEMBERS'
+}
+
 export const NAMESPACE_MAPPER = {
     'USER_PROFILE' : {
         'SUB1': 'RFID',
         'SUB2': 'ID'
     },
     'DEVICE_INFO_GENERAL' : {
+        'SUB1': 'insid',
+        'SUB2': 'pid'
+    },
+    'PROJECT_INSTALLATION_INFO' : {
         'SUB1': 'insid',
         'SUB2': 'pid'
     }

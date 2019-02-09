@@ -197,7 +197,12 @@ class DataAnalysis extends Component {
           let value = {}
           metricsData.metric[key].map((dt) => {
             Object.keys(dt).map((d) => {
-              value[d] = {};
+              let val = {
+                'func' : dt[d].statistic,
+                'sampling': dt[d].sampling,
+                'unit': dt[d].unit
+              }
+              value[d] = val;
             })
           })
           referData[key] = value;

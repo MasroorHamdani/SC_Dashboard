@@ -98,28 +98,31 @@ export function getStartEndTime(param='', startDate='', endDate='') {
 export function getVector(metricsResponse, deviceKey) {
     let dataMetrics = {}, path = [], metric = {};
     metricsResponse.map((metrics) => {
-      dataMetrics['metricType'] = metrics['metricType'];
-      dataMetrics['name'] = metrics['metricName'];
-      dataMetrics['vector'] = [];
-      metric[metrics['metricID']] = {};
-      path=[];
-      metrics.dimensions.map((vector) => {
-        dataMetrics['vector'].push({
-          name: vector.name,
-          path: vector.key,
-          // unit: vector.Unit,
-          shortName: vector.id,
-          color: vector.color,
-          statistic: vector.statistic,
-          chartType: vector.ctype,
-          showSamplingWidget: vector.showSamplingWidget,
-          window: vector.window,
-          type: deviceKey
+        dataMetrics['metricType'] = metrics['metricType'];
+        dataMetrics['name'] = metrics['metricName'];
+        dataMetrics['vector'] = [];
+        metric[metrics['metricID']] = {};
+        path=[];
+        metrics.dimensions.map((vector) => {
+            let vec = {
+                name: vector.name,
+                path: vector.key,
+                // unit: vector.Unit,
+                shortName: vector.id,
+                color: vector.color,
+                statistic: vector.statistic,
+                chartType: vector.ctype,
+                showSamplingWidget: vector.showSamplingWidget,
+                window: vector.window,
+                sampling: vector.window.substr(0, vector.window.length-1) ? vector.window.substr(0, vector.window.length-1): 1,
+                unit: vector.window.substr(vector.window.length-1, 1),
+                type: deviceKey
+            };
+            dataMetrics['vector'].push(vec)
+            if(vector.showSamplingWidget)
+                path.push({[vector.id] : vec});
         })
-        if(vector.showSamplingWidget)
-          path.push({[vector.id] : vector.key});
-      })
-      metric[metrics['metricID']] = path;
+        metric[metrics['metricID']] = path;
     })
     return {'dataMetrics': dataMetrics,
             'metric': metric}

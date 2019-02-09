@@ -18,7 +18,7 @@ class DataCard extends Component{
         this.setState({ anchorEl: null });
     };
     render() {
-        const {classes, projectActionRedirection, onClick, row} = this.props;
+        const {classes, projectActionRedirection, row} = this.props;
         const { anchorEl } = this.state;
         return (
             <div key={row.PID}>
@@ -33,15 +33,14 @@ class DataCard extends Component{
                         <MoreVertIcon onClick={this.handleClick}/>
                         </IconButton>
                     }
-                    title="Project Details"
-                    subheader="November 26, 2018"/>
-                    <CardMedia onClick={e => onClick(e, row.PID)}
+                    title={row.Site}
+                    subheader={row.Site_Addr}/>
+                    <CardMedia
                     className={classes.media}
                     title="Analytics"
                     image="../static/image.png"
                     />
-                    <CardContent className={classes.pointer}
-                        onClick={e => onClick(e, row.PID)}>
+                    <CardContent className={classes.pointer}>
                         <div>{row.name}</div>
                     </CardContent>
                 </Card>
@@ -51,8 +50,8 @@ class DataCard extends Component{
                     onClose={this.handleClose}>
                     <MenuItem value='alert' id={REACT_URLS['ALERT']}
                         onClick={e => projectActionRedirection(e, row.PID)}>Alert</MenuItem>
-                    <MenuItem value='dispenser' id={REACT_URLS['DISPENSER']}
-                        onClick={e => projectActionRedirection(e, row.PID)}>Dispenser</MenuItem>
+                    <MenuItem value='project_details' id={REACT_URLS['PROJECT_DETAILS']}
+                        onClick={e => projectActionRedirection(e, row.PID)}>Project Details</MenuItem>
                 </Menu>
             </div>
         )
