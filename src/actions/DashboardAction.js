@@ -20,7 +20,7 @@ export function dashboardData(config) {
           if(data && data.data)
             dispatch(dataReceived(data.data))
           else
-          dispatch(dataReceived(data.data))
+            dispatch(dataReceived(data.data))
       })
   }
 }

@@ -30,7 +30,7 @@ class TabContainer extends Component {
         return(data)
     }
     render() {
-        const {category, data, handleClick} = this.props;
+        const {category, data, handleClick, stateData} = this.props;
         let tabData, rows;
         if (data && category === PROJECT_TABS['INSTALLATION']) {
             rows = [{ id: 'name', numeric: false, disablePadding: false, label: 'Name' },
@@ -42,14 +42,15 @@ class TabContainer extends Component {
                 selected={this.state.selected} category={category}
                 handleChange={this.handleChange} handleClick={handleClick} redirectID="insid"/>
             </Typography>
-        } else if(data && category === PROJECT_TABS['TEAM']) {
+        } else if(stateData.teamInfo && category === PROJECT_TABS['TEAM']) {
             rows = [{ id: 'Firstname', numeric: false, disablePadding: false, label: 'Firstname' },
                     { id: 'Lastname', numeric: false, disablePadding: false, label: 'LastName' },
                     { id: 'Role', numeric: false, disablePadding: false, label: 'Role' },
-                    { id: 'Status', numeric: false, disablePadding: false, label: 'Status' }
+                    { id: 'Status', numeric: false, disablePadding: false, label: 'Status' },
+                    { id: 'Association', numeric: false, disablePadding: false, label: 'Association'}
                 ]
             tabData = <Typography component="div">
-            <EnhancedTable data={data} rows={rows}
+            <EnhancedTable data={stateData.teamInfo} rows={rows}
                 order={this.state.order} orderBy={this.state.orderBy}
                 rowsPerPage={this.state.rowsPerPage} page={this.state.page}
                 selected={this.state.selected} category={category}

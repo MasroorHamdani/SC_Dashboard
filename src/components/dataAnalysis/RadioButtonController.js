@@ -18,15 +18,15 @@ class RadioButtonComponent extends Component {
         this.props.handleChange();
     }
     render(){
-        const {classes, data, handleChange, projectList,
+        const {classes, data, handleChange,
             handleClick} = this.props;
         return(<NamespacesConsumer>
             {
             t=><List dense
                 component="nav"
                 className={classes.root}>
-                    {projectList &&
-                        projectList.map((project, index) => {
+                    {data.projectList &&
+                        data.projectList.map((project, index) => {
                         return <div key={project.id}>
                             <ListItem button className={classes.nested}
                                 onClick={event => handleClick(index)}>
@@ -45,9 +45,9 @@ class RadioButtonComponent extends Component {
                                                 >
                                                 {project.devices &&
                                                     project.devices.map(function(key) {
-                                                    return <FormControlLabel value={key.Devid} key={key.Devid}
+                                                    return <FormControlLabel value={key.insid} key={key.insid}
                                                     control={<Radio 
-                                                        onChange={event => handleChange(event, key.SubType, project.name)}/>} label={key.Display} />
+                                                        onChange={event => handleChange(event, project.name, key.insid)}/>} label={key.name} />
                                                 })}
                                             </RadioGroup>
                                         </FormControl>

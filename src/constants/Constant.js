@@ -18,7 +18,10 @@ export const API_URLS = {
     "DEVICE_METRICS": "/auth/devices/metrics",
     "SERVICE_REQUIREMENTS": "/auth/algorithms",
     "PROJECT_LOCATION": "/installations/devices",
-    "PROJECT_ALERT": "/authV2/alerts/projects"
+    "WASHROOM_LOCATION": "/installations/info",
+    "PROJECT_ALERT": "/authV2/alerts/projects",
+    'TEAM_MEMBERS': 'team/members',
+    'TEAM_ASSOCIATION': 'team/assoc'
 };
 
 export const NEW_PASSWORD_REQUIRED = "NEW_PASSWORD_REQUIRED";
@@ -36,7 +39,6 @@ export const PROJECT_TABS = {
     'GENERAL': 'general',
     'DEVICES': 'devices',
     'DATA': 'data',
-    'TEAM_MEMBERS': 'team/members',
 }
 
 export const SORTING = {
@@ -59,7 +61,7 @@ export const REACT_URLS = {
 
 export const DATE_TIME_FORMAT = 'YYYYMMDDHHmmss'
 
-export const GRAPH_LABEL_TIME_FORMAT = 'DD/MM/YYYY HH:mm:ss'
+export const GRAPH_LABEL_TIME_FORMAT = 'HH:mm'//'DD/MM/YYYY HH:mm:ss'
 
 export const HOUR_MIN_FORMAT = 'hh:mm A'
 
@@ -86,19 +88,19 @@ export const ANALYTICS_SUB_TABS = {
 
 export const ANALYTICS_TAB = {
     'FD': {'key': 'FD',
-                'value': 0,
+                'value': 'FD',
                 'text': 'Feedback Tablet'},
     'PC': {'key': 'PC',
-                'value': 1,
+                'value': 'PC',
                 'text': 'People counting sensor'},
     'AQ':{'key': 'AQ',
-                'value': 2,
+                'value': 'AQ',
                 'text': 'Air quality sensor'},
     'WD': {'key': 'WD',
-                'value': 3,
+                'value': 'WD',
                 'text': 'Wetness Detection sensor'},
     'CLOGS': {'key': 'CLOGS',
-                'value': 4,
+                'value': 'CLOGS',
                 'text': 'Cleaner Logs'},
 }
 

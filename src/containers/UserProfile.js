@@ -11,14 +11,16 @@ class UserProfile extends Component {
     constructor(props) {
         super(props);
         this.initialState = {
-            Firstname: '',
-            Lastname: '',
-            ID: "",
-            RFID: "",
-            Phonenum: "",
-            ShiftStart: '',
-            ShiftEnd: '',
-            Mute: false
+            profile: {
+                Firstname: '',
+                Lastname: '',
+                ID: "",
+                RFID: "",
+                Phonenum: "",
+                ShiftStart: '',
+                ShiftEnd: '',
+                Mute: false
+            }
         };
         this.state = this.initialState;
     }
@@ -29,34 +31,40 @@ class UserProfile extends Component {
             value = event.target.checked
         }
         this.setState({
-            [name] : value
+            profile: {
+                ...this.state.profile,
+                [name]: value
+              }
         });
     }
     handleSubmit = () => {
         const endPoint = `${API_URLS['USER_PROFILE']}`,
-        config = getApiConfig(endPoint, 'POST', this.state);
+        config = getApiConfig(endPoint, 'POST', this.state.profile);
         this.props.onProfileData(config, 'POST');
     }
     componentDidUpdate(prevProps, prevState) {
         if (this.props.userProfile &&
-        !isEqual(this.props.userProfile, prevProps.userProfile)) {
+        (!isEqual(this.props.userProfile, prevProps.userProfile) ||
+            !this.state.profile.Firstname)) {
             const profile = this.props.userProfile[0] ? this.props.userProfile[0]: this.props.userProfile;
-            this.setState({'Firstname': profile.Firstname,
-                'Lastname': profile.Lastname ? profile.Lastname : prevState.Lastname,
-                // [SUB2]: profile.SUB2 ? profile.SUB2 : prevState.ID,
-                // [SUB1]: profile.SUB1 ? profile.SUB1 : prevState.RFID,
-                'Phonenum': profile.Phonenum ? profile.Phonenum : prevState.Phonenum,
-                'Mute': profile.Mute ? profile.Mute : prevState.Mute
-            });
+            let userProfile = {'Firstname': profile.Firstname,
+                'Lastname': profile.Lastname ? profile.Lastname : prevState.profile.Lastname,
+                'Phonenum': profile.Phonenum ? profile.Phonenum : prevState.profile.Phonenum,
+                'Mute': profile.Mute ? profile.Mute : prevState.profile.Mute
+            };
             let SUB1, SUB2;
             if(profile['NS']) {
                 SUB1 = NAMESPACE_MAPPER[profile['NS']].SUB1;
                 SUB2 = NAMESPACE_MAPPER[profile['NS']].SUB2;
-                this.setState({
-                    [SUB2]: profile.SUB2 ? profile.SUB2 : prevState.ID,
-                    [SUB1]: profile.SUB1 ? profile.SUB1 : prevState.RFID,
-                })
+                userProfile[SUB2]= profile.SUB2 ? profile.SUB2 : prevState.profile.ID;
+                userProfile[SUB1]= profile.SUB1 ? profile.SUB1 : prevState.profile.RFID;
+            } else {
+                userProfile['ID']= prevState.profile.ID;
+                userProfile['RFID']= prevState.profile.RFID;
             }
+            this.setState({
+                profile: userProfile
+            });
         }
     }
 

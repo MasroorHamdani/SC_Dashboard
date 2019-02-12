@@ -12,7 +12,7 @@ class AlertDetails extends Component {
     constructor(props) {
         super(props);
         let now = new Date();
-        now.setHours(now.getHours()-1);
+        now.setHours(now.getHours()-12);
         this.state = {
             pid: props.match.params.pid,
             startDate: now,
@@ -20,6 +20,7 @@ class AlertDetails extends Component {
             dateChanged: false
         }
     }
+
     handleChangeStart  = (date) => {
         this.setState({
             startDate: date,

@@ -1,8 +1,8 @@
-import { DATA_ANALYSIS_PROJECT_LIST } from '../constants/ActionTypes';
+import { DATA_ANALYSIS_MENU_LIST } from '../constants/ActionTypes';
 /* Reducer for Data analysis page's left menu project list */
-const dataAnalysisProjectList = (state = [], action) => {
+const dataAnalysisMenuList = (state = [], action) => {
     switch(action.type) {
-        case DATA_ANALYSIS_PROJECT_LIST:
+        case DATA_ANALYSIS_MENU_LIST:
             return{
                 ...state,
                 data: action.data
@@ -12,4 +12,4 @@ const dataAnalysisProjectList = (state = [], action) => {
     }
 };
 
-export default dataAnalysisProjectList;
+export default dataAnalysisMenuList;

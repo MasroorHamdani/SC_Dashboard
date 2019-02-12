@@ -77,7 +77,7 @@ class GraphPlot extends Component {
                         metrics={metric}/>
                     
                     <Typography gutterBottom variant="h5">
-                        {metric.metricName} - {metric.metricType}
+                        {metric.metricName}
                     </Typography>
                         {(metric.metricType === METRIC_TYPE['TIMESERIES'] && metric.metricDataKey) &&
                             <ResponsiveContainer width='100%' height={400}>
