@@ -12,11 +12,10 @@ import {ANALYTICS_TAB} from '../../constants/Constant';
  */
 class DataAnalysisComponent extends Component {
     render() {
-        const {classes, data, stateData, handleDateChange,
+        const {classes, stateData, handleDateChange,
             handleTabChange, handleSamplingChange} = this.props;
         return(
             <div className={classes.main}>
-            {stateData.value &&
                 <div>
                     <AppBar position="static" color="default">
                         <Tabs
@@ -28,33 +27,21 @@ class DataAnalysisComponent extends Component {
                         textColor="primary"
                         fullWidth
                         >
-                            {Object.keys(ANALYTICS_TAB).map((key)=> (
-                                <Tab label={ANALYTICS_TAB[key]['text']}
-                                    key={ANALYTICS_TAB[key]['value']}
-                                    disabled/>
+                            {Object.keys(stateData.installationList).map((key)=> (
+                                <Tab label={stateData.installationList[key]['text']}
+                                    value={stateData.installationList[key]['key']}
+                                    key={stateData.installationList[key]['key']}
+                                    />
                             ))}
+                            }
                         </Tabs>
                     </AppBar>
 
-                    {(stateData.tab === 0 || 
-                        (stateData.value.includes(ANALYTICS_TAB['FD']['key']) && 
-                            !stateData.value.includes(ANALYTICS_TAB['CLOGS']['key']))) && <AnalysisData
-                        data={data} handleDateChange={handleDateChange}
-                        stateData={stateData} handleSamplingChange={handleSamplingChange}/>}
-                    {(stateData.tab === 1 || stateData.value.includes(ANALYTICS_TAB['PC']['key'])) && <AnalysisData 
-                        data={data} handleDateChange={handleDateChange}
-                        stateData={stateData} handleSamplingChange={handleSamplingChange}/>}
-                    {(stateData.tab === 2 || stateData.value.includes(ANALYTICS_TAB['AQ']['key'])) && <AnalysisData 
-                        data={data} handleDateChange={handleDateChange}
-                        stateData={stateData} handleSamplingChange={handleSamplingChange}/>}
-                    {(stateData.tab === 3 || stateData.value.includes(ANALYTICS_TAB['WD']['key'])) && <AnalysisData 
-                        data={data} handleDateChange={handleDateChange}
-                        stateData={stateData} handleSamplingChange={handleSamplingChange}/>}
-                    {(stateData.tab === 4 || stateData.value.includes(ANALYTICS_TAB['CLOGS']['key'])) && <AnalysisData 
-                        data={data} handleDateChange={handleDateChange}
+                    {stateData.tab &&
+                        <AnalysisData 
+                        handleDateChange={handleDateChange}
                         stateData={stateData} handleSamplingChange={handleSamplingChange}/>}
                 </div>
-            }
             </div>
         )
     }

@@ -1,5 +1,6 @@
 import ApiService from '../services/ApiService';
-import { PROJECT_DETAIL, PROJECT_DETAIL_DATA, PROJECT_TEAM_DATA } from '../constants/ActionTypes';
+import { PROJECT_DETAIL, PROJECT_DETAIL_DATA, PROJECT_TEAM_DATA,
+    PROJECT_TEAM_ASSO_DATA} from '../constants/ActionTypes';
 
 function dataReceived(data) {
   return {
@@ -46,6 +47,27 @@ export function projectDetailData(config) {
     }
 }
 
+function teamAssoDataReceived(data) {
+    return {
+        type: PROJECT_TEAM_ASSO_DATA,
+        data
+    }
+}
+
+/**
+ * Dispatched function to call the API service to get
+ * the Project Team Association data - 
+ * This includes all the association team member have under selected project.
+ * @param {*} config 
+ */
+export function projectTeamAsso(config) {
+    return function (dispatch) {
+        ApiService(config).then(data => {
+            //on success we will dispatch a sync action with the data
+            dispatch(teamAssoDataReceived(data.data))
+        })
+    }
+}
 function teamDataReceived(data) {
     return {
         type: PROJECT_TEAM_DATA,

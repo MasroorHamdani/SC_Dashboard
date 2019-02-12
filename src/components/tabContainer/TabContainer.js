@@ -30,31 +30,31 @@ class TabContainer extends Component {
         return(data)
     }
     render() {
-        const {category, data, handleClick} = this.props;
-        let tabData, rows, tabContent;
-        if (data.ProjectDetailsReducer && data.ProjectDetailsReducer.data && category === PROJECT_TABS['INSTALLATION']) {
-            tabContent = data.ProjectDetailsReducer.data;
+        const {category, data, handleClick, stateData} = this.props;
+        let tabData, rows;
+        if (data && category === PROJECT_TABS['INSTALLATION']) {
             rows = [{ id: 'name', numeric: false, disablePadding: false, label: 'Name' },
                     { id: 'locn', numeric: false, disablePadding: false, label: 'Location' }]
             tabData = <Typography component="div">
-            <EnhancedTable data={tabContent} rows={rows}
+            <EnhancedTable data={data} rows={rows}
                 order={this.state.order} orderBy={this.state.orderBy}
                 rowsPerPage={this.state.rowsPerPage} page={this.state.page}
                 selected={this.state.selected} category={category}
                 handleChange={this.handleChange} handleClick={handleClick} redirectID="insid"/>
             </Typography>
-        } else if(data.ProjectTeamDataReducer && data.ProjectTeamDataReducer.data && category === PROJECT_TABS['TEAM']) {
-            tabContent = this.formatedDateTime(data.ProjectTeamDataReducer.data[0].userdetails);
+        } else if(stateData.teamInfo && category === PROJECT_TABS['TEAM']) {
             rows = [{ id: 'Firstname', numeric: false, disablePadding: false, label: 'Firstname' },
-                    { id: 'ShiftStart', numeric: false, disablePadding: false, label: 'Shift Start', editTable: true },
-                    { id: 'ShiftEnd', numeric: false, disablePadding: false, label: 'Shift End', editTable: true}
+                    { id: 'Lastname', numeric: false, disablePadding: false, label: 'LastName' },
+                    { id: 'Role', numeric: false, disablePadding: false, label: 'Role' },
+                    { id: 'Status', numeric: false, disablePadding: false, label: 'Status' },
+                    { id: 'Association', numeric: false, disablePadding: false, label: 'Association'}
                 ]
             tabData = <Typography component="div">
-            <EnhancedTable data={tabContent} rows={rows}
+            <EnhancedTable data={stateData.teamInfo} rows={rows}
                 order={this.state.order} orderBy={this.state.orderBy}
                 rowsPerPage={this.state.rowsPerPage} page={this.state.page}
                 selected={this.state.selected} category={category}
-                handleChange={this.handleChange} handleClick={handleClick} redirectID="ID"
+                handleChange={this.handleChange} handleClick={handleClick} redirectID="NFC"
                 allowDelete={true} allowEdit={true}/>
             </Typography>
         }

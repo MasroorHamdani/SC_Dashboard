@@ -39,7 +39,10 @@ class DataProcessingComponent extends Component {
                                             input={<Input name="unit" id="unit-native-label-placeholder" />}>
                                             <option value='' name="unit" key='unit'>{t('chooseUnit')}</option>
                                             <option value='T' name="unit" key='min'>Mins</option>
-                                            <option value='hour' name="unit" key='hour'>Hour</option>
+                                            <option value='H' name="unit" key='hour'>Hour</option>
+                                            <option value='D' name="unit" key='day'>Day</option>
+                                            <option value='M' name="unit" key='month'>Month</option>
+                                            <option value='Y' name="unit" key='year'>Year</option>
                                         </NativeSelect>
                                     </FormControl>
                                     <TextField

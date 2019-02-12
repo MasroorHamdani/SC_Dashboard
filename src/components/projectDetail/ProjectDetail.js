@@ -1,21 +1,21 @@
 import React, {Component} from 'react';
 import { connect } from "react-redux";
 import styles from './ProjectDetailStyle';
-import {withStyles, AppBar, Tabs, Tab, Typography, Paper, Grid, TextField} from '@material-ui/core';
+import {withStyles, AppBar, Tabs, Tab, Paper} from '@material-ui/core';
 import PropTypes from 'prop-types';
-import {isEqual} from 'lodash';
+import {isEqual, groupBy} from 'lodash';
 import TabContainer from '../tabContainer/TabContainer';
-import {PROJECT_TABS, API_URLS} from '../../constants/Constant';
+import {PROJECT_TABS, API_URLS, NAMESPACE_MAPPER} from '../../constants/Constant';
 import {getApiConfig} from '../../services/ApiCofig';
-import {projectDetailData, projectTeamData} from '../../actions/ProjectDataAction';
-// import '../../sass/App.scss';
+import {projectDetailData, projectTeamData, projectTeamAsso} from '../../actions/ProjectDataAction';
 import { NamespacesConsumer } from 'react-i18next';
 
 class ProjectDetail extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      value: 0,
+      value: 'team',
+      info : false
     };
   }
   
@@ -26,79 +26,82 @@ class ProjectDetail extends Component {
 
   callApi = (value) => {
     let url;
-    if (value === 0 && !this.props.projectData.ProjectTeamDataReducer.data) {
-      url = PROJECT_TABS['TEAM'];
-    } else if(value === 1 && !this.props.projectData.ProjectDetailsReducer.data) {
+    if (value === 'team' && (!this.props.projectData || !this.state.teamInfo)) {
+      url = API_URLS['TEAM_MEMBERS'];
+    } else if(value === 'installation' && !this.props.projectData) {
       url= `${PROJECT_TABS['INSTALLATION']}/${PROJECT_TABS['DETAILS']}`;
     }
     if(url) {
-      const endPoint = `${API_URLS['PROJECT_DETAILS']}/${this.props.data.PID}/${url}`,
+      const endPoint = `${API_URLS['PROJECT_DETAILS']}/${this.props.stateData.pid}/${url}`,
         config = getApiConfig(endPoint, 'GET');
       this.props.onProjectDetailData(config, url);
     }
   }
   componentDidMount() {
-    this.callApi(0);
+    this.callApi(this.state.value);
   }
 
   componentDidUpdate(prevProps, prevState) {
     if (this.props.projectData &&
-      !isEqual(this.props.projectData.ProjectDetailsReducer, prevProps.projectData.ProjectDetailsReducer)) {
-        const responseData = this.props.projectData.ProjectDetailsReducer.data;
+      (!isEqual(this.props.projectData, prevProps.projectData) ||
+        !this.state.installationData)) {
+        const responseData = this.props.projectData;
         let insIDList = [];
+        let SUB1;
         responseData.map(function (data) {
-          insIDList.push(data['insid'])
+          SUB1 = NAMESPACE_MAPPER[data['NS']].SUB1;
+          insIDList.push(data.SUB1)
+          data[SUB1] = data.SUB1
         });
+        this.setState({installationData: responseData})
         localStorage.setItem('installationLocations', insIDList);
-      }
+    }
+    if((this.props.teamMembers || this.props.teamMembers || this.props.projectData) &&
+      (!isEqual(this.props.teamMembers, prevProps.teamMembers) ||
+      !isEqual(this.props.teamAsso, prevProps.teamAsso) ||
+      !isEqual(this.props.projectData, prevProps.projectData) &&
+      (!this.state.teamInfo))) {
+        if(!this.state.info) {
+          const endPoint = `${API_URLS['PROJECT_DETAILS']}/${this.props.stateData.pid}/${API_URLS['TEAM_ASSOCIATION']}`,
+          config = getApiConfig(endPoint, 'GET');
+          this.props.onTeamAssociation(config,);
+          this.setState({info: true})
+        }
+        if(this.props.teamAsso) {
+          const url= `${PROJECT_TABS['INSTALLATION']}/${PROJECT_TABS['DETAILS']}`,
+            endPoint = `${API_URLS['PROJECT_DETAILS']}/${this.props.stateData.pid}/${url}`,
+            config = getApiConfig(endPoint, 'GET');
+          this.props.onProjectDetailData(config, url);
+          
+        }
+        if(this.props.projectData) {
+          let association = groupBy(this.props.teamAsso,  'UID');
+          let teamMembers = this.props.teamMembers;
+          teamMembers.map((row) => {
+            let tags = []
+            if(association[row.UID])
+              association[row.UID].map((dt) => {
+                this.props.projectData.map((d) => {
+                  if(d.SUB1 === dt.InsID)
+                    tags.push([d.name, dt.Level])
+                })
+              })
+            row['Association'] = tags;
+          })
+          this.setState({teamInfo: teamMembers})
+        }
+    }
   }
 
   render() {
-      const { classes, data, handleClick } = this.props;
+      const { classes, handleClick } = this.props;
       return (
           <div className={classes.root}>
           <NamespacesConsumer>
             {
             t=><main className={classes.content}>
             <Paper style={{ padding: 8 * 3 }}>
-              <Typography component="div">
-              {/* <img
-                  className="project-image"
-                  alt="Project"
-                  src={data.imurl}
-              /> */}
-              </Typography>
-              <Grid container spacing={24}>
-                <Grid item xs={12} sm={12}>
-                  <TextField
-                    disabled
-                    id="pid"
-                    label={t('pid')}
-                    name="pid"
-                    value={data.PID}
-                  />
-                </Grid>
-                <Grid item xs={12} sm={12}>
-                  <TextField
-                    disabled
-                    id="site"
-                    label={t('site')}
-                    name="site"
-                    value={data.site}
-                  />
-                </Grid>
-                <Grid item xs={12} sm={12}>
-                  <TextField
-                    disabled
-                    id="site_addr"
-                    name="site_addr"
-                    label={t('siteAddr')}
-                    value={data.site_addr}
-                    fullWidth
-                  />
-                </Grid>
-              </Grid>
-              <AppBar position="static" color="default">
+                <AppBar position="static" color="default">
                 <Tabs
                   value={this.state.value}
                   onChange={this.handleChange}
@@ -106,15 +109,19 @@ class ProjectDetail extends Component {
                   textColor="primary"
                   fullWidth
                 >
-                  <Tab label={t('team')} />
-                  <Tab label={t('installation')} />
+                  <Tab label={t('team')}
+                    value='team'/>
+                  <Tab label={t('installation')}
+                    value='installation'/>
                 </Tabs>
               </AppBar>
               
-              {this.state.value === 0 && <TabContainer data={this.props.projectData}
+              {(this.state.value === 'team' && this.props.teamMembers)&& <TabContainer data={this.props.teamMembers}
+                stateData={this.state}
                 category={PROJECT_TABS['TEAM']}
                 handleClick={handleClick}>Team</TabContainer>}
-              {this.state.value === 1 && <TabContainer data={this.props.projectData}
+              {this.state.value === 'installation' && <TabContainer data={this.state.installationData}
+                stateData={this.state}
                 category={PROJECT_TABS['INSTALLATION']}
                 handleClick={handleClick}>Installation</TabContainer>}
             </Paper>
@@ -130,7 +137,9 @@ ProjectDetail.propTypes = {
 
 function mapStateToProps(state) {
   return {
-      projectData : state,
+      projectData : state.ProjectDetailsReducer.data,
+      teamMembers : state.ProjectTeamDataReducer.data,
+      teamAsso : state.ProjectTeamAssoDataReducer.data
   }
 }
 
@@ -140,8 +149,11 @@ function mapDispatchToProps(dispatch) {
             //will dispatch the async action
             if(url === `${PROJECT_TABS['INSTALLATION']}/${PROJECT_TABS['DETAILS']}`)
               dispatch(projectDetailData(config))
-            else if(url === PROJECT_TABS['TEAM'])
+            else if(url === API_URLS['TEAM_MEMBERS'])
               dispatch(projectTeamData(config))
+        },
+        onTeamAssociation: (config) => {
+          dispatch(projectTeamAsso(config))
         }
     }
 }

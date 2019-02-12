@@ -6,7 +6,6 @@ import { NamespacesConsumer } from 'react-i18next';
 class UserProfileData extends Component {
     render() {
         const {classes, data, onChange, onClick} = this.props;
-        console.log(data);
         return (
             <div className={classes.root}>
             <NamespacesConsumer>
@@ -16,11 +15,11 @@ class UserProfileData extends Component {
                         <Grid item xs={12} sm={6}>
                             <TextField
                                 required
-                                id="data.Firstname"
+                                id="Firstname"
                                 name="Firstname"
                                 label={t('firstname')}
                                 fullWidth
-                                value={data.Firstname}
+                                value={data.profile.Firstname}
                                 onChange={onChange}
                             />
                         </Grid>
@@ -31,7 +30,7 @@ class UserProfileData extends Component {
                             label={t('lastname')}
                             fullWidth
                             autoComplete="Lastname"
-                            value={data.Lastname}
+                            value={data.profile.Lastname}
                             onChange={onChange}
                         />
                         </Grid>
@@ -43,7 +42,7 @@ class UserProfileData extends Component {
                             label={t('userid')}
                             fullWidth
                             autoComplete="ID"
-                            value={data.ID}
+                            value={data.profile.ID}
                             onChange={onChange}
                         />
                         </Grid>
@@ -55,7 +54,7 @@ class UserProfileData extends Component {
                             label={t('userfid')}
                             fullWidth
                             autoComplete="RFID"
-                            value={data.RFID}
+                            value={data.profile.RFID}
                             onChange={onChange}
                         />
                         </Grid>
@@ -66,7 +65,7 @@ class UserProfileData extends Component {
                             name="Phonenum"
                             label={t('phoneno')}
                             fullWidth
-                            value={data.Phonenum}
+                            value={data.profile.Phonenum}
                             onChange={onChange}
                         />
                         </Grid>
@@ -77,7 +76,7 @@ class UserProfileData extends Component {
                             name="Mute"
                             control={
                                 <Switch
-                                checked={data.Mute}
+                                checked={data.profile.Mute}
                                 onChange={onChange}
                                 value="Mute"
                                 />}

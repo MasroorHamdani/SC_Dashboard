@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from "react-redux";
-import {isEqual} from "lodash";
 import {withStyles} from '@material-ui/core';
-import {API_URLS, REACT_URLS, PROJECT_TABS} from "../../constants/Constant";
-import {getApiConfig} from "../../services/ApiCofig";
+import {REACT_URLS} from "../../constants/Constant";
 import {projectData} from '../../actions/ProjectDataAction';
 import ProjectDetail from '../../components/projectDetail/ProjectDetail';
 import styles from './ProjectDetailStyle';
@@ -17,18 +15,6 @@ class ProjectDetails extends Component {
         }
     }
 
-    componentDidMount(){
-        const endPoint = `${API_URLS['PROJECT_DETAILS']}/${this.state.pid}/${PROJECT_TABS['GENERAL']}`,
-            config = getApiConfig(endPoint, 'GET');
-        this.props.onProjectData(config);
-    }
-    componentDidUpdate(prevProps, prevState) {
-        if (this.props.projectData &&
-            !isEqual(this.props.projectData !== prevProps.projectData)) {
-                // console.log(this.props.projectData, "*****");
-            }
-    }
-
     handleClick = (e, id, category) => {
         this.props.history.push(`${REACT_URLS['PROJECT_DETAILS']}/${this.state.pid}/${category}/${id}`);
       };
@@ -37,10 +23,9 @@ class ProjectDetails extends Component {
         const {classes} = this.props;
         return(
             <div className={classes.root}>
-            { this.props.projectData &&
-                <ProjectDetail data={this.props.projectData[0]}
+                <ProjectDetail
+                stateData={this.state}
                 handleClick={this.handleClick}/>
-            }
             </div>
         )
     }

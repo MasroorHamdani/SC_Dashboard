@@ -14,9 +14,11 @@ import GraphPlot from './GraphPlot';
 class AnalysisData extends Component {
     constructor(props) {
         super(props)
+        let now = new Date();
+        now.setHours(now.getHours()-1);
         this.state =({
             selectedIndex: 0,
-            startDate: new Date(),
+            startDate: now,
             endDate: new Date(),
         })
     }
@@ -66,11 +68,11 @@ class AnalysisData extends Component {
         return tabData;
     }
     render() {
-        const {data, classes } = this.props;
+        const {classes, stateData} = this.props;
         let tabData;
-        if (data.dataAnalysis && data.dataAnalysis.data.data.metrics){
-            tabData = this.generateDataAnalytics(data.dataAnalysis.data.data.metrics,
-                data.dataAnalysis.data.data.allMetrics,
+        if (stateData.dataAnalysis && stateData.dataAnalysis.data){
+            tabData = this.generateDataAnalytics(stateData.dataAnalysis.data.data.metrics,
+                stateData.dataAnalysis.data.data.allMetrics,
                 classes);
         }
         return (

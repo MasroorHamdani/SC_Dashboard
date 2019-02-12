@@ -10,12 +10,14 @@ import ProjectDetailsReducer from "./ProjectDataDetailsReducer";
 import ProjectTeamDataReducer from './ProjectTeamDataReducer';
 import UserProfileReducer from './UserProfileReducer';
 import InstallationDeviceReducer from './InstallationDeviceReducer';
-import DataAnalysisProjectListReducer from './DataAnalysisProjectListReducer';
+import DataAnalysisInstallationListReducer from './DataAnalysisInstallationListReducer';
 import DataAnalysisProjectListSubMenuReducer from './DataAnalysisProjectSubMenuReducer';
 import DataAnalysisReducer from './DataAnalysisReducer';
 import ServiceRequirementReducer from './ServiceRequirementReducer';
 import ProjectAlertReducer from './ProjectAlertReducer';
 import DispenserDataReducer from './DispenserDataReducer';
+import DataAnalysisMenuListReducer from './DataAnalysisMenuListReducer';
+import ProjectTeamAssoDataReducer from './ProjectTeamAssoDataReducer';
 
 const reducers = {
     LoginReducer,
@@ -28,12 +30,14 @@ const reducers = {
     ProjectTeamDataReducer,
     UserProfileReducer,
     InstallationDeviceReducer,
-    DataAnalysisProjectListReducer,
+    DataAnalysisInstallationListReducer,
     DataAnalysisProjectListSubMenuReducer,
     DataAnalysisReducer,
     ServiceRequirementReducer,
     ProjectAlertReducer,
-    DispenserDataReducer
+    DispenserDataReducer,
+    DataAnalysisMenuListReducer,
+    ProjectTeamAssoDataReducer
 }
 
 // combines all the reducers which will be passed in Redux Store
