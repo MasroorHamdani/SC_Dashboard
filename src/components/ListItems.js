@@ -22,7 +22,7 @@ class ListItems extends Component {
             case 'AccountBox':
                 return <AccountBox/>;
             default:
-            return 'foo';
+                return '';
         }
       }
     render() {

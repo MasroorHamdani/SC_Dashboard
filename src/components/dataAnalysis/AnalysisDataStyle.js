@@ -18,8 +18,8 @@ const styles = theme => ({
         float: "right",
     },
     seperator: {
-        border: "black",
-        borderStyle: "double",
+        // border: "black",
+        // borderStyle: "double",
         marginTop: theme.spacing.unit * 1,
         marginBottom: theme.spacing.unit * 2,
     },

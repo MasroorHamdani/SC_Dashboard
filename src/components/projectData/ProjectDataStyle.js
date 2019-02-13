@@ -7,7 +7,7 @@ const styles = theme => ({
     media: {
       height: 10,
       paddingTop: '56.25%', // 16:9
-      cursor: 'pointer'
+      // cursor: 'pointer'
     },
     actions: {
       display: 'flex',

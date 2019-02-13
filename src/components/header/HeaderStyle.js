@@ -39,6 +39,11 @@ const styles = theme => ({
     },
     logo: {
       width: '20%'
+    },
+    beta: {
+      // width: '5%',
+      marginLeft: '1%',
+      // marginTop: '-10px'
     }
   });
 

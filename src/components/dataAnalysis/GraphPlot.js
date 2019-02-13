@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Typography} from '@material-ui/core';
+import {Typography, Divider} from '@material-ui/core';
 import {Line, XAxis, YAxis, CartesianGrid, Tooltip,
     Legend, ResponsiveContainer, Brush, ComposedChart,
     Bar, PieChart, Pie, Cell, Sector, Area} from 'recharts';
@@ -71,7 +71,8 @@ class GraphPlot extends Component {
         return(
             metrics.map((metric, index) => {
                 return <div key={index}>
-                <div className={classes.seperator}></div>
+                <Divider className={classes.seperator}/>
+                {/* <div className={classes.seperator}></div> */}
                     <DataProcessingComponent stateData={stateData}
                         handleSamplingChange={handleSamplingChange}
                         metrics={metric}/>

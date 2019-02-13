@@ -59,6 +59,7 @@ class Header extends Component {
                 className={classes.title}
                 >
                 <img src="https://www.smartclean.sg/images/sc-logo.png" alt="logo" className={classes.logo}/>
+                <span className={classes.beta}>BETA</span>
               </Typography>
               <IconButton color="inherit">
                 <Typography

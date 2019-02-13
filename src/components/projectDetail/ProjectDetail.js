@@ -64,7 +64,7 @@ class ProjectDetail extends Component {
         if(!this.state.info) {
           const endPoint = `${API_URLS['PROJECT_DETAILS']}/${this.props.stateData.pid}/${API_URLS['TEAM_ASSOCIATION']}`,
           config = getApiConfig(endPoint, 'GET');
-          this.props.onTeamAssociation(config,);
+          this.props.onTeamAssociation(config);
           this.setState({info: true})
         }
         if(this.props.teamAsso) {

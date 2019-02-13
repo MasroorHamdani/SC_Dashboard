@@ -94,7 +94,7 @@ class UserProfileData extends Component {
                                 className={classes.button}
                                 onClick={onClick}
                                 >
-                                {t('update')}
+                                {t('profileUpdate')}
                             </Button>
                         </Grid>
                     </Grid>

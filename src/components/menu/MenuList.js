@@ -9,11 +9,11 @@ export const menuList= [
       url: "/data",
       icon: "LayersIcon"
     },
-    {
-      name: "Reports",
-      url: "/report",
-      icon: "BarChartIcon"
-    },
+    // {
+    //   name: "Reports",
+    //   url: "/report",
+    //   icon: "BarChartIcon"
+    // },
     {
       name: "Profile",
       url: "/profile",
