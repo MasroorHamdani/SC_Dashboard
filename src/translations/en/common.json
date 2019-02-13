@@ -30,6 +30,7 @@
     "shiftStart": "Shift Start At",
     "shiftEnd": "Shift End At",
     "update": "Update",
+    "profileUpdate": "Update Profile",
     "projectList": "Project List",
     "chooseProject": "Choose Project",
     "projectHelpText": "Please Select a Project for Report generation",

@@ -57,7 +57,7 @@ const styles = theme => ({
                     <Switch>
                       <Route exact path="/" component={Dashboard} />
                       <Route path="/project/:pid/installations/:insid?" component={ProjectInstallationDetails} />
-                      <Route path="/project/:pid/team/:insid?" component={ProjectTeamDetails} />
+                      <Route path="/project/:pid/team/:uid?" component={ProjectTeamDetails} />
                       <Route path="/project/:pid?" component={ProjectDetails} />
                       <Route path="/profile/:userid?" component={UserProfile} />
                       <Route path="/alert/:pid?" component={AlertDetails} />

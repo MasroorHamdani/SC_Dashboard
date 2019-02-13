@@ -54,7 +54,7 @@ class TabContainer extends Component {
                 order={this.state.order} orderBy={this.state.orderBy}
                 rowsPerPage={this.state.rowsPerPage} page={this.state.page}
                 selected={this.state.selected} category={category}
-                handleChange={this.handleChange} handleClick={handleClick} redirectID="NFC"
+                handleChange={this.handleChange} handleClick={handleClick} redirectID="UID"
                 allowDelete={true} allowEdit={true}/>
             </Typography>
         }

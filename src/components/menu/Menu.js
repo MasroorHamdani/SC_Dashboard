@@ -45,8 +45,8 @@ class Menu extends Component {
           </div>
           <Divider />
           <List><ListItems data={menuList} /></List>
-          <Divider />
-          <List>{secondaryListItems}</List>
+          {/* <Divider />
+          <List>{secondaryListItems}</List> */}
         </Drawer>
     );
   }

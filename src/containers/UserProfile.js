@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import {isEqual } from 'lodash';
-import {API_URLS, HOUR_MIN_FORMAT, NAMESPACE_MAPPER} from '../constants/Constant';
+import {withStyles} from '@material-ui/core';
+import {API_URLS, NAMESPACE_MAPPER, NAMESPACE} from '../constants/Constant';
 import {getApiConfig} from '../services/ApiCofig';
 import {profileData, profileDataUpdate} from '../actions/UserProfileDataAction';
 import UserProfileData from '../components/userProfile/UserProfileData';
-import {getFormatedDateTime} from '../utils/DateFormat';
+import styles from './projectTeamDetails/ProjectTeamDetailsStyle';
 
 class UserProfile extends Component {
     constructor(props) {
@@ -42,17 +43,25 @@ class UserProfile extends Component {
         config = getApiConfig(endPoint, 'POST', this.state.profile);
         this.props.onProfileData(config, 'POST');
     }
+    getUserProfile = (userDetails) => {
+        let profile;
+        userDetails.map((row) => {
+            if(row.NS === NAMESPACE['USER_PROFILE'])
+            profile = row;
+        });
+        return profile;
+    }
     componentDidUpdate(prevProps, prevState) {
         if (this.props.userProfile &&
         (!isEqual(this.props.userProfile, prevProps.userProfile) ||
             !this.state.profile.Firstname)) {
-            const profile = this.props.userProfile[0] ? this.props.userProfile[0]: this.props.userProfile;
+            const profile = this.props.userProfile[0] ? this.getUserProfile(this.props.userProfile): this.props.userProfile;
             let userProfile = {'Firstname': profile.Firstname,
                 'Lastname': profile.Lastname ? profile.Lastname : prevState.profile.Lastname,
                 'Phonenum': profile.Phonenum ? profile.Phonenum : prevState.profile.Phonenum,
                 'Mute': profile.Mute ? profile.Mute : prevState.profile.Mute
-            };
-            let SUB1, SUB2;
+                },
+                SUB1, SUB2;
             if(profile['NS']) {
                 SUB1 = NAMESPACE_MAPPER[profile['NS']].SUB1;
                 SUB2 = NAMESPACE_MAPPER[profile['NS']].SUB2;
@@ -75,8 +84,9 @@ class UserProfile extends Component {
     }
 
     render(){
+        const {classes} = this.props;
         return (
-            <div>
+            <div className={classes.root}>
                 <UserProfileData 
                 data={this.state}
                 onChange={this.handleChange}
@@ -104,4 +114,4 @@ function mapDispatchToProps(dispatch) {
         }
     }
 }
-export default connect(mapStateToProps, mapDispatchToProps)(UserProfile);
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(UserProfile));
