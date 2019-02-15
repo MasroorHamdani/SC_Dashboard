@@ -1,4 +1,4 @@
-import { DATA_ANALYSIS_MENU_LIST } from '../constants/ActionTypes';
+import { DATA_ANALYSIS_MENU_LIST, CLEAR_REDUCER} from '../constants/ActionTypes';
 /* Reducer for Data analysis page's left menu project list */
 const dataAnalysisMenuList = (state = [], action) => {
     switch(action.type) {
@@ -7,6 +7,8 @@ const dataAnalysisMenuList = (state = [], action) => {
                 ...state,
                 data: action.data
             };
+        case CLEAR_REDUCER:
+            return []
         default:
             return state
     }

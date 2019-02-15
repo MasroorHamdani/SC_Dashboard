@@ -41,6 +41,10 @@ const styles = theme => ({
         // marginTop: theme.spacing.unit * 1,
         marginBottom: theme.spacing.unit * 2,
     },
+    formControl: {
+        // margin: theme.spacing.unit,
+        minWidth: 120,
+    },
 });
 
 export default styles;

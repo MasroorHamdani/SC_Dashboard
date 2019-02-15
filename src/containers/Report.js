@@ -26,8 +26,6 @@ class Report extends Component {
         const {name, value} = event.target;
         this.setState({
             [name] : value
-        }, function() {
-            console.log(this.state);
         });
 
     }
@@ -111,7 +109,7 @@ class Report extends Component {
     };
 
     generateReport = () => {
-        console.log("generate report function");
+        // console.log("generate report function");
     }
     componentDidMount(){
         const endPoint = API_URLS['DASHBOARD'],

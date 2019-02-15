@@ -15,8 +15,9 @@ class ProjectDetail extends Component {
     super(props)
     this.state = {
       value: 'team',
-      info : false
+      // info : false
     };
+    this.info = false;
   }
   
   handleChange = (event, value) => {
@@ -61,11 +62,12 @@ class ProjectDetail extends Component {
       !isEqual(this.props.teamAsso, prevProps.teamAsso) ||
       !isEqual(this.props.projectData, prevProps.projectData) &&
       (!this.state.teamInfo))) {
-        if(!this.state.info) {
+        if(!this.info) {
           const endPoint = `${API_URLS['PROJECT_DETAILS']}/${this.props.stateData.pid}/${API_URLS['TEAM_ASSOCIATION']}`,
           config = getApiConfig(endPoint, 'GET');
           this.props.onTeamAssociation(config);
-          this.setState({info: true})
+          // this.setState({info: true})
+          this.info = true;
         }
         if(this.props.teamAsso) {
           const url= `${PROJECT_TABS['INSTALLATION']}/${PROJECT_TABS['DETAILS']}`,

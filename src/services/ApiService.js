@@ -32,14 +32,14 @@ function ApiService(configObject) {
     function forceLogout() {
         isFetchingToken = false;
         localStorage.clear();
-        // localStorage.setItem('previousPath', window.location.pathname);
+        localStorage.setItem('previousPath', window.location.pathname);
         window.location = '/login';
         // this.props.history.push(REACT_URLS['LOGIN']);
     }
 
     axios.interceptors.response.use(undefined, err => {
         if (err.response) {
-            console.log(err, err.response.status, "err.response.status");
+            // console.log(err, err.response.status, "err.response.status");
             if (err.response.config.url.includes('/login'))
                 return Promise.reject(err);
             if (err.response.status === 403) return forceLogout();
@@ -48,7 +48,7 @@ function ApiService(configObject) {
         //temporary testing code
         // if (err.response.status === 404) return Promise.reject(err);
         if (!isFetchingToken) {
-            console.log("Inside fetching**********")
+            // console.log("Inside fetching**********")
             isFetchingToken = true;
 
             const refreshToken = localStorage.getItem('refreshToken');
@@ -117,7 +117,7 @@ function ApiService(configObject) {
                 const status = error.response.status;
                 // The request was made and the server responded with a status code
                 if (status === 403) {
-                    console.log(error.response, "403 error");
+                    // console.log(error.response, "403 error");
                     // Logger.warn("session has been expired");
                 } else if (status === 400) {
                     // Return request for any user Error, with status 400

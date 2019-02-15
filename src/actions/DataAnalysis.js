@@ -1,7 +1,7 @@
 import ApiService from '../services/ApiService';
 import {DATA_ANALYSIS_PROJECT_LIST_SUB_MENU, DATA_ANALYSIS_INSTALLATION_LIST,
   PROJECT_ANALYSIS_DATA, PROJECT_ALERT_LIST, DISPENSER_DATA,
-  DATA_ANALYSIS_MENU_LIST} from '../constants/ActionTypes';
+  DATA_ANALYSIS_MENU_LIST, CLEAR_REDUCER} from '../constants/ActionTypes';
 
 /**
  * Dispatched function to call the API service to get
@@ -133,5 +133,11 @@ function dispenserDataReceived(data) {
   return {
     type: DISPENSER_DATA,
     data
+  }
+}
+
+export function clearDataAnalysis() {
+  return {
+    type: CLEAR_REDUCER,
   }
 }

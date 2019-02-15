@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from "react-redux";
 import {withStyles, Grid, CardContent,
-    Typography, Button, Card, CardHeader, IconButton,
+    Typography, Card, CardHeader, IconButton,
     Divider, FormControl, InputLabel, TextField, Select} from '@material-ui/core';
 import {isEqual} from 'lodash';
 import ClearIcon from '@material-ui/icons/Clear';
@@ -10,17 +10,19 @@ import LocationCityIcon from '@material-ui/icons/LocationCity';
 import styles from './ProjectTeamDetailsStyle';
 import CustomModal from '../../components/modal/Modal';
 import {API_URLS, PROJECT_TABS, NAMESPACE_MAPPER,
-    NAMESPACE} from '../../constants/Constant';
+    NAMESPACE, ALERT_LEVEL} from '../../constants/Constant';
 import {getApiConfig} from '../../services/ApiCofig';
 import {projectDetailData} from '../../actions/ProjectDataAction';
 import {profileData, profileDataUpdate} from '../../actions/UserProfileDataAction';
 import UserProfileData from '../../components/userProfile/UserProfileData';
+import {formatDateTime} from '../../utils/DateFormat';
 
 class ProjectInstallationDetails extends Component {
     constructor(props) {
         super(props);
         this.state = {
             open: false,
+            deleteNotify: false,
             profile: {
                 Firstname: '',
                 Lastname: '',
@@ -33,26 +35,41 @@ class ProjectInstallationDetails extends Component {
             },
             pid: props.match.params.pid,
             uid: props.match.params.uid,
-            info: false,
             userLocation : {}
         };
+        this.info = false;
     }
     
     handleModalState = () => {
         this.setState({ open: !this.state.open});
     };
+    handleModalDeleteState = () => {
+        this.setState({ deleteNotify: !this.state.deleteNotify});
+    };
     
     onAddtion = () => {
-        console.log("Add loction to user", this.state.userLocation);
-        const endPoint = `${API_URLS['PROJECT_DETAILS']}/${this.state.pid}/
-                    ${PROJECT_TABS['TEAM_ASSOCIATION']}`,
-        param = {
-            'UID': this.state.uid
-        },
-        config = getApiConfig(endPoint, 'POST', this.state.userLocation, param);
-        // this.props.onProfileData(config);
-
-        this.handleModalState();
+        let startTime = formatDateTime(this.state.userLocation.ShiftStart, "HH:mm a", "HHMM"),
+            endTime = formatDateTime(this.state.userLocation.ShiftEnd, "HH:mm a", "HHMM");
+        if(this.state.userLocation.Tags && this.state.userLocation.ShiftStart &&
+            this.state.userLocation.ShiftEnd && this.state.userLocation.Level &&
+            this.state.userLocation.InsID)  {
+            this.setState({
+                userLocation: {
+                    ...this.state.userLocation,
+                    Tags: this.state.userLocation.Tags.split(','),
+                    ShiftStart: startTime,
+                    ShiftEnd: endTime
+                }
+            }, function() {
+            const endPoint = `${API_URLS['PROJECT_DETAILS']}/${this.state.pid}/
+                        ${API_URLS['TEAM_ASSOCIATION']}`,
+            config = getApiConfig(endPoint, 'POST', this.state.userLocation);
+            this.props.onProfileData(config, 'POST');
+            this.handleModalState();
+            })
+        } else {
+            this.setState({errorMessage : "Please enter all valid details"})
+        }
     }
     handleChange = (event) => {
         let {name, value} = event.target;
@@ -74,20 +91,41 @@ class ProjectInstallationDetails extends Component {
         config = getApiConfig(endPoint, 'POST', this.state.profile, param);
         this.props.onProfileData(config, 'POST');
     }
-    handleOnClick = () => {
-        console.log("On Click handler");
-    };
-    removeLocation = (id) => {
-        console.log("remove id from user list", id);
+    onDelete = () =>{
+        const endPoint = `${API_URLS['PROJECT_DETAILS']}/${this.state.pid}/
+                        ${API_URLS['TEAM_ASSOCIATION']}`,
+            param = {
+                'UID': this.state.uid,
+                'InsID': this.state.deleteAsso
+            },
+            config = getApiConfig(endPoint, 'Delete', ' ', param);
+        this.props.onProfileData(config, 'POST');
+        this.handleModalDeleteState();
+    }
+    removeLocation = (insID, name) => {
+        this.setState({deleteAsso : insID})
+        this.deleteInformation = `Do you Want Remove the User Association for location ${name}`;
+        this.handleModalDeleteState();
     }
     addDetail = (event) => {
         let {name, value} = event.target;
-        if(name === 'Tags') {
-            let newValue =['cleaningIssues'];
-            // comma seperated list
-            newValue.push(value);
-            newValue.push(this.state.userLocation[name]);
-            value= newValue;
+        this.setState({
+            userLocation: {
+                ...this.state.userLocation,
+                [name]: value
+            }
+        })
+    }
+    tagDetail = (event) => {
+        let {name, value} = event.target;
+        let newValue = ['cleaningIssues'];
+        let valArray = value.split(',');
+        if(valArray.length > 0) {
+            for (let i = 0; i < valArray.length; i++) {
+                newValue.push(valArray[i].trim())
+            }
+            newValue.concat(this.state.userLocation[name]);
+            value = Array.from(new Set(newValue)).join(',')
         }
         this.setState({
             userLocation: {
@@ -96,13 +134,16 @@ class ProjectInstallationDetails extends Component {
             }
         })
     }
-    componentDidMount() {
+    getProfileData =() => {
         const endPoint = `${API_URLS['USER_PROFILE']}`,
             param = {
                 'uid': this.state.uid
             },
             config = getApiConfig(endPoint, 'GET', '', param);
         this.props.onProfileData(config);
+    }
+    componentDidMount() {
+        this.getProfileData();
     }
     getUserProfile = (userDetails) => {
         let profile, association = [];
@@ -125,59 +166,63 @@ class ProjectInstallationDetails extends Component {
             !isEqual(this.props.locationList, prevState.locationList))
             // && (!this.state.profile.Firstname || !this.state.association)
             ) {
-            if(!this.state.info) {
+            if(!this.info) {
                 const endPoint = `${API_URLS['PROJECT_DETAILS']}/${this.state.pid}/
                     ${PROJECT_TABS['INSTALLATION']}/${PROJECT_TABS['DETAILS']}`,
                     config = getApiConfig(endPoint, 'GET');
                 this.props.onProjectDetailData(config);
-                this.setState({info: true})
+                this.info = true;
             }
-            let userDetails = this.getUserProfile(this.props.userProfile);
-            let profile = userDetails.profile,
-                userProfile = {'Firstname': profile.Firstname,
-                    'Lastname': profile.Lastname ? profile.Lastname : prevState.profile.Lastname,
-                    'Phonenum': profile.Phonenum ? profile.Phonenum : prevState.profile.Phonenum,
-                    'Mute': profile.Mute ? profile.Mute : prevState.profile.Mute
-                },
-                SUB1, SUB2;
-            if(profile['NS']) {
-                SUB1 = NAMESPACE_MAPPER[profile['NS']].SUB1;
-                SUB2 = NAMESPACE_MAPPER[profile['NS']].SUB2;
-                userProfile[SUB2]= profile.SUB2 ? profile.SUB2 : prevState.profile.ID;
-                userProfile[SUB1]= profile.SUB1 ? profile.SUB1 : prevState.profile.RFID;
-            } else {
-                userProfile['ID']= prevState.profile.ID;
-                userProfile['RFID']= prevState.profile.RFID;
-            }
-            if(!this.state.profile.Firstname)
-                this.setState({
-                    profile: userProfile,
-                    userLocation: {
-                        'UID': userProfile.userProfile,
-                        'Mute': userProfile.Mute,
-                    }
-                });
-            
-            if(this.props.locationList) {
-                let association = userDetails.association;
-                let locationList = this.props.locationList, SUB1, SUB2;
-                association.map((dt) => {
-                    locationList.map((d) => {
-                        if(d.SUB1 === dt.InsID) {
-                            dt['name'] = d.name;
-                            dt['locn'] = d.locn;
-                            d['assigned'] = true;
+            if(this.props.userProfile.length >0) {
+                let userDetails = this.getUserProfile(this.props.userProfile);
+                let profile = userDetails.profile,
+                    userProfile = {'Firstname': profile.Firstname,
+                        'Lastname': profile.Lastname ? profile.Lastname : prevState.profile.Lastname,
+                        'Phonenum': profile.Phonenum ? profile.Phonenum : prevState.profile.Phonenum,
+                        'Mute': profile.Mute ? profile.Mute : prevState.profile.Mute
+                    },
+                    SUB1, SUB2;
+                if(profile['NS']) {
+                    SUB1 = NAMESPACE_MAPPER[profile['NS']].SUB1;
+                    SUB2 = NAMESPACE_MAPPER[profile['NS']].SUB2;
+                    userProfile[SUB2]= profile.SUB2;// ? profile.SUB2 : prevState.profile.ID;
+                    userProfile[SUB1]= profile.SUB1;// ? profile.SUB1 : prevState.profile.RFID;
+                } else {
+                    userProfile['ID']= prevState.profile.ID;
+                    userProfile['RFID']= prevState.profile.RFID;
+                }
+                if(!this.state.profile.Firstname) {
+                    this.setState({
+                        profile: userProfile,
+                        userLocation: {
+                            'UID': userProfile.ID,
+                            'Mute': userProfile.Mute,
                         }
-                        SUB1 = NAMESPACE_MAPPER[d['NS']].SUB1;
-                        SUB2 = NAMESPACE_MAPPER[d['NS']].SUB2;
-                        d[SUB1] = d.SUB1;
-                        d[SUB2] = d.SUB2;
+                    });
+                }
+                
+                if(this.props.locationList) {
+                    let association = userDetails.association;
+                    let locationList = this.props.locationList, SUB1, SUB2;
+                    association.map((dt) => {
+                        locationList.map((d) => {
+                            if(d.SUB1 === dt.InsID) {
+                                dt['name'] = d.name;
+                                dt['locn'] = d.locn;
+                                d['assigned'] = true;
+                            }
+                            SUB1 = NAMESPACE_MAPPER[d['NS']].SUB1;
+                            SUB2 = NAMESPACE_MAPPER[d['NS']].SUB2;
+                            d[SUB1] = d.SUB1;
+                            d[SUB2] = d.SUB2;
+                        })
                     })
-                })
-                if(!this.state.association)
-                    this.setState({association: association});
-                    this.setState({locationList: locationList})
-              }
+                    this.setState({association: association,
+                        locationList: locationList});
+                }
+            } else {
+                this.getProfileData();
+            }
         }
       }
     
@@ -186,104 +231,113 @@ class ProjectInstallationDetails extends Component {
         const {classes} = this.props;
         if(this.state.locationList) {
             returnData = <div>
-                            <FormControl className={classes.formControl}>
-                                <InputLabel htmlFor="age-native-helper">Location</InputLabel>
-                                <Select native
-                                    value={this.state.userLocation.InsID}
-                                    onChange={this.addDetail}
-                                    inputProps={{
-                                        name: 'InsID',
-                                        id: 'InsID',
-                                      }}
+                <FormControl className={classes.formControl}>
+                    <InputLabel htmlFor="age-native-helper">Location</InputLabel>
+                    <Select native
+                        value={this.state.userLocation.InsID}
+                        onChange={this.addDetail}
+                        inputProps={{
+                            name: 'InsID',
+                            id: 'InsID',
+                            }}
+                    >
+                    <option value="" />
+                    {this.state.locationList.map(function(loc) {
+                        if(!loc.assigned)
+                            return <option value={loc.insid} name={loc.insid} key={loc.insid} >
+                                {loc.name} | {loc.locn}</option>
+                    })}
+                    </Select>
+                </FormControl>
+                <Grid container spacing={24}>
+                    <Grid item xs={12} sm={6}>
+                        <TextField
+                            required
+                            id="ShiftStart"
+                            name="ShiftStart"
+                            label="Shift Start"
+                            type="time"
+                            placeholder="HHMM"
+                            fullWidth
+                            autoComplete="ShiftStart"
+                            value={this.state.userLocation.ShiftStart}
+                            onChange={this.addDetail}
+                            InputLabelProps={{
+                                shrink: true
+                            }}/>
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                        <TextField
+                            id="ShiftEnd"
+                            name="ShiftEnd"
+                            label='Shift End'
+                            type="time"
+                            fullWidth
+                            autoComplete="ShiftEnd"
+                            placeholder="HHMM"
+                            value={this.state.userLocation.ShiftEnd}
+                            onChange={this.addDetail}
+                            InputLabelProps={{
+                                shrink: true
+                            }}/>
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                        <TextField
+                            required
+                            id="Tags"
+                            name="Tags"
+                            label="Tags"
+                            fullWidth
+                            autoComplete="Tags"
+                            value={this.state.userLocation.Tags}
+                            onChange={this.addDetail}
+                            onBlur={this.tagDetail}/>
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                        <FormControl className={classes.formControl}>
+                            <InputLabel htmlFor="age-native-helper">Level</InputLabel>
+                            <Select native
+                                value={this.state.userLocation.Level}
+                                onChange={this.addDetail}
+                                inputProps={{
+                                    name: 'Level',
+                                    id: 'Level',
+                                    }}
+                            >
+                            <option value="" />
+                            {ALERT_LEVEL.map(function(alert) {
+                                    return <option value={alert.key} name={alert.key} key={alert.key} >
+                                        {alert.display}</option>
+                            })}
+                            </Select>
+                        </FormControl>
+                        {/* <TextField
+                            id="Level"
+                            name="Level"
+                            label='Level'
+                            fullWidth
+                            autoComplete="Level"
+                            value={this.state.userLocation.Level}
+                            onChange={this.addDetail}
+                        /> */}
+                    </Grid>
+                    {this.state.errorMessage &&
+                        <Grid item
+                            container
+                            alignItems='center'
+                            direction='row'
+                            justify='flex-end'
+                            >
+                            <Typography
+                                variant="contained"
+                                color="secondary"
                                 >
-                                <option value="" />
-                                {this.state.locationList.map(function(loc) {
-                                    if(!loc.assigned)
-                                        return <option value={loc.insid} name={loc.insid} key={loc.insid} >
-                                            {loc.name} | {loc.locn}</option>
-                                })}
-                                </Select>
-                            </FormControl>
-                            <Grid container spacing={24}>
-                                <Grid item xs={12} sm={6}>
-                                    <TextField
-                                        required
-                                        id="ShiftStart"
-                                        name="ShiftStart"
-                                        label="Shift Start"
-                                        fullWidth
-                                        autoComplete="ShiftStart"
-                                        value={this.state.userLocation.ShiftStart}
-                                        onChange={this.addDetail}/>
-                                </Grid>
-                                <Grid item xs={12} sm={6}>
-                                    <TextField
-                                        id="ShiftEnd"
-                                        name="ShiftEnd"
-                                        label='Shift End'
-                                        fullWidth
-                                        autoComplete="ShiftEnd"
-                                        value={this.state.userLocation.ShiftEnd}
-                                        onChange={this.addDetail}
-                                    />
-                                </Grid>
-                                <Grid item xs={12} sm={6}>
-                                    <TextField
-                                        required
-                                        id="Tags"
-                                        name="Tags"
-                                        label="Tags"
-                                        fullWidth
-                                        autoComplete="Tags"
-                                        value={this.state.userLocation.Tags}
-                                        onChange={this.addDetail}/>
-                                </Grid>
-                                <Grid item xs={12} sm={6}>
-                                    <TextField
-                                        id="Level"
-                                        name="Level"
-                                        label='Level'
-                                        fullWidth
-                                        autoComplete="Level"
-                                        value={this.state.userLocation.Level}
-                                        onChange={this.addDetail}
-                                    />
-                                </Grid>
-                                {/* <Grid item
-                                    container
-                                    alignItems='center'
-                                    direction='row'
-                                    justify='flex-end'>
-                                    <Button
-                                        variant="contained"
-                                        color="primary"
-                                        className={classes.button}
-                                        onClick={this.handleOnClick}>
-                                        Assign Location
-                                    </Button>
-                                </Grid> */}
-                            </Grid>
-                        </div>
-            // returnData = this.state.locationList.map((loc, id) => {
-            //    if(!loc.assigned)
-            //         return (
-            //             <Card key={id}>
-            //                 <CardHeader
-            //                     avatar={
-            //                         <IconButton>
-            //                             <LocationCityIcon className={classes.icon}/>
-            //                         </IconButton>
-            //                         }
-            //                     action={
-            //                     <IconButton>
-            //                         <AddCircleOutlineIcon onClick={event => this.addLocation(id)}/>
-            //                     </IconButton>
-            //                     }
-            //                     title = {loc.name}
-            //                     subheader={loc.locn}/>
-            //             </Card>
-            //         )
-            //   })
+                                {this.state.errorMessage}
+                            </Typography>
+                        </Grid>
+                    }
+                </Grid>
+            </div>
         }
         return (
             <div className={classes.root}>
@@ -308,7 +362,7 @@ class ProjectInstallationDetails extends Component {
                                         <CardHeader
                                             action={
                                             <IconButton>
-                                                <ClearIcon onClick={event => this.removeLocation(i)}/>
+                                                <ClearIcon onClick={event => this.removeLocation(dt.InsID, dt.name)}/>
                                             </IconButton>
                                             }
                                             title={dt.name}
@@ -334,6 +388,14 @@ class ProjectInstallationDetails extends Component {
                         open={this.state.open}
                         showFooter={true}
                     />
+                    <CustomModal
+                        header="Remove User Association"
+                        content={this.deleteInformation}
+                        handleClose={this.handleModalDeleteState}
+                        handleClick={this.onDelete}
+                        open={this.state.deleteNotify}
+                        showFooter={true}
+                        />
                 </main>
             </div>
         )

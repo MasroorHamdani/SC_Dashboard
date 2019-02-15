@@ -6,6 +6,8 @@ import {withStyles, Card, CardHeader, CardMedia,
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import styles from './ProjectDataStyle';
 import {REACT_URLS} from '../../constants/Constant';
+import {getFormatedGraphData} from '../../utils/AnalyticsDataFormat';
+import GraphPlot from '../../components/dataAnalysis/GraphPlot';
 
 class DataCard extends Component{
     state = {
@@ -17,11 +19,25 @@ class DataCard extends Component{
     handleClose = () => {
         this.setState({ anchorEl: null });
     };
+    generateDataAnalytics = (dataAnalysis, metrics, classes) => {
+        let analyticsData = getFormatedGraphData(dataAnalysis, metrics),
+            graphData = analyticsData.graphData,
+            nameMapper = analyticsData.nameMapper,
+            tabData = <GraphPlot graphData={graphData}
+                        nameMapper={nameMapper} metrics={metrics}
+                        classes={classes}
+                        stateData={this.props.stateData}/>;
+        return tabData;
+    }
     render() {
         const {classes, projectActionRedirection, row} = this.props;
         const { anchorEl } = this.state;
+        let tabData;
+        if(row.dataAnalysis.metrics)
+            tabData = this.generateDataAnalytics(row.dataAnalysis.metrics,
+                row.allMetrics, classes);
         return (
-            <div key={row.PID}>
+            <div className={classes.flexContainer} key={row.PID}>
                 <Card className={classes.card}>
                     <CardHeader avatar={
                         <Avatar aria-label="Recipe" className={classes.avatar}>
@@ -35,13 +51,13 @@ class DataCard extends Component{
                     }
                     title={row.Site}
                     subheader={row.Site_Addr}/>
-                    <CardMedia
+                    {/* <CardMedia
                     className={classes.media}
                     title="Analytics"
                     image="../static/image.png"
-                    />
-                    <CardContent className={classes.pointer}>
-                        <div>{row.name}</div>
+                    /> */}
+                    <CardContent className={classes.content}>
+                    {tabData}
                     </CardContent>
                 </Card>
                 <Menu
