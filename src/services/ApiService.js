@@ -49,7 +49,7 @@ function ApiService(configObject) {
         //temporary testing code
         // if (err.response.status === 404) return Promise.reject(err);
         if (!isFetchingToken) {
-            console.log("Inside fetching**********")
+            // console.log("Inside fetching**********")
             isFetchingToken = true;
 
             const refreshToken = localStorage.getItem('refreshToken');
