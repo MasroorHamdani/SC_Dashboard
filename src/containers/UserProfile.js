@@ -21,8 +21,10 @@ class UserProfile extends Component {
                 ShiftStart: '',
                 ShiftEnd: '',
                 Mute: false
-            }
+            },
+            profileNotify: false
         };
+        this.earlyState = true;
         this.state = this.initialState;
     }
       
@@ -39,6 +41,7 @@ class UserProfile extends Component {
         });
     }
     handleSubmit = () => {
+        this.earlyState = false;
         const endPoint = `${API_URLS['USER_PROFILE']}`,
         config = getApiConfig(endPoint, 'POST', this.state.profile);
         this.props.onProfileData(config, 'POST');
@@ -50,6 +53,9 @@ class UserProfile extends Component {
             profile = row;
         });
         return profile;
+    }
+    handleModalProfileState = () => {
+        this.setState({ profileNotify: !this.state.profileNotify});
     }
     componentDidUpdate(prevProps, prevState) {
         if (this.props.userProfile &&
@@ -74,6 +80,8 @@ class UserProfile extends Component {
             this.setState({
                 profile: userProfile
             });
+            if(!this.earlyState)
+                this.handleModalProfileState();
         }
     }
 
@@ -90,7 +98,8 @@ class UserProfile extends Component {
                 <UserProfileData 
                 data={this.state}
                 onChange={this.handleChange}
-                onClick={this.handleSubmit}/>
+                onClick={this.handleSubmit}
+                handleModalProfileState={this.handleModalProfileState}/>
             </div>
         )
     }

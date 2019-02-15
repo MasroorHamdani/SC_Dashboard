@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import {withStyles, Grid, CardContent,
     Typography, Card, CardHeader, IconButton,
     Divider, FormControl, InputLabel, TextField, Select} from '@material-ui/core';
-import {isEqual} from 'lodash';
+import {isEqual, cloneDeep} from 'lodash';
 import ClearIcon from '@material-ui/icons/Clear';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import LocationCityIcon from '@material-ui/icons/LocationCity';
@@ -23,6 +23,7 @@ class ProjectInstallationDetails extends Component {
         this.state = {
             open: false,
             deleteNotify: false,
+            profileNotify: false,
             profile: {
                 Firstname: '',
                 Lastname: '',
@@ -38,6 +39,7 @@ class ProjectInstallationDetails extends Component {
             userLocation : {}
         };
         this.info = false;
+        this.earlyState = true;
     }
     
     handleModalState = () => {
@@ -46,17 +48,20 @@ class ProjectInstallationDetails extends Component {
     handleModalDeleteState = () => {
         this.setState({ deleteNotify: !this.state.deleteNotify});
     };
-    
+                        
+    handleModalProfileState = () => {
+        this.setState({ profileNotify: !this.state.profileNotify});
+    }
     onAddtion = () => {
         let startTime = formatDateTime(this.state.userLocation.ShiftStart, "HH:mm a", "HHMM"),
             endTime = formatDateTime(this.state.userLocation.ShiftEnd, "HH:mm a", "HHMM");
         if(this.state.userLocation.Tags && this.state.userLocation.ShiftStart &&
             this.state.userLocation.ShiftEnd && this.state.userLocation.Level &&
-            this.state.userLocation.InsID)  {
+            this.state.userLocation.InsID) {
             this.setState({
                 userLocation: {
                     ...this.state.userLocation,
-                    Tags: this.state.userLocation.Tags.split(','),
+                    Tags: Array.isArray(this.state.userLocation.Tags) ? this.state.userLocation.Tags : this.state.userLocation.Tags.split(','),
                     ShiftStart: startTime,
                     ShiftEnd: endTime
                 }
@@ -66,6 +71,7 @@ class ProjectInstallationDetails extends Component {
             config = getApiConfig(endPoint, 'POST', this.state.userLocation);
             this.props.onProfileData(config, 'POST');
             this.handleModalState();
+            this.setState({userLocation: {UID: this.state.uid}})
             })
         } else {
             this.setState({errorMessage : "Please enter all valid details"})
@@ -90,6 +96,7 @@ class ProjectInstallationDetails extends Component {
         },
         config = getApiConfig(endPoint, 'POST', this.state.profile, param);
         this.props.onProfileData(config, 'POST');
+        this.earlyState = false;
     }
     onDelete = () =>{
         const endPoint = `${API_URLS['PROJECT_DETAILS']}/${this.state.pid}/
@@ -101,6 +108,7 @@ class ProjectInstallationDetails extends Component {
             config = getApiConfig(endPoint, 'Delete', ' ', param);
         this.props.onProfileData(config, 'POST');
         this.handleModalDeleteState();
+        this.info = false;
     }
     removeLocation = (insID, name) => {
         this.setState({deleteAsso : insID})
@@ -141,6 +149,8 @@ class ProjectInstallationDetails extends Component {
             },
             config = getApiConfig(endPoint, 'GET', '', param);
         this.props.onProfileData(config);
+        if(!this.earlyState)
+            this.handleModalProfileState();
     }
     componentDidMount() {
         this.getProfileData();
@@ -164,7 +174,6 @@ class ProjectInstallationDetails extends Component {
         if ((this.props.userProfile || this.props.locationList) &&
             (!isEqual(this.props.userProfile, prevProps.userProfile) ||
             !isEqual(this.props.locationList, prevState.locationList))
-            // && (!this.state.profile.Firstname || !this.state.association)
             ) {
             if(!this.info) {
                 const endPoint = `${API_URLS['PROJECT_DETAILS']}/${this.state.pid}/
@@ -204,6 +213,12 @@ class ProjectInstallationDetails extends Component {
                 if(this.props.locationList) {
                     let association = userDetails.association;
                     let locationList = this.props.locationList, SUB1, SUB2;
+                    locationList.map((d) => {
+                        SUB1 = NAMESPACE_MAPPER[d['NS']].SUB1;
+                        SUB2 = NAMESPACE_MAPPER[d['NS']].SUB2;
+                        d[SUB1] = d.SUB1;
+                        d[SUB2] = d.SUB2;
+                    });
                     association.map((dt) => {
                         locationList.map((d) => {
                             if(d.SUB1 === dt.InsID) {
@@ -211,10 +226,6 @@ class ProjectInstallationDetails extends Component {
                                 dt['locn'] = d.locn;
                                 d['assigned'] = true;
                             }
-                            SUB1 = NAMESPACE_MAPPER[d['NS']].SUB1;
-                            SUB2 = NAMESPACE_MAPPER[d['NS']].SUB2;
-                            d[SUB1] = d.SUB1;
-                            d[SUB2] = d.SUB2;
                         })
                     })
                     this.setState({association: association,
@@ -311,15 +322,6 @@ class ProjectInstallationDetails extends Component {
                             })}
                             </Select>
                         </FormControl>
-                        {/* <TextField
-                            id="Level"
-                            name="Level"
-                            label='Level'
-                            fullWidth
-                            autoComplete="Level"
-                            value={this.state.userLocation.Level}
-                            onChange={this.addDetail}
-                        /> */}
                     </Grid>
                     {this.state.errorMessage &&
                         <Grid item
@@ -345,7 +347,8 @@ class ProjectInstallationDetails extends Component {
                 <UserProfileData 
                     data={this.state}
                     onChange={this.handleChange}
-                    onClick={this.handleSubmit}/>
+                    onClick={this.handleSubmit}
+                    handleModalProfileState={this.handleModalProfileState}/>
                 <Divider className={classes.seperator} />
                 <Grid container spacing={24} className={classes.grid}>
                         <Grid item xs={12} sm={6}>
@@ -395,7 +398,7 @@ class ProjectInstallationDetails extends Component {
                         handleClick={this.onDelete}
                         open={this.state.deleteNotify}
                         showFooter={true}
-                        />
+                    />
                 </main>
             </div>
         )

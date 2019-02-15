@@ -1,5 +1,5 @@
 import React from "react";
-import { Route, Switch} from "react-router-dom";
+import { Route, Switch, Redirect} from "react-router-dom";
 import Dashboard from "./containers/dashboard/Dashboard";
 import Login from "./containers/Login";
 import Header from "./components/header/Header";
@@ -65,6 +65,7 @@ const styles = theme => ({
                       <Route path="/data" component={DataAnalysis} />
                       <Route path="/report" component={Report} />
                       <Route path="/logout" component={Logout} />
+                      <Redirect from="/login" to="/"/>
                       <Route component={NoMatch} />
                     </Switch>
                     <Footer/>

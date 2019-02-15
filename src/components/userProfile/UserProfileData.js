@@ -2,10 +2,12 @@ import React, {Component} from 'react';
 import {withStyles, Grid, TextField, Button, Switch, FormControlLabel} from '@material-ui/core';
 import styles from './UserProfileDataStyle';
 import { NamespacesConsumer } from 'react-i18next';
+import CustomModal from '../modal/Modal';
 
 class UserProfileData extends Component {
     render() {
-        const {classes, data, onChange, onClick} = this.props;
+        const {classes, data, onChange, onClick,
+            handleModalProfileState} = this.props;
         return (
             <div className={classes.root}>
             <NamespacesConsumer>
@@ -98,6 +100,13 @@ class UserProfileData extends Component {
                             </Button>
                         </Grid>
                     </Grid>
+                    <CustomModal
+                        header="User updated"
+                        content="User Details has been updated"
+                        handleClose={handleModalProfileState}
+                        open={data.profileNotify}
+                        showFooter={false}
+                    />
                 </main>
             }</NamespacesConsumer>
             </div>
