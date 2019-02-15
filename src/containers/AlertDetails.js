@@ -71,7 +71,8 @@ class AlertDetails extends Component {
             <AlertAnalysis stateData={this.state}
             handleChangeStart={this.handleChangeStart}
             handleChangeEnd={this.handleChangeEnd}
-            getAlertData={this.getAlertData}/>
+            getAlertData={this.getAlertData}
+            showDate={true}/>
         )
     }
 }

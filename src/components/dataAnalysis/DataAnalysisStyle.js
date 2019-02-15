@@ -24,6 +24,7 @@ const styles = theme => ({
         // fontSize: theme.typography.pxToRem(15),
         flexBasis: '85%',
         flexShrink: 0,
+        textAlign: 'left'
     },
     pending: {
         color: '#fff',

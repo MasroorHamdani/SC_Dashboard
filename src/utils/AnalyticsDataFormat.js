@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import {_, groupBy} from 'lodash';
 import moment from 'moment';
 import {DATE_TIME_FORMAT, GRAPH_LABEL_TIME_FORMAT,
     METRIC_TYPE, ANALYTICS_DATE} from '../constants/Constant';
@@ -6,27 +6,43 @@ import {DATE_TIME_FORMAT, GRAPH_LABEL_TIME_FORMAT,
 export function getFormatedGraphData(passedData, metrics) {
     let graphData = [], nameMapper = {};
     metrics.map(function(row) {
+        
         let metridId = row.metricID;
         let graphSection = [], mapper={};
-        
             Object.keys(passedData[metridId]).map((key) => {
                 row.dimensions.map((dim) => {
-                    passedData[metridId][dim.id].data.map((vec) => {
-                        if(row.metricType === METRIC_TYPE['TIMESERIES']) {
-                            let graphElement = {};
-                            if(row.metricDataKey && row.metricDataKey === 't') {
-                                graphElement['name'] = moment(vec.t, DATE_TIME_FORMAT).format(GRAPH_LABEL_TIME_FORMAT);
+                    if(row.metricType !== METRIC_TYPE['RAW_DATA']) {
+                        passedData[metridId][dim.id].data.map((vec) => {
+                            if(row.metricType === METRIC_TYPE['TIMESERIES']) {
+                                let graphElement = {};
+                                if(row.metricDataKey && row.metricDataKey === 't') {
+                                    graphElement['name'] = moment(vec.t, DATE_TIME_FORMAT).format(GRAPH_LABEL_TIME_FORMAT);
+                                }
+                                graphElement[dim.id] = vec[dim.key];
+                                graphSection.push(graphElement)
+                            } else if(row.metricType === METRIC_TYPE['CATEGORICAL']) {
+                                let graphElement = {};
+                                graphElement['name'] = dim.name;
+                                graphElement['value'] = vec[dim.key];
+                                graphElement['color'] = dim.color;
+                                graphSection.push(graphElement)
                             }
-                            graphElement[dim.id] = vec[dim.key];
-                            graphSection.push(graphElement)
-                        } else if(row.metricType === METRIC_TYPE['CATEGORICAL']) {
-                            let graphElement = {};
-                            graphElement['name'] = dim.name;
-                            graphElement['value'] = vec[dim.key];
-                            graphElement['color'] = dim.color;
-                            graphSection.push(graphElement)
-                        }
-                    })
+                        })
+                    } else {
+                        const data = groupBy(passedData[metridId][dim.id].data.Items,'ID');
+                        Object.keys(data).map((key, index) => {
+                            let test = {};
+                            test['data'] = [];
+                            data[key].map((row) => {
+                                if(row.SortKey.includes('status')) {
+                                    test['header'] = row;
+                                } else {
+                                    test['data'].push(row);
+                                }
+                            })
+                            graphSection.push(test)
+                        })
+                    }
                     mapper[dim.id] = {};
                     mapper[dim.id]['name'] = dim.name;
                     mapper[dim.id]['color'] = dim.color;
@@ -36,24 +52,25 @@ export function getFormatedGraphData(passedData, metrics) {
                 nameMapper[metridId] = mapper;
             })
         
-        
-        let combinedValues = _.groupBy(graphData[metridId], 'name');
-        let testData = [];
-        Object.keys(combinedValues).map((key) => {
-            if(key && key != 'undefined') {
-                let rowData = {};
-                rowData['name'] = key;
-                combinedValues[key].map((v) => {
-                    Object.keys(v).map((k) => {
-                        if (k !== 'name')
-                            rowData[k] = v[k];
+        if(row.metricType !== METRIC_TYPE['RAW_DATA']) {
+            let combinedValues = groupBy(graphData[metridId], 'name');//_.groupBy(graphData[metridId], 'name');
+            let testData = [];
+            Object.keys(combinedValues).map((key) => {
+                if(key && key != 'undefined') {
+                    let rowData = {};
+                    rowData['name'] = key;
+                    combinedValues[key].map((v) => {
+                        Object.keys(v).map((k) => {
+                            if (k !== 'name')
+                                rowData[k] = v[k];
+                        })
                     })
-                })
-                testData.push(rowData);
-            }
-        })
-        if(testData.length > 0)
-            graphData[metridId] = testData;
+                    testData.push(rowData);
+                }
+            })
+            if(testData.length > 0)
+                graphData[metridId] = testData;
+        }
     })
     return {graphData: graphData,
         nameMapper: nameMapper

@@ -69,12 +69,12 @@ class EnhancedTable extends React.Component {
   };
   
   onDelete = () => {
-    console.log(this.state.toDelete);
+    // console.log(this.state.toDelete);
     //API call to delete user;
     this.handleClose();
   };
   onEdit = (id) => {
-    console.log(id);
+    // console.log(id);
   };
   handleRequestSort = (event, property) => {
     const orderBy = property;

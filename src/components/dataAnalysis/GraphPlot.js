@@ -5,6 +5,7 @@ import {Line, XAxis, YAxis, CartesianGrid, Tooltip,
     Bar, PieChart, Pie, Cell, Sector, Area} from 'recharts';
 import {METRIC_TYPE, DATA_VIEW_TYPE} from '../../constants/Constant';
 import DataProcessingComponent from './DataProcessComponent';
+import AlertAnalysis from './AlertAnalysis';
 
 class GraphPlot extends Component {
     state = ({
@@ -76,7 +77,6 @@ class GraphPlot extends Component {
                     <DataProcessingComponent stateData={stateData}
                         handleSamplingChange={handleSamplingChange}
                         metrics={metric}/>
-                    
                     <Typography gutterBottom variant="h5">
                         {metric.metricName}
                     </Typography>
@@ -86,20 +86,20 @@ class GraphPlot extends Component {
                                     margin={{top: 5, right: 30, left: 20, bottom: 5}}>
                                     <XAxis dataKey="name" 
                                         minTickGap={20}
-                                        label={{ value: 'Time of day', position: 'insideBottomRight', offset: 0}}
+                                        label={{ value: 'Time of day', position: 'insideBottomRight', offset: -15}}
                                         />
                                     {metric.dimensions[0].type === 'derivedDim' ?
                                         <YAxis type="category" width={120}
                                         />
                                     :
                                         <YAxis
-                                        // label={{ value: 'Concentration (ppm)', angle: -90, position: 'insideLeft'}}
+                                        // label={{ value: 'Concentration (ppm)', angle: -90, position: 'insideLeft'}}//insideBottomLeft
                                         />
                                     }
                                     <CartesianGrid strokeDasharray="3 3"/>
                                     <Tooltip/>
                                     <Legend />
-                                    <Brush dataKey='name' height={30} stroke="#8884d8"/>
+                                    {/* <Brush dataKey='name' height={30} stroke="#8884d8"/> */}
                                     {nameMapper &&
                                         Object.keys(nameMapper[metric.metricID]).map(key => {
                                             let mapper = nameMapper[metric.metricID][key];
@@ -139,10 +139,10 @@ class GraphPlot extends Component {
                                 </ComposedChart>
                             </ResponsiveContainer>
                         }
-                        {(metric.metricType === METRIC_TYPE['CATEGORICAL']) &&
-                            <ResponsiveContainer>
+                        {(metric.metricType === METRIC_TYPE['CATEGORICAL']) ?
+                            <ResponsiveContainer width='100%' height={400}>
                                 {metric.dimensions[0].ctype === DATA_VIEW_TYPE['PIE'] ?
-                                    <PieChart height={320}>
+                                    <PieChart>
                                         <Pie
                                             activeIndex={this.state.activeIndex}
                                             activeShape={renderActiveShape}
@@ -174,12 +174,18 @@ class GraphPlot extends Component {
                                             </Typography>
                                         </div>
                                     :
-                                        <div>Firgure out other options</div>
+                                        <div>Can't find appropriate Pattern!</div>
                                     )
                                 }
                             </ResponsiveContainer>
+                        :
+                        (metric.metricType === METRIC_TYPE['RAW_DATA'] &&
+                            <AlertAnalysis stateData={graphData[metric.metricID]}
+                            showDate={false}/>
                         // :
-                        //     <div>verify</div>    
+                        //     <div>Can't find appropriate Pattern</div>
+                        )
+                        
                         }
                 </div>
             })

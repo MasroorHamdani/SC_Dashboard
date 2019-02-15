@@ -59,8 +59,9 @@ class AnalysisData extends Component {
         let dataAnalysis = data,
             analyticsData = getFormatedGraphData(dataAnalysis, metrics),
             graphData = analyticsData.graphData,
-            nameMapper = analyticsData.nameMapper,
-            tabData = <GraphPlot graphData={graphData}
+            nameMapper = analyticsData.nameMapper, tabData;
+            if(!tabData)
+                tabData = <GraphPlot graphData={graphData}
                         nameMapper={nameMapper} metrics={metrics}
                         classes={classes}
                         stateData={this.props.stateData}

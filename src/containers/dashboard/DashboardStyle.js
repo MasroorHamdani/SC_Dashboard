@@ -2,7 +2,7 @@ import {green} from '@material-ui/core/colors';
 const styles = theme => ({
     root: {
       display: 'flex',
-      width: '100%'
+      // width: '100%'
     },
     appBarSpacer: theme.mixins.toolbar,
     content: {
@@ -17,7 +17,7 @@ const styles = theme => ({
       display: 'flex',
       flexWrap: 'wrap',
       justifyContent: 'space-around',
-      overflow: 'hidden',
+      // overflow: 'hidden',
       // backgroundColor: theme.palette.background.paper,
     },
     gridList: {

@@ -21,9 +21,15 @@ export const API_URLS = {
     "WASHROOM_LOCATION": "/installations/info",
     "PROJECT_ALERT": "/authV2/alerts/projects",
     'TEAM_MEMBERS': 'team/members',
-    'TEAM_ASSOCIATION': 'team/assoc'
+    'TEAM_ASSOCIATION': 'team/assoc',
+    'DEFAULT': 'default'
 };
 
+export const DASHBOARD_METRIC = {
+    "ReqType": "default",
+    "Type": "DASHBOARD",
+    "SubType": "V1"
+}
 export const NEW_PASSWORD_REQUIRED = "NEW_PASSWORD_REQUIRED";
 
 export const LOGIN_STATUS = {
@@ -66,6 +72,8 @@ export const GRAPH_LABEL_TIME_FORMAT = 'HH:mm'//'DD/MM/YYYY HH:mm:ss'
 export const HOUR_MIN_FORMAT = 'hh:mm A'
 
 export const HOUR_FORMAT = 'HH:mm'
+
+export const DESCRIPTIVE_DATE_TIME_FORMAT = 'dddd, MMMM Do, YYYY h:mm:ss a'
 
 export const ANALYTICS_TABS = {
     0: 'FD',
@@ -263,7 +271,8 @@ export const ALERT_STATUS = {
 
 export const METRIC_TYPE = {
     'TIMESERIES' : 'timeseries',
-    'CATEGORICAL' : 'categorical'
+    'CATEGORICAL' : 'categorical',
+    'RAW_DATA': 'raw_data'
 }
 
 export const DATA_VIEW_TYPE = {
@@ -274,3 +283,14 @@ export const DATA_VIEW_TYPE = {
     'TILE': 'tile',
     'AREA': 'area'
 }
+
+export const ALERT_LEVEL = [
+    {key: 'l1',
+    display: 'L1'},
+    {key: 'l2',
+    display: 'L2'},
+    {key: 'l3',
+    display: 'L3'},
+    {key: 'l4',
+    display: 'L4'}
+]

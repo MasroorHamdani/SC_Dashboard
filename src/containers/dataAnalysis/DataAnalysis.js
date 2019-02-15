@@ -9,27 +9,29 @@ import {getApiConfig} from '../../services/ApiCofig';
 import {API_URLS, NAMESPACE,
   NAMESPACE_MAPPER} from '../../constants/Constant';
 import {projectSubMenuList, projectInstallationList,
-  projectAnalysisData, projectMenuList} from '../../actions/DataAnalysis';
-// import {dashboardData} from '../../actions/DashboardAction';
+  projectAnalysisData, projectMenuList, clearDataAnalysis} from '../../actions/DataAnalysis';
 import styles from './DataAvalysisStyle';
 import RadioButtonComponent from '../../components/dataAnalysis/RadioButtonController';
 import {getStartEndTime, getVector} from '../../utils/AnalyticsDataFormat';
 
 class DataAnalysis extends Component {
-  state = ({
-    value: '',
-    header: "Devices Locations",
-    projectList: [],
-    analysisAQData: '',
-    start: 0,
-    end: 0,
-    tab: '',
-    i: 0,
-    sampling: '',
-    unit: '',
-    func: '',
-    page: '',
-  })
+  constructor(props) {
+    super(props);
+    this.state = {
+      value: '',
+      header: "Devices Locations",
+      projectList: [],
+      analysisAQData: '',
+      start: 0,
+      end: 0,
+      tab: '',
+      sampling: '',
+      unit: '',
+      func: '',
+      page: '',
+    };
+    this.menuIndex = 0;
+  }
 
   handleClick = (index) => {
     this.setState(state => ({
@@ -38,15 +40,18 @@ class DataAnalysis extends Component {
   };
 
   handleChange = (event, pid, insid) => {
-    this.setState({installationList: {},
-    value: insid,
-    dataAnalysis: {}})
-    const endPoint = `${API_URLS['PROJECT_DETAILS']}/${pid}${API_URLS['PROJECT_LOCATION']}/${insid}`,
-    params = {
-      'getinsinfo' : false
-    },
-    config = getApiConfig(endPoint, 'GET', '', params);
-    this.props.onInstalationsList(config);
+    this.setState({
+      installationList: {},
+      value: insid,
+      dataAnalysis: {}
+    }, function() {
+      const endPoint = `${API_URLS['PROJECT_DETAILS']}/${pid}${API_URLS['PROJECT_LOCATION']}/${insid}`,
+      params = {
+        'getinsinfo' : false
+      },
+      config = getApiConfig(endPoint, 'GET', '', params);
+      this.props.onInstalationsList(config);
+    });
   }
   handleTabChange = (event, tab) => {
     Object.keys(this.state.installationList).map((key) => {
@@ -148,14 +153,14 @@ class DataAnalysis extends Component {
     config = getApiConfig(endPoint, 'GET');
     this.props.onDataAnalysisMenu(config);
   }
-
+  componentWillUnmount() {
+    this.props.onReducerClear();
+  }
   componentDidUpdate(prevProps, prevState) {
     if ((this.props.projectMenuList || this.props.projectSubMenuList) &&
       (!isEqual(this.props.projectSubMenuList, prevProps.projectSubMenuList) ||
       !isEqual(this.props.projectMenuList, prevProps.projectMenuList))
-      // && (this.state.projectList.length > 0)
       ) {
-        // console.log('*************');
         let project = this.state.projectList, newProjectList = [],
           projObj = {};
           this.props.projectMenuList.map((row) => {
@@ -163,9 +168,9 @@ class DataAnalysis extends Component {
             newProjectList.push(row);
           });
 
-        if(this.state.i <= newProjectList.length) {
-          let data = newProjectList[this.state.i];
-          this.setState({i: this.state.i +1});
+        if(this.menuIndex <= newProjectList.length) {
+          let data = newProjectList[this.menuIndex];
+          this.menuIndex = this.menuIndex +1;
           if(data && data.PID) {
             const endPoint = `${API_URLS['PROJECT_DETAILS']}/${data.PID}${API_URLS['WASHROOM_LOCATION']}`,
             config = getApiConfig(endPoint, 'GET');
@@ -174,7 +179,6 @@ class DataAnalysis extends Component {
           let SUB1, SUB2;
           if (this.props.projectSubMenuList &&
             (!isEqual(this.props.projectSubMenuList, prevProps.projectSubMenuList)
-            // || !this.state.projectList.devices.length > 0
             )) {
                 const deviceResponse = this.props.projectSubMenuList;
                 projObj['id'] = deviceResponse[0].PID;
@@ -276,7 +280,7 @@ class DataAnalysis extends Component {
 
 function mapStateToProps(state) {
   return {
-      projectMenuList : state.DataAnalysisMenuListReducer.data,//state.DashboardReducer.data,
+      projectMenuList : state.DataAnalysisMenuListReducer.data,
       projectSubMenuList : state.DataAnalysisProjectListSubMenuReducer.data,
       installationList : state.DataAnalysisInstallationListReducer.data,
       dataAnalysis : state.DataAnalysisReducer.data
@@ -298,6 +302,9 @@ function mapDispatchToProps(dispatch) {
     },
     onDataAnalysis: (config) => {
         dispatch(projectAnalysisData(config))
+    },
+    onReducerClear: () => {
+      dispatch(clearDataAnalysis())
     }
   }
 }

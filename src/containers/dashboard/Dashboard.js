@@ -3,20 +3,29 @@ import { connect } from "react-redux";
 import {withStyles, GridList, CircularProgress} from '@material-ui/core';
 import PropTypes from 'prop-types';
 import {isEqual} from "lodash";
+import moment from 'moment';
 import styles from './DashboardStyle'
 import ProjectDataComponent from "../../components/projectData/ProjectData";
-import { API_URLS, REACT_URLS, NAMESPACE } from "../../constants/Constant";
+import { API_URLS, NAMESPACE, DASHBOARD_METRIC,
+  DATE_TIME_FORMAT} from "../../constants/Constant";
 import { getApiConfig } from '../../services/ApiCofig';
 import {dashboardData} from '../../actions/DashboardAction';
+import {projectAnalysisData} from '../../actions/DataAnalysis';
+import {getVector} from '../../utils/AnalyticsDataFormat';
 
 class Dashboard extends Component {
   constructor(props) {
     super(props);
+    let now = moment();
     this.state = {
       data : [],
+      dashboardData : [],
       // loading: false,
       // success: true,
+      endTime: now.format(DATE_TIME_FORMAT),
+      startTime: (now.subtract({ hours: 1})).format(DATE_TIME_FORMAT)
     }
+    this.metricsIndex = 0;
   }
 
   projectActionRedirection = (e, param) => {
@@ -29,17 +38,60 @@ class Dashboard extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if (this.props.dashboardData &&
-      (!isEqual(this.props.dashboardData, prevProps.dashboardData) ||
+    if ((this.props.dashboardData || this.props.dataAnalysis) &&
+      ((!isEqual(this.props.dashboardData, prevProps.dashboardData) ||
+      !isEqual(this.props.dataAnalysis, prevProps.dataAnalysis)) ||
         !this.state.data.length > 0)) {
-          let projData = []
+          let projData = [], dashboardData = this.state.dashboardData;
           this.props.dashboardData.map((row) => {
             if(row.NS === NAMESPACE['PROJECT_TEAM_ALLMEMBERS'])
-            projData.push(row);
+              projData.push(row);
           });
-          this.setState({
-            data: projData
-          })
+          if(this.metricsIndex < projData.length) {
+            let data = projData[this.metricsIndex];
+            this.metricsIndex = this.metricsIndex +1;
+            if(data && data.PID) {
+              let dataToPost = DASHBOARD_METRIC,
+                endPoint = `${API_URLS['DEVICE_DATA']}/${data.PID}/${API_URLS['DEFAULT']}`,
+                params = {
+                  'start' : '201902010000',//this.state.start,
+                  'end': '201902142300',//this.state.end,
+                },
+                config = getApiConfig(endPoint, 'POST', dataToPost, params);
+              this.props.onDataAnalysis(config);
+            }
+          }
+          if(this.props.dataAnalysis &&
+            !isEqual(this.props.dataAnalysis, prevProps.dataAnalysis)) {
+              let projObj = {}, metricsData={};
+              const deviceResponse = this.props.dataAnalysis.data.data;
+              if(this.props.dataAnalysis.data.status !== "nodata") {
+                metricsData = getVector(this.props.dataAnalysis.data.data.allMetrics, 'DASHBOARD');
+                projObj['PID'] = deviceResponse.pid;
+                projData.map((row) => {
+                  if(row.PID === deviceResponse.pid) {
+                    projObj['Site'] = row.Site;
+                    projObj['Site_Addr'] = row.Site_Addr;
+                    projObj['dataAnalysis'] = deviceResponse;
+                    projObj['metrics'] = metricsData.dataMetrics;
+                    projObj['allMetrics'] = deviceResponse.allMetrics;
+                  }
+                })
+              } else {
+                projObj['PID'] = deviceResponse.pid;
+                projData.map((row) => {
+                  if(row.PID === deviceResponse.pid) {
+                    projObj['Site'] = row.Site;
+                    projObj['Site_Addr'] = row.Site_Addr;
+                    projObj['dataAnalysis'] = {};
+                  }
+                })
+              }
+              dashboardData.push(projObj);
+              this.setState({
+                dashboardData: dashboardData
+              });
+          }
     }
   }
 
@@ -54,7 +106,7 @@ class Dashboard extends Component {
         // (
           <div className={classes.gridRoot}>
             <GridList cellHeight={180} className={classes.gridList}>
-              <ProjectDataComponent data={this.state.data}
+              <ProjectDataComponent stateData={this.state}
               projectActionRedirection={this.projectActionRedirection}/>
             </GridList>
         </div>
@@ -70,6 +122,7 @@ class Dashboard extends Component {
 function mapStateToProps(state) {
   return {
       dashboardData : state.DashboardReducer.data,
+      dataAnalysis : state.DataAnalysisReducer.data
   }
 }
 
@@ -78,7 +131,10 @@ function mapDispatchToProps(dispatch) {
     onDashbaord: (config) => {
           //will dispatch the async action
           dispatch(dashboardData(config))
-      }
+      },
+    onDataAnalysis: (config) => {
+        dispatch(projectAnalysisData(config))
+    }
   }
 }
 Dashboard.propTypes = {
