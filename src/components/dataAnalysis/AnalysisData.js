@@ -78,6 +78,7 @@ class AnalysisData extends Component {
         }
         return (
             <div className={classes.graph}>
+            {stateData.dataAnalysis.data &&
                 <DateRowComponent handleDatePicker={this.handleDatePicker}
                     handleChangeStart={this.handleChangeStart}
                     handleChangeEnd={this.handleChangeEnd}
@@ -86,7 +87,8 @@ class AnalysisData extends Component {
                     timeList={TIME_LIST}
                     handleRefresh={this.handleRefresh}
                     />
-                {tabData}
+            }
+            {tabData}
             </div>
         )
     }

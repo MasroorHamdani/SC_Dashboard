@@ -20,5 +20,8 @@ export function forgotPassword(config) {
           //on success we will dispatch a sync action with the data
           dispatch(forgotSuccessful(data.data))
       })
+      .catch(error => {
+        dispatch(forgotSuccessful(error))
+      })
   }
 }

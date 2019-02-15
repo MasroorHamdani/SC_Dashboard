@@ -14,8 +14,8 @@ export function projectInstallationList(config) {
           //on success we will dispatch a sync action with the data
           if(data && data.data)
             dispatch(dataReceived(data.data))
-          // else
-          // dispatch(dataReceived(data.data))
+          else if(data.data === null && data.status === 200)
+            dispatch(dataReceived([]))
       })
   }
 }

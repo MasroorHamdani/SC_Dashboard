@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import {isEqual} from "lodash";
 import JWTDecode from 'jwt-decode';
 import { API_URLS, REACT_URLS, NEW_PASSWORD_REQUIRED,
-  LOGIN_STATUS } from "../constants/Constant";
+  LOGIN_STATUS, PASSWORD_REGEX} from "../constants/Constant";
 import LoginComponent from "../components/login/Login";
 import { userLogin } from "../actions/LoginAction";
 import { getApiConfig } from '../services/ApiCofig';
@@ -45,22 +45,34 @@ class Login extends React.Component {
   }
   handleResetSubmit = () => {
     if (this.state.confpassword === this.state.password) {
-      if (!this.state.loading) {
-        this.setState(
-          {
-            success: false,
-            loading: true,
-            errorMessage: ''
+      if(this.state.password.match(PASSWORD_REGEX)) {
+        if(this.state.code) {
+          if (!this.state.loading) {
+            this.setState(
+              {
+                success: false,
+                loading: true,
+                errorMessage: ''
+              });
+            const endPoint = API_URLS['RESET_PASSWORD'],
+            dataToPost = {
+              "uname": this.state.email,
+              "code": this.state.code,
+              "passwd": this.state.password
+            },
+            config = getApiConfig(endPoint, 'POST', dataToPost);
+            this.props.onResetPassword(config);
+          }
+        } else {
+          this.setState({
+            errorMessage: "Provide Verification code"
           });
-      const endPoint = API_URLS['RESET_PASSWORD'],
-      dataToPost = {
-        "uname": this.state.email,
-        "code": this.state.code,
-        "passwd": this.state.password
-      },
-      config = getApiConfig(endPoint, 'POST', dataToPost);
-      this.props.onResetPassword(config);
-    }
+        }
+      } else {
+        this.setState({
+          errorMessage: "Password Must contain: \n 1 Uppercase\n 1 Lowercase\n 1 Numeric\n 1 Special character\n with  Length of 8-12 characters"
+        });
+      }
   } else {
     this.setState({
       errorMessage: "Password and Confirm Password should be same"
@@ -92,9 +104,9 @@ getTokenData = (token, attr) => {
   return data;
 }
 componentDidUpdate(prevProps, prevState) {
-  if (this.props.userData.LoginReducer.data
-    && !isEqual(this.props.userData.LoginReducer, prevProps.userData.LoginReducer)) {
-    const responseData = this.props.userData.LoginReducer.data;
+  if (this.props.userLogin
+    && !isEqual(this.props.userLogin, prevProps.userLogin)) {
+    const responseData = this.props.userLogin;
     if (responseData['status'] === 400) {
       if(responseData['data'].includes('UserNotFoundException'))
         this.setState({
@@ -111,6 +123,9 @@ componentDidUpdate(prevProps, prevState) {
         });
       }
     } else if (responseData['ChallengeName'] === NEW_PASSWORD_REQUIRED) {
+      this.setState({
+        errorMessage: ''
+      });
       localStorage.setItem('session', responseData['Session']);
       localStorage.setItem('username', this.state.username);
       this.props.history.push(REACT_URLS['AUTH_RESET']);
@@ -135,19 +150,51 @@ componentDidUpdate(prevProps, prevState) {
       }
     }
   }
-  if (this.props.userData.ForgotPasswordReducer.data
-    && !isEqual(this.props.userData.ForgotPasswordReducer, prevProps.userData.ForgotPasswordReducer)) {
-      this.setState({ status: LOGIN_STATUS['RESET'] })
+  if (this.props.forgotPassword
+    && !isEqual(this.props.forgotPassword, prevProps.forgotPassword)) {
+      let responseData = this.props.forgotPassword;
+      if (responseData['status'] === 400) {
+        if(responseData['data'].includes('LimitExceededException'))
+          this.setState({
+            errorMessage: 'Attempt limit exceeded, please try after some time'
+          });
+        if(responseData['data'].includes('NotAuthorizedException'))
+          this.setState({
+            errorMessage: 'User password cannot be reset! please contact system Admin'
+          });
+        if(responseData['data'].includes('UserNotFoundException'))
+          this.setState({
+            errorMessage: 'User not found'
+          });
+        if (this.state.loading) {
+          this.setState({
+            loading: false,
+            success: true,
+          });
+        }
+      } else {
+        this.setState({ status: LOGIN_STATUS['RESET'],
+        errorMessage: ''});
+      }
   }
-  if (this.props.userData.ResetPasswordReducer.data
-    && !isEqual(this.props.userData.ResetPasswordReducer, prevProps.userData.ResetPasswordReducer)) {
+  if (this.props.resetPassword
+    && !isEqual(this.props.resetPassword, prevProps.resetPassword)) {
+      let responseData = this.props.resetPassword;
+      if (responseData['status'] === 400) {
+        if(responseData['data'].includes('CodeMismatchException'))
+          this.setState({
+            errorMessage: 'Please enter valid verification Code'
+          });
+      } else {
+        this.setState({ status: LOGIN_STATUS['LOGIN'],
+        errorMessage: ''})
+      }
       if (this.state.loading) {
         this.setState({
           loading: false,
           success: true,
         });
       }
-      this.setState({ status: LOGIN_STATUS['LOGIN'] })
   }
 }
 render() {
@@ -163,7 +210,9 @@ render() {
 }
 function mapStateToProps(state) {
   return {
-      userData : state
+      userLogin : state.LoginReducer.data,
+      forgotPassword: state.ForgotPasswordReducer.data,
+      resetPassword : state.ResetPasswordReducer.data
   }
 }
 

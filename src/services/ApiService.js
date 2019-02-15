@@ -44,6 +44,7 @@ function ApiService(configObject) {
                 return Promise.reject(err);
             if (err.response.status === 403) return forceLogout();
             if (err.response.status !== 401) return Promise.reject(err);
+            if (err.response.status === 500) return Promise.reject(err.response);
         }
         //temporary testing code
         // if (err.response.status === 404) return Promise.reject(err);
