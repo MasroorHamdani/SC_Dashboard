@@ -19,5 +19,8 @@ export function resetPassword(config) {
           //on success we will dispatch a sync action with the data
           dispatch(passwordResetSuccessful(data.status))
       })
+      .catch(error => {
+        dispatch(passwordResetSuccessful(error))
+      })
   }
 }

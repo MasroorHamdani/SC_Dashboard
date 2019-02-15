@@ -30,6 +30,7 @@ class ForgotPasswordComponent extends React.Component {
                         <Input required id="email" type="email" name="email" autoComplete="email" autoFocus
                         onChange={onChange}/>
                         </FormControl>
+                        <InputLabel error>{data.errorMessage}</InputLabel>
                         <Button
                         type="button"
                         fullWidth

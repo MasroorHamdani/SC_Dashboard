@@ -121,8 +121,8 @@ class DataAnalysis extends Component {
     }
     const endPoint = `${API_URLS['DEVICE_DATA']}/${this.state.pid}/${this.state.deviceId}`,
       params = {
-        'start' : '2019020100',//this.state.start,//'2019010100',//
-        'end': '2019020423',//this.state.end,//'2019010123',//
+        'start' : this.state.start,//'2019010100',//'2019020100',//
+        'end': this.state.end,//'2019010123',//'2019020423',//
       };
     let headers = {
       'x-sc-session-token': this.state.sessionHeader ? this.state.sessionHeader : ''
@@ -227,7 +227,7 @@ class DataAnalysis extends Component {
             this.setState({[this.state.deviceKey]: referData})
     }
     if (this.props.installationList &&
-      !isEqual(this.props.installationList, prevProps.installationList)){
+      !isEqual(this.props.installationList, prevProps.installationList)) {
         let installationList = {}, i = 1;
         this.props.installationList.map((tab) => {
           let list = {

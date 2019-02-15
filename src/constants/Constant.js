@@ -294,3 +294,5 @@ export const ALERT_LEVEL = [
     {key: 'l4',
     display: 'L4'}
 ]
+
+export const PASSWORD_REGEX = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,12})");
