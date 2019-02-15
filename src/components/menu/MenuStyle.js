@@ -29,6 +29,9 @@ const styles = theme => ({
     justifyContent: 'flex-end',
     padding: '0 8px',
     ...theme.mixins.toolbar,
+  },
+  version :{
+    paddingLeft: '80px'
   }
 });
 

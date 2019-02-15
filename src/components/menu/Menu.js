@@ -1,7 +1,7 @@
 import React, {Component} from "react";
 import { connect } from "react-redux";
 import {isEqual} from "lodash";
-import {Drawer, List, Divider, IconButton, withStyles} from '@material-ui/core';
+import {Drawer, List, Divider, IconButton, withStyles, Typography} from '@material-ui/core';
 import classNames from 'classnames';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import {toolbarClicked}  from '../../actions/MenuAction';
@@ -45,8 +45,9 @@ class Menu extends Component {
           </div>
           <Divider />
           <List><ListItems data={menuList} /></List>
-          {/* <Divider />
-          <List>{secondaryListItems}</List> */}
+          <Divider />
+          {/* <List>{secondaryListItems}</List> */}
+          <Typography className={classes.version}>Version 0.01</Typography>
         </Drawer>
     );
   }
