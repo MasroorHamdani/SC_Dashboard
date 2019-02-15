@@ -54,8 +54,8 @@ class Dashboard extends Component {
               let dataToPost = DASHBOARD_METRIC,
                 endPoint = `${API_URLS['DEVICE_DATA']}/${data.PID}/${API_URLS['DEFAULT']}`,
                 params = {
-                  'start' : '201902010000',//this.state.start,
-                  'end': '201902142300',//this.state.end,
+                  'start' : this.state.startTime, //'201902010000',//
+                  'end': this.state.endTime, //'201902142300',//
                 },
                 config = getApiConfig(endPoint, 'POST', dataToPost, params);
               this.props.onDataAnalysis(config);
