@@ -55,7 +55,7 @@ class TabContainer extends Component {
                 rowsPerPage={this.state.rowsPerPage} page={this.state.page}
                 selected={this.state.selected} category={category}
                 handleChange={this.handleChange} handleClick={handleClick} redirectID="UID"
-                allowDelete={true} allowEdit={true}/>
+                allowDelete={false} allowEdit={true}/>
             </Typography>
         }
         return (
