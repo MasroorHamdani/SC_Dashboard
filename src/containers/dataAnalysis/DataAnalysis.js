@@ -201,7 +201,8 @@ class DataAnalysis extends Component {
     }
 
     if (this.props.dataAnalysis &&
-      !isEqual(this.props.dataAnalysis, prevProps.dataAnalysis)){
+      !isEqual(this.props.dataAnalysis, prevProps.dataAnalysis) &&
+      isEqual(this.props.dataAnalysis.data.status, "success")){
         let metricsData = getVector(this.props.dataAnalysis.data.data.allMetrics, this.state.deviceKey);
         this.setState({
           sessionHeader: this.props.dataAnalysis.headers['x-sc-session-token'],

@@ -27,7 +27,9 @@ firebase.firestore().settings({
 
 ReactDOM.render(<I18nextProvider i18n={i18n}>
               <Provider store={store}>
-                <Router><App /></Router>
+                <Router
+                 basename="/optimus"
+                 ><App /></Router>
               </Provider>
             </I18nextProvider>,
             document.getElementById('root'));
