@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import {connect} from 'react-redux';
 import {isEqual} from 'lodash';
-import {withStyles} from '@material-ui/core';
+import {withStyles, LinearProgress} from '@material-ui/core';
 import _ from 'lodash';
 
 import DataAnalysisComponent from '../../components/dataAnalysis/DataAnalysis';
@@ -29,6 +29,8 @@ class DataAnalysis extends Component {
       unit: '',
       func: '',
       page: '',
+      loading: true,
+      success: false,
     };
     this.menuIndex = 0;
   }
@@ -43,7 +45,9 @@ class DataAnalysis extends Component {
     this.setState({
       installationList: {},
       value: insid,
-      dataAnalysis: {}
+      dataAnalysis: {},
+      loading: true,
+      success: false,
     }, function() {
       const endPoint = `${API_URLS['PROJECT_DETAILS']}/${pid}${API_URLS['PROJECT_LOCATION']}/${insid}`,
       params = {
@@ -97,6 +101,10 @@ class DataAnalysis extends Component {
   }
 
   getNewAnalyticsData = () => {
+    this.setState({
+      loading: true,
+      success: false,
+    })
     let metrics = this.getMetric(),
     dataToPost = {
       "ReqType": "default",
@@ -149,6 +157,11 @@ class DataAnalysis extends Component {
   }
 
   componentDidMount() {
+    // if(!this.state.loading)
+      // this.setState({
+      //   loading: true,
+      //   success: false,
+      // })
     const endPoint = API_URLS['DASHBOARD'],
     config = getApiConfig(endPoint, 'GET');
     this.props.onDataAnalysisMenu(config);
@@ -250,6 +263,12 @@ class DataAnalysis extends Component {
         })
         this.setState({installationList: installationList})
     }
+    if(this.state.loading) {
+      this.setState({
+        loading: false,
+        success: true,
+      })
+    }
 }
 
   render () {
@@ -269,6 +288,9 @@ class DataAnalysis extends Component {
             handleDateChange={this.handleDateChange}
             handleTabChange={this.handleTabChange}
             handleSamplingChange={this.handleSamplingChange}/>
+        }
+        {this.state.loading &&
+          <LinearProgress className={classes.buttonProgress}/>
         }
           {/* { !this.state.projectList &&
             <div>No Projects Assigned</div>

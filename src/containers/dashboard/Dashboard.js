@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from "react-redux";
-import {withStyles, GridList, CircularProgress} from '@material-ui/core';
+import {withStyles, GridList, CircularProgress, LinearProgress} from '@material-ui/core';
 import PropTypes from 'prop-types';
 import {isEqual} from "lodash";
 import moment from 'moment';
@@ -20,8 +20,8 @@ class Dashboard extends Component {
     this.state = {
       data : [],
       dashboardData : [],
-      // loading: false,
-      // success: true,
+      loading: false,
+      success: true,
       endTime: now.format(DATE_TIME_FORMAT),
       startTime: (now.subtract({ hours: 1})).format(DATE_TIME_FORMAT)
     }
@@ -32,6 +32,10 @@ class Dashboard extends Component {
     this.props.history.push(`${e.target.id}/${param}`);
   }
   componentDidMount(){
+    this.setState({
+      loading: true,
+      success: false
+    });
     const endPoint = API_URLS['DASHBOARD'],
           config = getApiConfig(endPoint, 'GET');
     this.props.onDashbaord(config);
@@ -41,57 +45,64 @@ class Dashboard extends Component {
     if ((this.props.dashboardData || this.props.dataAnalysis) &&
       ((!isEqual(this.props.dashboardData, prevProps.dashboardData) ||
       !isEqual(this.props.dataAnalysis, prevProps.dataAnalysis)) ||
-        !this.state.data.length > 0)) {
-          let projData = [], dashboardData = this.state.dashboardData;
+      !this.state.dashboardData.length > 0)) {
+        let projData = [], dashboardData = this.state.dashboardData;
+        if(this.props.dashboardData.length > 0)
           this.props.dashboardData.map((row) => {
             if(row.NS === NAMESPACE['PROJECT_TEAM_ALLMEMBERS'])
               projData.push(row);
           });
-          if(this.metricsIndex < projData.length) {
-            let data = projData[this.metricsIndex];
-            this.metricsIndex = this.metricsIndex +1;
-            if(data && data.PID) {
-              let dataToPost = DASHBOARD_METRIC,
-                endPoint = `${API_URLS['DEVICE_DATA']}/${data.PID}/${API_URLS['DEFAULT']}`,
-                params = {
-                  'start' : this.state.startTime, //'201902010000',//
-                  'end': this.state.endTime, //'201902142300',//
-                },
-                config = getApiConfig(endPoint, 'POST', dataToPost, params);
-              this.props.onDataAnalysis(config);
+        if(this.metricsIndex < projData.length) {
+          let data = projData[this.metricsIndex];
+          this.metricsIndex = this.metricsIndex +1;
+          if(data && data.PID) {
+            let dataToPost = DASHBOARD_METRIC,
+              endPoint = `${API_URLS['DEVICE_DATA']}/${data.PID}/${API_URLS['DEFAULT']}`,
+              params = {
+                'start' : this.state.startTime, //'201902010000',//
+                'end': this.state.endTime, //'201902142300',//
+              },
+              config = getApiConfig(endPoint, 'POST', dataToPost, params);
+            this.props.onDataAnalysis(config);
+          }
+        }
+        if(this.props.dataAnalysis &&
+          !isEqual(this.props.dataAnalysis, prevProps.dataAnalysis)) {
+            let projObj = {}, metricsData={};
+            const deviceResponse = this.props.dataAnalysis.data.data;
+            if(this.props.dataAnalysis.data.status !== "nodata") {
+              metricsData = getVector(this.props.dataAnalysis.data.data.allMetrics, 'DASHBOARD');
+              projObj['PID'] = deviceResponse.pid;
+              projData.map((row) => {
+                if(row.PID === deviceResponse.pid) {
+                  projObj['Site'] = row.Site;
+                  projObj['Site_Addr'] = row.Site_Addr;
+                  projObj['dataAnalysis'] = deviceResponse;
+                  projObj['metrics'] = metricsData.dataMetrics;
+                  projObj['allMetrics'] = deviceResponse.allMetrics;
+                }
+              })
+            } else {
+              projObj['PID'] = deviceResponse.pid;
+              projData.map((row) => {
+                if(row.PID === deviceResponse.pid) {
+                  projObj['Site'] = row.Site;
+                  projObj['Site_Addr'] = row.Site_Addr;
+                  projObj['dataAnalysis'] = {};
+                }
+              })
             }
-          }
-          if(this.props.dataAnalysis &&
-            !isEqual(this.props.dataAnalysis, prevProps.dataAnalysis)) {
-              let projObj = {}, metricsData={};
-              const deviceResponse = this.props.dataAnalysis.data.data;
-              if(this.props.dataAnalysis.data.status !== "nodata") {
-                metricsData = getVector(this.props.dataAnalysis.data.data.allMetrics, 'DASHBOARD');
-                projObj['PID'] = deviceResponse.pid;
-                projData.map((row) => {
-                  if(row.PID === deviceResponse.pid) {
-                    projObj['Site'] = row.Site;
-                    projObj['Site_Addr'] = row.Site_Addr;
-                    projObj['dataAnalysis'] = deviceResponse;
-                    projObj['metrics'] = metricsData.dataMetrics;
-                    projObj['allMetrics'] = deviceResponse.allMetrics;
-                  }
-                })
-              } else {
-                projObj['PID'] = deviceResponse.pid;
-                projData.map((row) => {
-                  if(row.PID === deviceResponse.pid) {
-                    projObj['Site'] = row.Site;
-                    projObj['Site_Addr'] = row.Site_Addr;
-                    projObj['dataAnalysis'] = {};
-                  }
-                })
-              }
-              dashboardData.push(projObj);
-              this.setState({
-                dashboardData: dashboardData
-              });
-          }
+            dashboardData.push(projObj);
+            this.setState({
+              dashboardData: dashboardData,
+            });
+        }
+    }
+    if(this.state.loading) {
+      this.setState({
+        loading: false,
+        success: true
+      })
     }
   }
 
@@ -100,19 +111,19 @@ class Dashboard extends Component {
     return (
       <div className={classes.root}>
         <main className={classes.content}>
-        {this.state.data &&
-        // {this.state.loading ? (<CircularProgress size={50} className={classes.buttonProgress} />)
-        // :
-        // (
+        {this.state.loading ? (
+        // <CircularProgress size={50} className={classes.buttonProgress} />
+        <LinearProgress className={classes.buttonProgress}/>
+        )
+        : (this.state.dashboardData &&
           <div className={classes.gridRoot}>
             <GridList cellHeight={180} className={classes.gridList}>
               <ProjectDataComponent stateData={this.state}
               projectActionRedirection={this.projectActionRedirection}/>
             </GridList>
         </div>
-        // )
-        // }
-      }
+        )
+        }
         </main>
       </div>
     );

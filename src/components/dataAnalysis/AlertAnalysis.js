@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {withStyles, ExpansionPanel, ExpansionPanelSummary,
-    Typography, ExpansionPanelDetails, Chip} from '@material-ui/core';
+    Typography, ExpansionPanelDetails, Chip, LinearProgress} from '@material-ui/core';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 import DatePicker from "react-datepicker";
@@ -23,6 +23,9 @@ class AlertAnalysis extends Component {
             alertData = stateData;
         return (
             <div className={classes.root}>
+            {stateData.loading &&
+                <LinearProgress className={classes.buttonProgress}/>
+            }
             {showDate &&
                 <div className={classes.dateRow}>
                     <Typography>Custom</Typography>

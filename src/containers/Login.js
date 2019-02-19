@@ -24,7 +24,8 @@ class Login extends React.Component {
         status: 'login',
         code: '',
         codeLabel: "Enter Verification code Sent to your Email",
-        errorMessage: ''
+        errorMessage: '',
+        disableBtn: false
     };
     this.state = this.initialState;
   }
@@ -36,9 +37,17 @@ class Login extends React.Component {
     });
   }
   handleForgotOnClick = () => {
-    this.setState({ status: LOGIN_STATUS['FORGOT'] });
+    this.setState({status: LOGIN_STATUS['FORGOT'],
+    errorMessage: ''
+    });
   };
   handleForgotSubmit = () => {
+    this.setState(
+    {
+      success: false,
+      loading: true,
+      disableBtn: true
+    });
     const endPoint = `${API_URLS['FORGOT_PASSWORD']}/${this.state.email}`,
         config = getApiConfig(endPoint, 'GET');
     this.props.onForgotPassword(config);
@@ -52,7 +61,8 @@ class Login extends React.Component {
               {
                 success: false,
                 loading: true,
-                errorMessage: ''
+                errorMessage: '',
+                disableBtn: true
               });
             const endPoint = API_URLS['RESET_PASSWORD'],
             dataToPost = {
@@ -85,6 +95,7 @@ handleSubmit = () => {
       {
         success: false,
         loading: true,
+        disableBtn: true
       })
   const endPoint = API_URLS['LOGIN'],
         dataToPost = {
@@ -120,6 +131,7 @@ componentDidUpdate(prevProps, prevState) {
         this.setState({
           loading: false,
           success: true,
+          disableBtn: false
         });
       }
     } else if (responseData['ChallengeName'] === NEW_PASSWORD_REQUIRED) {
@@ -142,9 +154,14 @@ componentDidUpdate(prevProps, prevState) {
           success: true,
         });
       }
-      if(localStorage.getItem('previousPath') && 
-        localStorage.getItem('previousPath') !== REACT_URLS['LOGIN']) {
-        this.props.history.push(localStorage.getItem('previousPath'));
+      if(localStorage.getItem('previousPath') &&
+        localStorage.getItem('previousPath') !== `${REACT_URLS['BASEURL']}/${REACT_URLS['LOGIN']}`) {
+            let urlArray = localStorage.getItem('previousPath').split('/'),
+              newUrl;
+            if(urlArray[0] === '' && urlArray[1] === REACT_URLS['BASEURL']) {
+              newUrl = urlArray.slice(2).join("/")
+            }
+            this.props.history.push(newUrl);
       } else {
         this.props.history.push(REACT_URLS['DASHBOARD']);
       }
@@ -166,15 +183,16 @@ componentDidUpdate(prevProps, prevState) {
           this.setState({
             errorMessage: 'User not found'
           });
-        if (this.state.loading) {
-          this.setState({
-            loading: false,
-            success: true,
-          });
-        }
       } else {
         this.setState({ status: LOGIN_STATUS['RESET'],
         errorMessage: ''});
+      }
+      if (this.state.loading) {
+        this.setState({
+          loading: false,
+          success: true,
+          disableBtn: false
+        });
       }
   }
   if (this.props.resetPassword
@@ -193,6 +211,7 @@ componentDidUpdate(prevProps, prevState) {
         this.setState({
           loading: false,
           success: true,
+          disableBtn: false
         });
       }
   }

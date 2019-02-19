@@ -17,7 +17,9 @@ class AlertDetails extends Component {
             pid: props.match.params.pid,
             startDate: now,
             endDate: new Date(),
-            dateChanged: false
+            dateChanged: false,
+            loading: true,
+            success: false,
         }
     }
 
@@ -37,13 +39,18 @@ class AlertDetails extends Component {
         this.getAlertData();
     }
     getAlertData = () => {
-        const endPoint = `${API_URLS['PROJECT_ALERT']}/${this.state.pid}`,
-        params = {
-            'start' : moment(this.state.startDate, DATE_TIME_FORMAT).format(DATE_TIME_FORMAT),
-            'end' : moment(this.state.endDate, DATE_TIME_FORMAT).format(DATE_TIME_FORMAT)
-        },
-        config = getApiConfig(endPoint, 'GET', '', params);
-        this.props.onProjectAlert(config);
+        this.setState({
+            loading: true,
+            success: false,
+        },function() {
+            const endPoint = `${API_URLS['PROJECT_ALERT']}/${this.state.pid}`,
+            params = {
+                'start' : moment(this.state.startDate, DATE_TIME_FORMAT).format(DATE_TIME_FORMAT),
+                'end' : moment(this.state.endDate, DATE_TIME_FORMAT).format(DATE_TIME_FORMAT)
+            },
+            config = getApiConfig(endPoint, 'GET', '', params);
+            this.props.onProjectAlert(config);
+        })
     }
     componentDidUpdate(prevProps, prevState) {
         if(this.props.projectAlert &&
@@ -65,6 +72,12 @@ class AlertDetails extends Component {
             this.setState(
                 {'alertData': finalDict})
         }
+        if(this.state.loading) {
+            this.setState({
+              loading: false,
+              success: true,
+            })
+        }
     }
     render() {
         return(
@@ -73,6 +86,7 @@ class AlertDetails extends Component {
             handleChangeEnd={this.handleChangeEnd}
             getAlertData={this.getAlertData}
             showDate={true}/>
+            
         )
     }
 }

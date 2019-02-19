@@ -76,6 +76,13 @@ const styles = theme => ({
         height: '100vh',
         overflow: 'auto',
     },
+    // Progress bar
+    buttonProgress: {
+        width: '100%',
+        position: 'absolute',
+        right: '0%',
+        top: '64px'
+    },
 })
 
 export default styles;

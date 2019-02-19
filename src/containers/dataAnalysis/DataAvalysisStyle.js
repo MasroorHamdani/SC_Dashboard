@@ -13,7 +13,13 @@ const styles = theme => ({
         border: "black",
         borderStyle: "double",
         height: '100vh',
-    }
+    },
+    buttonProgress: {
+        width: '100%',
+        position: 'absolute',
+        right: '0%',
+        top: '64px'//'8%',
+    },
 })
 
 export default styles;
