@@ -70,7 +70,7 @@ class Dashboard extends Component {
           !isEqual(this.props.dataAnalysis, prevProps.dataAnalysis)) {
             let projObj = {}, metricsData={};
             const deviceResponse = this.props.dataAnalysis.data.data;
-            if(this.props.dataAnalysis.data.status === "sucess") {
+            if(this.props.dataAnalysis.data.status === "success") {
               metricsData = getVector(this.props.dataAnalysis.data.data.allMetrics, 'DASHBOARD');
               projObj['PID'] = deviceResponse.pid;
               projData.map((row) => {
