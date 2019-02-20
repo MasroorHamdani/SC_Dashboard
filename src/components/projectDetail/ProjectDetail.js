@@ -1,7 +1,8 @@
 import React, {Component} from 'react';
 import { connect } from "react-redux";
 import styles from './ProjectDetailStyle';
-import {withStyles, AppBar, Tabs, Tab, Paper} from '@material-ui/core';
+import {withStyles, AppBar, Tabs, Tab, Paper,
+  LinearProgress} from '@material-ui/core';
 import PropTypes from 'prop-types';
 import {isEqual, groupBy} from 'lodash';
 import TabContainer from '../tabContainer/TabContainer';
@@ -15,14 +16,18 @@ class ProjectDetail extends Component {
     super(props)
     this.state = {
       value: 'team',
-      // info : false
+      loading: true,
+      success: false,
     };
     this.info = false;
   }
   
   handleChange = (event, value) => {
-    this.setState({ value });
-    this.callApi(value);
+    this.setState({ value,
+      loading: true,
+      success: false}, function() {
+        this.callApi(value);
+      });
   };
 
   callApi = (value) => {
@@ -66,7 +71,6 @@ class ProjectDetail extends Component {
           const endPoint = `${API_URLS['PROJECT_DETAILS']}/${this.props.stateData.pid}/${API_URLS['TEAM_ASSOCIATION']}`,
           config = getApiConfig(endPoint, 'GET');
           this.props.onTeamAssociation(config);
-          // this.setState({info: true})
           this.info = true;
         }
         if(this.props.teamAsso) {
@@ -93,12 +97,19 @@ class ProjectDetail extends Component {
           this.setState({teamInfo: teamMembers})
         }
     }
+    if(this.state.loading) {
+      this.setState({loading: false,
+      sucess: true});
+    }
   }
 
   render() {
       const { classes, handleClick } = this.props;
       return (
           <div className={classes.root}>
+          {this.state.loading &&
+            <LinearProgress className={classes.buttonProgress}/>
+          }
           <NamespacesConsumer>
             {
             t=><main className={classes.content}>

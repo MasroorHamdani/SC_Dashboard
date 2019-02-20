@@ -1,5 +1,4 @@
 import axios from 'axios';
-import JWTDecode from 'jwt-decode';
 import { merge } from "lodash-es";
 
 import {API_END_POINT, API_URLS, REACT_URLS} from "../constants/Constant";
@@ -15,7 +14,7 @@ function ApiService(configObject) {
 
     axios.interceptors.request.use(
         reqConfig => {
-            if (!reqConfig.url.includes('/login'))
+            if (!reqConfig.url.includes(REACT_URLS['LOGIN']))
                 reqConfig.headers.authorization = localStorage.getItem('idToken');
             return reqConfig;
         },
@@ -33,36 +32,24 @@ function ApiService(configObject) {
         isFetchingToken = false;
         localStorage.clear();
         localStorage.setItem('previousPath', window.location.pathname);
-        window.location = '/login';
-        // this.props.history.push(REACT_URLS['LOGIN']);
+        window.location = REACT_URLS['LOGIN'];
     }
 
     axios.interceptors.response.use(undefined, err => {
         if (err.response) {
-            // console.log(err, err.response.status, "err.response.status");
-            if (err.response.config.url.includes('/login'))
+            if (err.response.config.url.includes(REACT_URLS['LOGIN']))
                 return Promise.reject(err);
             if (err.response.status === 403) return forceLogout();
             if (err.response.status !== 401) return Promise.reject(err);
-            if (err.response.status === 500) return Promise.reject(err.response);
+            if (err.response.status === 500) return Promise.reject(err);
         }
-        //temporary testing code
-        // if (err.response.status === 404) return Promise.reject(err);
+        // if (!err.response) return Promise.reject(err);
         if (!isFetchingToken) {
-            // console.log("Inside fetching**********")
             isFetchingToken = true;
 
             const refreshToken = localStorage.getItem('refreshToken');
             if (!refreshToken) return forceLogout();
 
-            // try {
-            //     const isRefreshTokenExpired =
-            //     JWTDecode(refreshToken).exp < Date.now() / 1000;
-          
-            //     if (isRefreshTokenExpired) return forceLogout();
-            // } catch (e) {
-            // return forceLogout();
-            // }
             const urlEndPoint = `${API_END_POINT}${API_URLS['REFRESH_TOKEN']}`,
                 dataToPost = {
                     rtoken: refreshToken
@@ -73,35 +60,28 @@ function ApiService(configObject) {
                 headers: {'Content-Type':'application/json'
                 },
                 data: JSON.stringify(dataToPost)
-              }).then(newAccessToken => newAccessToken.json())
-              .then(newAccessToken => {
-                  isFetchingToken = false;
-
-                    onTokenRefreshed(null, newAccessToken);
-                    tokenSubscribers = [];
-
-                    localStorage.setItem('idToken', newAccessToken);
-                    return axios(err.response.config);
-                })
-                .catch(() => {
-                    onTokenRefreshed(new Error('Unable to refresh access token'), null);
-                    tokenSubscribers = [];
-
-                    forceLogout();
-                });
-        // } else if(err.response.config.url.includes('/refreshtoken')){
-        //     return forceLogout();
-        } else {
-            const initTokenSubscriber = new Promise((resolve, reject) => {
-                subscribeTokenRefresh((errRefreshing, newToken) => {
-                  if (errRefreshing) return reject(errRefreshing);
-            
-                  err.config.headers.authorization = newToken;
-                  return resolve(axios(err.config));
-                });
-              });
-              return initTokenSubscriber;
-        }        
+            })
+            .then(function(data) {
+                isFetchingToken = false;
+                let newAccessToken = data.data.AuthenticationResult.IdToken;
+                onTokenRefreshed(null, newAccessToken);
+                tokenSubscribers = [];
+                localStorage.setItem('idToken', newAccessToken);
+            })
+            .catch((err) => {
+                onTokenRefreshed(new Error('Unable to refresh access token'), null);
+                tokenSubscribers = [];
+                forceLogout();
+            });
+        }
+        const initTokenSubscriber = new Promise((resolve, reject) => {
+            subscribeTokenRefresh((errRefreshing, newToken) => {
+                if (errRefreshing) return reject(errRefreshing);
+                err.config.headers.authorization = newToken;
+                return resolve(axios(err.config));
+            });
+        });
+        return initTokenSubscriber;
     });
 
     return axios(config)

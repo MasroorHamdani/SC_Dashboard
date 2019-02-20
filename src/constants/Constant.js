@@ -53,6 +53,7 @@ export const SORTING = {
 }
 
 export const REACT_URLS = {
+    'BASEURL': 'optimus',
     'LOGIN': '/login',
     'DASHBOARD': '/',
     'PROJECT_DETAILS': '/project',

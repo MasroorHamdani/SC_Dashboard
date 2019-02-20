@@ -16,7 +16,8 @@ class AuthReset extends Component {
             email: localStorage.getItem('username'),
             loading: false,
             codeLabel: "Enter Your API Key",
-            errorMessage: ''
+            errorMessage: '',
+            disableBtn: false
         };
         this.state = this.initialState;
     }
@@ -32,7 +33,8 @@ class AuthReset extends Component {
                 if(this.state.code) {
                     if (!this.state.loading) {
                         this.setState({
-                            errorMessage: ''
+                            errorMessage: '',
+                            disableBtn: true
                         })
                     const endPoint = API_URLS['AUTH_RESET_PASSWORD'],
                             dataToPost = {

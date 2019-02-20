@@ -3,7 +3,7 @@ import { NamespacesConsumer } from 'react-i18next';
 
 import {Avatar, Button, FormControl, Input,
     InputLabel, Paper, Typography,
-    withStyles, CircularProgress } from '@material-ui/core';
+    withStyles, CircularProgress, LinearProgress} from '@material-ui/core';
 import LockIcon from '@material-ui/icons/LockOutlined';
 import PropTypes from 'prop-types';
 
@@ -46,11 +46,15 @@ class SignInComponent extends React.Component {
                     color="primary"
                     className={classes.submit}
                     onClick={onClick}
+                    disabled={data.disableBtn}
                     >
                     {t('signIn')}
                     </Button>
                     
-                    {data.loading && <CircularProgress size={50} className={classes.buttonProgress} />}
+                    {data.loading &&
+                    //  <CircularProgress size={50} className={classes.buttonProgress} />
+                    <LinearProgress className={classes.buttonProgress}/>
+                    }
                 </form>
                 </Paper>
             </main>

@@ -2,11 +2,11 @@ import React, { Component } from 'react';
 import { connect } from "react-redux";
 import {withStyles, Grid, CardContent,
     Typography, Card, CardHeader, IconButton,
-    Divider, FormControl, InputLabel, TextField, Select} from '@material-ui/core';
-import {isEqual, cloneDeep} from 'lodash';
+    Divider, FormControl, InputLabel, TextField,
+    Select, LinearProgress} from '@material-ui/core';
+import {isEqual} from 'lodash';
 import ClearIcon from '@material-ui/icons/Clear';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
-import LocationCityIcon from '@material-ui/icons/LocationCity';
 import styles from './ProjectTeamDetailsStyle';
 import CustomModal from '../../components/modal/Modal';
 import {API_URLS, PROJECT_TABS, NAMESPACE_MAPPER,
@@ -36,7 +36,9 @@ class ProjectInstallationDetails extends Component {
             },
             pid: props.match.params.pid,
             uid: props.match.params.uid,
-            userLocation : {}
+            userLocation : {},
+            loading: true,
+            sucess: false
         };
         this.info = false;
         this.earlyState = true;
@@ -235,6 +237,12 @@ class ProjectInstallationDetails extends Component {
                 this.getProfileData();
             }
         }
+        if(this.state.loading) {
+            this.setState({
+                loading: false,
+                sucess: true
+            })
+        }
       }
     
     render(){
@@ -343,6 +351,9 @@ class ProjectInstallationDetails extends Component {
         }
         return (
             <div className={classes.root}>
+                {this.state.loading &&
+                    <LinearProgress/>
+                }
                 <main className={classes.content}>
                 <UserProfileData 
                     data={this.state}

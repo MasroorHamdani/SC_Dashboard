@@ -30,10 +30,14 @@ const styles = theme => ({
       marginTop: theme.spacing.unit * 3,
     },
     buttonProgress: {
-      color: green[500],
+      // color: green[500],
+      // position: 'absolute',
+      // top:'15%',
+      // right:'1%',
+      width: '100%',
       position: 'absolute',
-      top:'15%',
-      right:'1%',
+      right: '0%',
+      top: '64px'//'8%',
     },
 
     container: {
