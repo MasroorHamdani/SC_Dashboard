@@ -14,43 +14,12 @@ import GraphPlot from './GraphPlot';
 class AnalysisData extends Component {
     constructor(props) {
         super(props)
-        let now = new Date();
-        now.setHours(now.getHours()-1);
-        this.state =({
-            selectedIndex: 0,
-            startDate: now,
-            endDate: new Date(),
-        })
     }
     
-    handleDatePicker = () => {
-        this.setState({
-            selectedIndex: -1
-        }, function () {
-        this.props.handleDateChange('custom',
-            this.state.startDate, this.state.endDate)
-        })
-    }
     handleRefresh = () => {
         this.props.handleDateChange()
     }
-    handleChangeStart  = (date) => {
-        this.setState({
-            startDate: date
-          });
-    }
-    handleChangeEnd  = (date) => {
-        this.setState({
-            endDate: date
-          });
-    }
-    handleListSelection = (event, text, value) => {
-        this.setState({
-            selectedIndex: value
-        }, function () {
-            this.props.handleDateChange(text)
-        })
-    }
+
     componentDidMount() {
         setInterval((this.handleRefresh), AUTO_REFRESH_TIMEOUT);
     }
@@ -69,7 +38,9 @@ class AnalysisData extends Component {
         return tabData;
     }
     render() {
-        const {classes, stateData} = this.props;
+        const {classes, stateData, handleDatePicker,
+            handleChangeStart, handleListSelection,
+            handleChangeEnd} = this.props;
         let tabData;
         if (stateData.dataAnalysis && stateData.dataAnalysis.data){
             tabData = this.generateDataAnalytics(stateData.dataAnalysis.data.data.metrics,
@@ -78,14 +49,15 @@ class AnalysisData extends Component {
         }
         return (
             <div className={classes.graph}>
-            {stateData.dataAnalysis.data &&
-                <DateRowComponent handleDatePicker={this.handleDatePicker}
-                    handleChangeStart={this.handleChangeStart}
-                    handleChangeEnd={this.handleChangeEnd}
-                    handleListSelection={this.handleListSelection}
-                    data={this.state}
+            {stateData.deviceKey === stateData.tab &&
+                <DateRowComponent handleDatePicker={handleDatePicker}
+                    handleChangeStart={handleChangeStart}
+                    handleChangeEnd={handleChangeEnd}
+                    handleListSelection={handleListSelection}
+                    data={stateData}
                     timeList={TIME_LIST}
                     handleRefresh={this.handleRefresh}
+                    handleChangeRaw={this.handleChangeRaw}
                     />
             }
             {tabData}

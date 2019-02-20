@@ -3,6 +3,7 @@ import {connect} from 'react-redux';
 import {isEqual} from 'lodash';
 import {withStyles, LinearProgress} from '@material-ui/core';
 import _ from 'lodash';
+import moment from 'moment';
 
 import DataAnalysisComponent from '../../components/dataAnalysis/DataAnalysis';
 import {getApiConfig} from '../../services/ApiCofig';
@@ -17,6 +18,8 @@ import {getStartEndTime, getVector} from '../../utils/AnalyticsDataFormat';
 class DataAnalysis extends Component {
   constructor(props) {
     super(props);
+    let now = new Date();
+        now.setHours(now.getHours()-1);
     this.state = {
       value: '',
       header: "Devices Locations",
@@ -31,6 +34,9 @@ class DataAnalysis extends Component {
       page: '',
       loading: true,
       success: false,
+      selectedIndex: 0,
+      startDate: now,
+      endDate: new Date(),
     };
     this.menuIndex = 0;
   }
@@ -40,6 +46,44 @@ class DataAnalysis extends Component {
       [index]: !state[index]
     }));
   };
+  handleDatePicker = () => {
+    this.setState({
+        selectedIndex: -1
+    }, function () {
+    this.handleDateChange('custom',
+        this.state.startDate, this.state.endDate)
+    })
+  }
+  handleChangeStart  = (date) => {
+    this.setState({
+        start: date,
+        startDate: date
+    });
+  }
+  handleChangeEnd  = (date) => {
+    // console.log(this.state.startDate, date);
+    // var start = moment(this.state.startDate); //todays date
+    // var end = moment(date); // another date
+    // var duration = moment.duration(end.diff(start));
+    // var days = duration.asDays();
+    // console.log(days)
+    // if(days > 7) {
+    //   let now = this.state.startDate;
+    //   date = now.setHours(now.getHours()+(7*24));
+    // }
+    // console.log(date)
+    this.setState({
+        end: date,
+        endDate: date
+    });
+  }
+  handleListSelection = (event, text, value) => {
+      this.setState({
+          selectedIndex: value
+      }, function () {
+          this.handleDateChange(text)
+      })
+  }
 
   handleChange = (event, pid, insid) => {
     this.setState({
@@ -48,6 +92,7 @@ class DataAnalysis extends Component {
       dataAnalysis: {},
       loading: true,
       success: false,
+      tab: ''
     }, function() {
       const endPoint = `${API_URLS['PROJECT_DETAILS']}/${pid}${API_URLS['PROJECT_LOCATION']}/${insid}`,
       params = {
@@ -67,13 +112,18 @@ class DataAnalysis extends Component {
   };
 
   setStateValue(tab, deviceKey, devid, subType, pid) {
+    let now = new Date();
+        now.setHours(now.getHours()-1);
     this.setState({
       tab: tab,
       deviceKey: deviceKey,
       deviceId: devid,
       subType: subType,
       pid: pid,
-      dataAnalysis: {}
+      dataAnalysis: {},
+      startDate: now,
+      endDate : new Date(),
+      selectedIndex: 0
     }, function() {
       this.handleDateChange(true);
     });
@@ -157,11 +207,6 @@ class DataAnalysis extends Component {
   }
 
   componentDidMount() {
-    // if(!this.state.loading)
-      // this.setState({
-      //   loading: true,
-      //   success: false,
-      // })
     const endPoint = API_URLS['DASHBOARD'],
     config = getApiConfig(endPoint, 'GET');
     this.props.onDataAnalysisMenu(config);
@@ -287,7 +332,13 @@ class DataAnalysis extends Component {
           <DataAnalysisComponent stateData={this.state}
             handleDateChange={this.handleDateChange}
             handleTabChange={this.handleTabChange}
-            handleSamplingChange={this.handleSamplingChange}/>
+            handleSamplingChange={this.handleSamplingChange}
+            handleDatePicker={this.handleDatePicker}
+            handleChangeStart={this.handleChangeStart}
+            handleListSelection={this.handleListSelection}
+            handleChangeEnd={this.handleChangeEnd}
+            
+            />
         }
         {this.state.loading &&
           <LinearProgress className={classes.buttonProgress}/>
