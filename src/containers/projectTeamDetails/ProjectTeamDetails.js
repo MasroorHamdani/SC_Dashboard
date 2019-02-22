@@ -383,8 +383,13 @@ class ProjectInstallationDetails extends Component {
                                             subheader={dt.locn}/>
                                             <CardContent>
                                                 <Typography component="p">
-                                                    Roles : {dt.Tags.map((dt, index) => {
-                                                        return <span key={index}> {dt} &nbsp;</span>
+                                                <b>Shift Start At :</b> {formatDateTime(dt.ShiftStart, "HHMM", "HH:mm A")}
+                                                </Typography>
+                                                <Typography component="p">
+                                                <b>Shift Ends At :</b> {formatDateTime(dt.ShiftEnd, "HHMM", "HH:mm A")}</Typography>
+                                                <Typography component="p">
+                                                    <b>Tags associated :</b> {dt.Tags.map((dt, index) => {
+                                                        return <span key={index}> {dt} </span>
                                                     })}
                                                 </Typography>
                                             </CardContent>

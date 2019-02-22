@@ -13,7 +13,9 @@ import {ANALYTICS_TAB} from '../../constants/Constant';
 class DataAnalysisComponent extends Component {
     render() {
         const {classes, stateData, handleDateChange,
-            handleTabChange, handleSamplingChange} = this.props;
+            handleTabChange, handleSamplingChange,
+            handleDatePicker, handleChangeStart,
+            handleListSelection, handleChangeEnd} = this.props;
         return(
             <div className={classes.main}>
                 <div>
@@ -40,7 +42,12 @@ class DataAnalysisComponent extends Component {
                     {stateData.tab &&
                         <AnalysisData 
                         handleDateChange={handleDateChange}
-                        stateData={stateData} handleSamplingChange={handleSamplingChange}/>}
+                        stateData={stateData} handleSamplingChange={handleSamplingChange}
+                        handleDatePicker={handleDatePicker}
+                        handleChangeStart={handleChangeStart}
+                        handleListSelection={handleListSelection}
+                        handleChangeEnd={handleChangeEnd}
+                        />}
                 </div>
             </div>
         )

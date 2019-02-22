@@ -77,8 +77,7 @@ class ProjectDetail extends Component {
           const url= `${PROJECT_TABS['INSTALLATION']}/${PROJECT_TABS['DETAILS']}`,
             endPoint = `${API_URLS['PROJECT_DETAILS']}/${this.props.stateData.pid}/${url}`,
             config = getApiConfig(endPoint, 'GET');
-          this.props.onProjectDetailData(config, url);
-          
+          this.props.onProjectDetailData(config, url); 
         }
         if(this.props.projectData) {
           let association = groupBy(this.props.teamAsso,  'UID');

@@ -1,4 +1,4 @@
-import moment from 'moment';
+import moment from 'moment-timezone';//'moment';
 
 export function getFormatedDateTime(dateTime, format) {
     if(dateTime) {
@@ -11,5 +11,14 @@ export function formatDateTime(dateTime, inputFormat, outFormat) {
     if(dateTime) {
         dateTime = moment( dateTime, inputFormat).format(outFormat)
     }
-    return dateTime
+    return (dateTime);
+}
+
+export function formatDateWithTimeZone(dateTime, inputFormat, outFormat, timeZone) {
+    if(dateTime) {
+        dateTime = moment(dateTime, inputFormat).tz(timeZone).format(outFormat)
+    } else {
+        dateTime = moment().tz(timeZone).format(outFormat)
+    }
+    return (dateTime);
 }

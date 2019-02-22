@@ -1,12 +1,13 @@
 import React, { Component } from "react";
 import {connect} from 'react-redux';
 import {isEqual, groupBy} from 'lodash';
-import moment from 'moment';
 
 import AlertAnalysis from "../components/dataAnalysis/AlertAnalysis";
-import {API_URLS, DATE_TIME_FORMAT} from '../constants/Constant';
+import {API_URLS, DATE_TIME_FORMAT, NAMESPACE_MAPPER} from '../constants/Constant';
 import {getApiConfig} from '../services/ApiCofig';
 import {projectAlertList} from '../actions/DataAnalysis';
+import {projectSubMenuList} from '../actions/DataAnalysis';
+import {formatDateWithTimeZone} from '../utils/DateFormat';
 
 class AlertDetails extends Component {
     constructor(props) {
@@ -20,7 +21,9 @@ class AlertDetails extends Component {
             dateChanged: false,
             loading: true,
             success: false,
+            insid:''
         }
+        this.info = false;
     }
 
     handleChangeStart  = (date) => {
@@ -35,7 +38,14 @@ class AlertDetails extends Component {
             dateChanged: true
           });
     }
+    setStateValue = (event) => {
+        let {name, value} = event.target;
+        this.setState({[name]: value})
+    }
     componentDidMount() {
+        const endPoint = `${API_URLS['PROJECT_DETAILS']}/${this.state.pid}${API_URLS['WASHROOM_LOCATION']}`,
+            config = getApiConfig(endPoint, 'GET');
+        this.props.onDataAnalysisMenu(config);
         this.getAlertData();
     }
     getAlertData = () => {
@@ -43,35 +53,64 @@ class AlertDetails extends Component {
             loading: true,
             success: false,
         },function() {
-            const endPoint = `${API_URLS['PROJECT_ALERT']}/${this.state.pid}`,
-            params = {
-                'start' : moment(this.state.startDate, DATE_TIME_FORMAT).format(DATE_TIME_FORMAT),
-                'end' : moment(this.state.endDate, DATE_TIME_FORMAT).format(DATE_TIME_FORMAT)
+            let endPoint,
+                timeZone = localStorage.getItem(this.state.pid);
+            if(!this.state.insid) {
+                endPoint = `${API_URLS['PROJECT_ALERT']}/${this.state.pid}`;
+            }
+            else {
+                endPoint = `${API_URLS['PROJECT_ALERT']}/${this.state.pid}${API_URLS['INSTALLATION']}/${this.state.insid}`;
+                this.showFilter = true;
+            }
+            let params = {
+                'start' : formatDateWithTimeZone(this.state.startDate, DATE_TIME_FORMAT, DATE_TIME_FORMAT, timeZone),
+                'end' : formatDateWithTimeZone(this.state.endDate, DATE_TIME_FORMAT, DATE_TIME_FORMAT, timeZone)
             },
             config = getApiConfig(endPoint, 'GET', '', params);
             this.props.onProjectAlert(config);
         })
     }
     componentDidUpdate(prevProps, prevState) {
-        if(this.props.projectAlert &&
+        if((this.props.projectAlert || this.props.projectLocationList) &&
             !isEqual(this.props.projectAlert, prevProps.projectAlert)) {
-            let finalDict = [];
-            const data = groupBy(this.props.projectAlert,'ID');
-            Object.keys(data).map((key, index) => {
-                let test = {};
-                test['data'] = [];
-                data[key].map((row) => {
-                    if(row.SortKey.includes('status')) {
-                        test['header'] = row;
-                    } else {
-                        test['data'].push(row);
-                    }
+            let finalDict = [], data;
+            if(this.props.projectAlert)
+                data = groupBy(this.props.projectAlert,'ID');
+            let SUB1, SUB2;
+            if(this.props.projectLocationList) {
+                let deviceResponse = this.props.projectLocationList;
+                deviceResponse.map((row) => {
+                    SUB1 = NAMESPACE_MAPPER[row['NS']].SUB1;
+                    SUB2 = NAMESPACE_MAPPER[row['NS']].SUB2;
+                    row[SUB1] =  row.SUB1;
+                    row[SUB2] = row.SUB2;
                 })
-                finalDict.push(test)
-            })
-            this.setState(
-                {'alertData': finalDict})
+                if(data) {
+                    Object.keys(data).map((key) => {
+                        let test = {};
+                        test['data'] = [];
+                        data[key].map((row) => {
+                            deviceResponse.map((dt) => {
+                                if(dt.insid === row.InstallationID) {
+                                    row.name = dt.name;
+                                    row.locn = dt.locn;
+                                }
+                            })
+                            if(row.SortKey.includes('status')) {
+                                test['header'] = row;
+                            } else {
+                                test['data'].push(row);
+                            }
+                        })
+                        finalDict.push(test)
+                    })
+                    this.showFilter = true;
+                }
+                this.setState({'locationList': deviceResponse,
+                    'alertData': finalDict})
+            }
         }
+        
         if(this.state.loading) {
             this.setState({
               loading: false,
@@ -85,7 +124,9 @@ class AlertDetails extends Component {
             handleChangeStart={this.handleChangeStart}
             handleChangeEnd={this.handleChangeEnd}
             getAlertData={this.getAlertData}
-            showDate={true}/>
+            setStateValue={this.setStateValue}
+            showDate={true}
+            showFilter={this.showFilter}/>
             
         )
     }
@@ -93,13 +134,18 @@ class AlertDetails extends Component {
 function mapStateToProps(state) {
     return {
         projectAlert : state.ProjectAlertReducer.data,
+        projectLocationList : state.DataAnalysisProjectListSubMenuReducer.data,
     }
   }
 function mapDispatchToProps(dispatch) {
     return {
         onProjectAlert: (config) => {
           dispatch(projectAlertList(config))
-      },
+        },
+        onDataAnalysisMenu: (config) => {
+            //will dispatch the async action
+              dispatch(projectSubMenuList(config))
+          },
     }
 }
 export default connect(mapStateToProps, mapDispatchToProps)(AlertDetails);

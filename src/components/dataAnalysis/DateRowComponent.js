@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {withStyles, ListItem, ListItemText, Typography,
-    List} from '@material-ui/core';
+    List, Button} from '@material-ui/core';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import styles from './AnalysisDataStyle';
@@ -13,8 +13,9 @@ class DateRowComponent extends Component {
         return (
             <div className={classes.dateRow}>
                 <div className={classes.dateRow}>
-                    <Typography>Custom</Typography>
+                    <Typography className={classes.marginRight}>Custom</Typography>
                     <DatePicker
+                        className={classes.marginRight}
                         selected={data.startDate}
                         selectsStart
                         startDate={data.startDate}
@@ -30,6 +31,7 @@ class DateRowComponent extends Component {
                         maxDate={new Date()}
                     />
                     <DatePicker
+                        className={classes.marginRight}
                         selected={data.endDate}
                         selectsEnd
                         startDate={data.startDate}
@@ -45,7 +47,11 @@ class DateRowComponent extends Component {
                         minDate={data.startDate}
                         maxDate={new Date()}
                     />
-                    <button onClick={handleDatePicker}>Go</button>
+                    <Button onClick={handleDatePicker}
+                        color="primary" variant="contained"
+                        size="small">
+                        Go
+                    </Button>
                 </div>
                 <List dense={true} className={classes.timeList}>
                     {timeList.map((timeLine) => {

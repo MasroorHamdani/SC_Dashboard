@@ -22,7 +22,8 @@ export const API_URLS = {
     "PROJECT_ALERT": "/authV2/alerts/projects",
     'TEAM_MEMBERS': 'team/members',
     'TEAM_ASSOCIATION': 'team/assoc',
-    'DEFAULT': 'default'
+    'DEFAULT': 'default',
+    'INSTALLATION': '/installations'
 };
 
 export const DASHBOARD_METRIC = {

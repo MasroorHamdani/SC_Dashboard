@@ -12,6 +12,7 @@ import { getApiConfig } from '../../services/ApiCofig';
 import {dashboardData} from '../../actions/DashboardAction';
 import {projectAnalysisData} from '../../actions/DataAnalysis';
 import {getVector} from '../../utils/AnalyticsDataFormat';
+import {formatDateWithTimeZone} from '../../utils/DateFormat';
 
 class Dashboard extends Component {
   constructor(props) {
@@ -22,8 +23,8 @@ class Dashboard extends Component {
       dashboardData : [],
       loading: false,
       success: true,
-      endTime: now.format(DATE_TIME_FORMAT),
-      startTime: (now.subtract({ hours: 1})).format(DATE_TIME_FORMAT)
+      endTime: '',//now.format(DATE_TIME_FORMAT),
+      startTime: '',//(now.subtract({ hours: 1})).format(DATE_TIME_FORMAT)
     }
     this.metricsIndex = 0;
   }
@@ -47,7 +48,7 @@ class Dashboard extends Component {
       !isEqual(this.props.dataAnalysis, prevProps.dataAnalysis)) ||
       !this.state.dashboardData.length > 0)) {
         let projData = [], dashboardData = this.state.dashboardData;
-        if(this.props.dashboardData.length > 0)
+        if(this.props.dashboardData && this.props.dashboardData.length > 0)
           this.props.dashboardData.map((row) => {
             if(row.NS === NAMESPACE['PROJECT_TEAM_ALLMEMBERS'])
               projData.push(row);
@@ -56,11 +57,12 @@ class Dashboard extends Component {
           let data = projData[this.metricsIndex];
           this.metricsIndex = this.metricsIndex +1;
           if(data && data.PID) {
+            localStorage.setItem(data.PID, data.Region);
             let dataToPost = DASHBOARD_METRIC,
               endPoint = `${API_URLS['DEVICE_DATA']}/${data.PID}/${API_URLS['DEFAULT']}`,
               params = {
-                'start' : this.state.startTime, //'201902010000',//
-                'end': this.state.endTime, //'201902142300',//
+                'start' : formatDateWithTimeZone('', DATE_TIME_FORMAT, DATE_TIME_FORMAT, data.Region),//this.state.startTime, //'201902010000',//
+                'end': formatDateWithTimeZone('', DATE_TIME_FORMAT, DATE_TIME_FORMAT, data.Region),//this.state.endTime, //'201902142300',//
               },
               config = getApiConfig(endPoint, 'POST', dataToPost, params);
             this.props.onDataAnalysis(config);
@@ -70,7 +72,7 @@ class Dashboard extends Component {
           !isEqual(this.props.dataAnalysis, prevProps.dataAnalysis)) {
             let projObj = {}, metricsData={};
             const deviceResponse = this.props.dataAnalysis.data.data;
-            if(this.props.dataAnalysis.data.status !== "nodata") {
+            if(this.props.dataAnalysis.data.status === "success") {
               metricsData = getVector(this.props.dataAnalysis.data.data.allMetrics, 'DASHBOARD');
               projObj['PID'] = deviceResponse.pid;
               projData.map((row) => {
