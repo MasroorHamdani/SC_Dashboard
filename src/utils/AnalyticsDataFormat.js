@@ -1,5 +1,6 @@
 import {_, groupBy} from 'lodash';
-import moment from 'moment';
+import moment from 'moment-timezone';
+
 import {DATE_TIME_FORMAT, GRAPH_LABEL_TIME_FORMAT,
     METRIC_TYPE, ANALYTICS_DATE} from '../constants/Constant';
 
@@ -78,33 +79,33 @@ export function getFormatedGraphData(passedData, metrics) {
 }
 
 
-export function getStartEndTime(param='', startDate='', endDate='') {
+export function getStartEndTime(param='', startDate='', endDate='', timeZone='') {
     let now = moment(),
       start, end;
     if (param === ANALYTICS_DATE['ONE_HOUR']) {
-      end = now.format(DATE_TIME_FORMAT);
-      start = (now.subtract({ hours: 1})).format(DATE_TIME_FORMAT);
+      end = now.tz(timeZone).format(DATE_TIME_FORMAT);
+      start = (now.subtract({ hours: 1})).tz(timeZone).format(DATE_TIME_FORMAT);
     } else if(param === ANALYTICS_DATE['THREE_HOUR']) {
-      end = now.format(DATE_TIME_FORMAT);
-      start = (now.subtract({ hours: 3})).format(DATE_TIME_FORMAT);
+      end = now.tz(timeZone).format(DATE_TIME_FORMAT);
+      start = (now.subtract({ hours: 3})).tz(timeZone).format(DATE_TIME_FORMAT);
     } else if(param === ANALYTICS_DATE['TWELVE_HOUR']) {
-      end = now.format(DATE_TIME_FORMAT);
-      start = (now.subtract({ hours: 12})).format(DATE_TIME_FORMAT);
+      end = now.tz(timeZone).format(DATE_TIME_FORMAT);
+      start = (now.subtract({ hours: 12})).tz(timeZone).format(DATE_TIME_FORMAT);
     } else if(param === ANALYTICS_DATE['ONE_DAY']) {
-      end = now.format(DATE_TIME_FORMAT);
-      start = (now.subtract({ days: 1})).format(DATE_TIME_FORMAT);
+      end = now.tz(timeZone).format(DATE_TIME_FORMAT);
+      start = (now.subtract({ days: 1})).tz(timeZone).format(DATE_TIME_FORMAT);
     } else if(param === ANALYTICS_DATE['THREE_DAY']) {
-      end = now.format(DATE_TIME_FORMAT);
-      start = (now.subtract({ days: 3})).format(DATE_TIME_FORMAT);
+      end = now.tz(timeZone).format(DATE_TIME_FORMAT);
+      start = (now.subtract({ days: 3})).tz(timeZone).format(DATE_TIME_FORMAT);
     } else if(param === ANALYTICS_DATE['ONE_WEEK']) {
-      end = now.format(DATE_TIME_FORMAT);
-      start = (now.subtract({ weeks: 1})).format(DATE_TIME_FORMAT);
+      end = now.tz(timeZone).format(DATE_TIME_FORMAT);
+      start = (now.subtract({ weeks: 1})).tz(timeZone).format(DATE_TIME_FORMAT);
     } else if(param === ANALYTICS_DATE['CUSTOM']) {
-      end = moment(endDate, DATE_TIME_FORMAT).format(DATE_TIME_FORMAT);
-      start = moment(startDate, DATE_TIME_FORMAT).format(DATE_TIME_FORMAT);
+      end = moment(endDate, DATE_TIME_FORMAT).tz(timeZone).format(DATE_TIME_FORMAT);
+      start = moment(startDate, DATE_TIME_FORMAT).tz(timeZone).format(DATE_TIME_FORMAT);
     } else {
-      end = now.format(DATE_TIME_FORMAT);
-      start = (now.subtract({ hours: 1})).format(DATE_TIME_FORMAT);
+      end = now.tz(timeZone).format(DATE_TIME_FORMAT);
+      start = (now.subtract({ hours: 1})).tz(timeZone).format(DATE_TIME_FORMAT);
     }
     return {
         'start': start,

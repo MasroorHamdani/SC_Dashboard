@@ -83,6 +83,17 @@ const styles = theme => ({
         right: '0%',
         top: '64px'
     },
+    // Alerts Filter drop down
+    formControl: {
+        // margin: theme.spacing.unit,
+        minWidth: 120,
+    },
+    margin: {
+        margin: theme.spacing.unit,
+    },
+    marginRight: {
+        marginRight: theme.spacing.unit
+    }
 })
 
 export default styles;

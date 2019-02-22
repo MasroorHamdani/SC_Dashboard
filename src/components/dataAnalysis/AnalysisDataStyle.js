@@ -66,6 +66,9 @@ const styles = theme => ({
         // height: '100vh',
         overflow: 'auto',
     },
+    marginRight: {
+        marginRight: theme.spacing.unit
+    }
 })
 
 export default styles;

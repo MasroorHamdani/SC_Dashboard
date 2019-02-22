@@ -40,7 +40,7 @@ function ApiService(configObject) {
             if (err.response.config.url.includes(REACT_URLS['LOGIN']))
                 return Promise.reject(err);
             if (err.response.status === 403) return forceLogout();
-            if (err.response.status !== 401) return Promise.reject(err);
+            // if (err.response.status !== 401) return Promise.reject(err);
             if (err.response.status === 500) return Promise.reject(err);
         }
         // if (!err.response) return Promise.reject(err);

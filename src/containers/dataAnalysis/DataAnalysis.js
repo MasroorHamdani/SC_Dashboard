@@ -3,21 +3,24 @@ import {connect} from 'react-redux';
 import {isEqual} from 'lodash';
 import {withStyles, LinearProgress} from '@material-ui/core';
 import _ from 'lodash';
-import moment from 'moment';
-
+import moment from 'moment-timezone';
 import DataAnalysisComponent from '../../components/dataAnalysis/DataAnalysis';
 import {getApiConfig} from '../../services/ApiCofig';
-import {API_URLS, NAMESPACE,
-  NAMESPACE_MAPPER} from '../../constants/Constant';
+import {API_URLS, NAMESPACE, NAMESPACE_MAPPER} from '../../constants/Constant';
 import {projectSubMenuList, projectInstallationList,
   projectAnalysisData, projectMenuList, clearDataAnalysis} from '../../actions/DataAnalysis';
 import styles from './DataAvalysisStyle';
 import RadioButtonComponent from '../../components/dataAnalysis/RadioButtonController';
 import {getStartEndTime, getVector} from '../../utils/AnalyticsDataFormat';
 
+
+/***
+ * Container Class for Data Analysis view
+ */
 class DataAnalysis extends Component {
   constructor(props) {
     super(props);
+    // For setting start time as one hour prior to current time and end time as current time
     let now = new Date();
         now.setHours(now.getHours()-1);
     this.state = {
@@ -47,45 +50,80 @@ class DataAnalysis extends Component {
     }));
   };
   handleDatePicker = () => {
+  /**
+   * This function will called from component 'DateRowComponent'
+   * on hitting th 'GO' buttomn for submitting the start and end date time.
+   * As the selected date is custom it will call the function with custom keyword passed as one
+   * of teh param along with staet and end time
+   */
+    let start = moment(this.state.startDate);
+    let end = moment(this.state.endDate);
+    let duration = moment.duration(end.diff(start));
+    let days = duration.asDays();
+
+    // Calculation to make sure api will always get max 7 days diff.
+    // From start to 7 days.
+    if(days > 7) {
+      end = _.cloneDeep(this.state.startDate);
+      end.setHours(end.getHours()+(7*24));
+    }
     this.setState({
-        selectedIndex: -1
+        selectedIndex: -1,
+        endDate: end
     }, function () {
     this.handleDateChange('custom',
         this.state.startDate, this.state.endDate)
     })
   }
   handleChangeStart  = (date) => {
+  /**
+   * This function will be called from the component 'DateRowComponent'
+   * on selecting the date/time in startDate DatePicker,
+   * which will pass the date selected as param and
+   * this function will save the date time in startDate object
+   */
     this.setState({
-        start: date,
         startDate: date
     });
   }
   handleChangeEnd  = (date) => {
-    // console.log(this.state.startDate, date);
-    // var start = moment(this.state.startDate); //todays date
-    // var end = moment(date); // another date
-    // var duration = moment.duration(end.diff(start));
-    // var days = duration.asDays();
-    // console.log(days)
-    // if(days > 7) {
-    //   let now = this.state.startDate;
-    //   date = now.setHours(now.getHours()+(7*24));
-    // }
-    // console.log(date)
+  /**
+   * This function will be called from the component 'DateRowComponent'
+   * on selecting the date/time in endDate DatePicker,
+   * which will pass the date selected as param and
+   * this function will save the date time in endDate object
+   */
     this.setState({
-        end: date,
         endDate: date
     });
   }
-  handleListSelection = (event, text, value) => {
-      this.setState({
-          selectedIndex: value
-      }, function () {
-          this.handleDateChange(text)
-      })
+  handleListSelection = (event, value, index) => {
+  /**
+   * This function will be called from component 'DateRowComponent'
+   * on selecting and list for time,
+   * this will send the value of list item selected along with index of the item.
+   * the value is sent to next function to calculate the start and end date time.
+   * And the index is saved in state to highlight the selected list item.
+   */
+    this.setState({
+        selectedIndex: index
+    }, function () {
+        this.handleDateChange(value)
+    })
   }
 
   handleChange = (event, pid, insid) => {
+  /**
+   * This function will be called from the component on selecting
+   * value from 'RadioButtonController'.
+   * passing with pid and insid as input.
+   * This function will make an API call to get the 
+   * date for passed pid and its associated insid.
+   * This API will return the list of Sensors for passed
+   * insid.
+   * onInstalationsList is the prop function called for it.
+   * API data will be in 'DataAnalysisInstallationListReducer'
+   */
     this.setState({
       installationList: {},
       value: insid,
@@ -102,7 +140,13 @@ class DataAnalysis extends Component {
       this.props.onInstalationsList(config);
     });
   }
+
   handleTabChange = (event, tab) => {
+  /**
+   * This function is called from component 'DataAnalysisComponent'
+   * on tab selection.
+   * It will make further calls to setup state values.
+   */
     Object.keys(this.state.installationList).map((key) => {
       if(key === tab) {
         this.setStateValue(tab, this.state.installationList[key].type,
@@ -112,6 +156,12 @@ class DataAnalysis extends Component {
   };
 
   setStateValue(tab, deviceKey, devid, subType, pid) {
+  /**
+   * This function is called internally on tab selection.
+   * This function will update the state value as per the tab selected
+   * in Data Analytics view.
+   * It will reinitiate some of the state values to default one.
+   */
     let now = new Date();
         now.setHours(now.getHours()-1);
     this.setState({
@@ -130,7 +180,15 @@ class DataAnalysis extends Component {
   }
 
   handleDateChange = (param='', startDate='', endDate='') => {
-    let formatedDate = getStartEndTime(param, startDate, endDate);
+  /**
+   * This function is called from multiple sources.
+   * Internally as well as well from component 'AnalysisData' directly
+   * for refresh functionality.
+   * This function will take care of the timezone change and call other function
+   * which will make an API call.
+   */
+    let timeZone = localStorage.getItem(this.state.pid);
+    let formatedDate = getStartEndTime(param, startDate, endDate, timeZone);
     this.setState({
       start: formatedDate.start,
       end: formatedDate.end,
@@ -141,6 +199,11 @@ class DataAnalysis extends Component {
   }
 
   getMetric = () => {
+    /**
+     * This function will be called internally,
+     * this function will check the existance of metrics for selected tab.
+     * If found, that will be returned else empty data will be sent out.
+     */
     let metrics = [], allMetrics = [];
     if(this.state.metrics) {
       metrics = this.state.metrics.vector;
@@ -151,6 +214,14 @@ class DataAnalysis extends Component {
   }
 
   getNewAnalyticsData = () => {
+  /**
+   * This function is called internally for API call.
+   * This API will set the basic data to Post,
+   * next it will call an internal function to get the existing metric value for selected tab if any.
+   * In case metric is present, it will do the changes in data to post,
+   * else default value for the data to post will be passed to API.
+   * The Data will be passed bu reducer 'DataAnalysisReducer'
+   */
     this.setState({
       loading: true,
       success: false,
@@ -179,8 +250,8 @@ class DataAnalysis extends Component {
     }
     const endPoint = `${API_URLS['DEVICE_DATA']}/${this.state.pid}/${this.state.deviceId}`,
       params = {
-        'start' : this.state.start,//'2019010100',//'2019020100',//
-        'end': this.state.end,//'2019010123',//'2019020423',//
+        'start' : this.state.start,
+        'end': this.state.end,
       };
     let headers = {
       'x-sc-session-token': this.state.sessionHeader ? this.state.sessionHeader : ''
@@ -190,6 +261,16 @@ class DataAnalysis extends Component {
   }
 
   handleSamplingChange = (event, mainPath='', path='') => {
+  /**
+   * This function will be called from a component 'DataProcessingComponent'
+   * This will be used by the sampling widget to update the field value.
+   * By Sampling - All the Dimentions for the graph will be displayed to user
+   * and user can change the value of dimentions and function to get new/relavant view of the data.
+   * As sampling is per metric, so the update is nested.
+   * Like, for PC there will be an entry in state as PC:{}
+   * depending on which field is changed in sampling above value will update like
+   * PD:{v:'',x:''}
+   */
     const {name, value} = event.target;
     if(mainPath === 'update') {
       this.getNewAnalyticsData();
@@ -207,6 +288,9 @@ class DataAnalysis extends Component {
   }
 
   componentDidMount() {
+  /**
+   * First function beiomg called on loading.
+   */
     const endPoint = API_URLS['DASHBOARD'],
     config = getApiConfig(endPoint, 'GET');
     this.props.onDataAnalysisMenu(config);
@@ -215,6 +299,19 @@ class DataAnalysis extends Component {
     this.props.onReducerClear();
   }
   componentDidUpdate(prevProps, prevState) {
+  /**
+   * This function is called whenever component update,
+   * which included getting date from the API as well in reducers.
+   * we need to check if reducer got value and if current value is different the old,
+   * then only we should proceed.
+   */
+  /**
+   * This part is for getting the list of Projects allocated to logged in user.
+   * Once Projects are received, there has to be other API call for each Project
+   * to get the installation details for all the projects. Which will be shown as sub menu on UI.
+   * Reducer for projects - 'DataAnalysisMenuListReducer'
+   * Reducer for installations - 'DataAnalysisProjectListSubMenuReducer'
+   */ 
     if ((this.props.projectMenuList || this.props.projectSubMenuList) &&
       (!isEqual(this.props.projectSubMenuList, prevProps.projectSubMenuList) ||
       !isEqual(this.props.projectMenuList, prevProps.projectMenuList))
@@ -258,6 +355,12 @@ class DataAnalysis extends Component {
         }
     }
 
+    /**
+     * This part is for data for selected device for selected time frame.
+     * There is 'x-sc-session-token' passed in response, which is saved in state,
+     * for being used in sampling, as sampling will run all the functions on the cached data
+     * which can be accessed from the x-sc-session-token.
+     */
     if (this.props.dataAnalysis &&
       !isEqual(this.props.dataAnalysis, prevProps.dataAnalysis) &&
       isEqual(this.props.dataAnalysis.data.status, "success")){
@@ -285,6 +388,11 @@ class DataAnalysis extends Component {
         if(!this.state[this.state.deviceKey])
             this.setState({[this.state.deviceKey]: referData})
     }
+    /**
+     * This part deals with getting the sensor installation details for selected location.
+     * One location can have multiple Devices of same type.
+     * That is being handled by appending numbers to the type.
+     */
     if (this.props.installationList &&
       !isEqual(this.props.installationList, prevProps.installationList)) {
         let installationList = {}, i = 1;
@@ -308,6 +416,10 @@ class DataAnalysis extends Component {
         })
         this.setState({installationList: installationList})
     }
+    /**
+     * This section deals with progress bar.
+     * As the API data is served, this section will stop the progress bar loading.
+     */
     if(this.state.loading) {
       this.setState({
         loading: false,
@@ -337,7 +449,6 @@ class DataAnalysis extends Component {
             handleChangeStart={this.handleChangeStart}
             handleListSelection={this.handleListSelection}
             handleChangeEnd={this.handleChangeEnd}
-            
             />
         }
         {this.state.loading &&
@@ -362,6 +473,9 @@ function mapStateToProps(state) {
 }
 
 function mapDispatchToProps(dispatch) {
+  /**
+   * Actions defined for API calls.
+   */
   return {
     onDataAnalysisMenu: (config, url) => {
       //will dispatch the async action

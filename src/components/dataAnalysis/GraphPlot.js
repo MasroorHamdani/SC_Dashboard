@@ -73,7 +73,6 @@ class GraphPlot extends Component {
             metrics.map((metric, index) => {
                 return <div key={index}>
                 <Divider className={classes.seperator}/>
-                {/* <div className={classes.seperator}></div> */}
                     <DataProcessingComponent stateData={stateData}
                         handleSamplingChange={handleSamplingChange}
                         metrics={metric}/>
