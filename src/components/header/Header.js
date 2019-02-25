@@ -24,14 +24,14 @@ class Header extends Component {
     };
 
     componentDidUpdate(prevProps, prevState) {
-      if(this.props.data.MenuActionReducer &&
-        !isEqual(this.props.data.MenuActionReducer,prevProps.data.MenuActionReducer)) {
-          this.setState({open:this.props.data.MenuActionReducer.data.open})
-        }
-      // if(this.props.data.LoginReducer &&
-      //   !isEqual(this.props.data.LoginReducer, prevProps.data.LoginReducer)) {
-      //     this.setState({userName:this.props.data.LoginReducer.data.user})
-      //   }
+      if(this.props.menuState &&
+        !isEqual(this.props.menuState, prevProps.menuState)) {
+          this.setState({open:this.props.menuState.open})
+      }
+      if(this.props.ProjectList &&
+        !isEqual(this.props.ProjectList, prevProps.ProjectList)) {
+          console.log(this.props.ProjectList);
+      }
     }
     render() {
       const { classes } = this.props;
@@ -61,8 +61,7 @@ class Header extends Component {
                 <img src="https://www.smartclean.sg/images/sc-logo.png" alt="logo" className={classes.logo}/>
                 <span className={classes.beta}>BETA</span>
               </Typography>
-              <IconButton color="inherit">
-                <Typography
+              <Typography
                   component="h6"
                   variant="h6"
                   color="inherit"
@@ -70,10 +69,11 @@ class Header extends Component {
                   className={classes.title}>
                   {user}
                 </Typography>
-                {/* <Badge badgeContent={4} color="secondary">
+              {/* <IconButton color="inherit">
+                <Badge badgeContent={4} color="secondary">
                   <NotificationsIcon />
-                </Badge> */}
-              </IconButton>
+                </Badge>
+              </IconButton> */}
             </Toolbar>
           </AppBar>
       );
@@ -81,7 +81,9 @@ class Header extends Component {
   }
   function mapStateToProps(state) {
     return {
-        data : state
+        data : state,
+        menuState: state.MenuActionReducer.data,
+        ProjectList : state.DashboardReducer.data,
     }
   }
   function mapDispatchToProps(dispatch) {
