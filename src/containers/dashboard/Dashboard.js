@@ -17,14 +17,15 @@ import {formatDateWithTimeZone} from '../../utils/DateFormat';
 class Dashboard extends Component {
   constructor(props) {
     super(props);
-    let now = moment();
+    let now =  new Date();
+      now.setHours(now.getHours()-1)
     this.state = {
       data : [],
       dashboardData : [],
       loading: false,
       success: true,
-      endTime: '',
-      startTime: '',
+      endTime: new Date(),//'',
+      startTime: now,//'',
     }
     this.metricsIndex = 0;
   }
@@ -61,8 +62,8 @@ class Dashboard extends Component {
             let dataToPost = DASHBOARD_METRIC,
               endPoint = `${API_URLS['DEVICE_DATA']}/${data.PID}/${API_URLS['DEFAULT']}`,
               params = {
-                'start' : formatDateWithTimeZone('', DATE_TIME_FORMAT, DATE_TIME_FORMAT, data.Region),//this.state.startTime, //'201902010000',//
-                'end': formatDateWithTimeZone('', DATE_TIME_FORMAT, DATE_TIME_FORMAT, data.Region),//this.state.endTime, //'201902142300',//
+                'start' : formatDateWithTimeZone(this.state.startTime, DATE_TIME_FORMAT, DATE_TIME_FORMAT, data.Region),//this.state.startTime, //'201902010000',//
+                'end': formatDateWithTimeZone(this.state.endTime, DATE_TIME_FORMAT, DATE_TIME_FORMAT, data.Region),//this.state.endTime, //'201902142300',//
               },
               config = getApiConfig(endPoint, 'POST', dataToPost, params);
             this.props.onDataAnalysis(config);
