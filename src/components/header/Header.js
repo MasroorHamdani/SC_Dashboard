@@ -8,14 +8,19 @@ MenuItem, Divider} from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import AccountCircle from '@material-ui/icons/AccountCircle';
-import styles from "./HeaderStyle";
-import {toolbarClicked}  from '../../actions/MenuAction';
-import { getApiConfig } from '../../services/ApiCofig';
+
 import {NAMESPACE, API_URLS, DATE_TIME_FORMAT,
   DASHBOARD_METRIC} from '../../constants/Constant';
-import {formatDateWithTimeZone} from '../../utils/DateFormat';
+
+
+import {toolbarClicked}  from '../../actions/MenuAction';
+import {dashboardData} from '../../actions/DashboardAction';
 import {projectAnalysisData} from '../../actions/DataAnalysis';
 
+import { getApiConfig } from '../../services/ApiCofig';
+import {formatDateWithTimeZone} from '../../utils/DateFormat';
+
+import styles from "./HeaderStyle";
 /**
  * Common Header componnet which will be
  * visible to used after they are authenticated
@@ -30,7 +35,9 @@ class Header extends Component {
         anchorEl: null,
         endTime: new Date(),
         startTime: now,
+        projectList: []
       }
+      this.metricsIndex = 0;
     }
     handleDrawerOpen = () => {
       this.props.onToolbarClick(this.state.open)
@@ -68,21 +75,25 @@ class Header extends Component {
       this.handleClose();
       // this.props.history.push(url)
     }
-
+    componentDidMount(){
+      const endPoint = API_URLS['DASHBOARD'],
+            config = getApiConfig(endPoint, 'GET');
+      this.props.onDashbaord(config);
+    }
     componentDidUpdate(prevProps, prevState) {
       if(this.props.menuState &&
         !isEqual(this.props.menuState, prevProps.menuState)) {
           this.setState({open:this.props.menuState.open})
       }
-      console.log(this.props.ProjectList);
       if(this.props.ProjectList &&
-        !isEqual(this.props.ProjectList, prevProps.ProjectList) &&
-        !this.state.projectList) {
+        !isEqual(this.props.ProjectList, prevProps.ProjectList) ||
+        !this.state.projectList.length > 0) {
           let projData = [];
           if(this.props.ProjectList.length > 0)
             this.props.ProjectList.map((row) => {
               if(row.NS === NAMESPACE['PROJECT_TEAM_ALLMEMBERS'])
                 projData.push(row);
+                localStorage.setItem(row.PID, row.Region);
             });
           this.setState({
             projectList: projData,
@@ -179,7 +190,7 @@ class Header extends Component {
   function mapStateToProps(state) {
     return {
         menuState: state.MenuActionReducer.data,
-        ProjectList : state.DashboardReducer.data,
+        ProjectList : state.DashboardReducer.data
     }
   }
   function mapDispatchToProps(dispatch) {
@@ -190,7 +201,10 @@ class Header extends Component {
         },
         onDataAnalysis: (config) => {
           dispatch(projectAnalysisData(config))
-        }
+        },
+        onDashbaord: (config) => {
+          dispatch(dashboardData(config))
+      },
     }
   }
   
