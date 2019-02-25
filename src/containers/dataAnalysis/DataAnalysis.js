@@ -66,10 +66,10 @@ class DataAnalysis extends Component {
     if(days > 7) {
       end = _.cloneDeep(this.state.startDate);
       end.setHours(end.getHours()+(7*24));
+      this.setState({endDate: end})
     }
     this.setState({
         selectedIndex: -1,
-        endDate: end
     }, function () {
     this.handleDateChange('custom',
         this.state.startDate, this.state.endDate)
