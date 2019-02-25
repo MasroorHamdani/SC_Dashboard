@@ -23,8 +23,8 @@ class Dashboard extends Component {
       dashboardData : [],
       loading: false,
       success: true,
-      endTime: '',//now.format(DATE_TIME_FORMAT),
-      startTime: '',//(now.subtract({ hours: 1})).format(DATE_TIME_FORMAT)
+      endTime: '',
+      startTime: '',
     }
     this.metricsIndex = 0;
   }
