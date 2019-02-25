@@ -3,7 +3,6 @@ import { connect } from "react-redux";
 import {withStyles, GridList, CircularProgress, LinearProgress} from '@material-ui/core';
 import PropTypes from 'prop-types';
 import {isEqual} from "lodash";
-import moment from 'moment';
 import styles from './DashboardStyle'
 import ProjectDataComponent from "../../components/projectData/ProjectData";
 import { API_URLS, NAMESPACE, DASHBOARD_METRIC,
@@ -17,15 +16,15 @@ import {formatDateWithTimeZone} from '../../utils/DateFormat';
 class Dashboard extends Component {
   constructor(props) {
     super(props);
-    let now =  new Date();
-      now.setHours(now.getHours()-1)
+    // let now =  new Date();
+    //   now.setHours(now.getHours()-1)
     this.state = {
       data : [],
       dashboardData : [],
       loading: false,
       success: true,
-      endTime: new Date(),//'',
-      startTime: now,//'',
+      // endTime: new Date(),
+      // startTime: now,
     }
     this.metricsIndex = 0;
   }
@@ -48,7 +47,7 @@ class Dashboard extends Component {
       ((!isEqual(this.props.dashboardData, prevProps.dashboardData) ||
       !isEqual(this.props.dataAnalysis, prevProps.dataAnalysis)) ||
       !this.state.dashboardData.length > 0)) {
-        let projData = [], dashboardData = this.state.dashboardData;
+        let projData = [], dashboardData = [];//this.state.dashboardData;
         if(this.props.dashboardData && this.props.dashboardData.length > 0)
           this.props.dashboardData.map((row) => {
             if(row.NS === NAMESPACE['PROJECT_TEAM_ALLMEMBERS'])
@@ -59,14 +58,14 @@ class Dashboard extends Component {
           this.metricsIndex = this.metricsIndex +1;
           if(data && data.PID) {
             localStorage.setItem(data.PID, data.Region);
-            let dataToPost = DASHBOARD_METRIC,
-              endPoint = `${API_URLS['DEVICE_DATA']}/${data.PID}/${API_URLS['DEFAULT']}`,
-              params = {
-                'start' : formatDateWithTimeZone(this.state.startTime, DATE_TIME_FORMAT, DATE_TIME_FORMAT, data.Region),//this.state.startTime, //'201902010000',//
-                'end': formatDateWithTimeZone(this.state.endTime, DATE_TIME_FORMAT, DATE_TIME_FORMAT, data.Region),//this.state.endTime, //'201902142300',//
-              },
-              config = getApiConfig(endPoint, 'POST', dataToPost, params);
-            this.props.onDataAnalysis(config);
+            // let dataToPost = DASHBOARD_METRIC,
+            //   endPoint = `${API_URLS['DEVICE_DATA']}/${data.PID}/${API_URLS['DEFAULT']}`,
+            //   params = {
+            //     'start' : formatDateWithTimeZone(this.state.startTime, DATE_TIME_FORMAT, DATE_TIME_FORMAT, data.Region),//this.state.startTime, //'201902010000',//
+            //     'end': formatDateWithTimeZone(this.state.endTime, DATE_TIME_FORMAT, DATE_TIME_FORMAT, data.Region),//this.state.endTime, //'201902142300',//
+            //   },
+            //   config = getApiConfig(endPoint, 'POST', dataToPost, params);
+            // this.props.onDataAnalysis(config);
           }
         }
         if(this.props.dataAnalysis &&
@@ -146,9 +145,9 @@ function mapDispatchToProps(dispatch) {
           //will dispatch the async action
           dispatch(dashboardData(config))
       },
-    onDataAnalysis: (config) => {
-        dispatch(projectAnalysisData(config))
-    }
+    // onDataAnalysis: (config) => {
+    //     dispatch(projectAnalysisData(config))
+    // }
   }
 }
 Dashboard.propTypes = {

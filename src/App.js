@@ -53,7 +53,7 @@ const styles = theme => ({
                   (<div className="container">
                     <CssBaseline />
                     <Header/>
-                    <Menu />
+                    <Menu/>
                     <Switch>
                       <Route exact path="/" component={Dashboard} />
                       <Route path="/project/:pid/installations/:insid?" component={ProjectInstallationDetails} />
