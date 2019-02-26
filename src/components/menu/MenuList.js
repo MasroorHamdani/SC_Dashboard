@@ -1,4 +1,5 @@
-export const menuList= [
+export function mainMenuList (pid) {
+return ([
     {
       name: "Dashboard",
       url: "/",
@@ -7,21 +8,21 @@ export const menuList= [
     {
       name: "Data Analysis",
       url: "/data",
-      icon: "LayersIcon"
+      icon: "BarChartIcon"
     },
     {
       name: "Reports",
       url: "/report",
-      icon: "BarChartIcon"
+      icon: "Assignment"
     },
     {
-      name: "Profile",
-      url: "/profile",
-      icon: "AccountBox"
+      name: "Alert Data",
+      url: `/alert/${pid}`,
+      icon: "NotificationImportant"
     },
     {
-      name: "Logout",
-      url: "/logout",
-      icon: "ExitToAppIcon"
-    }
-  ];
+      name: "Project details",
+      url: `/project/${pid}`,
+      icon: "LibraryBooks"
+    }])
+}

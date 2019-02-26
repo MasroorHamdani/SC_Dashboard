@@ -1,26 +1,26 @@
 import React, { Component } from 'react';
 import { connect } from "react-redux";
-// import {withRouter} from "react-router-dom";
+import {withRouter} from "react-router-dom";
 import {isEqual} from "lodash";
 
 import classNames from 'classnames';
 import {AppBar, Toolbar, Badge, IconButton, Typography,
-  withStyles, FormControl, InputLabel, Select, Menu,
+  withStyles, FormControl, Select, Menu,
 MenuItem, Divider} from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import AccountCircle from '@material-ui/icons/AccountCircle';
+import AccountBox from '@material-ui/icons/AccountBox';
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 
-import {NAMESPACE, API_URLS, DATE_TIME_FORMAT,
-  DASHBOARD_METRIC} from '../../constants/Constant';
+import {NAMESPACE, API_URLS, REACT_URLS} from '../../constants/Constant';
 
 
-import {toolbarClicked}  from '../../actions/MenuAction';
+import {toolbarClicked, projectSelect}  from '../../actions/MenuAction';
 import {dashboardData} from '../../actions/DashboardAction';
 import {projectAnalysisData} from '../../actions/DataAnalysis';
 
 import { getApiConfig } from '../../services/ApiCofig';
-import {formatDateWithTimeZone} from '../../utils/DateFormat';
 
 import styles from "./HeaderStyle";
 /**
@@ -30,13 +30,9 @@ import styles from "./HeaderStyle";
 class Header extends Component {
     constructor(props) {
       super(props);
-      let now =  new Date();
-        now.setHours(now.getHours()-1);
       this.state = {
         open: true,
         anchorEl: null,
-        endTime: new Date(),
-        startTime: now,
         projectList: []
       }
       this.metricsIndex = 0;
@@ -47,24 +43,10 @@ class Header extends Component {
 
     changeProject = (event) => {
       let {name, value} = event.target;
-      this.setState({
-          [name]:value
-      }, function() {
-        this.getProjectData();
-      })
-      localStorage.setItem('projectSelected', value);
+      this.setState({[name]: value});
+      this.props.onProjectSelect(value)
     }
-    getProjectData = () => {
-      let timezone = localStorage.getItem(this.state.PID),
-        dataToPost = DASHBOARD_METRIC,
-        endPoint = `${API_URLS['DEVICE_DATA']}/${this.state.PID}/${API_URLS['DEFAULT']}`,
-        params = {
-          'start' : formatDateWithTimeZone(this.state.startTime, DATE_TIME_FORMAT, DATE_TIME_FORMAT, timezone),
-          'end': formatDateWithTimeZone(this.state.endTime, DATE_TIME_FORMAT, DATE_TIME_FORMAT, timezone),
-        },
-        config = getApiConfig(endPoint, 'POST', dataToPost, params);
-      this.props.onDataAnalysis(config);
-    }
+
     handleMenu = event => {
       this.setState({ anchorEl: event.currentTarget });
     };
@@ -75,17 +57,19 @@ class Header extends Component {
   
     onClick = (url) => {
       this.handleClose();
-      // this.props.history.push(url)
+      this.props.history.push(url)
     }
+  
     componentDidMount(){
       const endPoint = API_URLS['DASHBOARD'],
             config = getApiConfig(endPoint, 'GET');
       this.props.onDashbaord(config);
     }
+  
     componentDidUpdate(prevProps, prevState) {
       if(this.props.menuState &&
         !isEqual(this.props.menuState, prevProps.menuState)) {
-          this.setState({open:this.props.menuState.open})
+          this.setState({open: this.props.menuState.open})
       }
       if(this.props.ProjectList &&
         !isEqual(this.props.ProjectList, prevProps.ProjectList) ||
@@ -101,7 +85,7 @@ class Header extends Component {
             projectList: projData,
             PID: projData[0].PID
           }, function() {
-            this.getProjectData();
+            this.props.onProjectSelect(projData[0].PID)
           })
       }
     }
@@ -136,16 +120,13 @@ class Header extends Component {
               </Typography>
               {(this.state.projectList && this.state.projectList.length > 0) &&
                 <FormControl className={classes.formControl}>
-                    <InputLabel htmlFor="age-native-helper">Project</InputLabel>
                     <Select native
                         value={this.state.PID}
                         onChange={this.changeProject}
                         inputProps={{
                             name: 'PID',
                             id: 'PID',
-                            }}
-                    >
-                    <option value="" />
+                            }}>
                     {this.state.projectList.map(function(proj) {
                         return <option value={proj.PID} name={proj.PID} key={proj.PID} >
                             {proj.Site}</option>
@@ -176,8 +157,14 @@ class Header extends Component {
                   onClose={this.handleClose}>
                   <MenuItem disabled>{user}</MenuItem>
                   <Divider />
-                  <MenuItem onClick={e => this.onClick('/profile')}>Profile</MenuItem>
-                  <MenuItem onClick={e => this.onClick('/logout')}>Logout</MenuItem>
+                  <MenuItem onClick={e => this.onClick(REACT_URLS['USER-PROFILE'])}>
+                    <IconButton><AccountBox/></IconButton>
+                    Profile
+                  </MenuItem>
+                  <MenuItem onClick={e => this.onClick(REACT_URLS['LOGOUT'])}>
+                    <IconButton><ExitToAppIcon/></IconButton>
+                    Logout
+                  </MenuItem>
               </Menu>
               <IconButton color="inherit">
                 <Badge badgeContent={4} color="secondary">
@@ -192,7 +179,8 @@ class Header extends Component {
   function mapStateToProps(state) {
     return {
         menuState: state.MenuActionReducer.data,
-        ProjectList : state.DashboardReducer.data
+        ProjectList : state.DashboardReducer.data,
+        projectSelected : state.projectSelectReducer.data
     }
   }
   function mapDispatchToProps(dispatch) {
@@ -200,6 +188,10 @@ class Header extends Component {
         onToolbarClick: (value) => {
             //will dispatch the async action
             dispatch(toolbarClicked(value))
+        },
+        onProjectSelect: (value) => {
+          //will dispatch the async action
+          dispatch(projectSelect(value))
         },
         onDataAnalysis: (config) => {
           dispatch(projectAnalysisData(config))
@@ -210,7 +202,7 @@ class Header extends Component {
     }
   }
   
-export default withStyles(styles)(connect(mapStateToProps, mapDispatchToProps)(Header));
+// export default withStyles(styles)(connect(mapStateToProps, mapDispatchToProps)(Header));
 
-// const Header = withStyles(styles)(App);
-// export default (connect(mapStateToProps, mapDispatchToProps))(withRouter(Header));
+const HeaderComponent = withStyles(styles)(Header);
+export default (connect(mapStateToProps, mapDispatchToProps))(withRouter(HeaderComponent));

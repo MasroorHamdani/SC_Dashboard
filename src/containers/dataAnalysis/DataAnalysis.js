@@ -25,9 +25,7 @@ class DataAnalysis extends Component {
         now.setHours(now.getHours()-1);
     this.state = {
       value: '',
-      header: "Devices Locations",
       projectList: [],
-      analysisAQData: '',
       start: 0,
       end: 0,
       tab: '',
@@ -44,11 +42,11 @@ class DataAnalysis extends Component {
     this.menuIndex = 0;
   }
 
-  handleClick = (index) => {
-    this.setState(state => ({
-      [index]: !state[index]
-    }));
-  };
+  // handleClick = (index) => {
+  //   this.setState(state => ({
+  //     [index]: !state[index]
+  //   }));
+  // };
   handleDatePicker = () => {
   /**
    * This function will called from component 'DateRowComponent'
@@ -289,15 +287,24 @@ class DataAnalysis extends Component {
 
   componentDidMount() {
   /**
-   * First function beiomg called on loading.
+   * First function being called on loading.
+   * It will check if state.pid is present or not, if not, it will check what is the value
+   * selected in reducer for pid and call the required api using that value.
    */
-    const endPoint = API_URLS['DASHBOARD'],
-    config = getApiConfig(endPoint, 'GET');
-    this.props.onDataAnalysisMenu(config);
+    if(this.state.pid) {
+      this.getInstallationLocation();
+    } else if(this.props.projectSelected) {
+      this.setState({pid: this.props.projectSelected.pid}, function() {
+          this.getInstallationLocation();
+        });
+    }
   }
-  componentWillUnmount() {
-    this.props.onReducerClear();
+  getInstallationLocation = () => {
+    const endPoint = `${API_URLS['PROJECT_DETAILS']}/${this.state.pid}${API_URLS['WASHROOM_LOCATION']}`,
+      config = getApiConfig(endPoint, 'GET');
+      this.props.onDataAnalysisMenu(config);
   }
+
   componentDidUpdate(prevProps, prevState) {
   /**
    * This function is called whenever component update,
@@ -306,55 +313,49 @@ class DataAnalysis extends Component {
    * then only we should proceed.
    */
   /**
+   * This part will licten to project selection change from the header component.
+   * On any change this will be called and the data will be changed in UI
+   */
+  if(this.props.projectSelected &&
+    !isEqual(this.props.projectSelected, prevProps.projectSelected)) {
+      this.setState({
+        pid: this.props.projectSelected.pid,
+        tab: '',
+        installationList: {},
+        dataAnalysis: {},
+        value: ''
+      }, function() {
+        this.getInstallationLocation();
+      });
+  }
+  /**
    * This part is for getting the list of Projects allocated to logged in user.
    * Once Projects are received, there has to be other API call for each Project
    * to get the installation details for all the projects. Which will be shown as sub menu on UI.
    * Reducer for projects - 'DataAnalysisMenuListReducer'
    * Reducer for installations - 'DataAnalysisProjectListSubMenuReducer'
    */ 
-    if ((this.props.projectMenuList || this.props.projectSubMenuList) &&
-      (!isEqual(this.props.projectSubMenuList, prevProps.projectSubMenuList) ||
-      !isEqual(this.props.projectMenuList, prevProps.projectMenuList))
-      ) {
-        let project = this.state.projectList, newProjectList = [],
-          projObj = {};
-          this.props.projectMenuList.map((row) => {
-            if(row.NS === NAMESPACE['PROJECT_TEAM_ALLMEMBERS'])
-            newProjectList.push(row);
-          });
-
-        if(this.menuIndex <= newProjectList.length) {
-          let data = newProjectList[this.menuIndex];
-          this.menuIndex = this.menuIndex +1;
-          if(data && data.PID) {
-            const endPoint = `${API_URLS['PROJECT_DETAILS']}/${data.PID}${API_URLS['WASHROOM_LOCATION']}`,
-            config = getApiConfig(endPoint, 'GET');
-            this.props.onDataAnalysisMenu(config, 'subMenu');
-          }
-          let SUB1, SUB2;
-          if (this.props.projectSubMenuList &&
-            (!isEqual(this.props.projectSubMenuList, prevProps.projectSubMenuList)
-            )) {
-                const deviceResponse = this.props.projectSubMenuList;
-                projObj['id'] = deviceResponse[0].PID;
-                projObj['name'] = deviceResponse[0].PID;
-                deviceResponse.map((row) => {
-                  SUB1 = NAMESPACE_MAPPER[row['NS']].SUB1;
-                  SUB2 = NAMESPACE_MAPPER[row['NS']].SUB2;
-                  row[SUB1] =  row.SUB1;
-                  row[SUB2] = row.SUB2;
-                })
-                projObj['devices'] = deviceResponse;
-                project.push(projObj);
-          }
-        }
+    if (this.props.projectSubMenuList &&
+        !isEqual(this.props.projectSubMenuList, prevProps.projectSubMenuList)) {
+        let project = [],
+          projObj = {}, SUB1, SUB2;;
+        const deviceResponse = this.props.projectSubMenuList;
+        projObj['id'] = deviceResponse[0].PID;
+        projObj['name'] = deviceResponse[0].PID;
+        deviceResponse.map((row) => {
+          SUB1 = NAMESPACE_MAPPER[row['NS']].SUB1;
+          SUB2 = NAMESPACE_MAPPER[row['NS']].SUB2;
+          row[SUB1] =  row.SUB1;
+          row[SUB2] = row.SUB2;
+        })
+        projObj['devices'] = deviceResponse;
+        project.push(projObj);
         if(project[0] && project[0]['devices']) {
           this.setState({
             projectList: project
           })
         }
     }
-
     /**
      * This part is for data for selected device for selected time frame.
      * There is 'x-sc-session-token' passed in response, which is saved in state,
@@ -434,8 +435,7 @@ class DataAnalysis extends Component {
         <div className={classes.root}>
         {this.state.projectList.length > 0 &&
           <RadioButtonComponent data={this.state}
-          handleChange={this.handleChange}
-          handleClick={this.handleClick}/>
+          handleChange={this.handleChange}/>
         }
         {this.state.projectList.length > 0 &&
           <div className={classes.seperator}></div>
@@ -465,10 +465,10 @@ class DataAnalysis extends Component {
 
 function mapStateToProps(state) {
   return {
-      projectMenuList : state.DataAnalysisMenuListReducer.data,
       projectSubMenuList : state.DataAnalysisProjectListSubMenuReducer.data,
       installationList : state.DataAnalysisInstallationListReducer.data,
-      dataAnalysis : state.DataAnalysisReducer.data
+      dataAnalysis : state.DataAnalysisReducer.data,
+      projectSelected : state.projectSelectReducer.data,
   }
 }
 
@@ -477,13 +477,8 @@ function mapDispatchToProps(dispatch) {
    * Actions defined for API calls.
    */
   return {
-    onDataAnalysisMenu: (config, url) => {
-      //will dispatch the async action
-      if(url === 'subMenu') {
-        dispatch(projectSubMenuList(config))
-      } else {
-        dispatch(projectMenuList(config))
-      }
+    onDataAnalysisMenu: (config) => {
+      dispatch(projectSubMenuList(config))
     },
     onInstalationsList: (config) => {
       dispatch(projectInstallationList(config))

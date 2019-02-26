@@ -119,7 +119,7 @@ class ProjectDetail extends Component {
                   onChange={this.handleChange}
                   indicatorColor="primary"
                   textColor="primary"
-                  fullWidth
+                  variant="fullWidth"
                 >
                   <Tab label={t('team')}
                     value='team'/>

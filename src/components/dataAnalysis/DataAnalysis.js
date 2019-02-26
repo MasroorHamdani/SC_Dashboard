@@ -19,26 +19,27 @@ class DataAnalysisComponent extends Component {
         return(
             <div className={classes.main}>
                 <div>
-                    <AppBar position="static" color="default">
-                        <Tabs
-                        scrollable
-                        scrollButtons="auto"
-                        value={stateData.tab}
-                        onChange={handleTabChange}
-                        indicatorColor="primary"
-                        textColor="primary"
-                        fullWidth
-                        >
-                            {Object.keys(stateData.installationList).map((key)=> (
-                                <Tab label={stateData.installationList[key]['text']}
-                                    value={stateData.installationList[key]['key']}
-                                    key={stateData.installationList[key]['key']}
-                                    />
-                            ))}
-                            }
-                        </Tabs>
-                    </AppBar>
-
+                    {stateData.value &&
+                        <AppBar position="static" color="default">
+                            <Tabs
+                            scrollable
+                            scrollButtons="auto"
+                            value={stateData.tab}
+                            onChange={handleTabChange}
+                            indicatorColor="primary"
+                            textColor="primary"
+                            variant="fullWidth"
+                            >
+                                {Object.keys(stateData.installationList).map((key)=> (
+                                    <Tab label={stateData.installationList[key]['text']}
+                                        value={stateData.installationList[key]['key']}
+                                        key={stateData.installationList[key]['key']}
+                                        />
+                                ))}
+                                }
+                            </Tabs>
+                        </AppBar>
+                    }
                     {stateData.tab &&
                         <AnalysisData 
                         handleDateChange={handleDateChange}

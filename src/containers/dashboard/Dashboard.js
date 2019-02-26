@@ -44,40 +44,38 @@ class Dashboard extends Component {
     this.props.onDataAnalysis(config);
   }
   componentDidMount(){
-    let pid = localStorage.getItem('projectSelected')
-    if(pid) {
-      this.setState({PID: pid}, function () {
-        this.getProjectData();
-      })
+  /**
+   * First function being called on loading.
+   * It will check if state.pid is present or not, if not, it will check what is the value
+   * selected in reducer for pid and call the required api using that value.
+   */
+    if(this.state.PID) {
+      this.getProjectData();
+    } else if(this.props.projectSelected) {
+      this.setState({PID: this.props.projectSelected.pid},
+        function() {
+          this.getProjectData();
+        });
     }
   }
 
   componentDidUpdate(prevProps, prevState) {
+    if(this.props.projectSelected &&
+      !isEqual(this.props.projectSelected, prevProps.projectSelected)) {
+        this.setState({PID: this.props.projectSelected.pid}, function() {
+          this.getProjectData();
+        });
+    }
     if ((this.props.dashboardData || this.props.dataAnalysis) &&
       ((!isEqual(this.props.dashboardData, prevProps.dashboardData) ||
       !isEqual(this.props.dataAnalysis, prevProps.dataAnalysis)) ||
       !this.state.dashboardData.length > 0)) {
-        let projData = [], dashboardData = [];//this.state.dashboardData;
+        let projData = [], dashboardData = [];
         if(this.props.dashboardData && this.props.dashboardData.length > 0)
           this.props.dashboardData.map((row) => {
             if(row.NS === NAMESPACE['PROJECT_TEAM_ALLMEMBERS'])
               projData.push(row);
           });
-        // if(this.metricsIndex < projData.length) {
-        //   let data = projData[this.metricsIndex];
-        //   this.metricsIndex = this.metricsIndex +1;
-        //   if(data && data.PID) {
-        //     localStorage.setItem(data.PID, data.Region);
-        //     let dataToPost = DASHBOARD_METRIC,
-        //       endPoint = `${API_URLS['DEVICE_DATA']}/${data.PID}/${API_URLS['DEFAULT']}`,
-        //       params = {
-        //         'start' : formatDateWithTimeZone(this.state.startTime, DATE_TIME_FORMAT, DATE_TIME_FORMAT, data.Region),//this.state.startTime, //'201902010000',//
-        //         'end': formatDateWithTimeZone(this.state.endTime, DATE_TIME_FORMAT, DATE_TIME_FORMAT, data.Region),//this.state.endTime, //'201902142300',//
-        //       },
-        //       config = getApiConfig(endPoint, 'POST', dataToPost, params);
-        //     this.props.onDataAnalysis(config);
-        //   }
-        // }
         if(this.props.dataAnalysis &&
           !isEqual(this.props.dataAnalysis, prevProps.dataAnalysis)) {
             let projObj = {}, metricsData={};
@@ -145,16 +143,13 @@ class Dashboard extends Component {
 function mapStateToProps(state) {
   return {
       dashboardData : state.DashboardReducer.data,
-      dataAnalysis : state.DataAnalysisReducer.data
+      dataAnalysis : state.DataAnalysisReducer.data,
+      projectSelected : state.projectSelectReducer.data,
   }
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    onDashbaord: (config) => {
-          //will dispatch the async action
-          dispatch(dashboardData(config))
-      },
     onDataAnalysis: (config) => {
         dispatch(projectAnalysisData(config))
     }

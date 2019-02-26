@@ -18,8 +18,7 @@ class RadioButtonComponent extends Component {
         this.props.handleChange();
     }
     render(){
-        const {classes, data, handleChange,
-            handleClick} = this.props;
+        const {classes, data, handleChange} = this.props;
         return(<NamespacesConsumer>
             {
             t=><List dense
@@ -28,14 +27,14 @@ class RadioButtonComponent extends Component {
                     {data.projectList &&
                         data.projectList.map((project, index) => {
                         return <div key={project.id}>
-                            <ListItem button className={classes.nested}
+                            {/* <ListItem button className={classes.nested}
                                 onClick={event => handleClick(index)}>
                                 <ListItemText primary={project.name}/>
                                 {data[index] ? <ExpandLess /> : <ExpandMore />}
-                            </ListItem>
-                            <Collapse in={data[index]} timeout="auto" unmountOnExit>
-                                <List dense component="div" disablePadding>
-                                    <ListItem button>
+                            </ListItem> */}
+                            {/* <Collapse in={data[index]} timeout="auto" unmountOnExit> */}
+                                {/* <List dense component="div" disablePadding key={index} className={classes.nested}> */}
+                                    <ListItem button key={index}>
                                         <FormControl component="fieldset" className={classes.formControl}>
                                             <RadioGroup
                                                 aria-label={data.header}
@@ -52,8 +51,8 @@ class RadioButtonComponent extends Component {
                                             </RadioGroup>
                                         </FormControl>
                                     </ListItem>
-                                </List>
-                            </Collapse>
+                                {/* </List> */}
+                            {/* </Collapse> */}
                         </div>
                     })}
                 </List>

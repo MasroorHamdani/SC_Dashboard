@@ -7,8 +7,8 @@ import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import {toolbarClicked}  from '../../actions/MenuAction';
 import {secondaryListItems } from '../../containers/ListItems';
 import styles from "./MenuStyle";
-import ListItems from "../ListItems";
-import {menuList} from "./MenuList";
+import ListItems from "./ListItems";
+import {menuList, mainMenuList} from "./MenuList";
 class Menu extends Component {
   constructor(props) {
     super(props);
@@ -22,10 +22,14 @@ class Menu extends Component {
   };
 
   componentDidUpdate(prevProps, prevState) {
-    if(this.props.menuToggleData.MenuActionReducer &&
-      !isEqual(this.props.menuToggleData.MenuActionReducer, prevProps.menuToggleData.MenuActionReducer)) {
-        this.setState({open:this.props.menuToggleData.MenuActionReducer.data.open})
-      }
+    if(this.props.menuToggleData &&
+      !isEqual(this.props.menuToggleData, prevProps.menuToggleData)) {
+        this.setState({open:this.props.menuToggleData.open})
+    }
+    if(this.props.projectSelected &&
+      !isEqual(this.props.projectSelected, prevProps.projectSelected)) {
+        this.setState({pid: this.props.projectSelected.pid});
+    }
   }
 
   render() {
@@ -44,7 +48,8 @@ class Menu extends Component {
             </IconButton>
           </div>
           <Divider />
-          <List><ListItems data={menuList} /></List>
+          <List>
+            <ListItems menuList={mainMenuList(this.state.pid)} /></List>
           <Divider />
           {/* <List>{secondaryListItems}</List> */}
           <Typography className={classes.version}>Version 0.01</Typography>
@@ -54,7 +59,8 @@ class Menu extends Component {
 };
 function mapStateToProps(state) {
   return {
-    menuToggleData: state
+    menuToggleData: state.MenuActionReducer.data,
+    projectSelected : state.projectSelectReducer.data
   }
 }
 function mapDispatchToProps(dispatch) {

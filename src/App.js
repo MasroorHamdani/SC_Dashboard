@@ -52,7 +52,7 @@ const styles = theme => ({
                   :
                   (<div className="container">
                     <CssBaseline />
-                    <Header/>
+                    <Header {...this.props}/>
                     <Menu/>
                     <Switch>
                       <Route exact path="/" component={Dashboard} />

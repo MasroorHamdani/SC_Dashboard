@@ -45,8 +45,8 @@ class DataCard extends Component{
                         </Avatar>
                     }
                     action={
-                        <IconButton>
-                        <MoreVertIcon onClick={this.handleClick}/>
+                        <IconButton onClick={this.handleClick}>
+                        <MoreVertIcon/>
                         </IconButton>
                     }
                     title={row.Site}
