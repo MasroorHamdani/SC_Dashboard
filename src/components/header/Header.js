@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from "react-redux";
+// import {withRouter} from "react-router-dom";
 import {isEqual} from "lodash";
+
 import classNames from 'classnames';
 import {AppBar, Toolbar, Badge, IconButton, Typography,
   withStyles, FormControl, InputLabel, Select, Menu,
@@ -208,4 +210,7 @@ class Header extends Component {
     }
   }
   
-  export default withStyles(styles)(connect(mapStateToProps, mapDispatchToProps)(Header));
+export default withStyles(styles)(connect(mapStateToProps, mapDispatchToProps)(Header));
+
+// const Header = withStyles(styles)(App);
+// export default (connect(mapStateToProps, mapDispatchToProps))(withRouter(Header));

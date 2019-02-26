@@ -21,8 +21,8 @@ class Dashboard extends Component {
     this.state = {
       data : [],
       dashboardData : [],
-      loading: false,
-      success: true,
+      loading: true,
+      success: false,
       endTime: new Date(),
       startTime: now,
     }
@@ -44,10 +44,6 @@ class Dashboard extends Component {
     this.props.onDataAnalysis(config);
   }
   componentDidMount(){
-    this.setState({
-      loading: true,
-      success: false
-    });
     let pid = localStorage.getItem('projectSelected')
     if(pid) {
       this.setState({PID: pid}, function () {
@@ -112,13 +108,13 @@ class Dashboard extends Component {
             this.setState({
               dashboardData: dashboardData,
             });
+            if(this.state.loading) {
+              this.setState({
+                loading: false,
+                success: true
+              })
+            }
         }
-    }
-    if(this.state.loading) {
-      this.setState({
-        loading: false,
-        success: true
-      })
     }
   }
 
