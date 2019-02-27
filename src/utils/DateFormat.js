@@ -1,4 +1,4 @@
-import moment from 'moment-timezone';//'moment';
+import moment from 'moment-timezone';
 
 export function getFormatedDateTime(dateTime, format) {
     if(dateTime) {

@@ -2,7 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import {Table, TableBody, TableCell, TablePagination,
-  TableRow, Paper, TextField, Select, MenuItem} from '@material-ui/core';
+  TableRow, Paper, TextField, Select, MenuItem,
+  List, ListItem} from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EnhancedTableHead from './GridHeader';
@@ -162,7 +163,17 @@ class EnhancedTable extends React.Component {
                         return <TableCell key={i} value={n[id]}
                                 // onClick={test.editTable ? () => this.onEdit(i): ''}
                                 >
-                                {n[id]}
+                                {Array.isArray(n[id]) ?
+                                  <List dense={true}>
+                                    {n[id].map((value) => {
+                                      return <ListItem>
+                                        {value}
+                                      </ListItem>
+                                    })}
+                                  </List>
+                                :
+                                  <span>{n[id]}</span>
+                                }
                               </TableCell>
                       })}
                       { allowEdit &&

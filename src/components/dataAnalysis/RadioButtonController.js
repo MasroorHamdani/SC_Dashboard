@@ -45,9 +45,11 @@ class RadioButtonComponent extends Component {
                                                 >
                                                 {project.devices &&
                                                     project.devices.map(function(key) {
+                                                        let name = `${key.name}(${key.locn})`
                                                     return <FormControlLabel value={key.insid} key={key.insid}
                                                     control={<Radio 
-                                                        onChange={event => handleChange(event, project.name, key.insid)}/>} label={key.name} />
+                                                        onChange={event => handleChange(event, project.name, key.insid)}/>}
+                                                        label={name} />
                                                 })}
                                             </RadioGroup>
                                         </FormControl>
