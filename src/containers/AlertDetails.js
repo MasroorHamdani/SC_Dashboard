@@ -42,10 +42,13 @@ class AlertDetails extends Component {
         let {name, value} = event.target;
         this.setState({[name]: value})
     }
-    componentDidMount() {
+    getInstallationLocation =()=> {
         const endPoint = `${API_URLS['PROJECT_DETAILS']}/${this.state.pid}${API_URLS['WASHROOM_LOCATION']}`,
             config = getApiConfig(endPoint, 'GET');
         this.props.onDataAnalysisMenu(config);
+    }
+    componentDidMount() {
+        this.getInstallationLocation()
         this.getAlertData();
     }
     getAlertData = () => {
@@ -71,6 +74,18 @@ class AlertDetails extends Component {
         })
     }
     componentDidUpdate(prevProps, prevState) {
+        if(this.props.projectSelected && 
+            !isEqual(this.props.projectSelected, prevProps.projectSelected)){
+            if(this.state.pid !== this.props.projectSelected.pid)
+                this.setState({
+                    pid: this.props.projectSelected.pid,
+                    insid: ''
+                }, function() {
+                        this.props.history.push(this.props.projectSelected.pid);
+                        this.getInstallationLocation()
+                        this.getAlertData();
+                })
+        }
         if((this.props.projectAlert || this.props.projectLocationList) &&
             !isEqual(this.props.projectAlert, prevProps.projectAlert)) {
             let finalDict = [], data;
@@ -135,6 +150,7 @@ function mapStateToProps(state) {
     return {
         projectAlert : state.ProjectAlertReducer.data,
         projectLocationList : state.DataAnalysisProjectListSubMenuReducer.data,
+        projectSelected : state.projectSelectReducer.data,
     }
   }
 function mapDispatchToProps(dispatch) {

@@ -1,16 +1,20 @@
 import React, {Component} from 'react';
 import { connect } from "react-redux";
-import styles from './ProjectDetailStyle';
-import {withStyles, AppBar, Tabs, Tab, Paper,
-  LinearProgress} from '@material-ui/core';
+import {withRouter} from "react-router-dom";
+
+import { NamespacesConsumer } from 'react-i18next';
 import PropTypes from 'prop-types';
 import {isEqual, groupBy} from 'lodash';
+import {withStyles, AppBar, Tabs, Tab, Paper,
+  LinearProgress} from '@material-ui/core';
+
 import TabContainer from '../tabContainer/TabContainer';
 import {PROJECT_TABS, API_URLS, NAMESPACE_MAPPER} from '../../constants/Constant';
 import {getApiConfig} from '../../services/ApiCofig';
 import {projectDetailData, projectTeamData, projectTeamAsso} from '../../actions/ProjectDataAction';
-import { NamespacesConsumer } from 'react-i18next';
 
+
+import styles from './ProjectDetailStyle';
 class ProjectDetail extends Component {
   constructor(props) {
     super(props)
@@ -18,6 +22,7 @@ class ProjectDetail extends Component {
       value: 'team',
       loading: true,
       success: false,
+      pid: props.match.params.pid
     };
     this.info = false;
   }
@@ -32,13 +37,17 @@ class ProjectDetail extends Component {
 
   callApi = (value) => {
     let url;
-    if (value === 'team' && (!this.props.projectData || !this.state.teamInfo)) {
+    if (value === 'team' 
+    // && (!this.props.projectData || !this.state.teamInfo)
+    ) {
       url = API_URLS['TEAM_MEMBERS'];
-    } else if(value === 'installation' && !this.props.projectData) {
+    } else if(value === 'installation' 
+    // && !this.props.projectData
+    ) {
       url= `${PROJECT_TABS['INSTALLATION']}/${PROJECT_TABS['DETAILS']}`;
     }
     if(url) {
-      const endPoint = `${API_URLS['PROJECT_DETAILS']}/${this.props.stateData.pid}/${url}`,
+      const endPoint = `${API_URLS['PROJECT_DETAILS']}/${this.state.pid}/${url}`,
         config = getApiConfig(endPoint, 'GET');
       this.props.onProjectDetailData(config, url);
     }
@@ -48,6 +57,16 @@ class ProjectDetail extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
+    if(this.props.projectSelected && 
+      !isEqual(this.props.projectSelected, prevProps.projectSelected)){
+      if(this.state.pid !== this.props.projectSelected.pid)
+        this.setState({pid: this.props.projectSelected.pid},
+          function() {
+            this.props.history.push(this.props.projectSelected.pid);
+            this.info = false;
+            this.callApi(this.state.value);
+        });
+    }
     if (this.props.projectData &&
       (!isEqual(this.props.projectData, prevProps.projectData) ||
         !this.state.installationData)) {
@@ -62,20 +81,19 @@ class ProjectDetail extends Component {
         this.setState({installationData: responseData})
         localStorage.setItem('installationLocations', insIDList);
     }
-    if((this.props.teamMembers || this.props.teamMembers || this.props.projectData) &&
+    if((this.props.teamMembers || this.props.teamAsso || this.props.projectData) &&
       (!isEqual(this.props.teamMembers, prevProps.teamMembers) ||
       !isEqual(this.props.teamAsso, prevProps.teamAsso) ||
-      !isEqual(this.props.projectData, prevProps.projectData) &&
-      (!this.state.teamInfo))) {
+      !isEqual(this.props.projectData, prevProps.projectData))) {
         if(!this.info) {
-          const endPoint = `${API_URLS['PROJECT_DETAILS']}/${this.props.stateData.pid}/${API_URLS['TEAM_ASSOCIATION']}`,
+          const endPoint = `${API_URLS['PROJECT_DETAILS']}/${this.state.pid}/${API_URLS['TEAM_ASSOCIATION']}`,
           config = getApiConfig(endPoint, 'GET');
           this.props.onTeamAssociation(config);
           this.info = true;
         }
         if(this.props.teamAsso) {
           const url= `${PROJECT_TABS['INSTALLATION']}/${PROJECT_TABS['DETAILS']}`,
-            endPoint = `${API_URLS['PROJECT_DETAILS']}/${this.props.stateData.pid}/${url}`,
+            endPoint = `${API_URLS['PROJECT_DETAILS']}/${this.state.pid}/${url}`,
             config = getApiConfig(endPoint, 'GET');
           this.props.onProjectDetailData(config, url); 
         }
@@ -151,7 +169,8 @@ function mapStateToProps(state) {
   return {
       projectData : state.ProjectDetailsReducer.data,
       teamMembers : state.ProjectTeamDataReducer.data,
-      teamAsso : state.ProjectTeamAssoDataReducer.data
+      teamAsso : state.ProjectTeamAssoDataReducer.data,
+      projectSelected : state.projectSelectReducer.data,
   }
 }
 
@@ -169,4 +188,6 @@ function mapDispatchToProps(dispatch) {
         }
     }
 }
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(ProjectDetail));
+// export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(ProjectDetail));
+const ProjectDetailComponent = withStyles(styles)(ProjectDetail);
+export default (connect(mapStateToProps, mapDispatchToProps))(withRouter(ProjectDetailComponent));

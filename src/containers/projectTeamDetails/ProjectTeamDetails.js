@@ -163,7 +163,7 @@ class ProjectInstallationDetails extends Component {
             userDetails.map((row) => {
                 if(row.NS === NAMESPACE['USER_PROFILE'])
                     profile = row;
-                if(row.NS === NAMESPACE['PROJECT_TEAM_ALLMEMBERS_ASSOC'])
+                if(row.NS === NAMESPACE['PROJECT_TEAM_ALLMEMBERS_ASSOC'] && row.PID === this.state.pid)
                     association.push(row);
             });
         } else {
@@ -173,6 +173,19 @@ class ProjectInstallationDetails extends Component {
             association: association};
     }
     componentDidUpdate(prevProps, prevState) {
+        if(this.props.projectSelected && 
+            !isEqual(this.props.projectSelected, prevProps.projectSelected)){
+            if(this.state.pid !== this.props.projectSelected.pid)
+                this.setState({pid: this.props.projectSelected.pid},
+                function() {
+                    let arr = this.props.match.url.split('/');
+                    arr[2] = this.props.projectSelected.pid;
+                    let url = arr.join('/');
+                    this.info = false;
+                    this.props.history.push(url);
+                    this.getProfileData();
+                });
+        }
         if ((this.props.userProfile || this.props.locationList) &&
             (!isEqual(this.props.userProfile, prevProps.userProfile) ||
             !isEqual(this.props.locationList, prevState.locationList))
@@ -424,7 +437,8 @@ class ProjectInstallationDetails extends Component {
 function mapStateToProps(state) {
     return {
         locationList : state.ProjectDetailsReducer.data,
-        userProfile: state.UserProfileReducer.data
+        userProfile: state.UserProfileReducer.data,
+        projectSelected : state.projectSelectReducer.data,
     }
 }
   

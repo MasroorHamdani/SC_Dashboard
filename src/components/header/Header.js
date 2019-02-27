@@ -180,7 +180,7 @@ class Header extends Component {
     return {
         menuState: state.MenuActionReducer.data,
         ProjectList : state.DashboardReducer.data,
-        projectSelected : state.projectSelectReducer.data
+        projectSelected : state.projectSelectReducer.data,
     }
   }
   function mapDispatchToProps(dispatch) {

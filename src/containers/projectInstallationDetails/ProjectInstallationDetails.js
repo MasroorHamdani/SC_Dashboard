@@ -25,6 +25,9 @@ class ProjectInstallationDetails extends Component {
         }
     }
     componentDidMount() {
+        this.getInstallationDetails();
+    }
+    getInstallationDetails = () => {
         const endPoint = `${API_URLS['PROJECT_DETAILS']}/${this.state.pid}/
             ${PROJECT_TABS['INSTALLATION']}/${PROJECT_TABS['DEVICES']}/${this.state.insid}`,
             config = getApiConfig(endPoint, 'GET');
@@ -35,8 +38,20 @@ class ProjectInstallationDetails extends Component {
             })
         }
     }
-
     componentDidUpdate(prevProps, prevState) {
+        if(this.props.projectSelected && 
+            !isEqual(this.props.projectSelected, prevProps.projectSelected)){
+            if(this.state.pid !== this.props.projectSelected.pid)
+                this.setState({pid: this.props.projectSelected.pid},
+                function() {
+                    let arr = this.props.match.url.split('/');
+                    arr[2] = this.props.projectSelected.pid;
+                    let url = arr.join('/');
+                    this.info = false;
+                    this.props.history.push(url);
+                    this.getInstallationDetails();
+                });
+        }
         if (this.props.installationDeviceData &&
         !isEqual(this.props.installationDeviceData,
             prevProps.installationDeviceData)) {
@@ -103,7 +118,8 @@ class ProjectInstallationDetails extends Component {
 }
 function mapStateToProps(state) {
     return {
-        installationDeviceData: state.InstallationDeviceReducer.data
+        installationDeviceData: state.InstallationDeviceReducer.data,
+        projectSelected : state.projectSelectReducer.data,
     }
 }
 function mapDispatchToProps(dispatch) {
