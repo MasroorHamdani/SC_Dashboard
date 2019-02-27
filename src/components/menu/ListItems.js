@@ -25,7 +25,7 @@ class ListItems extends Component {
             default:
                 return '';
         }
-      }
+    }
     render() {
         const {menuList} = this.props;
         if(menuList) {

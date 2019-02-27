@@ -8,7 +8,7 @@ import {toolbarClicked}  from '../../actions/MenuAction';
 import {secondaryListItems } from '../../containers/ListItems';
 import styles from "./MenuStyle";
 import ListItems from "./ListItems";
-import {menuList, mainMenuList} from "./MenuList";
+import {mainMenuList} from "./MenuList";
 class Menu extends Component {
   constructor(props) {
     super(props);

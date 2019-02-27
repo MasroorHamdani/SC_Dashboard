@@ -55,8 +55,8 @@ class ProjectInstallationDetails extends Component {
         this.setState({ profileNotify: !this.state.profileNotify});
     }
     onAddtion = () => {
-        let startTime = formatDateTime(this.state.userLocation.ShiftStart, "HH:mm a", "HHMM"),
-            endTime = formatDateTime(this.state.userLocation.ShiftEnd, "HH:mm a", "HHMM");
+        let startTime = formatDateTime(this.state.userLocation.ShiftStart, "hh:mm a", "HHmm"),
+            endTime = formatDateTime(this.state.userLocation.ShiftEnd, "hh:mm a", "HHmm");
         if(this.state.userLocation.Tags && this.state.userLocation.ShiftStart &&
             this.state.userLocation.ShiftEnd && this.state.userLocation.Level &&
             this.state.userLocation.InsID) {
@@ -396,14 +396,18 @@ class ProjectInstallationDetails extends Component {
                                             subheader={dt.locn}/>
                                             <CardContent>
                                                 <Typography component="p">
-                                                <b>Shift Start At :</b> {formatDateTime(dt.ShiftStart, "HHMM", "HH:mm A")}
+                                                <b>Shift Start At :</b> {formatDateTime(dt.ShiftStart, "HHmm", "hh:mm A")}
                                                 </Typography>
                                                 <Typography component="p">
-                                                <b>Shift Ends At :</b> {formatDateTime(dt.ShiftEnd, "HHMM", "HH:mm A")}</Typography>
+                                                <b>Shift Ends At :</b> {formatDateTime(dt.ShiftEnd, "HHmm", "hh:mm A")}
+                                                </Typography>
                                                 <Typography component="p">
                                                     <b>Tags associated :</b> {dt.Tags.map((dt, index) => {
                                                         return <span key={index}> {dt} </span>
                                                     })}
+                                                </Typography>
+                                                <Typography component="p">
+                                                <b>Level :</b> {dt.Level}
                                                 </Typography>
                                             </CardContent>
                                         </Card>
