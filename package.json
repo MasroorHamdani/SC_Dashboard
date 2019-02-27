@@ -1,6 +1,6 @@
 {
   "name": "smart-clean",
-  "homepage": "./",
+  "homepage": "http://optimus.ap-southeast-1.elasticbeanstalk.com/",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
