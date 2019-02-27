@@ -287,6 +287,8 @@ export const DATA_VIEW_TYPE = {
 }
 
 export const ALERT_LEVEL = [
+    {key: 'l0',
+    display: 'L0'},
     {key: 'l1',
     display: 'L1'},
     {key: 'l2',
