@@ -7,7 +7,7 @@ import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import {toolbarClicked}  from '../../actions/MenuAction';
 import {secondaryListItems } from '../../containers/ListItems';
 import styles from "./MenuStyle";
-import ListItems from "../ListItems";
+import ListItems from "./ListItems";
 import {menuList} from "./MenuList";
 class Menu extends Component {
   constructor(props) {

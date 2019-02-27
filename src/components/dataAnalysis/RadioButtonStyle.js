@@ -7,7 +7,7 @@ const styles = theme => ({
     },
     group: {
         // margin: theme.spacing.unit * 1,
-        // padding: theme.spacing.unit * 1,
+        padding: theme.spacing.unit * 1,
     },
     root: {
         width: "23%",
