@@ -185,8 +185,7 @@ class DataAnalysis extends Component {
    * This function will take care of the timezone change and call other function
    * which will make an API call.
    */
-    let timeZone = localStorage.getItem(this.state.pid);
-    let formatedDate = getStartEndTime(param, startDate, endDate, timeZone);
+    let formatedDate = getStartEndTime(param, startDate, endDate, this.state.timeZone);
     this.setState({
       start: formatedDate.start,
       end: formatedDate.end,
@@ -291,10 +290,13 @@ class DataAnalysis extends Component {
    * It will check if state.pid is present or not, if not, it will check what is the value
    * selected in reducer for pid and call the required api using that value.
    */
-    if(this.state.pid) {
+    if(this.state.pid && this.state.timeZone) {
       this.getInstallationLocation();
     } else if(this.props.projectSelected) {
-      this.setState({pid: this.props.projectSelected.pid}, function() {
+      this.setState({
+        pid: this.props.projectSelected.PID,
+        timeZone: this.props.projectSelected.Region
+      }, function() {
           this.getInstallationLocation();
         });
     }
@@ -319,7 +321,8 @@ class DataAnalysis extends Component {
   if(this.props.projectSelected &&
     !isEqual(this.props.projectSelected, prevProps.projectSelected)) {
       this.setState({
-        pid: this.props.projectSelected.pid,
+        pid: this.props.projectSelected.PID,
+        timeZone: this.props.projectSelected.Region,
         tab: '',
         installationList: {},
         dataAnalysis: {},

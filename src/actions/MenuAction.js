@@ -16,6 +16,6 @@ export function toolbarClicked(value) {
 export function projectSelect(value) {
   return {
     type: PROJECT_SELECTED,
-    data : {pid: value}
+    data : value//{pid: value}
   }
 }

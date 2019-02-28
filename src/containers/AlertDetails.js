@@ -56,8 +56,7 @@ class AlertDetails extends Component {
             loading: true,
             success: false,
         },function() {
-            let endPoint,
-                timeZone = localStorage.getItem(this.state.pid);
+            let endPoint;
             if(!this.state.insid) {
                 endPoint = `${API_URLS['PROJECT_ALERT']}/${this.state.pid}`;
             }
@@ -66,8 +65,10 @@ class AlertDetails extends Component {
                 this.showFilter = true;
             }
             let params = {
-                'start' : formatDateWithTimeZone(this.state.startDate, DATE_TIME_FORMAT, DATE_TIME_FORMAT, timeZone),
-                'end' : formatDateWithTimeZone(this.state.endDate, DATE_TIME_FORMAT, DATE_TIME_FORMAT, timeZone)
+                'start' : formatDateWithTimeZone(this.state.startDate, DATE_TIME_FORMAT, DATE_TIME_FORMAT,
+                    this.state.timeZone),
+                'end' : formatDateWithTimeZone(this.state.endDate, DATE_TIME_FORMAT, DATE_TIME_FORMAT,
+                    this.state.timeZone)
             },
             config = getApiConfig(endPoint, 'GET', '', params);
             this.props.onProjectAlert(config);
@@ -76,12 +77,13 @@ class AlertDetails extends Component {
     componentDidUpdate(prevProps, prevState) {
         if(this.props.projectSelected && 
             !isEqual(this.props.projectSelected, prevProps.projectSelected)){
-            if(this.state.pid !== this.props.projectSelected.pid)
+            if(this.state.pid !== this.props.projectSelected.PID)
                 this.setState({
-                    pid: this.props.projectSelected.pid,
+                    pid: this.props.projectSelected.PID,
+                    timeZone: this.props.projectSelected.Region,
                     insid: ''
                 }, function() {
-                        this.props.history.push(this.props.projectSelected.pid);
+                        this.props.history.push(this.props.projectSelected.PID);
                         this.getInstallationLocation()
                         this.getAlertData();
                 })

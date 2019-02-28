@@ -6,7 +6,7 @@ import {isEqual} from "lodash";
 import classNames from 'classnames';
 import {AppBar, Toolbar, Badge, IconButton, Typography,
   withStyles, FormControl, Select, Menu,
-MenuItem, Divider} from '@material-ui/core';
+MenuItem, Divider, Popper, Fade, Paper} from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import AccountCircle from '@material-ui/icons/AccountCircle';
@@ -32,8 +32,9 @@ class Header extends Component {
       super(props);
       this.state = {
         open: true,
-        anchorEl: null,
-        projectList: []
+        projectList: [],
+        arrowRef: null,
+        profileOpen: false,
       }
       this.metricsIndex = 0;
     }
@@ -41,22 +42,31 @@ class Header extends Component {
       this.props.onToolbarClick(this.state.open)
     };
 
+    handleMenu = () => {
+      this.setState(state => ({
+        profileOpen: !state.profileOpen,
+      }));
+    };
+    handleArrowRef = node => {
+      this.setState({
+        arrowRef: node,
+      });
+    };
+
+    handleClickButton = () => {
+      this.setState(state => ({
+        open: !state.open,
+      }));
+    };
+  
     changeProject = (event) => {
       let {name, value} = event.target;
       this.setState({[name]: value});
       this.props.onProjectSelect(value)
     }
-
-    handleMenu = event => {
-      this.setState({ anchorEl: event.currentTarget });
-    };
-  
-    handleClose = () => {
-      this.setState({ anchorEl: null });
-    };
   
     onClick = (url) => {
-      this.handleClose();
+      this.handleMenu();
       this.props.history.push(url)
     }
   
@@ -85,13 +95,13 @@ class Header extends Component {
             projectList: projData,
             PID: projData[0].PID
           }, function() {
-            this.props.onProjectSelect(projData[0].PID)
+            this.props.onProjectSelect(projData[0])
           })
       }
     }
     render() {
       const { classes } = this.props;
-      const profileOpen = Boolean(this.state.anchorEl);
+      const {profileOpen, arrowRef} = this.state;
       const user = localStorage.getItem('userName');
       return (
           <AppBar
@@ -135,37 +145,44 @@ class Header extends Component {
                 </FormControl>
               }
               <IconButton
-                  aria-owns={profileOpen ? 'menu-appbar' : undefined}
-                  aria-haspopup="true"
-                  onClick={this.handleMenu}
-                  color="inherit"
-                >
-                  <AccountCircle />
+                buttonRef={node => {
+                  this.anchorEl = node;
+                }}
+                aria-owns={profileOpen ? 'menu-appbar' : undefined}
+                aria-haspopup="true"
+                onClick={this.handleMenu}
+                color="inherit">
+                <AccountCircle />
               </IconButton>
-              <Menu
-                  id="menu-appbar"
-                  anchorEl={this.state.anchorEl}
-                  anchorOrigin={{
-                    vertical: 'top',
-                    horizontal: 'right',
-                  }}
-                  transformOrigin={{
-                    vertical: 'top',
-                    horizontal: 'right',
-                  }}
+              <Popper
                   open={profileOpen}
-                  onClose={this.handleClose}>
-                  <MenuItem disabled>{user}</MenuItem>
+                  anchorEl={this.anchorEl}
+                  placement='bottom'
+                  disablePortal={true}
+                  className={classes.popper}
+                  modifiers={{
+                    flip: {
+                      enabled: false,
+                    },
+                    arrow: {
+                      enabled: true,
+                      element: arrowRef,
+                    },
+                }}>
+                <span className={classes.arrow} ref={this.handleArrowRef} />
+                <Paper className={classes.paper}>
+                  <MenuItem disabled>{user}</MenuItem>                    
                   <Divider />
                   <MenuItem onClick={e => this.onClick(REACT_URLS['USER-PROFILE'])}>
-                    <IconButton><AccountBox/></IconButton>
+                    <IconButton><AccountBox /></IconButton>
                     Profile
                   </MenuItem>
                   <MenuItem onClick={e => this.onClick(REACT_URLS['LOGOUT'])}>
-                    <IconButton><ExitToAppIcon/></IconButton>
+                    <IconButton><ExitToAppIcon /></IconButton>
                     Logout
                   </MenuItem>
-              </Menu>
+                </Paper>
+              </Popper>
               <IconButton color="inherit">
                 <Badge badgeContent={4} color="secondary">
                   <NotificationsIcon />

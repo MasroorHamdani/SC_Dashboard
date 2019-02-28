@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from "react-redux";
-import {withStyles, GridList, CircularProgress, LinearProgress} from '@material-ui/core';
+import {withStyles, GridList, LinearProgress} from '@material-ui/core';
 import PropTypes from 'prop-types';
 import {isEqual} from "lodash";
 import styles from './DashboardStyle'
@@ -8,7 +8,6 @@ import ProjectDataComponent from "../../components/projectData/ProjectData";
 import { API_URLS, NAMESPACE, DASHBOARD_METRIC,
   DATE_TIME_FORMAT} from "../../constants/Constant";
 import { getApiConfig } from '../../services/ApiCofig';
-import {dashboardData} from '../../actions/DashboardAction';
 import {projectAnalysisData} from '../../actions/DataAnalysis';
 import {getVector} from '../../utils/AnalyticsDataFormat';
 import {formatDateWithTimeZone} from '../../utils/DateFormat';
@@ -29,16 +28,12 @@ class Dashboard extends Component {
     this.metricsIndex = 0;
   }
 
-  projectActionRedirection = (e, param) => {
-    this.props.history.push(`${e.target.id}/${param}`);
-  }
   getProjectData = () => {
-    let timezone = localStorage.getItem(this.state.PID),
-      dataToPost = DASHBOARD_METRIC,
+    let dataToPost = DASHBOARD_METRIC,
       endPoint = `${API_URLS['DEVICE_DATA']}/${this.state.PID}/${API_URLS['DEFAULT']}`,
       params = {
-        'start' : formatDateWithTimeZone(this.state.startTime, DATE_TIME_FORMAT, DATE_TIME_FORMAT, timezone),
-        'end': formatDateWithTimeZone(this.state.endTime, DATE_TIME_FORMAT, DATE_TIME_FORMAT, timezone),
+        'start' : formatDateWithTimeZone(this.state.startTime, DATE_TIME_FORMAT, DATE_TIME_FORMAT, this.state.timeZone),
+        'end': formatDateWithTimeZone(this.state.endTime, DATE_TIME_FORMAT, DATE_TIME_FORMAT, this.state.timeZone),
       },
       config = getApiConfig(endPoint, 'POST', dataToPost, params);
     this.props.onDataAnalysis(config);
@@ -49,10 +44,12 @@ class Dashboard extends Component {
    * It will check if state.pid is present or not, if not, it will check what is the value
    * selected in reducer for pid and call the required api using that value.
    */
-    if(this.state.PID) {
+    if(this.state.PID && this.state.timeZone) {
       this.getProjectData();
     } else if(this.props.projectSelected) {
-      this.setState({PID: this.props.projectSelected.pid},
+      this.setState({
+        PID: this.props.projectSelected.PID,
+        timeZone: this.props.projectSelected.Region},
         function() {
           this.getProjectData();
         });
@@ -62,7 +59,9 @@ class Dashboard extends Component {
   componentDidUpdate(prevProps, prevState) {
     if(this.props.projectSelected &&
       !isEqual(this.props.projectSelected, prevProps.projectSelected)) {
-        this.setState({PID: this.props.projectSelected.pid}, function() {
+        this.setState({
+          PID: this.props.projectSelected.PID,
+          timeZone: this.props.projectSelected.Region}, function() {
           this.getProjectData();
         });
     }
@@ -122,14 +121,12 @@ class Dashboard extends Component {
       <div className={classes.root}>
         <main className={classes.content}>
         {this.state.loading ? (
-        // <CircularProgress size={50} className={classes.buttonProgress} />
         <LinearProgress className={classes.buttonProgress}/>
         )
         : (this.state.dashboardData &&
           <div className={classes.gridRoot}>
             <GridList cellHeight={180} className={classes.gridList}>
-              <ProjectDataComponent stateData={this.state}
-              projectActionRedirection={this.projectActionRedirection}/>
+              <ProjectDataComponent stateData={this.state}/>
             </GridList>
         </div>
         )

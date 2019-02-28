@@ -41,11 +41,11 @@ class ProjectInstallationDetails extends Component {
     componentDidUpdate(prevProps, prevState) {
         if(this.props.projectSelected && 
             !isEqual(this.props.projectSelected, prevProps.projectSelected)){
-            if(this.state.pid !== this.props.projectSelected.pid)
-                this.setState({pid: this.props.projectSelected.pid},
+            if(this.state.pid !== this.props.projectSelected.PID)
+                this.setState({pid: this.props.projectSelected.PID},
                 function() {
                     let arr = this.props.match.url.split('/');
-                    arr[2] = this.props.projectSelected.pid;
+                    arr[2] = this.props.projectSelected.PID;
                     let url = arr.join('/');
                     this.info = false;
                     this.props.history.push(url);

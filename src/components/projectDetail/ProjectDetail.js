@@ -59,10 +59,10 @@ class ProjectDetail extends Component {
   componentDidUpdate(prevProps, prevState) {
     if(this.props.projectSelected && 
       !isEqual(this.props.projectSelected, prevProps.projectSelected)){
-      if(this.state.pid !== this.props.projectSelected.pid)
-        this.setState({pid: this.props.projectSelected.pid},
+      if(this.state.pid !== this.props.projectSelected.PID)
+        this.setState({pid: this.props.projectSelected.PID},
           function() {
-            this.props.history.push(this.props.projectSelected.pid);
+            this.props.history.push(this.props.projectSelected.PID);
             this.info = false;
             this.callApi(this.state.value);
         });

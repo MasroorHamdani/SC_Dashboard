@@ -28,7 +28,7 @@ class Menu extends Component {
     }
     if(this.props.projectSelected &&
       !isEqual(this.props.projectSelected, prevProps.projectSelected)) {
-        this.setState({pid: this.props.projectSelected.pid});
+        this.setState({pid: this.props.projectSelected.PID});
     }
   }
 
