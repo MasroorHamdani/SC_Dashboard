@@ -102,8 +102,11 @@ class AlertAnalysis extends Component {
                             {row.header &&
                                 <ExpansionPanelSummary className={classes.expansionRoot} expandIcon={<ExpandMoreIcon />}>
                                 <div className={classes.heading}>
-                                    <Typography variant="h6">{row.header.StatusInfo.Reason} | {row.header.name}
-                                    &nbsp;({row.header.locn}) ({row.data[0].Data.Type})
+                                    <Typography variant="h6">{row.header.StatusInfo.Reason}
+                                    {row.header.name ?
+                                        ` - ${row.header.name} (${row.header.locn})`
+                                    :''}
+                                    ({row.data.length > 0 ? `${row.data[0].Data.Type}` : ''})
                                     </Typography>
                                     <Typography>
                                         {formatDateTime(row.header.Timestamp,
