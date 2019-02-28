@@ -1,4 +1,4 @@
-import {grey, yellow, green, orange, red} from '@material-ui/core/colors';
+import {grey, yellow, green, blue, red} from '@material-ui/core/colors';
 const styles = theme => ({
     main: {
         width: '80%',
@@ -40,13 +40,13 @@ const styles = theme => ({
     },
     blocked: {
         color: '#fff',
-        backgroundColor: red[500],
+        backgroundColor: blue[500],
         padding:'0px !important',
         flexBasis: '10%'
     },
     not_resolved: {
         color: '#fff',
-        backgroundColor: orange[300],
+        backgroundColor: red[500],
         padding:'0px !important',
         flexBasis: '10%'
     },
