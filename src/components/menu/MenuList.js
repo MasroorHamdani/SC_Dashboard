@@ -1,4 +1,7 @@
 export function mainMenuList (pid) {
+  /**
+   * Generate the left nav list, with pid being passsed to generate the URL
+   */
 return ([
     {
       name: "Dashboard",

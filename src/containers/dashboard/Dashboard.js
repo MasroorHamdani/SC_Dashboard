@@ -43,6 +43,7 @@ class Dashboard extends Component {
    * First function being called on loading.
    * It will check if state.pid is present or not, if not, it will check what is the value
    * selected in reducer for pid and call the required api using that value.
+   * Time zone is also saved as part of the state. Time zone is used to change the datetime.
    */
     if(this.state.PID && this.state.timeZone) {
       this.getProjectData();
@@ -57,6 +58,18 @@ class Dashboard extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
+  /**
+   * This function is called whenever component update.
+   * we need to check if reducer got value and if current value is different the old,
+   * then only we should proceed.
+   */
+  /**
+   * This part will listen to project selection change from the header component.
+   * On any change this will be called and the data will be changed in UI.
+   * Also this will be the check which will get the selected project details
+   * and save in internal state for further usage.
+   * Reducer used - 'projectSelectReducer'
+   */
     if(this.props.projectSelected &&
       !isEqual(this.props.projectSelected, prevProps.projectSelected)) {
         this.setState({
@@ -65,16 +78,26 @@ class Dashboard extends Component {
           this.getProjectData();
         });
     }
+  /**
+   * This part will get the dashboard data per project.
+   * As the api will gte all the relavant data for project,
+   * therefore the first thing is to filter out the data based on NameSpace.
+   * Next get the data in appropriate format and pass on to other functions.
+   * Reducer used to get all project details is - 'DashboardReducer'
+   * this data is used to mix with analutics and get the data in representable form
+   * Reducer to get Analytics data for project - 'DataAnalysisReducer'
+   */
     if ((this.props.dashboardData || this.props.dataAnalysis) &&
       ((!isEqual(this.props.dashboardData, prevProps.dashboardData) ||
       !isEqual(this.props.dataAnalysis, prevProps.dataAnalysis)) ||
       !this.state.dashboardData.length > 0)) {
         let projData = [], dashboardData = [];
-        if(this.props.dashboardData && this.props.dashboardData.length > 0)
+        if(this.props.dashboardData && this.props.dashboardData.length > 0){
           this.props.dashboardData.map((row) => {
             if(row.NS === NAMESPACE['PROJECT_TEAM_ALLMEMBERS'])
               projData.push(row);
           });
+        }
         if(this.props.dataAnalysis &&
           !isEqual(this.props.dataAnalysis, prevProps.dataAnalysis)) {
             let projObj = {}, metricsData={};

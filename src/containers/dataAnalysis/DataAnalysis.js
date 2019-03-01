@@ -6,9 +6,9 @@ import _ from 'lodash';
 import moment from 'moment-timezone';
 import DataAnalysisComponent from '../../components/dataAnalysis/DataAnalysis';
 import {getApiConfig} from '../../services/ApiCofig';
-import {API_URLS, NAMESPACE, NAMESPACE_MAPPER} from '../../constants/Constant';
+import {API_URLS, NAMESPACE_MAPPER} from '../../constants/Constant';
 import {projectSubMenuList, projectInstallationList,
-  projectAnalysisData, projectMenuList, clearDataAnalysis} from '../../actions/DataAnalysis';
+  projectAnalysisData, clearDataAnalysis} from '../../actions/DataAnalysis';
 import styles from './DataAvalysisStyle';
 import RadioButtonComponent from '../../components/dataAnalysis/RadioButtonController';
 import {getStartEndTime, getVector} from '../../utils/AnalyticsDataFormat';
@@ -315,8 +315,9 @@ class DataAnalysis extends Component {
    * then only we should proceed.
    */
   /**
-   * This part will licten to project selection change from the header component.
+   * This part will listen to project selection change from the header component.
    * On any change this will be called and the data will be changed in UI
+   * Reducer used - 'projectSelectReducer'
    */
   if(this.props.projectSelected &&
     !isEqual(this.props.projectSelected, prevProps.projectSelected)) {
@@ -332,10 +333,9 @@ class DataAnalysis extends Component {
       });
   }
   /**
-   * This part is for getting the list of Projects allocated to logged in user.
-   * Once Projects are received, there has to be other API call for each Project
-   * to get the installation details for all the projects. Which will be shown as sub menu on UI.
-   * Reducer for projects - 'DataAnalysisMenuListReducer'
+   * This part will get the list of locations per project,
+   * as the project will be selected in the header.
+   * This list will be shown as menu on UI.
    * Reducer for installations - 'DataAnalysisProjectListSubMenuReducer'
    */ 
     if (this.props.projectSubMenuList &&
@@ -359,12 +359,12 @@ class DataAnalysis extends Component {
           })
         }
     }
-    /**
-     * This part is for data for selected device for selected time frame.
-     * There is 'x-sc-session-token' passed in response, which is saved in state,
-     * for being used in sampling, as sampling will run all the functions on the cached data
-     * which can be accessed from the x-sc-session-token.
-     */
+  /**
+   * This part is for data for selected device for selected time frame.
+   * There is 'x-sc-session-token' passed in response, which is saved in state,
+   * for being used in sampling, as sampling will run all the functions on the cached data
+   * which can be accessed from the x-sc-session-token.
+   */
     if (this.props.dataAnalysis &&
       !isEqual(this.props.dataAnalysis, prevProps.dataAnalysis) &&
       isEqual(this.props.dataAnalysis.data.status, "success")){
@@ -392,11 +392,11 @@ class DataAnalysis extends Component {
         if(!this.state[this.state.deviceKey])
             this.setState({[this.state.deviceKey]: referData})
     }
-    /**
-     * This part deals with getting the sensor installation details for selected location.
-     * One location can have multiple Devices of same type.
-     * That is being handled by appending numbers to the type.
-     */
+  /**
+   * This part deals with getting the sensor installation details for selected location.
+   * One location can have multiple Devices of same type.
+   * That is being handled by appending numbers to the type.
+   */
     if (this.props.installationList &&
       !isEqual(this.props.installationList, prevProps.installationList)) {
         let installationList = {}, i = 1;
@@ -420,10 +420,10 @@ class DataAnalysis extends Component {
         })
         this.setState({installationList: installationList})
     }
-    /**
-     * This section deals with progress bar.
-     * As the API data is served, this section will stop the progress bar loading.
-     */
+  /**
+   * This section deals with progress bar.
+   * As the API data is served, this section will stop the progress bar loading.
+   */
     if(this.state.loading) {
       this.setState({
         loading: false,

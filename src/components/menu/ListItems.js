@@ -11,6 +11,11 @@ import {Link} from "react-router-dom";
 
 class ListItems extends Component {
     renderSwitch(param) {
+        /**
+         * This function is used to display the relevant icons for menu.
+         * menu list will have the icon name give,
+         * which we need to define here and use in switch case.
+         */
         switch(param) {
             case 'DashboardIcon':
                 return <DashboardIcon/>;

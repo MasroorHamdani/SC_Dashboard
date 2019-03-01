@@ -2,18 +2,14 @@ export const API_END_POINT = "https://4l6qi5oh0h.execute-api.ap-southeast-1.amaz
 //"https://1w5tcso1ol.execute-api.ap-southeast-1.amazonaws.com/alpha";
 
 export const API_URLS = {
-    "LOGIN": "/unauth/login", //"/login-1-time",
-    "REFRESH_TOKEN": "/unauth/login",///refreshtoken",
-    // "DASHBOARD": "/auth/projects",
+    "LOGIN": "/unauth/login",
+    "REFRESH_TOKEN": "/unauth/login",
     "DASHBOARD": "/authV2/projects",
-    // "PROJECT_DETAILS": "/auth/projects",
     "PROJECT_DETAILS": "/authV2/projects",
-    "FORGOT_PASSWORD": "/unauth/password/change",//"/forgot-password",
-    "RESET_PASSWORD": "/unauth/password/confirm", //"/confirm-forgot-password",
+    "FORGOT_PASSWORD": "/unauth/password/change",
+    "RESET_PASSWORD": "/unauth/password/confirm",
     "AUTH_RESET_PASSWORD": "/unauth/password/authchallenge",
-    // "USER_PROFILE": "/auth/profile",
     "USER_PROFILE": "/authV2/profile",
-    // "DEVICE_DATA": "/auth/devices/data",
     "DEVICE_DATA": "/authV2/devices/data/project",
     "DEVICE_METRICS": "/auth/devices/metrics",
     "SERVICE_REQUIREMENTS": "/auth/algorithms",

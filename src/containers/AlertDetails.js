@@ -21,37 +21,72 @@ class AlertDetails extends Component {
             dateChanged: false,
             loading: true,
             success: false,
-            insid:''
+            insid: ''
         }
         this.info = false;
     }
 
     handleChangeStart  = (date) => {
+    /**
+     * Handle datetime change for state date, from date picker
+     */
         this.setState({
             startDate: date,
             dateChanged: true
           });
     }
     handleChangeEnd  = (date) => {
+    /**
+     * Handle datetime change for end date, from date picker
+     */
         this.setState({
             endDate: date,
             dateChanged: true
           });
     }
     setStateValue = (event) => {
+    /**
+     * Generic function to set the state variable
+     */
         let {name, value} = event.target;
         this.setState({[name]: value})
     }
     getInstallationLocation =()=> {
+    /**
+     * Make an API call and get installation location details for selected project.
+     */
         const endPoint = `${API_URLS['PROJECT_DETAILS']}/${this.state.pid}${API_URLS['WASHROOM_LOCATION']}`,
             config = getApiConfig(endPoint, 'GET');
         this.props.onDataAnalysisMenu(config);
     }
     componentDidMount() {
-        this.getInstallationLocation()
-        this.getAlertData();
+    /**
+     * Check id pid and timezone are present in state,
+     * if yes get the data by calling internal functions,
+     * or set the value first and then make the call.
+     */
+        if(this.state.pid && this.state.timeZone){
+            this.getInstallationLocation();
+            this.getAlertData();
+        } else if(this.props.projectSelected) {
+            this.setState({
+                timeZone: this.props.projectSelected.Region},
+            function() {
+            this.getInstallationLocation();
+            this.getAlertData();
+            });
+        }
     }
     getAlertData = () => {
+    /**
+     * This function will check if installtion id was selected,
+     * if id is selected then call the api got for particuler id and get the alerts,
+     * else make a generic api call on project basis to get all the alerts.
+     * Timezone is considered, as devices are located at different locations,
+     * and DB has location specific data for installations,
+     * in order to show data to user being present in any part of the world,
+     * the datetime is generated as per the project timezone 
+     */
         this.setState({
             loading: true,
             success: false,
@@ -75,9 +110,14 @@ class AlertDetails extends Component {
         })
     }
     componentDidUpdate(prevProps, prevState) {
+    /**
+     * This part will listen to project selection change from the header component.
+     * On any change this will be called and the data will be changed in UI
+     * Reducer used - 'projectSelectReducer'
+     */
         if(this.props.projectSelected && 
             !isEqual(this.props.projectSelected, prevProps.projectSelected)){
-            if(this.state.pid !== this.props.projectSelected.PID)
+            if(this.state.pid !== this.props.projectSelected.PID){
                 this.setState({
                     pid: this.props.projectSelected.PID,
                     timeZone: this.props.projectSelected.Region,
@@ -87,7 +127,23 @@ class AlertDetails extends Component {
                         this.getInstallationLocation()
                         this.getAlertData();
                 })
+            }
         }
+    /**
+     * This part will deal with alert data for project.
+     * The data from alert is returned as a list of ditionaries.
+     * The dictionaries will have different formats, defined by a key 'SortKey'
+     * One alert comprises of more then 2 dictionaries, so inorder to get the
+     * alert specific details, we have to flatted the response and groupby 'ID'.
+     * as different dictionaries which represengt same alert will have same ID,
+     * Once it is grouped by 'ID' we process the data. To get it in proper format.
+     * dictionary with 'SortKey' status will be added in header part and
+     * others will be added in data part.
+     * From UI the header will be the informations which is used to user at first hand,
+     * after clicking the alert the data will be shown,
+     * as data represents the different levels of alert messages and time.
+     * Do data is a list of messages, sent to different level for an Alert.
+     */
         if((this.props.projectAlert || this.props.projectLocationList) &&
             !isEqual(this.props.projectAlert, prevProps.projectAlert)) {
             let finalDict = [], data;
@@ -127,7 +183,9 @@ class AlertDetails extends Component {
                     'alertData': finalDict})
             }
         }
-        
+    /**
+     * For loading/Progress bar this part is being used.
+     */
         if(this.state.loading) {
             this.setState({
               loading: false,
@@ -144,7 +202,6 @@ class AlertDetails extends Component {
             setStateValue={this.setStateValue}
             showDate={true}
             showFilter={this.showFilter}/>
-            
         )
     }
 }
@@ -156,14 +213,14 @@ function mapStateToProps(state) {
     }
   }
 function mapDispatchToProps(dispatch) {
+    //will dispatch the async action
     return {
         onProjectAlert: (config) => {
-          dispatch(projectAlertList(config))
+            dispatch(projectAlertList(config))
         },
         onDataAnalysisMenu: (config) => {
-            //will dispatch the async action
-              dispatch(projectSubMenuList(config))
-          },
+            dispatch(projectSubMenuList(config))
+        },
     }
 }
 export default connect(mapStateToProps, mapDispatchToProps)(AlertDetails);

@@ -97,9 +97,11 @@ class ProjectDetail extends Component {
             config = getApiConfig(endPoint, 'GET');
           this.props.onProjectDetailData(config, url); 
         }
-        if(this.props.projectData) {
+        console.log(this.props.teamMembers)
+        if(this.props.projectData && this.props.teamMembers) {
           let association = groupBy(this.props.teamAsso,  'UID');
           let teamMembers = this.props.teamMembers;
+          
           teamMembers.map((row) => {
             let tags = []
             if(association[row.UID])

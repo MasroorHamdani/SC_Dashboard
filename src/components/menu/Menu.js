@@ -9,31 +9,71 @@ import {secondaryListItems } from '../../containers/ListItems';
 import styles from "./MenuStyle";
 import ListItems from "./ListItems";
 import {mainMenuList} from "./MenuList";
+
 class Menu extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      open: true
+      open: true,
+      pid: '',
+      menu: []
     }
   }
 
   handleDrawerClose = () => {
-    this.props.onToolbarClick(this.state.open)
+    /**
+     * Function to change the left name view - either open or closed.
+     * This value is being used in Header component as well,
+     * as Menu and Header are working in Sync
+     */
+    this.props.onToolbarClick(this.state.open);
   };
 
+  componentDidMount(){
+    /**
+     * Check if pid is present in state or not, if yes get the menu,
+     * else set the state first and then get the updated menu
+     */
+    if(this.state.pid) {
+      this.setState({menu: mainMenuList(this.state.pid)});
+    } else if(this.props.projectSelected){
+      this.setState({
+        pid:this.props.projectSelected.PID,
+        menu:mainMenuList(this.props.projectSelected.PID)
+      })
+    }
+  }
   componentDidUpdate(prevProps, prevState) {
+    /**
+     * Get the status of the nav bar - either open or closed.
+     * Reducer used - 'MenuActionReducer'
+     */
     if(this.props.menuToggleData &&
       !isEqual(this.props.menuToggleData, prevProps.menuToggleData)) {
         this.setState({open:this.props.menuToggleData.open})
     }
+    /**
+     * Get the project selected details,
+     * so the PID will be passed to left menu component
+     * to get the relavant path for redirections
+     * Reducer usewd - 'projectSelectReducer'
+     */
     if(this.props.projectSelected &&
       !isEqual(this.props.projectSelected, prevProps.projectSelected)) {
-        this.setState({pid: this.props.projectSelected.PID});
+        this.setState({
+          pid:this.props.projectSelected.PID,
+          menu:mainMenuList(this.props.projectSelected.PID)
+        });
     }
   }
 
   render() {
     const { classes } = this.props;
+    /**
+     * ListItems is a component, which will take the menu list as input and get it displayed.
+     * to ge the menu data 'mainMenuList' is being used with pid passed
+     * to generate appriopriate path
+     */
     return (
         <Drawer
           variant="permanent"
@@ -49,7 +89,7 @@ class Menu extends Component {
           </div>
           <Divider />
           <List>
-            <ListItems menuList={mainMenuList(this.state.pid)} /></List>
+            <ListItems menuList={this.state.menu} /></List>
           <Divider />
           {/* <List>{secondaryListItems}</List> */}
           <Typography className={classes.version}>Version 0.01</Typography>

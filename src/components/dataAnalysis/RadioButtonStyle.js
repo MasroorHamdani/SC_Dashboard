@@ -10,7 +10,7 @@ const styles = theme => ({
         padding: theme.spacing.unit * 1,
     },
     root: {
-        width: "23%",
+        width: '251px',//"23%",
         maxWidth: 360,
         wordBreak: 'break-word',
         backgroundColor: theme.palette.background.paper,
