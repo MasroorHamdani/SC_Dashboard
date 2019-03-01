@@ -13,8 +13,8 @@ import {PROJECT_TABS, API_URLS, NAMESPACE_MAPPER} from '../../constants/Constant
 import {getApiConfig} from '../../services/ApiCofig';
 import {projectDetailData, projectTeamData, projectTeamAsso} from '../../actions/ProjectDataAction';
 
-
 import styles from './ProjectDetailStyle';
+
 class ProjectDetail extends Component {
   constructor(props) {
     super(props)
@@ -28,6 +28,10 @@ class ProjectDetail extends Component {
   }
   
   handleChange = (event, value) => {
+  /**
+   * On changing the tab selection, this function will be called
+   * to get selected tabs data.
+   */
     this.setState({ value,
       loading: true,
       success: false}, function() {
@@ -36,6 +40,10 @@ class ProjectDetail extends Component {
   };
 
   callApi = (value) => {
+    /**
+     * Check if selected tab is 'team' or 'installation'
+     * depending on that call the appropriate API
+     */
     let url;
     if (value === 'team' 
     // && (!this.props.projectData || !this.state.teamInfo)
@@ -53,10 +61,19 @@ class ProjectDetail extends Component {
     }
   }
   componentDidMount() {
+  /**
+   * Call the API with default tab value.
+   */
     this.callApi(this.state.value);
   }
 
   componentDidUpdate(prevProps, prevState) {
+  /**
+   * This part will listen to project selection change from the header component.
+   * On any change this will be called and the data will be changed in UI
+   * Reducer used - 'projectSelectReducer'
+   * Set the URL as per the new pid selected and recall the API to get data for new pid.
+   */
     if(this.props.projectSelected && 
       !isEqual(this.props.projectSelected, prevProps.projectSelected)){
       if(this.state.pid !== this.props.projectSelected.PID)
@@ -67,6 +84,9 @@ class ProjectDetail extends Component {
             this.callApi(this.state.value);
         });
     }
+  /**
+   * 
+   */
     if (this.props.projectData &&
       (!isEqual(this.props.projectData, prevProps.projectData) ||
         !this.state.installationData)) {
@@ -97,7 +117,6 @@ class ProjectDetail extends Component {
             config = getApiConfig(endPoint, 'GET');
           this.props.onProjectDetailData(config, url); 
         }
-        console.log(this.props.teamMembers)
         if(this.props.projectData && this.props.teamMembers) {
           let association = groupBy(this.props.teamAsso,  'UID');
           let teamMembers = this.props.teamMembers;

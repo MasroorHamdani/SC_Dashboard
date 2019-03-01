@@ -45,16 +45,35 @@ class ProjectInstallationDetails extends Component {
     }
     
     handleModalState = () => {
+    /**
+     * Handle the modal open and close state.
+     * Modal shown to add a new allocation.
+     */
         this.setState({ open: !this.state.open});
     };
     handleModalDeleteState = () => {
+    /**
+     * Handle Modal which pops up while deleting users allocation.
+     * It is a confirmation modal
+     */
         this.setState({ deleteNotify: !this.state.deleteNotify});
     };
                         
     handleModalProfileState = () => {
+    /**
+     * Handles Profile update modal.
+     * On user profile update this will update
+     * user for successfull user profile update
+     */
         this.setState({ profileNotify: !this.state.profileNotify});
     }
     onAddtion = () => {
+    /**
+     * This will handle allocation of user to a new location.
+     * Validating for required parameters and formating time and setting up some state variables
+     * and finally calling the POST api.
+     * Or showing up error to user to fill all required fields.
+     */
         let startTime = formatDateTime(this.state.userLocation.ShiftStart, "hh:mm a", "HHmm"),
             endTime = formatDateTime(this.state.userLocation.ShiftEnd, "hh:mm a", "HHmm");
         if(this.state.userLocation.Tags && this.state.userLocation.ShiftStart &&
@@ -80,6 +99,9 @@ class ProjectInstallationDetails extends Component {
         }
     }
     handleChange = (event) => {
+    /**
+     * Common function to change the state variables.
+     */
         let {name, value} = event.target;
         if (name === 'Mute') {
             value = event.target.checked
@@ -92,6 +114,9 @@ class ProjectInstallationDetails extends Component {
         });
     }
     handleSubmit = () => {
+    /**
+     * Function to update the user profile. Call the POST api and show user an update message
+     */
         const endPoint = `${API_URLS['USER_PROFILE']}`,
         param = {
             'uid': this.state.uid
@@ -101,6 +126,11 @@ class ProjectInstallationDetails extends Component {
         this.earlyState = false;
     }
     onDelete = () =>{
+    /**
+     * For removing allocation for a user, once user confirms for deletion,
+     * this function will be called which will call the API and
+     * update user profile(delete the allocation)
+     */
         const endPoint = `${API_URLS['PROJECT_DETAILS']}/${this.state.pid}/
                         ${API_URLS['TEAM_ASSOCIATION']}`,
             param = {
@@ -113,11 +143,19 @@ class ProjectInstallationDetails extends Component {
         this.info = false;
     }
     removeLocation = (insID, name) => {
+    /**
+     * While user will click on remove allocation,
+     * a pop up will be shown to user.
+     * This function will show up the pop up with required details.
+     */
         this.setState({deleteAsso : insID})
         this.deleteInformation = `Do you Want Remove the User Association for location ${name}`;
         this.handleModalDeleteState();
     }
     addDetail = (event) => {
+    /***
+     * This function will be called to update the state while user selects a new allocation for any member.
+     */
         let {name, value} = event.target;
         this.setState({
             userLocation: {
@@ -127,6 +165,12 @@ class ProjectInstallationDetails extends Component {
         })
     }
     tagDetail = (event) => {
+    /**
+     * Tags is a list and by default 'cleaningIssues' has to be allocated
+     * to every user allocated for any location.
+     * Also the API is expecting tags as a list bt UI treats it as a text, comma seperated.
+     * So this function will take care of these things.
+     */
         let {name, value} = event.target;
         let newValue = ['cleaningIssues'];
         let valArray = value.split(',');
@@ -145,6 +189,10 @@ class ProjectInstallationDetails extends Component {
         })
     }
     getProfileData =() => {
+    /**
+     * Get the user profile data.
+     * Call the API for same.
+     */
         const endPoint = `${API_URLS['USER_PROFILE']}`,
             param = {
                 'uid': this.state.uid
@@ -158,6 +206,11 @@ class ProjectInstallationDetails extends Component {
         this.getProfileData();
     }
     getUserProfile = (userDetails) => {
+    /**
+     * Get complete user profile details, like users allocations and time and other details.
+     * user details will be passed in and 
+     * depending on namespace it will be either part of profile os association.
+     */
         let profile, association = [];
         if(userDetails[0]) {
             userDetails.map((row) => {
@@ -173,6 +226,13 @@ class ProjectInstallationDetails extends Component {
             association: association};
     }
     componentDidUpdate(prevProps, prevState) {
+    /**
+     * This part will listen to project selection change from the header component.
+     * On any change this will be called and the data will be changed in UI
+     * Reducer used - 'projectSelectReducer'.
+     * It will update the URL to show up new PID selected.
+     * and also make api call to update the user profile
+     */
         if(this.props.projectSelected && 
             !isEqual(this.props.projectSelected, prevProps.projectSelected)){
             if(this.state.pid !== this.props.projectSelected.PID)
@@ -186,6 +246,12 @@ class ProjectInstallationDetails extends Component {
                     this.getProfileData();
                 });
         }
+        /***
+         * Check if profile data is there or location list is there,
+         * this part is used to update the profile on UI and
+         * also set the location list, allocated and remaining ones
+         * on UI.
+         */
         if ((this.props.userProfile || this.props.locationList) &&
             (!isEqual(this.props.userProfile, prevProps.userProfile) ||
             !isEqual(this.props.locationList, prevState.locationList))
@@ -250,6 +316,9 @@ class ProjectInstallationDetails extends Component {
                 this.getProfileData();
             }
         }
+    /**
+     * Progress bar
+     */
         if(this.state.loading) {
             this.setState({
                 loading: false,
@@ -262,6 +331,7 @@ class ProjectInstallationDetails extends Component {
         let returnData;
         const {classes} = this.props;
         if(this.state.locationList) {
+            // Add user to a new location modal content
             returnData = <div>
                 <FormControl className={classes.formControl}>
                     <InputLabel htmlFor="age-native-helper">Location</InputLabel>
@@ -385,6 +455,7 @@ class ProjectInstallationDetails extends Component {
                                 subheader="Location Assigned"/>
                                 {this.state.association &&
                                     this.state.association.map((dt, i) => {
+                                    // Display the allocated locations for the user per project
                                     return <Card className={classes.card} key={i}>
                                         <CardHeader
                                             action={
@@ -416,6 +487,7 @@ class ProjectInstallationDetails extends Component {
                             </Card>
                         </Grid>
                     </Grid>
+                    {/* Modal for Associating user to new location */}
                     <CustomModal
                         header="Associate User with Location"
                         content={returnData}
@@ -424,6 +496,7 @@ class ProjectInstallationDetails extends Component {
                         open={this.state.open}
                         showFooter={true}
                     />
+                    {/* Modal for remove user from a particular/selected location */}
                     <CustomModal
                         header="Remove User Association"
                         content={this.deleteInformation}
@@ -457,7 +530,6 @@ function mapDispatchToProps(dispatch) {
             } else {
                 dispatch(profileData(config))
             }
-            
         }
     }
 }
