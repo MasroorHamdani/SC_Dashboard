@@ -28,15 +28,12 @@ class DataAnalysisComponent extends Component {
                             onChange={handleTabChange}
                             indicatorColor="primary"
                             textColor="primary"
-                            variant="fullWidth"
-                            >
+                            variant="fullWidth">
                                 {Object.keys(stateData.installationList).map((key)=> (
                                     <Tab label={stateData.installationList[key]['text']}
                                         value={stateData.installationList[key]['key']}
-                                        key={stateData.installationList[key]['key']}
-                                        />
+                                        key={stateData.installationList[key]['key']}/>
                                 ))}
-                                }
                             </Tabs>
                         </AppBar>
                     }
@@ -47,8 +44,8 @@ class DataAnalysisComponent extends Component {
                         handleDatePicker={handleDatePicker}
                         handleChangeStart={handleChangeStart}
                         handleListSelection={handleListSelection}
-                        handleChangeEnd={handleChangeEnd}
-                        />}
+                        handleChangeEnd={handleChangeEnd}/>
+                    }
                 </div>
             </div>
         )

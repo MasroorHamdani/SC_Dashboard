@@ -3,7 +3,7 @@ import { NamespacesConsumer } from 'react-i18next';
 
 import {Avatar, Button, FormControl, Input,
     InputLabel, Paper, Typography,
-    withStyles, CircularProgress, LinearProgress} from '@material-ui/core';
+    withStyles, LinearProgress} from '@material-ui/core';
 import LockIcon from '@material-ui/icons/LockOutlined';
 import PropTypes from 'prop-types';
 
@@ -50,23 +50,21 @@ class SignInComponent extends React.Component {
                     >
                     {t('signIn')}
                     </Button>
-                    
                     {data.loading &&
-                    //  <CircularProgress size={50} className={classes.buttonProgress} />
-                    <LinearProgress className={classes.buttonProgress}/>
+                        <LinearProgress className={classes.buttonProgress}/>
                     }
                 </form>
                 </Paper>
             </main>
             }
             </NamespacesConsumer>
-            );
+        );
     }
 
 }
 
 SignInComponent.propTypes = {
     classes: PropTypes.object.isRequired,
-  };
+};
   
-  export default withStyles(styles)(SignInComponent);
+export default withStyles(styles)(SignInComponent);

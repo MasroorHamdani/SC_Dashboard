@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 import {TableHead, TableSortLabel, Tooltip, TableRow, TableCell} from '@material-ui/core';
 
 /**
- * Chile component - This is Grid hearde component,
- * which will take input and accordinly to that will add that many columns in the Grid(table)
+ * Child component - This is Grid hearder component,
+ * which will take input and according to that will add that many columns in the Grid(table)
  * Input passed are:
  * order - this indicates asc or Desc
  * orderby - which field to be used as the default sorted one.
@@ -47,10 +47,10 @@ class EnhancedTableHead extends Component {
                 </TableCell>
               );
             }, this)}
-            {allowDelete &&
+            {allowEdit &&
               <TableCell/>
             }
-            {allowEdit &&
+            {allowDelete &&
               <TableCell/>
             }
           </TableRow>

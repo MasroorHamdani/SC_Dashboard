@@ -85,7 +85,9 @@ class ProjectDetail extends Component {
         });
     }
   /**
-   * 
+   * This will be part of API called to get the installation list
+   * for given/selected project.
+   * Process the data, and set in state as well as in cookie, to be used on other place
    */
     if (this.props.projectData &&
       (!isEqual(this.props.projectData, prevProps.projectData) ||
@@ -101,6 +103,15 @@ class ProjectDetail extends Component {
         this.setState({installationData: responseData})
         localStorage.setItem('installationLocations', insIDList);
     }
+    /**
+     * This part will get the teams members data as well as
+     * the association members have with all locations for give/selected project.
+     * Team assocciation API will be call only once, and once association data is returned
+     * installition api will be called, which will be captured in above section/part of if consition
+     * Group the team association data on UID, which will give dict with UID as key and each UID is per user
+     * so per user how many associations are there will be result of groupby.
+     * Next the data is processed, and set in state.
+     */
     if((this.props.teamMembers || this.props.teamAsso || this.props.projectData) &&
       (!isEqual(this.props.teamMembers, prevProps.teamMembers) ||
       !isEqual(this.props.teamAsso, prevProps.teamAsso) ||
@@ -135,6 +146,9 @@ class ProjectDetail extends Component {
           this.setState({teamInfo: teamMembers})
         }
     }
+    /**
+     * Loading progress bar
+     */
     if(this.state.loading) {
       this.setState({loading: false,
       sucess: true});
@@ -145,6 +159,7 @@ class ProjectDetail extends Component {
       const { classes, handleClick } = this.props;
       return (
           <div className={classes.root}>
+          {/* Progress bar code goes here */}
           {this.state.loading &&
             <LinearProgress className={classes.buttonProgress}/>
           }
@@ -152,6 +167,7 @@ class ProjectDetail extends Component {
             {
             t=><main className={classes.content}>
             <Paper style={{ padding: 8 * 3 }}>
+            {/* Tab bar with options of team and installatio */}
                 <AppBar position="static" color="default">
                 <Tabs
                   value={this.state.value}
@@ -167,6 +183,8 @@ class ProjectDetail extends Component {
                 </Tabs>
               </AppBar>
               
+              {/* Once tab is selected the conditions will decide which section to be disnplayed
+              TabContainer is another component */}
               {(this.state.value === 'team' && this.props.teamMembers)&& <TabContainer data={this.props.teamMembers}
                 stateData={this.state}
                 category={PROJECT_TABS['TEAM']}
@@ -196,19 +214,20 @@ function mapStateToProps(state) {
 }
 
 function mapDispatchToProps(dispatch) {
+  //will dispatch the async action
     return {
         onProjectDetailData: (config, url) => {
-            //will dispatch the async action
-            if(url === `${PROJECT_TABS['INSTALLATION']}/${PROJECT_TABS['DETAILS']}`)
-              dispatch(projectDetailData(config))
-            else if(url === API_URLS['TEAM_MEMBERS'])
-              dispatch(projectTeamData(config))
+          if(url === `${PROJECT_TABS['INSTALLATION']}/${PROJECT_TABS['DETAILS']}`)
+            dispatch(projectDetailData(config))
+          else if(url === API_URLS['TEAM_MEMBERS'])
+            dispatch(projectTeamData(config))
         },
         onTeamAssociation: (config) => {
           dispatch(projectTeamAsso(config))
         }
     }
 }
-// export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(ProjectDetail));
+// Had to return with - withRouter as ProjectDetail is not being called as part of router from app.js
+// So accessing 'props.history' was not working.
 const ProjectDetailComponent = withStyles(styles)(ProjectDetail);
 export default (connect(mapStateToProps, mapDispatchToProps))(withRouter(ProjectDetailComponent));

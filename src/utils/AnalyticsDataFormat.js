@@ -5,9 +5,25 @@ import {DATE_TIME_FORMAT, GRAPH_LABEL_TIME_FORMAT,
     METRIC_TYPE, ANALYTICS_DATE} from '../constants/Constant';
 
 export function getFormatedGraphData(passedData, metrics) {
+/**
+ * Metrics data and metrics dimentions will be passed to this function
+ * This function will first loop through the metrics dimentions
+ * and based on metrics selected in loop, fetch the value from metrics data,
+ * and process the data.
+ * Validate the type of metrics, if it is Raw data, means some graph
+ * else it is alert data - Being used on Dashboard.
+ * For raw data, check if it is time series or categorical,
+ * as both have different data format.
+ * Also namemapper is being used in graph to set the name of the dimentions and color for them.
+ * For alert data, format the data expected as per the component.
+ * Next for graph type data, be it time series or categorical
+ * Group the data per metric type, and combine them,
+ * as in previous step there will be duplicate values,
+ * grouping them will get ride of duplicate values.
+ * Finally return the final data back to calling function
+ */
     let graphData = [], nameMapper = {};
     metrics.map(function(row) {
-        
         let metridId = row.metricID;
         let graphSection = [], mapper={};
             Object.keys(passedData[metridId]).map((key) => {
@@ -54,7 +70,7 @@ export function getFormatedGraphData(passedData, metrics) {
             })
         
         if(row.metricType !== METRIC_TYPE['RAW_DATA']) {
-            let combinedValues = groupBy(graphData[metridId], 'name');//_.groupBy(graphData[metridId], 'name');
+            let combinedValues = groupBy(graphData[metridId], 'name');
             let testData = [];
             Object.keys(combinedValues).map((key) => {
                 if(key && key != 'undefined') {
@@ -80,6 +96,13 @@ export function getFormatedGraphData(passedData, metrics) {
 
 
 export function getStartEndTime(param='', startDate='', endDate='', timeZone='') {
+/**
+ * Function which will take param as input, which specifies No of hours,
+ * startDate and End Date - In case of custom date time selection.
+ * timezone - will be based on project.
+ * depending on the value of param, the start and end datetime will be calculated,
+ * In case it is custom, the passed start and end date will be used to format it and send back.
+ */
     let now = moment(),
       start, end;
     if (param === ANALYTICS_DATE['ONE_HOUR']) {
@@ -114,6 +137,12 @@ export function getStartEndTime(param='', startDate='', endDate='', timeZone='')
 }
 
 export function getVector(metricsResponse, deviceKey) {
+/**
+ * This function will get the metric deive data, for every analytics graph,
+ * Format the data as per our requirement.
+ * window - is combination of sampling and Unit returned and passed to API,
+ * But on UI these are seperate, so for that have to get substring and assign to both fields.
+ */
     let dataMetrics = {}, path = [], metric = {};
     metricsResponse.map((metrics) => {
         dataMetrics['metricType'] = metrics['metricType'];
@@ -144,4 +173,4 @@ export function getVector(metricsResponse, deviceKey) {
     })
     return {'dataMetrics': dataMetrics,
             'metric': metric}
-  }
+}

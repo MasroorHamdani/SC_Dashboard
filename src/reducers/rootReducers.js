@@ -16,7 +16,6 @@ import DataAnalysisReducer from './DataAnalysisReducer';
 import ServiceRequirementReducer from './ServiceRequirementReducer';
 import ProjectAlertReducer from './ProjectAlertReducer';
 import DispenserDataReducer from './DispenserDataReducer';
-import DataAnalysisMenuListReducer from './DataAnalysisMenuListReducer';
 import ProjectTeamAssoDataReducer from './ProjectTeamAssoDataReducer';
 import projectSelectReducer from './ProjectSelectReducer';
 import projectListReducer from './ProjectListReducer';
@@ -38,7 +37,6 @@ const reducers = {
     ServiceRequirementReducer,
     ProjectAlertReducer,
     DispenserDataReducer,
-    DataAnalysisMenuListReducer,
     ProjectTeamAssoDataReducer,
     projectSelectReducer,
     projectListReducer

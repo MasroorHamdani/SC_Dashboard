@@ -10,7 +10,8 @@ function dataReceived(data) {
 
 /**
  * Dispatched function to call the API service to get
- * the Dashboard data - List of Projects for logged in User
+ * the Dashboard data - List of Projects for logged in User,
+ * along with user details itself
  * @param {*} config 
  */
 export function dashboardData(config) {

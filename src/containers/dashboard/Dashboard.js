@@ -8,7 +8,7 @@ import ProjectDataComponent from "../../components/projectData/ProjectData";
 import { API_URLS, NAMESPACE, DASHBOARD_METRIC,
   DATE_TIME_FORMAT} from "../../constants/Constant";
 import { getApiConfig } from '../../services/ApiCofig';
-import {projectAnalysisData} from '../../actions/DataAnalysis';
+import {projectAnalysisData, projectSubMenuList} from '../../actions/DataAnalysis';
 import {getVector} from '../../utils/AnalyticsDataFormat';
 import {formatDateWithTimeZone} from '../../utils/DateFormat';
 
@@ -128,6 +128,10 @@ class Dashboard extends Component {
             this.setState({
               dashboardData: dashboardData,
             });
+            if(this.props.projectLocationList &&
+              !isEqual(this.props.projectLocationList, prevProps.projectLocationList)) {
+                this.setState({projectLocationList: this.props.projectLocationList })
+            }
             if(this.state.loading) {
               this.setState({
                 loading: false,
@@ -165,6 +169,7 @@ function mapStateToProps(state) {
       dashboardData : state.DashboardReducer.data,
       dataAnalysis : state.DataAnalysisReducer.data,
       projectSelected : state.projectSelectReducer.data,
+      projectLocationList : state.DataAnalysisProjectListSubMenuReducer.data,
   }
 }
 
@@ -172,7 +177,10 @@ function mapDispatchToProps(dispatch) {
   return {
     onDataAnalysis: (config) => {
         dispatch(projectAnalysisData(config))
-    }
+    },
+    onDataAnalysisMenu: (config) => {
+      dispatch(projectSubMenuList(config))
+    },
   }
 }
 Dashboard.propTypes = {

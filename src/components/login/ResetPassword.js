@@ -3,7 +3,7 @@ import { NamespacesConsumer } from 'react-i18next';
 
 import {Avatar, Button, FormControl,
     Input, InputLabel, Paper, Typography,
-    withStyles, CircularProgress, LinearProgress} from '@material-ui/core';
+    withStyles, LinearProgress} from '@material-ui/core';
 import LockIcon from '@material-ui/icons/LockOutlined';
 import PropTypes from 'prop-types';
 
@@ -52,12 +52,10 @@ class ResetPasswordComponent extends React.Component {
                         color="primary"
                         className={classes.submit}
                         onClick={onResetSubmit}
-                        disabled={data.disableBtn}
-                        >
+                        disabled={data.disableBtn}>
                             Submit
                         </Button>
                         {data.loading &&
-                        // <CircularProgress size={50} className={classes.buttonProgress} />
                             <LinearProgress className={classes.buttonProgress}/>
                         }
                     </form>
@@ -71,6 +69,6 @@ class ResetPasswordComponent extends React.Component {
 
 ResetPasswordComponent.propTypes = {
     classes: PropTypes.object.isRequired,
-  };
+};
   
 export default withStyles(styles)(ResetPasswordComponent);

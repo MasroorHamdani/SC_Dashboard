@@ -1,4 +1,8 @@
 export const getApiConfig = (url, type, data='', params='', header='') => {
+/**
+ * Config function to create a config object as per the inputs.
+ * This object is passed to API once set.
+ */
     const config = {
         method: type,
         url: url,

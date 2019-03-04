@@ -168,7 +168,7 @@ class AlertDetails extends Component {
                                     row.name = dt.name;
                                     row.locn = dt.locn;
                                 }
-                            })
+                            });
                             if(row.SortKey.includes('status')) {
                                 test['header'] = row;
                             } else {

@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import {Typography } from '@material-ui/core';
-import {PROJECT_TABS, SORTING, HOUR_MIN_FORMAT} from '../../constants/Constant';
+
+import {PROJECT_TABS, SORTING} from '../../constants/Constant';
 import EnhancedTable from '../grid/Grid';
-import {getFormatedDateTime} from '../../utils/DateFormat';
 
 class TabContainer extends Component {
     constructor(props) {
@@ -17,19 +17,33 @@ class TabContainer extends Component {
     }
 
     handleChange = (name, value) => {
+    /**
+     * Generic function to set the state in case of any change in any of the fields
+     */
         this.setState({
             [name] : value
         });
     }
-    formatedDateTime = (data) => {
-        data.map(function (d) {
-            d.ShiftStart = getFormatedDateTime(d.ShiftStart, HOUR_MIN_FORMAT);
-            d.ShiftEnd = getFormatedDateTime(d.ShiftEnd, HOUR_MIN_FORMAT);
-            return(d)
-        })
-        return(data)
-    }
+
     render() {
+    /**
+     * Check for the tab value and accordingly call the Grid component 'EnhancedTable'
+     * Generate the rows list which will have details like id, if it is numeric or not,
+     * if disabled or not and lable for the header.
+     * Apart from that, orderby is passed, whcih defines, which will be the default column for setting order
+     * and order will be asc or desc,
+     * rowsPerPage  will defines how many results to be shown per page.
+     * page will define the number of pages as per the values we have,
+     * all these calculations will be doen in main container.
+     * handleClick - Function to handle clicking on any Grid row
+     * category is the selected tab value
+     * redirectID will be used in handleClick function,
+     *      which means pass this key value as parameter to called function
+     * allowDelete is passed as true or false, by default it will be false.
+     *      It will specify if table will show up delete column of not
+     * allowEdit is passed as true or false, by default it will be false.
+     *      It will specify if table will show up edit column of not
+     */
         const {category, data, handleClick, stateData} = this.props;
         let tabData, rows;
         if (data && category === PROJECT_TABS['INSTALLATION']) {

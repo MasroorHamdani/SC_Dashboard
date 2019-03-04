@@ -7,6 +7,10 @@ import styles from './AnalysisDataStyle';
 import RefreshIcon from '@material-ui/icons/Refresh';
 
 class DateRowComponent extends Component {
+/**
+ * Date component, which will show the Datetime picker for start and end date with a go button
+ * as well, some predefined options like, 1h, 2h etc along with refresh button.
+ */
     render () {
         const {classes, handleListSelection, handleChangeStart, handleChangeEnd,
             handleDatePicker, data, timeList, handleRefresh} = this.props;

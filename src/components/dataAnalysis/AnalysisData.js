@@ -17,14 +17,26 @@ class AnalysisData extends Component {
     }
     
     handleRefresh = () => {
+    /**
+     * Method for auto refresh or onclick refresh of the data
+     */
         this.props.handleDateChange()
     }
 
     componentDidMount() {
+    /**
+     * Set up the interval, for auto refresh of graph data.
+     */
         setInterval((this.handleRefresh), AUTO_REFRESH_TIMEOUT);
     }
 
     generateDataAnalytics = (data, metrics, classes) => {
+    /**
+     * Call the service to get the graph data and name mapper
+     * for each graph to be display on a page
+     * Once that is received, call the GraphPlot component 
+     * with data and that will return the complete graph component.
+     */
         let dataAnalysis = data,
             analyticsData = getFormatedGraphData(dataAnalysis, metrics),
             graphData = analyticsData.graphData,

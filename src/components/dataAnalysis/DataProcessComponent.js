@@ -8,6 +8,11 @@ import styles from './AnalysisDataStyle';
 import { NamespacesConsumer } from 'react-i18next';
 
 class DataProcessingComponent extends Component {
+/**
+ * This component is used for sampler.
+ * any dimension with show sampling as true, will be show up.
+ * Any change will be passsed to parent using the inherited function.
+ */
     render () {
         const {classes, stateData, handleSamplingChange,
                 metrics} = this.props;

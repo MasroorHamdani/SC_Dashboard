@@ -9,22 +9,22 @@ import GraphPlot from '../../components/dataAnalysis/GraphPlot';
 import styles from './ProjectDataStyle';
 
 class DataCard extends Component{
-    generateDataAnalytics = (dataAnalysis, metrics, classes) => {
-        let analyticsData = getFormatedGraphData(dataAnalysis, metrics),
+    generateDataAnalytics = (dataAnalysis, metrics, classes, stateData) => {
+        let analyticsData = getFormatedGraphData(dataAnalysis, metrics, stateData),
             graphData = analyticsData.graphData,
             nameMapper = analyticsData.nameMapper,
             tabData = <GraphPlot graphData={graphData}
                         nameMapper={nameMapper} metrics={metrics}
                         classes={classes}
-                        stateData={this.props.stateData}/>;
+                        stateData={stateData}/>;
         return tabData;
     }
     render() {
-        const {classes, row} = this.props;
+        const {classes, row, stateData} = this.props;
         let tabData;
         if(row.dataAnalysis.metrics)
             tabData = this.generateDataAnalytics(row.dataAnalysis.metrics,
-                row.allMetrics, classes);
+                row.allMetrics, classes, stateData);
         return (
             <div className={classes.flexContainer} key={row.PID}>
                 <Card className={classes.card}>

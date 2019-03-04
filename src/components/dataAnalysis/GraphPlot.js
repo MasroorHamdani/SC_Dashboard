@@ -18,6 +18,9 @@ class GraphPlot extends Component {
     }
     
     onPieEnter = (data, index) => {
+    /**
+     * For pie chart, on mouse hover this function is called.
+     */
     this.setState({
         activeIndex: index,
     });
@@ -26,6 +29,9 @@ class GraphPlot extends Component {
         const {classes, metrics, graphData, nameMapper,
             stateData, handleSamplingChange} = this.props;
         const renderActiveShape = (props) => {
+        /**
+         * This function will create an arc on mouse hover for pie chanrt 
+         */
             const RADIAN = Math.PI / 180;
             const { cx, cy, midAngle, innerRadius, outerRadius, startAngle,
             endAngle, fill, payload, percent, value } = props;
@@ -70,6 +76,10 @@ class GraphPlot extends Component {
             );
         };
         return(
+        /**
+         * Loop through metrics dimentions, in order to get all the graphs drawn.
+         * Check for the type of the graph and as per conditions decide what to show.
+         */
             metrics.map((metric, index) => {
                 return <div key={index}>
                 <Divider className={classes.seperator}/>
