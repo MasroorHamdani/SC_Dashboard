@@ -14,18 +14,23 @@ return ([
       icon: "BarChartIcon"
     },
     {
-      name: "Reports",
+      name: "Configure Report",
       url: "/report",
-      icon: "Assignment"
+      icon: "SettingsIcon"
+    },
+    {
+      name: "View Reports",
+      url: `/report/${pid}`,
+      icon: "AssignmentIcon"
     },
     {
       name: "Alert Data",
       url: `/alert/${pid}`,
-      icon: "NotificationImportant"
+      icon: "NotificationImportantIcon"
     },
     {
       name: "Project details",
       url: `/project/${pid}`,
-      icon: "LibraryBooks"
+      icon: "LibraryBooksIcon"
     }])
 }

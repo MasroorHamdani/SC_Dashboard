@@ -296,3 +296,10 @@ export const ALERT_LEVEL = [
 ]
 
 export const PASSWORD_REGEX = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,12})");
+
+export const DATA_OPERATIONS = {
+    'FILTER': 'FILTER',
+    'RESAMPLER': 'RESAMPLER'
+}
+
+export const LINK = "https://s3-ap-southeast-1.amazonaws.com/scprojectimages/Screen+Shot+2018-09-28+at+3.47.15+PM.png"

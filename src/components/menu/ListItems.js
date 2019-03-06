@@ -5,6 +5,7 @@ import BarChartIcon from '@material-ui/icons/BarChart';
 import AssignmentIcon from '@material-ui/icons/Assignment';
 import NotificationImportantIcon from '@material-ui/icons/NotificationImportant';
 import LibraryBooksIcon from '@material-ui/icons/LibraryBooks';
+import SettingsIcon from '@material-ui/icons/Settings';
 
 import {ListItem, ListItemIcon, ListItemText} from '@material-ui/core';
 import {Link} from "react-router-dom";
@@ -21,12 +22,14 @@ class ListItems extends Component {
                 return <DashboardIcon/>;
             case 'BarChartIcon':
                 return <BarChartIcon/>;
-            case 'NotificationImportant':
+            case 'NotificationImportantIcon':
                 return <NotificationImportantIcon/>
-            case 'LibraryBooks':
+            case 'LibraryBooksIcon':
                 return <LibraryBooksIcon/>;
-            case 'Assignment':
+            case 'AssignmentIcon':
                 return <AssignmentIcon/>;
+            case 'SettingsIcon':
+                return <SettingsIcon/>
             default:
                 return '';
         }
@@ -34,7 +37,7 @@ class ListItems extends Component {
     render() {
         const {menuList} = this.props;
         if(menuList) {
-            const menu = menuList.map((row,index) => {
+            const menu = menuList.map((row, index) => {
                 const icon = row.icon;
                 return (
                     <ListItem button component={Link} to={row.url} key={index}>

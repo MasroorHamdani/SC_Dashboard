@@ -9,7 +9,8 @@ class ReportGeneration extends Component {
     
     render() {
         const {classes, stateData, handleTabChange, data,
-            handleProjectSelectionChange, handleExpandClick,
+            // handleProjectSelectionChange,
+            handleExpandClick,
             handleDeviceToggle, onNextClick, onPreviousClick,
             handleServiceToggle, shouldDisableCheckbox,
             onChange, generateReport} = this.props;
@@ -25,7 +26,7 @@ class ReportGeneration extends Component {
                             onChange={handleTabChange}
                             indicatorColor="primary"
                             textColor="primary"
-                            fullWidth
+                            variant="fullWidth"
                             >
                             <Tab label={t('service')} />
                             <Tab label={t('location')} />
@@ -33,7 +34,7 @@ class ReportGeneration extends Component {
                         </Tabs>
                     </AppBar>
                     {stateData.tab === 0 && <ReportContent type={REPORT_TABS['SERVICE']} data={data}
-                        handleProjectSelectionChange={handleProjectSelectionChange}
+                        // handleProjectSelectionChange={handleProjectSelectionChange}
                         onPreviousClick={onPreviousClick} onNextClick={onNextClick}
                         handleServiceToggle={handleServiceToggle} stateData={stateData}/>}
                     {(stateData.tab === 1 && stateData.device && stateData.location) &&

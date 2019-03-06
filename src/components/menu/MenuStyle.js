@@ -4,6 +4,7 @@ const styles = theme => ({
   drawerPaper: {
     position: 'relative',
     whiteSpace: 'nowrap',
+    height: '100vh',
     backgroundColor: blueGrey[900],//'#262f3e',//'#404854',
     '& *': { color: 'rgba(255, 255, 255, 0.7)' },
     width: drawerWidth,
@@ -13,6 +14,7 @@ const styles = theme => ({
     }),
   },
   drawerPaperClose: {
+    height: '100vh',
     overflowX: 'hidden',
     transition: theme.transitions.create('width', {
       easing: theme.transitions.easing.sharp,

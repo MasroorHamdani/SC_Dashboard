@@ -2,7 +2,7 @@ import {_, groupBy} from 'lodash';
 import moment from 'moment-timezone';
 
 import {DATE_TIME_FORMAT, GRAPH_LABEL_TIME_FORMAT,
-    METRIC_TYPE, ANALYTICS_DATE} from '../constants/Constant';
+    METRIC_TYPE, ANALYTICS_DATE, DATA_OPERATIONS} from '../constants/Constant';
 
 export function getFormatedGraphData(passedData, metrics) {
 /**
@@ -157,14 +157,30 @@ export function getVector(metricsResponse, deviceKey) {
                 // unit: vector.Unit,
                 shortName: vector.id,
                 color: vector.color,
-                statistic: vector.statistic,
                 chartType: vector.ctype,
                 showSamplingWidget: vector.showSamplingWidget,
+                statistic: vector.statistic,
                 window: vector.window,
                 sampling: vector.window.substr(0, vector.window.length-1) ? vector.window.substr(0, vector.window.length-1): 1,
                 unit: vector.window.substr(vector.window.length-1, 1),
                 type: deviceKey
-            };
+            }
+            // , actions = {};
+            // vector.actions.map((row) => {
+            //     let action = {};
+            //     action.type = row.type;
+            //     if(row.type === DATA_OPERATIONS['FILTER'])
+            //         action.criteria = row.criteria;
+            //     else if(row.type === DATA_OPERATIONS['RESAMPLER']) {
+            //         action.criteria = {};
+            //         action.criteria.statistic = row.criteria.statistic;
+            //         action.criteria.window = row.criteria.window;
+            //         action.criteria.sampling = row.criteria.window.substr(0, row.criteria.window.length-1) ? row.criteria.window.substr(0, row.criteria.window.length-1): 1;
+            //         action.criteria.unit = row.criteria.window.substr(row.criteria.window.length-1, 1);
+            //     }
+            //     actions.push(action);
+            // })
+            // vec.actions = actions;
             dataMetrics['vector'].push(vec)
             if(vector.showSamplingWidget)
                 path.push({[vector.id] : vec});

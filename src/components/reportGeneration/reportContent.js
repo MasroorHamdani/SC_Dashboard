@@ -18,13 +18,19 @@ class ReportContent extends Component {
     
     render() {
         const {type, classes, data, stateData,
-            handleProjectSelectionChange, handleExpandClick,
+            // handleProjectSelectionChange,
+            handleExpandClick,
             handleDeviceToggle, onNextClick, onPreviousClick,
             handleServiceToggle, shouldDisableCheckbox,
             onChange, generateReport} = this.props;
             let rtypeOptions = [
-                {key: 'PDF', value: 'pdf'},
-                {key: 'Email', value: 'email'}
+                {key: 'PDF', value: 'PDF'},
+                {key: 'Email', value: 'Email'}
+            ],
+            timeOptions = [
+                {key: 'daily', value: 'Daily'},
+                {key: 'weekly', value: 'Weekly'},
+                {key: 'monthly', value: 'Monthly'}
             ],
             dynamicDateOptions = [
                 {key: 'Yesterday', value: 'yesterday'},
@@ -36,7 +42,7 @@ class ReportContent extends Component {
             t=><div>
                 {type === REPORT_TABS['SERVICE'] &&
                     <div>
-                        <FormControl className={classes.formControl}>
+                        {/* <FormControl className={classes.formControl}>
                             <InputLabel shrink htmlFor="project-native-label-placeholder">
                                 {t('projectList')}
                             </InputLabel>
@@ -52,7 +58,7 @@ class ReportContent extends Component {
                                 }
                             </NativeSelect>
                             <FormHelperText>{t('projectHelpText')}</FormHelperText>
-                        </FormControl>
+                        </FormControl> */}
                         {stateData.project &&
                         <div className={classes.gridRoot}>
                             <GridList cellHeight={130} className={classes.gridList}>
@@ -196,7 +202,7 @@ class ReportContent extends Component {
                             type='string' toolTip="This name will be used while sharing the report"/>
                         <ReportComponent value='schedule' disp="Schedule Report Generation"
                             stateData={stateData} onChange={onChange}
-                            type='string' format='strdropdown' toolTip="This depicts the report scheduling time."/>
+                            type='string' format='dropdown' data={timeOptions} toolTip="This depicts the report scheduling time."/>
                         <ReportComponent value='rtype' disp="Generated Report type"
                             stateData={stateData} onChange={onChange}
                             type='string' format='dropdown' data={rtypeOptions} toolTip="Select the type of report sharing procedure"/>
