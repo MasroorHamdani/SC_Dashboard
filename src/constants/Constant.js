@@ -298,8 +298,253 @@ export const ALERT_LEVEL = [
 export const PASSWORD_REGEX = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,12})");
 
 export const DATA_OPERATIONS = {
-    'FILTER': 'FILTER',
-    'RESAMPLER': 'RESAMPLER'
+    FILTER: 'FILTER',
+    RESAMPLER: 'RESAMPLER'
+}
+
+export const OPERATION_TYPE = {
+    DEFAULT: 'DEFAULT',
+    ON_DEMAND: 'ON_DEMAND'
 }
 
 export const LINK = "https://s3-ap-southeast-1.amazonaws.com/scprojectimages/Screen+Shot+2018-09-28+at+3.47.15+PM.png"
+
+export const tempData = [
+    {
+        "metric_id": "mid1",
+        "metric_name": "Times for Bad Feedbacks",
+        "metric_type": "timeseries",
+        "metric_data_key": "t",
+        "column_items": [
+            "t",
+            "uid",
+            "v_rating",
+            "v_reasons"
+        ],
+        "time_index": "t",
+        "dimensions": [
+            {
+                "id": "did1",
+                "key": "v_rating",
+                "color": "#27ae60",
+                "name": "Bad Feedbacks Times: Rating 4",
+                "ctype": "scatter",
+                "dkey": "key",
+                "show_sampling_widget": false,
+                "actions": [
+                    {
+                        "type": "FILTER",
+                        "criteria": {
+                            "op": "EQ",
+                            "field": "v_rating",
+                            "operand": "4",
+                            "is_numeric": true
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "did2",
+                "key": "v_rating",
+                "color": "#2980b9",
+                "name": "Bad Feedbacks Times: Rating 3",
+                "ctype": "scatter",
+                "dkey": "key",
+                "show_sampling_widget": false,
+                "actions": [
+                    {
+                        "type": "FILTER",
+                        "criteria": {
+                            "op": "EQ",
+                            "field": "v_rating",
+                            "operand": "3",
+                            "is_numeric": true
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "did3",
+                "key": "v_rating",
+                "color": "#8e44ad",
+                "name": "Bad Feedbacks Times: Rating 2",
+                "ctype": "scatter",
+                "dkey": "key",
+                "show_sampling_widget": false,
+                "actions": [
+                    {
+                        "type": "FILTER",
+                        "criteria": {
+                            "op": "EQ",
+                            "field": "v_rating",
+                            "operand": "2",
+                            "is_numeric": true
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "did4",
+                "key": "v_rating",
+                "color": "#16a085",
+                "name": "Bad Feedbacks Times: Rating 1",
+                "ctype": "scatter",
+                "dkey": "key",
+                "show_sampling_widget": false,
+                "actions": [
+                    {
+                        "type": "FILTER",
+                        "criteria": {
+                            "op": "EQ",
+                            "field": "v_rating",
+                            "operand": "1",
+                            "is_numeric": true
+                        }
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "metric_id": "mid2",
+        "metric_name": "Sampled Feedbacks",
+        "metric_type": "timeseries",
+        "metric_data_key": "t",
+        "column_items": [
+            "t",
+            "uid",
+            "v_rating",
+            "v_reasons"
+        ],
+        "time_index": "t",
+        "dimensions": [
+            {
+                "id": "did1",
+                "key": "v_rating",
+                "color": "#16a085",
+                "name": "Good Feedbacks Sampled",
+                "ctype": "bar",
+                "dkey": "key",
+                "show_sampling_widget": true,
+                "actions": [
+                    {
+                        "type": "FILTER",
+                        "criteria": {
+                            "op": "LE",
+                            "field": "v_rating",
+                            "operand": "3",
+                            "is_numeric": true
+                        }
+                    },
+                    {
+                        "type": "RESAMPLER",
+                        "criteria": {
+                            "rule": "60T",
+                            "agg": "count",
+                            "window_type": "constant"
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "did2",
+                "key": "v_rating",
+                "color": "#d35400",
+                "name": "Bad Feedbacks Sampled",
+                "ctype": "bar",
+                "dkey": "key",
+                "show_sampling_widget": true,
+                "actions": [
+                    {
+                        "type": "FILTER",
+                        "criteria": {
+                            "op": "GE",
+                            "field": "v_rating",
+                            "operand": "4",
+                            "is_numeric": true
+                        }
+                    },
+                    {
+                        "type": "RESAMPLER",
+                        "criteria": {
+                            "rule": "60T",
+                            "agg": "count",
+                            "window_type": "constant"
+                        }
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "metric_id": "mid3",
+        "metric_name": "Total Feedbacks",
+        "metric_type": "categorical",
+        "metric_data_key": "t",
+        "column_items": [
+            "t",
+            "uid",
+            "v_rating",
+            "v_reasons"
+        ],
+        "time_index": "t",
+        "dimensions": [
+            {
+                "id": "did2",
+                "key": "v_rating",
+                "color": "#27ae60",
+                "name": "Total Good Feedbacks",
+                "ctype": "pie",
+                "dkey": "key",
+                "show_sampling_widget": true,
+                "actions": [
+                    {
+                        "type": "FILTER",
+                        "criteria": {
+                            "op": "LE",
+                            "field": "v_rating",
+                            "operand": "3",
+                            "is_numeric": true
+                        }
+                    },
+                    {
+                        "type": "RESAMPLER",
+                        "criteria": {
+                            "rule": "Y",
+                            "agg": "count",
+                            "window_type": "constant"
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "did3",
+                "key": "v_rating",
+                "color": "#c0392b",
+                "name": "Total Bad Feedbacks",
+                "ctype": "pie",
+                "dkey": "key",
+                "show_sampling_widget": true,
+                "actions": [
+                    {
+                        "type": "FILTER",
+                        "criteria": {
+                            "op": "LE",
+                            "field": "v_rating",
+                            "operand": "4",
+                            "is_numeric": true
+                        }
+                    },
+                    {
+                        "type": "RESAMPLER",
+                        "criteria": {
+                            "rule": "Y",
+                            "agg": "count",
+                            "window_type": "constant"
+                        }
+                    }
+                ]
+            }
+        ]
+    }
+];

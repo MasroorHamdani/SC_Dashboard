@@ -6,7 +6,8 @@ import _ from 'lodash';
 import moment from 'moment-timezone';
 import DataAnalysisComponent from '../../components/dataAnalysis/DataAnalysis';
 import {getApiConfig} from '../../services/ApiCofig';
-import {API_URLS, NAMESPACE_MAPPER} from '../../constants/Constant';
+import {API_URLS, NAMESPACE_MAPPER, DATA_OPERATIONS,
+  tempData, OPERATION_TYPE} from '../../constants/Constant';
 import {projectSubMenuList, projectInstallationList,
   projectAnalysisData, clearDataAnalysis} from '../../actions/DataAnalysis';
 import styles from './DataAvalysisStyle';
@@ -42,11 +43,6 @@ class DataAnalysis extends Component {
     this.menuIndex = 0;
   }
 
-  // handleClick = (index) => {
-  //   this.setState(state => ({
-  //     [index]: !state[index]
-  //   }));
-  // };
   handleDatePicker = () => {
   /**
    * This function will called from component 'DateRowComponent'
@@ -225,6 +221,9 @@ class DataAnalysis extends Component {
     })
     let metrics = this.getMetric(),
     dataToPost = {
+      // "req_type" : OPERATION_TYPE['DEFAULT'],
+      // "type": this.state.deviceKey,
+      // "sub_type": this.state.subType
       "ReqType": "default",
       "Type": this.state.deviceKey,
       "SubType": this.state.subType
@@ -232,16 +231,25 @@ class DataAnalysis extends Component {
     if(metrics && metrics.metric.length > 0 &&
         metrics.allMetrics.length > 0 &&
         metrics.metric[0].type === this.state.deviceKey) {
-      dataToPost = {};
-      dataToPost["metrics"] = metrics.allMetrics;
-      dataToPost.metrics.map((rows) => {
+      dataToPost = {
+        "req_type" : OPERATION_TYPE['ON_DEMAND'],
+        "type": this.state.deviceKey,
+        "all_metrics": metrics.allMetrics
+      };
+      dataToPost.all_metrics.map((rows) => {
         rows.dimensions.map((row) => {
-          if(row.showSamplingWidget) {
-            let rowData = this.state[this.state.deviceKey][rows.metricID][row.id];
-            row.statistic = rowData['func'] ? rowData['func'] : row.statistic;
-            row.window = rowData['sampling'] && rowData['unit'] ?
-              rowData['sampling'] + rowData['unit'] : row.window;
-          }
+          row.actions.map((dt) => {
+            let rowData = this.state[this.state.deviceKey][rows.metric_id][row.id]
+            if(dt.type === DATA_OPERATIONS['RESAMPLER']) {
+              rowData.map((val) => {
+                if(val.type === dt.type) {
+                  dt.criteria.agg = val.criteria.statistic? val.criteria.statistic: dt.criteria.agg;
+                  dt.criteria.rule = val.criteria.sampling && val.criteria.unit ?
+                    val.criteria.sampling + val.criteria.unit : dt.criteria.rule;
+                }
+              })
+            }
+          })
         })
       })
     }
@@ -257,7 +265,7 @@ class DataAnalysis extends Component {
     this.props.onDataAnalysis(config, endPoint);
   }
 
-  handleSamplingChange = (event, mainPath='', path='') => {
+  handleSamplingChange = (event, mainPath='', path='', action) => {
   /**
    * This function will be called from a component 'DataProcessingComponent'
    * This will be used by the sampling widget to update the field value.
@@ -272,15 +280,15 @@ class DataAnalysis extends Component {
     if(mainPath === 'update') {
       this.getNewAnalyticsData();
     } else {
-      this.setState({
-        [this.state.deviceKey]: {...this.state[this.state.deviceKey],
-          [mainPath]: {...this.state[this.state.deviceKey][mainPath],
-            [path]: {...this.state[this.state.deviceKey][mainPath][path],
-              [name]: value
-            }
-          }
+      let data = this.state[this.state.deviceKey][mainPath][path]
+      data.map((row) => {
+        if(row.type === action) {
+          row.criteria[name] = value
         }
-      });
+      })
+      this.setState({
+        [this.state.deviceKey]: {...this.state[this.state.deviceKey]}
+      })
     }
   }
 
@@ -368,22 +376,28 @@ class DataAnalysis extends Component {
     if (this.props.dataAnalysis &&
       !isEqual(this.props.dataAnalysis, prevProps.dataAnalysis) &&
       isEqual(this.props.dataAnalysis.data.status, "success")){
-        let metricsData = getVector(this.props.dataAnalysis.data.data.allMetrics, this.state.deviceKey);
+        //this.props.dataAnalysis.data.data.all_metrics
+        let metricsData = getVector(tempData, this.state.deviceKey);
         this.setState({
           sessionHeader: this.props.dataAnalysis.headers['x-sc-session-token'],
           metrics: metricsData.dataMetrics,
-          allMetrics: this.props.dataAnalysis.data.data.allMetrics,
-          dataAnalysis: this.props.dataAnalysis});
+          allMetrics: tempData,//this.props.dataAnalysis.data.data.all_metrics,
+          dataAnalysis: this.props.dataAnalysis
+        });
         let referData = {};
         Object.keys(metricsData.metric).map((key) => {
           let value = {}
           metricsData.metric[key].map((dt) => {
             Object.keys(dt).map((d) => {
-              let val = {
-                'func' : dt[d].statistic,
-                'sampling': dt[d].sampling,
-                'unit': dt[d].unit
-              }
+              let val=[];
+              dt[d].actions.map((action) => {
+                val.push(action);
+              })
+              // let val = {
+              //   'func' : dt[d].statistic,
+              //   'sampling': dt[d].sampling,
+              //   'unit': dt[d].unit
+              // }
               value[d] = val;
             })
           })

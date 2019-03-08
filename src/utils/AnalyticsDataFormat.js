@@ -145,47 +145,40 @@ export function getVector(metricsResponse, deviceKey) {
  */
     let dataMetrics = {}, path = [], metric = {};
     metricsResponse.map((metrics) => {
-        dataMetrics['metricType'] = metrics['metricType'];
-        dataMetrics['name'] = metrics['metricName'];
+        dataMetrics['metricType'] = metrics['metric_type'];
+        dataMetrics['name'] = metrics['metric_name'];
         dataMetrics['vector'] = [];
-        metric[metrics['metricID']] = {};
+        metric[metrics['metric_id']] = {};
         path=[];
         metrics.dimensions.map((vector) => {
             let vec = {
                 name: vector.name,
                 path: vector.key,
-                // unit: vector.Unit,
                 shortName: vector.id,
                 color: vector.color,
                 chartType: vector.ctype,
-                showSamplingWidget: vector.showSamplingWidget,
-                statistic: vector.statistic,
-                window: vector.window,
-                sampling: vector.window.substr(0, vector.window.length-1) ? vector.window.substr(0, vector.window.length-1): 1,
-                unit: vector.window.substr(vector.window.length-1, 1),
                 type: deviceKey
             }
-            // , actions = {};
-            // vector.actions.map((row) => {
-            //     let action = {};
-            //     action.type = row.type;
-            //     if(row.type === DATA_OPERATIONS['FILTER'])
-            //         action.criteria = row.criteria;
-            //     else if(row.type === DATA_OPERATIONS['RESAMPLER']) {
-            //         action.criteria = {};
-            //         action.criteria.statistic = row.criteria.statistic;
-            //         action.criteria.window = row.criteria.window;
-            //         action.criteria.sampling = row.criteria.window.substr(0, row.criteria.window.length-1) ? row.criteria.window.substr(0, row.criteria.window.length-1): 1;
-            //         action.criteria.unit = row.criteria.window.substr(row.criteria.window.length-1, 1);
-            //     }
-            //     actions.push(action);
-            // })
-            // vec.actions = actions;
-            dataMetrics['vector'].push(vec)
-            if(vector.showSamplingWidget)
-                path.push({[vector.id] : vec});
+            , actions = [];
+            vector.actions.map((row) => {
+                let action = {};
+                action.type = row.type;
+                if(row.type === DATA_OPERATIONS['FILTER'])
+                    action.criteria = row.criteria;
+                else if(row.type === DATA_OPERATIONS['RESAMPLER']) {
+                    action.criteria = {};
+                    action.criteria.statistic = row.criteria.agg;
+                    action.criteria.window = row.criteria.rule;
+                    action.criteria.sampling = row.criteria.rule.substr(0, row.criteria.rule.length-1) ? row.criteria.rule.substr(0, row.criteria.rule.length-1): 1;
+                    action.criteria.unit = row.criteria.rule.substr(row.criteria.rule.length-1, 1);
+                }
+                actions.push(action);
+            })
+            vec.actions = actions;
+            dataMetrics['vector'].push(vec);
+            path.push({[vector.id] : vec});
         })
-        metric[metrics['metricID']] = path;
+        metric[metrics['metric_id']] = path;
     })
     return {'dataMetrics': dataMetrics,
             'metric': metric}
