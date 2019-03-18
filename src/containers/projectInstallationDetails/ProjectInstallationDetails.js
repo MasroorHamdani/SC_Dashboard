@@ -103,9 +103,9 @@ class ProjectInstallationDetails extends Component {
         let installationData, tabData, rows;
         if(this.props.installationDeviceData) {
             installationData = this.props.installationDeviceData;
-            rows = [{ id: 'Display', numeric: false, disablePadding: false, label: 'Name' },
-                    { id: 'Devid', numeric: false, disablePadding: false, label: 'Device Id' },
-                    { id: 'Type', numeric: false, disablePadding: false, label: 'Type' }]
+            rows = [{ id: 'Display', numeric: 'center', disablePadding: false, label: 'Name' },
+                    { id: 'Devid', numeric: 'center', disablePadding: false, label: 'Device Id' },
+                    { id: 'Type', numeric: 'center', disablePadding: false, label: 'Type' }]
             tabData =
                 <EnhancedTable data={installationData} rows={rows}
                     order={this.state.order} orderBy={this.state.orderBy}

@@ -23,6 +23,8 @@ import Report from "./containers/Report";
 import AlertDetails from "./containers/AlertDetails";
 import DispenserDetails from "./containers/DispenserDetails";
 import ReportView from "./containers/ReportView";
+import Health from "./containers/Health";
+import HealthStatus from "./containers/HealthStatus";
 
 const styles = theme => ({
 
@@ -66,6 +68,8 @@ const styles = theme => ({
                       <Route path="/data" component={DataAnalysis} />
                       <Route exact path="/report" component={Report} />
                       <Route path="/report/:pid?" component={ReportView} />
+                      <Route path="/health/:pid/:insid" component={HealthStatus}/>
+                      <Route exact path="/health/:pid" component={Health}/>
                       <Route path="/logout" component={Logout} />
                       <Redirect from="/login" to="/"/>
                       <Route component={NoMatch} />

@@ -167,7 +167,7 @@ class ProjectDetail extends Component {
             {
             t=><main className={classes.content}>
             <Paper style={{ padding: 8 * 3 }}>
-            {/* Tab bar with options of team and installatio */}
+            {/* Tab bar with options of team and installation */}
                 <AppBar position="static" color="default">
                 <Tabs
                   value={this.state.value}

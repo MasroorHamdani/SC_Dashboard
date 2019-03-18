@@ -6,6 +6,7 @@ import AssignmentIcon from '@material-ui/icons/Assignment';
 import NotificationImportantIcon from '@material-ui/icons/NotificationImportant';
 import LibraryBooksIcon from '@material-ui/icons/LibraryBooks';
 import SettingsIcon from '@material-ui/icons/Settings';
+import FavoriteIcon from '@material-ui/icons/Favorite';
 
 import {ListItem, ListItemIcon, ListItemText} from '@material-ui/core';
 import {Link} from "react-router-dom";
@@ -29,7 +30,9 @@ class ListItems extends Component {
             case 'AssignmentIcon':
                 return <AssignmentIcon/>;
             case 'SettingsIcon':
-                return <SettingsIcon/>
+                return <SettingsIcon/>;
+            case 'FavoriteIcon':
+                return <FavoriteIcon/>;
             default:
                 return '';
         }

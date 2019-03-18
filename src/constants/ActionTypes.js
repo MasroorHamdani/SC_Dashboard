@@ -43,3 +43,5 @@ export const CLEAR_REDUCER = "CLEAR_REDUCER";
 export const PROJECT_SELECTED = "PROJECT_SELECTED";
 
 export const PROJECT_LIST = "PROJECT_LIST";
+
+export const HEALTH_STATUS ="HEALTH_STATUS";

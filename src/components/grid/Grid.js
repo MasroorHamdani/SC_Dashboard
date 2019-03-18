@@ -215,7 +215,7 @@ class EnhancedTable extends React.Component {
                     <TableRow
                       hover
                       className={classes.pointer}
-                      onClick={!allowEdit ?event => handleClick(event, n[redirectID], category): null}
+                      onClick={(!allowEdit && handleClick) ?event => handleClick(event, n[redirectID], category): null}
                       aria-checked={isSelected}
                       tabIndex={-1}
                       key={n[redirectID]}
@@ -228,8 +228,8 @@ class EnhancedTable extends React.Component {
                                 >
                                 {Array.isArray(n[id]) ?
                                   <List dense={true}>
-                                    {n[id].map((value) => {
-                                      return <ListItem>
+                                    {n[id].map((value, index) => {
+                                      return <ListItem key={index}>
                                         {value}
                                       </ListItem>
                                     })}

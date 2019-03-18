@@ -26,7 +26,7 @@ class EnhancedTableHead extends Component {
               return (
                 <TableCell
                   key={row.id}
-                  numeric={row.numeric}
+                  align={row.numeric}
                   padding={row.disablePadding ? 'none' : 'default'}
                   sortDirection={orderBy === row.id ? order : false}
                 >

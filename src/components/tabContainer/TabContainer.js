@@ -47,8 +47,8 @@ class TabContainer extends Component {
         const {category, data, handleClick, stateData} = this.props;
         let tabData, rows;
         if (data && category === PROJECT_TABS['INSTALLATION']) {
-            rows = [{ id: 'name', numeric: false, disablePadding: false, label: 'Name' },
-                    { id: 'locn', numeric: false, disablePadding: false, label: 'Location' }]
+            rows = [{ id: 'name', numeric: 'center', disablePadding: false, label: 'Name' },
+                    { id: 'locn', numeric: 'center', disablePadding: false, label: 'Location' }]
             tabData = <Typography component="div">
             <EnhancedTable data={data} rows={rows}
                 order={this.state.order} orderBy={this.state.orderBy}
@@ -57,11 +57,11 @@ class TabContainer extends Component {
                 handleChange={this.handleChange} handleClick={handleClick} redirectID="insid"/>
             </Typography>
         } else if(stateData.teamInfo && category === PROJECT_TABS['TEAM']) {
-            rows = [{ id: 'Firstname', numeric: false, disablePadding: false, label: 'Firstname' },
-                    { id: 'Lastname', numeric: false, disablePadding: false, label: 'LastName' },
-                    { id: 'Role', numeric: false, disablePadding: false, label: 'Role' },
-                    { id: 'Status', numeric: false, disablePadding: false, label: 'Status' },
-                    { id: 'Association', numeric: false, disablePadding: false, label: 'Association'}
+            rows = [{ id: 'Firstname', numeric: 'center', disablePadding: false, label: 'Firstname' },
+                    { id: 'Lastname', numeric: 'center', disablePadding: false, label: 'LastName' },
+                    { id: 'Role', numeric: 'center', disablePadding: false, label: 'Role' },
+                    { id: 'Status', numeric: 'center', disablePadding: false, label: 'Status' },
+                    { id: 'Association', numeric: 'center', disablePadding: false, label: 'Association'}
                 ]
             tabData = <Typography component="div">
             <EnhancedTable data={stateData.teamInfo} rows={rows}

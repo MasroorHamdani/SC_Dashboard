@@ -19,7 +19,8 @@ export const API_URLS = {
     'TEAM_MEMBERS': 'team/members',
     'TEAM_ASSOCIATION': 'team/assoc',
     'DEFAULT': 'default',
-    'INSTALLATION': '/installations'
+    'INSTALLATION': '/installations',
+    'HEALTH': '/health'
 };
 
 export const DASHBOARD_METRIC = {
@@ -60,7 +61,8 @@ export const REACT_URLS = {
     'AUTH_RESET': '/auth-reset',
     'USER-PROFILE': '/profile',
     'ALERT': '/alert',
-    'DISPENSER': '/dispenser'
+    'DISPENSER': '/dispenser',
+    'HEALTH_STATUS': '/health'
 }
 
 export const DATE_TIME_FORMAT = 'YYYYMMDDHHmmss'

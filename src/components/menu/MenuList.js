@@ -9,14 +9,14 @@ return ([
       icon: "DashboardIcon"
     },
     {
+      name: "Project details",
+      url: `/project/${pid}`,
+      icon: "LibraryBooksIcon"
+    },
+    {
       name: "Data Analysis",
       url: "/data",
       icon: "BarChartIcon"
-    },
-    {
-      name: "Configure Report",
-      url: "/report",
-      icon: "SettingsIcon"
     },
     {
       name: "View Reports",
@@ -24,13 +24,18 @@ return ([
       icon: "AssignmentIcon"
     },
     {
+      name: "Configure Report",
+      url: "/report",
+      icon: "SettingsIcon"
+    },
+    {
+      name: "Health Status",
+      url: `/health/${pid}`,
+      icon: "FavoriteIcon"
+    },
+    {
       name: "Alert Data",
       url: `/alert/${pid}`,
       icon: "NotificationImportantIcon"
-    },
-    {
-      name: "Project details",
-      url: `/project/${pid}`,
-      icon: "LibraryBooksIcon"
     }])
 }
