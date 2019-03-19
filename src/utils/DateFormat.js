@@ -1,6 +1,7 @@
 import moment from 'moment-timezone';
+import {DATE_TIME_FORMAT} from '../constants/Constant';
 
-export function getFormatedDateTime(dateTime, format) {
+export function getFormatedDateTime(dateTime, format=DATE_TIME_FORMAT) {
 /**
  * Format the passed datetime objects into format passed.
  */
@@ -10,7 +11,7 @@ export function getFormatedDateTime(dateTime, format) {
     return(dateTime);
 }
 
-export function formatDateTime(dateTime, inputFormat, outFormat) {
+export function formatDateTime(dateTime, inputFormat=DATE_TIME_FORMAT, outFormat=DATE_TIME_FORMAT) {
 /**
  * Format the passed datetime object to input format and then to output format.
  */
@@ -30,4 +31,13 @@ export function formatDateWithTimeZone(dateTime, inputFormat, outFormat, timeZon
         dateTime = moment().tz(timeZone).format(outFormat)
     }
     return (dateTime);
+}
+
+export function getTimeDifference (startTime, endTime) {
+    startTime = moment(startTime, DATE_TIME_FORMAT);
+    endTime = moment(endTime, DATE_TIME_FORMAT);
+    moment(endTime.diff(startTime)).format("m[m] s[s]")
+    let duration = moment.duration(endTime.diff(startTime));
+    let hours = duration.asHours();
+    return hours
 }

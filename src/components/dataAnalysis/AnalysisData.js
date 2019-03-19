@@ -38,7 +38,7 @@ class AnalysisData extends Component {
      * with data and that will return the complete graph component.
      */
         let dataAnalysis = data,
-            analyticsData = getFormatedGraphData(dataAnalysis, metrics),
+            analyticsData = getFormatedGraphData(dataAnalysis, metrics, this.props.stateData),
             graphData = analyticsData.graphData,
             nameMapper = analyticsData.nameMapper, tabData;
             if(!tabData)

@@ -29,7 +29,22 @@ const styles = theme => ({
     },
     statusBar: {
         display: 'flex'
-    }
+    },
+    bottomPadding: {
+        paddingBottom: theme.spacing.unit * 3
+    },
+    unhealthyStatus: {
+        backgroundColor: red[500],
+        width: '35%'
+    },
+    warningStatus: {
+        backgroundColor: orange[500],
+        width: '35%'
+    },
+    healthyStatus: {
+        backgroundColor: green[500],
+        width: '35%'
+    },
 });
 
 export default styles;

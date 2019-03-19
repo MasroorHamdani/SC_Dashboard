@@ -44,7 +44,6 @@ function ApiService(configObject) {
             if (err.response.status === 500) return Promise.reject(err);
         }
         // if (!err.response) return Promise.reject(err);
-        console.log(err.response, "logout");
         if (err.response.status === 401 && !isFetchingToken) {
             isFetchingToken = true;
 

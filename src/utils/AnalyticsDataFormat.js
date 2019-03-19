@@ -2,9 +2,10 @@ import {_, groupBy} from 'lodash';
 import moment from 'moment-timezone';
 
 import {DATE_TIME_FORMAT, GRAPH_LABEL_TIME_FORMAT,
-    METRIC_TYPE, ANALYTICS_DATE, DATA_OPERATIONS} from '../constants/Constant';
+    METRIC_TYPE, ANALYTICS_DATE, GRAPH_LABEL_DATE_TIME_FORMAT} from '../constants/Constant';
+import {formatDateTime, getTimeDifference} from '../utils/DateFormat';
 
-export function getFormatedGraphData(passedData, metrics) {
+export function getFormatedGraphData(passedData, metrics, stateData='') {
 /**
  * Metrics data and metrics dimentions will be passed to this function
  * This function will first loop through the metrics dimentions
@@ -33,7 +34,13 @@ export function getFormatedGraphData(passedData, metrics) {
                             if(row.metricType === METRIC_TYPE['TIMESERIES']) {
                                 let graphElement = {};
                                 if(row.metricDataKey && row.metricDataKey === 't') {
-                                    graphElement['name'] = moment(vec.t, DATE_TIME_FORMAT).format(GRAPH_LABEL_TIME_FORMAT);
+                                    let timeDiffer = getTimeDifference(stateData.start, stateData.end);
+                                    if(timeDiffer <= 24) {
+                                        graphElement['name'] = formatDateTime(vec.t, DATE_TIME_FORMAT, GRAPH_LABEL_TIME_FORMAT)
+                                        //moment(vec.t, DATE_TIME_FORMAT).format(GRAPH_LABEL_TIME_FORMAT);
+                                    } else {
+                                        graphElement['name'] = formatDateTime(vec.t, DATE_TIME_FORMAT, GRAPH_LABEL_DATE_TIME_FORMAT)
+                                    }
                                 }
                                 graphElement[dim.id] = vec[dim.key];
                                 graphSection.push(graphElement)

@@ -398,7 +398,8 @@ class DataAnalysis extends Component {
    * That is being handled by appending numbers to the type.
    */
     if (this.props.installationList &&
-      !isEqual(this.props.installationList, prevProps.installationList)) {
+      (!isEqual(this.props.installationList, prevProps.installationList) ||
+      !this.state.installationList)) {
         let installationList = {}, i = 1;
         this.props.installationList.map((tab) => {
           let list = {

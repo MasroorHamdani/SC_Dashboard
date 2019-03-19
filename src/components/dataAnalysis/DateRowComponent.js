@@ -29,7 +29,7 @@ class DateRowComponent extends Component {
                         showYearDropdown
                         showTimeSelect
                         timeFormat="HH:mm"
-                        timeIntervals={15}
+                        timeIntervals={5}
                         dateFormat="MM/d/YY HH:mm"
                         timeCaption="Time"
                         maxDate={new Date()}
@@ -45,7 +45,7 @@ class DateRowComponent extends Component {
                         showYearDropdown
                         showTimeSelect
                         timeFormat="HH:mm"
-                        timeIntervals={15}
+                        timeIntervals={5}
                         dateFormat="MM/d/YY HH:mm"
                         timeCaption="Time"
                         minDate={data.startDate}

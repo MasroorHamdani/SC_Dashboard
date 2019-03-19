@@ -5,6 +5,7 @@ import {isEqual, groupBy} from 'lodash';
 import {API_URLS} from '../constants/Constant';
 import {healthDataSaved} from '../actions/HealthStatus';
 import {installationDeviceData} from '../actions/InstallationDeviceData';
+import {projectInstallationList} from '../actions/DataAnalysis';
 import {getApiConfig} from '../services/ApiCofig';
 
 import HealthStatusComponent from '../components/healthCheck/HealthStatusComponent';
@@ -137,26 +138,44 @@ class HealthStatus extends Component {
      * On any change this will be called and the data will be changed in UI
      * Reducer used - 'projectSelectReducer'
      */
-    if(this.props.projectSelected && 
-        !isEqual(this.props.projectSelected, prevProps.projectSelected)){
-        if(this.state.pid !== this.props.projectSelected.PID)
-        this.setState({pid: this.props.projectSelected.PID},
-            function() {
-            this.props.history.push(this.props.projectSelected.PID);
-            this.getHealthDeatails();
-        });
-    }
+        if(this.props.projectSelected && 
+            !isEqual(this.props.projectSelected, prevProps.projectSelected)){
+            if(this.state.pid !== this.props.projectSelected.PID)
+            this.setState({pid: this.props.projectSelected.PID},
+                function() {
+                this.props.history.push(this.props.projectSelected.PID);
+                this.getHealthDeatails();
+            });
+        }
 
         // if (this.props.healthStatus &&
         //     !isEqual(this.props.healthStatus, prevProps.healthStatus)) {
         //         // console.log(this.props.healthStatus);
         // }
         if (this.props.installationDetail &&
-            !isEqual(this.props.installationDetail, prevProps.installationDetail)) {
+            (!isEqual(this.props.installationDetail, prevProps.installationDetail) ||
+            !this.state.name)) {
             this.setState({
                 name: this.props.installationDetail[0].name,
                 locn: this.props.installationDetail[0].locn
             })
+            const endPoint = `${API_URLS['PROJECT_DETAILS']}/${this.state.pid}${API_URLS['PROJECT_LOCATION']}/${this.state.insid}`,
+                params = {
+                    'getinsinfo' : false
+                },
+                config = getApiConfig(endPoint, 'GET', '', params);
+            this.props.onInstalationsList(config);
+        }
+        if (this.props.installationList &&
+            !isEqual(this.props.installationList, prevProps.installationList)) {
+                let installationList = groupBy(this.props.installationList,  'Devid');
+                Object.keys(this.state.formattedData).map((key) => {
+                    this.state.formattedData[key].map((row) => {
+                        if(installationList[row.ID]) {
+                            row.info['name'] = installationList[row.ID][0]['Display'];
+                        }
+                    })
+                })
         }
     }
     render() {
@@ -167,7 +186,8 @@ class HealthStatus extends Component {
 function mapStateToProps(state) {
     return {
         healthStatus: state.healthStatusReducer.data,
-        installationDetail: state.InstallationDeviceReducer.data
+        installationDetail: state.InstallationDeviceReducer.data,
+        installationList : state.DataAnalysisInstallationListReducer.data,
     }
 }
 function mapDispatchToProps(dispatch) {
@@ -178,7 +198,10 @@ function mapDispatchToProps(dispatch) {
         onHealthDataSave: (value) => {
             //will dispatch the async action
             dispatch(healthDataSaved(value))
-        }
+        },
+        onInstalationsList: (config) => {
+            dispatch(projectInstallationList(config))
+        },
     }
 }
 

@@ -67,7 +67,9 @@ export const REACT_URLS = {
 
 export const DATE_TIME_FORMAT = 'YYYYMMDDHHmmss'
 
-export const GRAPH_LABEL_TIME_FORMAT = 'HH:mm'//'DD/MM/YYYY HH:mm:ss'
+export const GRAPH_LABEL_TIME_FORMAT = 'HH:mm'
+
+export const GRAPH_LABEL_DATE_TIME_FORMAT = 'DD/MM/YYYY HH:mm:ss'
 
 export const HOUR_MIN_FORMAT = 'hh:mm A'
 
