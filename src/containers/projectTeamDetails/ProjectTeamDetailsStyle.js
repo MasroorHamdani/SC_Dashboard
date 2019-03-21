@@ -45,6 +45,9 @@ const styles = theme => ({
         // margin: theme.spacing.unit,
         minWidth: 120,
     },
+    iconButton: {
+        '&:hover': { backgroundColor: 'rgba(255, 255, 255, 0.7)' }
+    },
 });
 
 export default styles;

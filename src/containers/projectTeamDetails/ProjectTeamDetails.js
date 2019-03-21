@@ -359,7 +359,6 @@ class ProjectInstallationDetails extends Component {
                     <Select native
                         value={this.state.userLocation.InsID}
                         onChange={this.addDetail}
-                        
                         inputProps={{
                             name: 'InsID',
                             id: 'InsID',
@@ -481,7 +480,7 @@ class ProjectInstallationDetails extends Component {
                                     return <Card className={classes.card} key={i}>
                                         <CardHeader
                                             action={
-                                            <IconButton>
+                                            <IconButton className={classes.iconButton}>
                                                 <EditIcon onClick={event => this.editLocation(dt.InsID, dt.name)}/>
                                                 <ClearIcon onClick={event => this.removeLocation(dt.InsID, dt.name)}/>
                                             </IconButton>
