@@ -3,10 +3,11 @@ import { connect } from "react-redux";
 import {withStyles, Grid, CardContent,
     Typography, Card, CardHeader, IconButton,
     Divider, FormControl, InputLabel, TextField,
-    Select, LinearProgress} from '@material-ui/core';
+    Select, LinearProgress, List, ListItem} from '@material-ui/core';
 import {isEqual} from 'lodash';
 import ClearIcon from '@material-ui/icons/Clear';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
+import EditIcon from '@material-ui/icons/Edit';
 import styles from './ProjectTeamDetailsStyle';
 import CustomModal from '../../components/modal/Modal';
 import {API_URLS, PROJECT_TABS, NAMESPACE_MAPPER,
@@ -16,12 +17,14 @@ import {projectDetailData} from '../../actions/ProjectDataAction';
 import {profileData, profileDataUpdate} from '../../actions/UserProfileDataAction';
 import UserProfileData from '../../components/userProfile/UserProfileData';
 import {formatDateTime} from '../../utils/DateFormat';
+import {capitalizeFirstLetter} from '../../utils/FormatStrings';
 
 class ProjectInstallationDetails extends Component {
     constructor(props) {
         super(props);
         this.state = {
             open: false,
+            isEdit: false,
             deleteNotify: false,
             profileNotify: false,
             profile: {
@@ -44,12 +47,13 @@ class ProjectInstallationDetails extends Component {
         this.earlyState = true;
     }
     
-    handleModalState = () => {
+    handleModalState = (isEdit=false) => {
     /**
      * Handle the modal open and close state.
      * Modal shown to add a new allocation.
      */
-        this.setState({ open: !this.state.open});
+        this.setState({'isEdit':isEdit,
+            open: !this.state.open});
     };
     handleModalDeleteState = () => {
     /**
@@ -151,6 +155,18 @@ class ProjectInstallationDetails extends Component {
         this.setState({deleteAsso : insID})
         this.deleteInformation = `Do you Want Remove the User Association for location ${name}`;
         this.handleModalDeleteState();
+    }
+    editLocation = (insID, name) => {
+        this.state.association.map((row) => {
+            if(row.InsID === insID) {
+                row['ShiftStart'] = formatDateTime(row.ShiftStart,"HHmm", "HH:mm")
+                row['ShiftEnd'] = formatDateTime(row.ShiftEnd,"HHmm", "HH:mm")
+                this.setState({userLocation: row}, function () {
+                    this.handleModalState(true)
+                })
+            }
+        })
+        
     }
     addDetail = (event) => {
     /***
@@ -327,22 +343,27 @@ class ProjectInstallationDetails extends Component {
         }
       }
     
-    render(){
+    render() {
         let returnData;
         const {classes} = this.props;
         if(this.state.locationList) {
             // Add user to a new location modal content
             returnData = <div>
+                {this.state.isEdit ?
+                    <Typography variant="h6">
+                        {this.state.userLocation.name} | {this.state.userLocation.locn}
+                    </Typography>
+                :
                 <FormControl className={classes.formControl}>
                     <InputLabel htmlFor="age-native-helper">Location</InputLabel>
                     <Select native
                         value={this.state.userLocation.InsID}
                         onChange={this.addDetail}
+                        
                         inputProps={{
                             name: 'InsID',
                             id: 'InsID',
-                            }}
-                    >
+                            }}>
                     <option value="" />
                     {this.state.locationList.map(function(loc) {
                         if(!loc.assigned)
@@ -351,6 +372,7 @@ class ProjectInstallationDetails extends Component {
                     })}
                     </Select>
                 </FormControl>
+                }
                 <Grid container spacing={24}>
                     <Grid item xs={12} sm={6}>
                         <TextField
@@ -449,7 +471,7 @@ class ProjectInstallationDetails extends Component {
                             <Card className={classes.card}>
                                 <CardHeader action={
                                     <IconButton>
-                                        <AddCircleOutlineIcon onClick={this.handleModalState}/>
+                                        <AddCircleOutlineIcon onClick={event => this.handleModalState()}/>
                                     </IconButton>
                                     }
                                 subheader="Location Assigned"/>
@@ -460,6 +482,7 @@ class ProjectInstallationDetails extends Component {
                                         <CardHeader
                                             action={
                                             <IconButton>
+                                                <EditIcon onClick={event => this.editLocation(dt.InsID, dt.name)}/>
                                                 <ClearIcon onClick={event => this.removeLocation(dt.InsID, dt.name)}/>
                                             </IconButton>
                                             }
@@ -472,13 +495,18 @@ class ProjectInstallationDetails extends Component {
                                                 <Typography component="p">
                                                 <b>Shift Ends At :</b> {formatDateTime(dt.ShiftEnd, "HHmm", "hh:mm A")}
                                                 </Typography>
-                                                <Typography component="p">
-                                                    <b>Tags associated :</b> {dt.Tags.map((dt, index) => {
-                                                        return <span key={index}> {dt} </span>
+                                                <Typography component="div">
+                                                    <b>Tags associated :</b> 
+                                                    <List dense={true}>
+                                                    {dt.Tags.map((dt, index) => {
+                                                        return <ListItem key={index}>
+                                                        {capitalizeFirstLetter(dt)}
+                                                        </ListItem>
                                                     })}
+                                                    </List>
                                                 </Typography>
                                                 <Typography component="p">
-                                                <b>Level :</b> {dt.Level}
+                                                <b>Level :</b> {capitalizeFirstLetter(dt.Level)}
                                                 </Typography>
                                             </CardContent>
                                         </Card>
@@ -491,7 +519,7 @@ class ProjectInstallationDetails extends Component {
                     <CustomModal
                         header="Associate User with Location"
                         content={returnData}
-                        handleClose={this.handleModalState}
+                        handleClose={event => this.handleModalState()}
                         handleClick={this.onAddtion}
                         open={this.state.open}
                         showFooter={true}

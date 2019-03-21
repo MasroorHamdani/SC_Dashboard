@@ -215,11 +215,11 @@ class Header extends Component {
                   </MenuItem>
                 </Paper>
               </Popper>
-              <IconButton color="inherit">
+              {/* <IconButton color="inherit">
                 <Badge badgeContent={4} color="secondary">
                   <NotificationsIcon />
                 </Badge>
-              </IconButton>
+              </IconButton> */}
             </Toolbar>
           </AppBar>
       );

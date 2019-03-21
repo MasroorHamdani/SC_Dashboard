@@ -137,12 +137,18 @@ class Health extends Component {
     }
 
     getLocationDetails = () => {
+    /**
+     * API call for fetching the location details for given pid
+     */
         const endPoint = `${API_URLS['PROJECT_DETAILS']}/${this.state.pid}${API_URLS['WASHROOM_LOCATION']}`,
             config = getApiConfig(endPoint, 'GET');
         this.props.onProjectInstallationList(config);
     }
 
     calculateStatus = (formattedData) => {
+    /**
+     * Calculate the percentage of status per sensor per type
+     */
         Object.keys(formattedData).map((key) => {
             Object.keys(formattedData[key]).map((innerKey) => {
                 let deviceNumber = formattedData[key][innerKey].length;
@@ -160,6 +166,9 @@ class Health extends Component {
     }
 
     formatHealthData = (deviceResponse) => {
+    /**
+     * Format the data from API, to be used on UI.
+     */
         let formattedData = groupBy(this.state.data,  'info.insid');
         Object.keys(formattedData).map((key) => {
             formattedData[key] = groupBy(formattedData[key],  'info.type');
@@ -202,6 +211,11 @@ class Health extends Component {
             });
         }
 
+    /**
+     * This part will get the list of locations per project,
+     * as the project will be selected in the header.
+     * Reducer for installations - 'DataAnalysisProjectListSubMenuReducer'
+     */
         if (this.props.projectInstallationList &&
             !isEqual(this.props.projectInstallationList, prevProps.projectInstallationList)) {
                 let SUB1, SUB2;;

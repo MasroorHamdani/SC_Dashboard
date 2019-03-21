@@ -191,12 +191,12 @@ function mapStateToProps(state) {
     }
 }
 function mapDispatchToProps(dispatch) {
+    // Will dispatch the async action
     return {
         onInstallationDetail: (config) => {
             dispatch(installationDeviceData(config))
         },
         onHealthDataSave: (value) => {
-            //will dispatch the async action
             dispatch(healthDataSaved(value))
         },
         onInstalationsList: (config) => {

@@ -51,7 +51,7 @@ class AlertDetails extends Component {
         let {name, value} = event.target;
         this.setState({[name]: value})
     }
-    getInstallationLocation =()=> {
+    getInstallationLocation = () => {
     /**
      * Make an API call and get installation location details for selected project.
      */

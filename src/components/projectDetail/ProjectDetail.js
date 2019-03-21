@@ -11,6 +11,7 @@ import {withStyles, AppBar, Tabs, Tab, Paper,
 import TabContainer from '../tabContainer/TabContainer';
 import {PROJECT_TABS, API_URLS, NAMESPACE_MAPPER} from '../../constants/Constant';
 import {getApiConfig} from '../../services/ApiCofig';
+import {capitalizeFirstLetter} from '../../utils/FormatStrings';
 import {projectDetailData, projectTeamData, projectTeamAsso} from '../../actions/ProjectDataAction';
 
 import styles from './ProjectDetailStyle';
@@ -138,7 +139,7 @@ class ProjectDetail extends Component {
               association[row.UID].map((dt) => {
                 this.props.projectData.map((d) => {
                   if(d.SUB1 === dt.InsID)
-                    tags.push([`${d.name} - ${d.locn} (${dt.Level})`])
+                    tags.push([`${d.name} - ${d.locn} (${capitalizeFirstLetter(dt.Level)})`])
                 })
               })
             row['Association'] = tags;
