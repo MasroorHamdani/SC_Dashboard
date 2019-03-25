@@ -3,7 +3,7 @@ import {connect} from 'react-redux';
 import {isEqual, groupBy} from 'lodash';
 
 import {API_URLS} from '../constants/Constant';
-import {healthDataSaved} from '../actions/HealthStatus';
+import {projectLocationHealth} from '../actions/HealthStatus';
 import {installationDeviceData} from '../actions/InstallationDeviceData';
 import {projectInstallationList} from '../actions/DataAnalysis';
 import {getApiConfig} from '../services/ApiCofig';
@@ -25,101 +25,16 @@ class HealthStatus extends Component {
      * if yes get the data by calling internal functions,
      * or set the value first and then make the call.
      */
-        this.getHealthDeatails();
-        this.getLocationDetails();
+        this.getHealthDetails();
     }
 
-    getHealthDeatails = () => {
+    getHealthDetails = () => {
     /***
      * Call Health API and get the health data
      */
-        // const endPoint = `${API_URLS['PROJECT_DETAILS']}/${this.state.pid}${API_URLS['HEALTH']}/${this.state.insid}`,
-        //         config = getApiConfig(endPoint, 'GET');
-        // this.props.onHealthDataSave(this.state.healthData);
-        let data = [
-            {
-                "ID": "CERTIS_PT_CCK_T2",
-                "PID": "CERTIS_CCK_MRT",
-                "info": {
-                    "last_ping": "20190312145500",
-                    "last_ping_since": 76632,
-                    "pid": "CERTIS_CCK_MRT",
-                    "sampling_rate": 120,
-                    "status": "healthy",
-                    "type": "PT",
-                    "insid": "CERTIS_CCK_LOCN2"
-                }
-            },
-            {
-                "ID": "CERTIS_PT_CCK_T3",
-                "PID": "CERTIS_CCK_MRT",
-                "info": {
-                    "last_ping": "20190312145500",
-                    "last_ping_since": 76632,
-                    "pid": "CERTIS_CCK_MRT",
-                    "sampling_rate": 120,
-                    "status": "unhealthy",
-                    "type": "PT",
-                    "insid": "CERTIS_CCK_LOCN2"
-                }
-            },
-            {
-                "ID": "CERTIS_PT_CCK_T4",
-                "PID": "CERTIS_CCK_MRT",
-                "info": {
-                    "last_ping": "20190312145500",
-                    "last_ping_since": 76632,
-                    "pid": "CERTIS_CCK_MRT",
-                    "sampling_rate": 120,
-                    "status": "warning",
-                    "type": "PT",
-                    "insid": "CERTIS_CCK_LOCN2"
-                }
-            },
-            {
-                "ID": "CERTIS_PT_CCK_T5",
-                "PID": "CERTIS_CCK_MRT",
-                "info": {
-                    "last_ping": "20190312145500",
-                    "last_ping_since": 76632,
-                    "pid": "CERTIS_CCK_MRT",
-                    "sampling_rate": 120,
-                    "status": "unhealthy",
-                    "type": "PT",
-                    "insid": "CERTIS_CCK_LOCN2"
-                }
-            },
-            {
-                "ID": "CERTIS_AQ_CCK_T2",
-                "PID": "CERTIS_CCK_MRT",
-                "info": {
-                    "last_ping": "20190312145500",
-                    "last_ping_since": 76632,
-                    "pid": "CERTIS_CCK_MRT",
-                    "sampling_rate": 120,
-                    "status": "healthy",
-                    "type": "AQ",
-                    "insid": "CERTIS_CCK_LOCN2"
-                }
-            },
-            {
-                "ID": "CERTIS_PC_CCK_T2",
-                "PID": "CERTIS_CCK_MRT",
-                "info": {
-                    "last_ping": "20190312145500",
-                    "last_ping_since": 10000,
-                    "pid": "CERTIS_CCK_MRT",
-                    "sampling_rate": 120,
-                    "status": "warning",
-                    "type": "PC",
-                    "insid": "CERTIS_CCK_LOCN2"
-                }
-            }
-        ]
-        this.setState({data: data}, function() {
-            this.formatHealthData();
-        })
-        
+        const endPoint = `${API_URLS['PROJECT_DETAILS']}/${this.state.pid}${API_URLS['HEALTH']}/${this.state.insid}`,
+            config = getApiConfig(endPoint, 'GET');
+        this.props.onHealthLocation(config);
     }
 
     getLocationDetails = () => {
@@ -129,9 +44,10 @@ class HealthStatus extends Component {
     }
 
     formatHealthData = () => {
-        let formattedData = groupBy(this.state.data,  'info.type');
+        let formattedData = groupBy(this.state.data, 'info.type');
         this.setState({formattedData:formattedData});
-    } 
+    }
+
     componentDidUpdate(prevProps, prevState) {
     /**
      * This part will listen to project selection change from the header component.
@@ -143,15 +59,23 @@ class HealthStatus extends Component {
             if(this.state.pid !== this.props.projectSelected.PID)
             this.setState({pid: this.props.projectSelected.PID},
                 function() {
-                this.props.history.push(this.props.projectSelected.PID);
-                this.getHealthDeatails();
+                    // this.props.history.push(this.props.projectSelected.PID);
+                    let arr = this.props.match.url.split('/');
+                    arr[2] = this.props.projectSelected.PID;
+                    let url = arr.slice(0,3).join('/');
+                    this.props.history.push(url);
+                    // this.getHealthDetails();
             });
         }
 
-        // if (this.props.healthStatus &&
-        //     !isEqual(this.props.healthStatus, prevProps.healthStatus)) {
-        //         // console.log(this.props.healthStatus);
-        // }
+        if (this.props.healthStatusLocation &&
+            !isEqual(this.props.healthStatusLocation, prevProps.healthStatusLocation)) {
+            this.setState({data: this.props.healthStatusLocation}, function() {
+                this.getLocationDetails();
+                this.formatHealthData();
+            })
+        }
+
         if (this.props.installationDetail &&
             (!isEqual(this.props.installationDetail, prevProps.installationDetail) ||
             !this.state.name)) {
@@ -166,16 +90,17 @@ class HealthStatus extends Component {
                 config = getApiConfig(endPoint, 'GET', '', params);
             this.props.onInstalationsList(config);
         }
+
         if (this.props.installationList &&
             !isEqual(this.props.installationList, prevProps.installationList)) {
-                let installationList = groupBy(this.props.installationList,  'Devid');
-                Object.keys(this.state.formattedData).map((key) => {
-                    this.state.formattedData[key].map((row) => {
-                        if(installationList[row.ID]) {
-                            row.info['name'] = installationList[row.ID][0]['Display'];
-                        }
-                    })
+            let installationList = groupBy(this.props.installationList,  'Devid');
+            Object.keys(this.state.formattedData).map((key) => {
+                this.state.formattedData[key].map((row) => {
+                    if(installationList[row.ID]) {
+                        row.info['name'] = installationList[row.ID][0]['Display'];
+                    }
                 })
+            })
         }
     }
     render() {
@@ -185,9 +110,10 @@ class HealthStatus extends Component {
 
 function mapStateToProps(state) {
     return {
-        healthStatus: state.healthStatusReducer.data,
+        healthStatusLocation: state.HealthtSatusLocationSReducer.data,
         installationDetail: state.InstallationDeviceReducer.data,
         installationList : state.DataAnalysisInstallationListReducer.data,
+        projectSelected : state.projectSelectReducer.data,
     }
 }
 function mapDispatchToProps(dispatch) {
@@ -196,8 +122,8 @@ function mapDispatchToProps(dispatch) {
         onInstallationDetail: (config) => {
             dispatch(installationDeviceData(config))
         },
-        onHealthDataSave: (value) => {
-            dispatch(healthDataSaved(value))
+        onHealthLocation: (value) => {
+            dispatch(projectLocationHealth(value))
         },
         onInstalationsList: (config) => {
             dispatch(projectInstallationList(config))

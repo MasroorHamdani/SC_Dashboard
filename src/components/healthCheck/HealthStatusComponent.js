@@ -58,67 +58,70 @@ class HealthStatusComponent extends Component {
 
     render() {
         const {classes, stateData} = this.props;
-        this.formattedData = this.props.stateData.formattedData;
+        this.formattedData = stateData.formattedData;
         const rows = [{ id: 'name', numeric: 'left', disablePadding: false, label: 'Sensor Device'},
         { id: 'deviceStatus', numeric: 'left', disablePadding: false, label: 'Device Status'},
         { id: 'lastPing', numeric: 'left', disablePadding: false, label: 'Last Ping time'}]
         return(
             <div className={classes.root}>
-                {stateData.name &&
-                    <main className={classes.content}>
-                    <Paper style={{ padding: 8 * 3 }}>
-                        <div className={classes.bottomPadding}>
-                            <Typography component="div">{stateData.name}</Typography>
-                            <Typography>{stateData.locn}</Typography>
-                        </div>
-                        <AppBar position="static" color="default">
-                            <Tabs
-                                value={this.state.value}
-                                onChange={this.handleTabChange}
-                                indicatorColor="primary"
-                                textColor="primary"
-                                centered={true}
-                                // variant="fullWidth"
-                                >
-                                {Object.keys(this.formattedData).map((key) => {
-                                    if(this.formattedData && !this.info) {
-                                        this.info = true;
-                                        this.setState({value: key}, function() {
-                                            this.handleTabChange('', key)
-                                        })
-                                    }
-                                    let image = '';
-                                    if (key === 'PC') {
-                                        image = peopleCounter;
-                                    } else if(key === 'AQ') {
-                                        image = airQuality;
-                                    } else if(key === 'PT') {
-                                        image = toiletpaper;
-                                    } else if(key === 'WD') {
-                                        image = wetnessDetection;
-                                    } else if(key === 'GW') {
-                                        image = gatewayDevice;
-                                    }
-                                    return <Tab key={key} label={<Avatar alt={key} src={image} className={classes.bigAvatar}/>} 
-                                        value={key}/>
-                                })}
-                            </Tabs>
-                        </AppBar>
-                        {this.state.data && 
-                            <Typography component="div">
-                            <EnhancedTable data={this.state.data} rows={rows}
-                                order={this.state.order} orderBy={this.state.orderBy}
-                                rowsPerPage={this.state.rowsPerPage} page={this.state.page}
-                                selected={this.state.selected} category='health'
-                                handleChange={this.handleChange}
-                                // handleClick={handleClick}
-                                redirectID="ID"
-                                allowDelete={false} allowEdit={false}/>
-                            </Typography>
-                        }
-                    </Paper>
-                    </main>
-                }
+                <main className={classes.content}>
+                    {(stateData.name && stateData.formattedData) ?
+                        <Paper style={{ padding: 8 * 3 }}>
+                            <div>
+                                <Typography variant="h6">{stateData.name}</Typography>
+                                <Typography variant="h6" gutterBottom>{stateData.locn}</Typography>
+                            </div>
+                            <AppBar position="static" color="default">
+                                <Tabs
+                                    value={this.state.value}
+                                    onChange={this.handleTabChange}
+                                    indicatorColor="primary"
+                                    textColor="primary"
+                                    centered={true}
+                                    // variant="fullWidth"
+                                    >
+                                    {Object.keys(this.formattedData).map((key) => {
+                                        if(this.formattedData && !this.info) {
+                                            this.info = true;
+                                            this.setState({value: key}, function() {
+                                                this.handleTabChange('', key)
+                                            })
+                                        }
+                                        let image = '';
+                                        if (key === 'PC') {
+                                            image = peopleCounter;
+                                        } else if(key === 'AQ') {
+                                            image = airQuality;
+                                        } else if(key === 'PT') {
+                                            image = toiletpaper;
+                                        } else if(key === 'WD') {
+                                            image = wetnessDetection;
+                                        } else if(key === 'GW') {
+                                            image = gatewayDevice;
+                                        }
+                                        return <Tab key={key} label={<Avatar alt={key} src={image} className={classes.bigAvatar}/>} 
+                                            value={key}/>
+                                    })}
+                                </Tabs>
+                            </AppBar>
+                            {this.state.data && 
+                                <Typography component="div">
+                                <EnhancedTable data={this.state.data} rows={rows}
+                                    order={this.state.order} orderBy={this.state.orderBy}
+                                    rowsPerPage={this.state.rowsPerPage} page={this.state.page}
+                                    selected={this.state.selected} category='health'
+                                    handleChange={this.handleChange}
+                                    // handleClick={handleClick}
+                                    redirectID="ID"
+                                    allowDelete={false} allowEdit={false}/>
+                                </Typography>
+                            }
+                        </Paper>
+                    :
+                        <div><Typography variant="h6">{stateData.name}</Typography></div>
+                    }
+                </main>
+                
             </div>
         )
     }

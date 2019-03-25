@@ -20,7 +20,6 @@ class AlertDetails extends Component {
             endDate: new Date(),
             dateChanged: false,
             loading: true,
-            success: false,
             insid: ''
         }
         this.info = false;
@@ -35,6 +34,7 @@ class AlertDetails extends Component {
             dateChanged: true
           });
     }
+
     handleChangeEnd  = (date) => {
     /**
      * Handle datetime change for end date, from date picker
@@ -44,6 +44,7 @@ class AlertDetails extends Component {
             dateChanged: true
           });
     }
+
     setStateValue = (event) => {
     /**
      * Generic function to set the state variable
@@ -51,6 +52,7 @@ class AlertDetails extends Component {
         let {name, value} = event.target;
         this.setState({[name]: value})
     }
+
     getInstallationLocation = () => {
     /**
      * Make an API call and get installation location details for selected project.
@@ -59,6 +61,7 @@ class AlertDetails extends Component {
             config = getApiConfig(endPoint, 'GET');
         this.props.onDataAnalysisMenu(config);
     }
+
     componentDidMount() {
     /**
      * Check id pid and timezone are present in state,
@@ -68,15 +71,17 @@ class AlertDetails extends Component {
         if(this.state.pid && this.state.timeZone){
             this.getInstallationLocation();
             this.getAlertData();
-        } else if(this.props.projectSelected) {
+        } else if(this.props.projectSelected || localStorage.getItem('projectSelected')) {
+            let dt = JSON.parse(localStorage.getItem('projectSelected'));
             this.setState({
-                timeZone: this.props.projectSelected.Region},
-            function() {
-            this.getInstallationLocation();
-            this.getAlertData();
+                timeZone: this.props.projectSelected? this.props.projectSelected.Region: dt.Region
+            }, function() {
+                this.getInstallationLocation();
+                this.getAlertData();
             });
         }
     }
+
     getAlertData = () => {
     /**
      * This function will check if installtion id was selected,
@@ -89,7 +94,6 @@ class AlertDetails extends Component {
      */
         this.setState({
             loading: true,
-            success: false,
         },function() {
             let endPoint;
             if(!this.state.insid) {
@@ -109,6 +113,7 @@ class AlertDetails extends Component {
             this.props.onProjectAlert(config);
         })
     }
+
     componentDidUpdate(prevProps, prevState) {
     /**
      * This part will listen to project selection change from the header component.
@@ -129,6 +134,7 @@ class AlertDetails extends Component {
                 })
             }
         }
+
     /**
      * This part will deal with alert data for project.
      * The data from alert is returned as a list of ditionaries.
@@ -180,19 +186,22 @@ class AlertDetails extends Component {
                     this.showFilter = true;
                 }
                 this.setState({'locationList': deviceResponse,
-                    'alertData': finalDict})
+                    'alertData': finalDict,
+                    // loading: false,
+                })
             }
         }
+
     /**
      * For loading/Progress bar this part is being used.
      */
         if(this.state.loading) {
             this.setState({
               loading: false,
-              success: true,
             })
         }
     }
+
     render() {
         return(
             <AlertAnalysis stateData={this.state}
@@ -205,13 +214,15 @@ class AlertDetails extends Component {
         )
     }
 }
+
 function mapStateToProps(state) {
     return {
         projectAlert : state.ProjectAlertReducer.data,
         projectLocationList : state.DataAnalysisProjectListSubMenuReducer.data,
         projectSelected : state.projectSelectReducer.data,
     }
-  }
+}
+
 function mapDispatchToProps(dispatch) {
     //will dispatch the async action
     return {
@@ -223,4 +234,5 @@ function mapDispatchToProps(dispatch) {
         },
     }
 }
+
 export default connect(mapStateToProps, mapDispatchToProps)(AlertDetails);

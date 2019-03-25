@@ -34,7 +34,6 @@ class DataAnalysis extends Component {
       func: '',
       page: '',
       loading: true,
-      success: false,
       selectedIndex: 0,
       startDate: now,
       endDate: new Date(),
@@ -42,11 +41,6 @@ class DataAnalysis extends Component {
     this.menuIndex = 0;
   }
 
-  // handleClick = (index) => {
-  //   this.setState(state => ({
-  //     [index]: !state[index]
-  //   }));
-  // };
   handleDatePicker = () => {
   /**
    * This function will called from component 'DateRowComponent'
@@ -73,6 +67,7 @@ class DataAnalysis extends Component {
         this.state.startDate, this.state.endDate)
     })
   }
+
   handleChangeStart  = (date) => {
   /**
    * This function will be called from the component 'DateRowComponent'
@@ -84,6 +79,7 @@ class DataAnalysis extends Component {
         startDate: date
     });
   }
+
   handleChangeEnd  = (date) => {
   /**
    * This function will be called from the component 'DateRowComponent'
@@ -95,6 +91,7 @@ class DataAnalysis extends Component {
         endDate: date
     });
   }
+
   handleListSelection = (event, value, index) => {
   /**
    * This function will be called from component 'DateRowComponent'
@@ -127,7 +124,6 @@ class DataAnalysis extends Component {
       value: insid,
       dataAnalysis: {},
       loading: true,
-      success: false,
       tab: ''
     }, function() {
       const endPoint = `${API_URLS['PROJECT_DETAILS']}/${pid}${API_URLS['PROJECT_LOCATION']}/${insid}`,
@@ -221,7 +217,6 @@ class DataAnalysis extends Component {
    */
     this.setState({
       loading: true,
-      success: false,
     })
     let metrics = this.getMetric(),
     dataToPost = {
@@ -229,6 +224,7 @@ class DataAnalysis extends Component {
       "Type": this.state.deviceKey,
       "SubType": this.state.subType
     };
+  
     if(metrics && metrics.metric.length > 0 &&
         metrics.allMetrics.length > 0 &&
         metrics.metric[0].type === this.state.deviceKey) {
@@ -292,15 +288,17 @@ class DataAnalysis extends Component {
    */
     if(this.state.pid && this.state.timeZone) {
       this.getInstallationLocation();
-    } else if(this.props.projectSelected) {
+    } else if(this.props.projectSelected || localStorage.getItem('projectSelected')) {
+      let dt = JSON.parse(localStorage.getItem('projectSelected'));
       this.setState({
-        pid: this.props.projectSelected.PID,
-        timeZone: this.props.projectSelected.Region
+        pid: this.props.projectSelected ? this.props.projectSelected.PID : dt.PID,
+        timeZone: this.props.projectSelected  ? this.props.projectSelected.Region : dt.Region
       }, function() {
           this.getInstallationLocation();
         });
     }
   }
+
   getInstallationLocation = () => {
     const endPoint = `${API_URLS['PROJECT_DETAILS']}/${this.state.pid}${API_URLS['WASHROOM_LOCATION']}`,
       config = getApiConfig(endPoint, 'GET');
@@ -332,6 +330,7 @@ class DataAnalysis extends Component {
         this.getInstallationLocation();
       });
   }
+
   /**
    * This part will get the list of locations per project,
    * as the project will be selected in the header.
@@ -355,10 +354,12 @@ class DataAnalysis extends Component {
         project.push(projObj);
         if(project[0] && project[0]['devices']) {
           this.setState({
-            projectList: project
+            projectList: project,
+            loading: false,
           })
         }
     }
+
   /**
    * This part is for data for selected device for selected time frame.
    * There is 'x-sc-session-token' passed in response, which is saved in state,
@@ -366,32 +367,41 @@ class DataAnalysis extends Component {
    * which can be accessed from the x-sc-session-token.
    */
     if (this.props.dataAnalysis &&
-      !isEqual(this.props.dataAnalysis, prevProps.dataAnalysis) &&
-      isEqual(this.props.dataAnalysis.data.status, "success")){
-        let metricsData = getVector(this.props.dataAnalysis.data.data.allMetrics, this.state.deviceKey);
-        this.setState({
-          sessionHeader: this.props.dataAnalysis.headers['x-sc-session-token'],
-          metrics: metricsData.dataMetrics,
-          allMetrics: this.props.dataAnalysis.data.data.allMetrics,
-          dataAnalysis: this.props.dataAnalysis});
-        let referData = {};
-        Object.keys(metricsData.metric).map((key) => {
-          let value = {}
-          metricsData.metric[key].map((dt) => {
-            Object.keys(dt).map((d) => {
-              let val = {
-                'func' : dt[d].statistic,
-                'sampling': dt[d].sampling,
-                'unit': dt[d].unit
-              }
-              value[d] = val;
+      !isEqual(this.props.dataAnalysis, prevProps.dataAnalysis)
+      // &&
+      // isEqual(this.props.dataAnalysis.data.status, "success")
+      ){
+        if(isEqual(this.props.dataAnalysis.data.status, "success")) {
+          let metricsData = getVector(this.props.dataAnalysis.data.data.allMetrics, this.state.deviceKey);
+          this.setState({
+            sessionHeader: this.props.dataAnalysis.headers['x-sc-session-token'],
+            metrics: metricsData.dataMetrics,
+            allMetrics: this.props.dataAnalysis.data.data.allMetrics,
+            dataAnalysis: this.props.dataAnalysis});
+          let referData = {};
+          Object.keys(metricsData.metric).map((key) => {
+            let value = {}
+            metricsData.metric[key].map((dt) => {
+              Object.keys(dt).map((d) => {
+                let val = {
+                  'func' : dt[d].statistic,
+                  'sampling': dt[d].sampling,
+                  'unit': dt[d].unit
+                }
+                value[d] = val;
+              })
             })
+            referData[key] = value;
           })
-          referData[key] = value;
-        })
-        if(!this.state[this.state.deviceKey])
-            this.setState({[this.state.deviceKey]: referData})
+          // if(!this.state[this.state.deviceKey])
+          this.setState({[this.state.deviceKey]: referData,
+            loading: false,
+          })
+        } else {
+          this.setState({loading: false})
+        }
     }
+
   /**
    * This part deals with getting the sensor installation details for selected location.
    * One location can have multiple Devices of same type.
@@ -419,19 +429,9 @@ class DataAnalysis extends Component {
             installationList[tab.Type] = list
           }
         })
-        this.setState({installationList: installationList})
+        this.setState({installationList: installationList,loading: false,})
     }
-  /**
-   * This section deals with progress bar.
-   * As the API data is served, this section will stop the progress bar loading.
-   */
-    if(this.state.loading) {
-      this.setState({
-        loading: false,
-        success: true,
-      })
-    }
-}
+  }
 
   render () {
     const {classes} = this.props;

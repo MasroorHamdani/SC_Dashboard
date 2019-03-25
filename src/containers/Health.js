@@ -6,6 +6,7 @@ import {API_URLS, NAMESPACE_MAPPER, REACT_URLS} from '../constants/Constant';
 import {getApiConfig} from '../services/ApiCofig';
 import HealthCheck from '../components/healthCheck/HealthCheck';
 import {projectSubMenuList} from '../actions/DataAnalysis';
+import {projectHealth} from '../actions/HealthStatus';
 
 
 class Health extends Component {
@@ -16,6 +17,7 @@ class Health extends Component {
         super(props);
         this.state ={
             pid: props.match.params.pid,
+            oldPid: props.match.params.pid
         };
     }
     componentDidMount() {
@@ -25,115 +27,23 @@ class Health extends Component {
      * or set the value first and then make the call.
      */
         this.getHealthDeatails();
-        // if(this.state.pid){
-        //     this.getHealthDeatails();
-        // } else if(this.props.projectSelected) {
-        //     this.setState({
-        //         pid: this.props.projectSelected.PID},
-        //     function() {
-        //         this.getHealthDeatails();
-        //     });
-        // }
+        if(this.state.pid){
+            this.getHealthDeatails();
+        } else if(this.props.projectSelected) {
+            this.setState({
+                pid: this.props.projectSelected.PID},
+            function() {
+                this.getHealthDeatails();
+            });
+        }
     }
     getHealthDeatails = () => {
     /***
      * Call Health API and get the health data
      */
-        let data = [
-            {
-                "ID": "CERTIS_AQ_CCK_T1",
-                "PID": "CERTIS_CCK_MRT",
-                "info": {
-                    "last_ping": "20190312145500",
-                    "last_ping_since": 76632,
-                    "pid": "CERTIS_CCK_MRT",
-                    "sampling_rate": 120,
-                    "status": "unhealthy",
-                    "type": "AQ",
-                    "insid": "CERTIS_CCK_LOCN1"
-                }
-            },
-            {
-                "ID": "CERTIS_PT_CCK_T2",
-                "PID": "CERTIS_CCK_MRT",
-                "info": {
-                    "last_ping": "20190312145500",
-                    "last_ping_since": 76632,
-                    "pid": "CERTIS_CCK_MRT",
-                    "sampling_rate": 120,
-                    "status": "healthy",
-                    "type": "PT",
-                    "insid": "CERTIS_CCK_LOCN2"
-                }
-            },
-            {
-                "ID": "CERTIS_PT_CCK_T3",
-                "PID": "CERTIS_CCK_MRT",
-                "info": {
-                    "last_ping": "20190312145500",
-                    "last_ping_since": 76632,
-                    "pid": "CERTIS_CCK_MRT",
-                    "sampling_rate": 120,
-                    "status": "unhealthy",
-                    "type": "PT",
-                    "insid": "CERTIS_CCK_LOCN2"
-                }
-            },
-            {
-                "ID": "CERTIS_PT_CCK_T4",
-                "PID": "CERTIS_CCK_MRT",
-                "info": {
-                    "last_ping": "20190312145500",
-                    "last_ping_since": 76632,
-                    "pid": "CERTIS_CCK_MRT",
-                    "sampling_rate": 120,
-                    "status": "warning",
-                    "type": "PT",
-                    "insid": "CERTIS_CCK_LOCN2"
-                }
-            },
-            {
-                "ID": "CERTIS_PT_CCK_T5",
-                "PID": "CERTIS_CCK_MRT",
-                "info": {
-                    "last_ping": "20190312145500",
-                    "last_ping_since": 76632,
-                    "pid": "CERTIS_CCK_MRT",
-                    "sampling_rate": 120,
-                    "status": "unhealthy",
-                    "type": "PT",
-                    "insid": "CERTIS_CCK_LOCN2"
-                }
-            },
-            {
-                "ID": "CERTIS_AQ_CCK_T2",
-                "PID": "CERTIS_CCK_MRT",
-                "info": {
-                    "last_ping": "20190312145500",
-                    "last_ping_since": 76632,
-                    "pid": "CERTIS_CCK_MRT",
-                    "sampling_rate": 120,
-                    "status": "healthy",
-                    "type": "AQ",
-                    "insid": "CERTIS_CCK_LOCN2"
-                }
-            },
-            {
-                "ID": "CERTIS_PC_CCK_T2",
-                "PID": "CERTIS_CCK_MRT",
-                "info": {
-                    "last_ping": "20190312145500",
-                    "last_ping_since": 10000,
-                    "pid": "CERTIS_CCK_MRT",
-                    "sampling_rate": 120,
-                    "status": "warning",
-                    "type": "PC",
-                    "insid": "CERTIS_CCK_LOCN2"
-                }
-            }
-        ]
-        this.setState({data: data})
-        this.getLocationDetails()
+        const endPoint = `${API_URLS['PROJECT_DETAILS']}/${this.state.pid}${API_URLS['HEALTH']}`,
+            config = getApiConfig(endPoint, 'GET');
+        this.props.onProjectHealth(config);
     }
 
     getLocationDetails = () => {
@@ -204,13 +114,22 @@ class Health extends Component {
         if(this.props.projectSelected && 
             !isEqual(this.props.projectSelected, prevProps.projectSelected)){
             if(this.state.pid !== this.props.projectSelected.PID)
-            this.setState({pid: this.props.projectSelected.PID},
-                function() {
-                this.props.history.push(this.props.projectSelected.PID);
-                this.getHealthDeatails();
-            });
+                this.setState({
+                    pid: this.props.projectSelected.PID,
+                    healthData: ''
+                },function() {
+                    this.props.history.push(this.props.projectSelected.PID);
+                    this.getHealthDeatails();
+                });
         }
 
+        if(this.props.HealthStatus &&
+            (!isEqual(this.props.HealthStatus, prevProps.HealthStatus) ||
+            !this.state.data)){
+            this.setState({data: this.props.HealthStatus}, function() {
+                this.getLocationDetails()
+            })
+        }
     /**
      * This part will get the list of locations per project,
      * as the project will be selected in the header.
@@ -240,6 +159,7 @@ function mapStateToProps(state) {
     return {
         projectSelected : state.projectSelectReducer.data,
         projectInstallationList : state.DataAnalysisProjectListSubMenuReducer.data,
+        HealthStatus : state.HealthStatusReducer.data
     }
 }
 
@@ -248,6 +168,9 @@ function mapDispatchToProps(dispatch) {
         onProjectInstallationList: (config) => {
             dispatch(projectSubMenuList(config))
         },
+        onProjectHealth: (config) => {
+            dispatch(projectHealth(config))
+        }
     }
 }
 export default (connect)(mapStateToProps, mapDispatchToProps)(Health);

@@ -1,5 +1,5 @@
 import { HEALTH_STATUS } from "../constants/ActionTypes";
-/* Reducer for Login functionality */
+/* Reducer for Health Check for Project functionality */
 const healthStatus = (state = [], action) => {
     switch(action.type) {
         case HEALTH_STATUS:

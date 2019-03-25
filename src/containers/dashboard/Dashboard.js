@@ -21,7 +21,6 @@ class Dashboard extends Component {
       data : [],
       dashboardData : [],
       loading: true,
-      success: false,
       endTime: new Date(),
       startTime: now,
     }
@@ -29,15 +28,22 @@ class Dashboard extends Component {
   }
 
   getProjectData = () => {
-    let dataToPost = DASHBOARD_METRIC,
-      endPoint = `${API_URLS['DEVICE_DATA']}/${this.state.PID}/${API_URLS['DEFAULT']}`,
-      params = {
-        'start' : formatDateWithTimeZone(this.state.startTime, DATE_TIME_FORMAT, DATE_TIME_FORMAT, this.state.timeZone),
-        'end': formatDateWithTimeZone(this.state.endTime, DATE_TIME_FORMAT, DATE_TIME_FORMAT, this.state.timeZone),
-      },
-      config = getApiConfig(endPoint, 'POST', dataToPost, params);
-    this.props.onDataAnalysis(config);
+  /**
+   * Set the loading value to true to show up loading icon
+   * and call the api for fetch analytics data for selected project id.
+   */
+    this.setState({loading: true}, function() {
+      let dataToPost = DASHBOARD_METRIC,
+        endPoint = `${API_URLS['DEVICE_DATA']}/${this.state.PID}/${API_URLS['DEFAULT']}`,
+        params = {
+          'start' : formatDateWithTimeZone(this.state.startTime, DATE_TIME_FORMAT, DATE_TIME_FORMAT, this.state.timeZone),
+          'end': formatDateWithTimeZone(this.state.endTime, DATE_TIME_FORMAT, DATE_TIME_FORMAT, this.state.timeZone),
+        },
+        config = getApiConfig(endPoint, 'POST', dataToPost, params);
+      this.props.onDataAnalysis(config);
+    })
   }
+
   componentDidMount() {
   /**
    * First function being called on loading.
@@ -47,11 +53,12 @@ class Dashboard extends Component {
    */
     if(this.state.PID && this.state.timeZone) {
       this.getProjectData();
-    } else if(this.props.projectSelected) {
+    } else if(this.props.projectSelected || localStorage.getItem('projectSelected')) {
+      let dt = JSON.parse(localStorage.getItem('projectSelected'));
       this.setState({
-        PID: this.props.projectSelected.PID,
-        timeZone: this.props.projectSelected.Region},
-        function() {
+        PID: this.props.projectSelected ? this.props.projectSelected.PID : dt.PID,
+        timeZone: this.props.projectSelected ? this.props.projectSelected.Region : dt.Region
+      }, function() {
           this.getProjectData();
         });
     }
@@ -65,6 +72,7 @@ class Dashboard extends Component {
           config = getApiConfig(endPoint, 'GET');
       this.props.onDataAnalysisMenu(config);
   }
+
   componentDidUpdate(prevProps, prevState) {
   /**
    * This function is called whenever component update.
@@ -86,6 +94,7 @@ class Dashboard extends Component {
           this.getProjectData();
         });
     }
+  
   /**
    * This part will get the dashboard data per project.
    * As the api will gte all the relavant data for project,
@@ -137,14 +146,8 @@ class Dashboard extends Component {
             dashboardData.push(projObj);
             this.setState({
               dashboardData: dashboardData,
+              loading: false
             });
-            
-            if(this.state.loading) {
-              this.setState({
-                loading: false,
-                success: true
-              })
-            }
         }
         if(this.props.projectLocationList &&
           !isEqual(this.props.projectLocationList, prevProps.projectLocationList)) {
@@ -194,7 +197,9 @@ function mapDispatchToProps(dispatch) {
     },
   }
 }
+
 Dashboard.propTypes = {
   classes: PropTypes.object.isRequired,
 };
+
 export default withStyles(styles)(connect(mapStateToProps, mapDispatchToProps)(Dashboard));

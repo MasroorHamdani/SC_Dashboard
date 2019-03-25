@@ -20,7 +20,7 @@ export const API_URLS = {
     'TEAM_ASSOCIATION': 'team/assoc',
     'DEFAULT': 'default',
     'INSTALLATION': '/installations',
-    'HEALTH': '/health'
+    'HEALTH': '/health',
 };
 
 export const DASHBOARD_METRIC = {

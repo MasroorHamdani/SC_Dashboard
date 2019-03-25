@@ -97,12 +97,21 @@ class Header extends Component {
   
     componentDidUpdate(prevProps, prevState) {
     /**
+     * Save the changed project id in local storage as well, being used while refreshing the page.
+     */
+      if(this.props.projectSelected &&
+        !isEqual(this.props.projectSelected, prevProps.projectSelected)) {
+          localStorage.setItem('projectSelected', JSON.stringify(this.props.projectSelected))
+      }
+  
+    /**
      * Manage the internal state as per the reducer value for left menu value.
      */
       if(this.props.menuState &&
         !isEqual(this.props.menuState, prevProps.menuState)) {
           this.setState({open: this.props.menuState.open})
       }
+
     /**
      * After the Project list is receiver in reducer.
      * filter the projects as per the namespace,
@@ -127,6 +136,7 @@ class Header extends Component {
           })
       }
     }
+
     render() {
       const { classes } = this.props;
       const {profileOpen, arrowRef} = this.state;

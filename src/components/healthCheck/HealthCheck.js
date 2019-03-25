@@ -59,23 +59,26 @@ class HealthCheck extends Component {
                     } else if(innerKey === 'GW') {
                         image = gatewayDevice;
                     }
-                    headerRow.push({ id: innerKey, numeric: 'left', disablePadding: false,
-                        label: <Avatar alt={innerKey} src={image} className={classes.bigAvatar}/> })
-                    healthData[key][innerKey].map((row) => {
-                        if(row.info) {
-                            rowData['ID'] = key;
-                            rowData['name'] = <div><Typography>{row.info.name}</Typography><Typography>{row.info.locn}</Typography></div>;
-                        } else if(row.status){
-                            rowData[innerKey] = <div className={classes.statusBar}>
-                                {Object.keys(row.status).map((key, index) => {
-                                    return<Divider key={index} width={`${row.status[key]}px`}
-                                        className={classes[key]}/>
-                                })}
-                            </div>
-                        }
-                    })
+                    if (innerKey !== 'undefined') {
+                        headerRow.push({ id: innerKey, numeric: 'left', disablePadding: false,
+                            label: <Avatar alt={innerKey} src={image} className={classes.bigAvatar}/> })
+                        healthData[key][innerKey].map((row) => {
+                            if(row.info) {
+                                rowData['ID'] = key;
+                                rowData['name'] = <div><Typography>{row.info.name}</Typography><Typography>{row.info.locn}</Typography></div>;
+                            } else if(row.status){
+                                rowData[innerKey] = <div className={classes.statusBar}>
+                                    {Object.keys(row.status).map((key, index) => {
+                                        return<Divider key={index} width={`${row.status[key]}px`}
+                                            className={classes[key]}/>
+                                    })}
+                                </div>
+                            }
+                        })
+                    }
                 })
-                data.push(rowData)
+                if(rowData && rowData['ID'])
+                    data.push(rowData)
             })
             headerRow = [...new Map(headerRow.map(o => [o.id, o])).values()];
             return({'data': data, 'rows': headerRow});
@@ -88,18 +91,20 @@ class HealthCheck extends Component {
         return (
             <div className={classes.root}>
                 <main className={classes.content}>
-                {(stateData && stateData.healthData) &&
-                    <div>
-                        <EnhancedTable rows={passedData.rows} data={passedData.data}
-                        order={this.state.order} orderBy={this.state.orderBy}
-                        rowsPerPage={this.state.rowsPerPage} page={this.state.page}
-                        selected={this.state.selected} category='health'
-                        handleChange={this.handleChange}
-                        handleClick={handleClick}
-                        redirectID="ID"
-                        />
-                    </div>
-                }
+                    {(stateData && stateData.healthData) ?
+                        <div>
+                            <EnhancedTable rows={passedData.rows} data={passedData.data}
+                            order={this.state.order} orderBy={this.state.orderBy}
+                            rowsPerPage={this.state.rowsPerPage} page={this.state.page}
+                            selected={this.state.selected} category='health'
+                            handleChange={this.handleChange}
+                            handleClick={handleClick}
+                            redirectID="ID"
+                            />
+                        </div>
+                    :
+                        <div><Typography variant="h6">No Health Status Data to display</Typography></div>
+                    }
                 </main>
             </div>
         )

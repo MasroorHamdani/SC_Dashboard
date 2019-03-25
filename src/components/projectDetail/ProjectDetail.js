@@ -151,8 +151,7 @@ class ProjectDetail extends Component {
      * Loading progress bar
      */
     if(this.state.loading) {
-      this.setState({loading: false,
-      sucess: true});
+      this.setState({loading: false});
     }
   }
 
