@@ -34,9 +34,12 @@ class Header extends Component {
         projectList: [],
         arrowRef: null,
         profileOpen: false,
+        // oldPid: props.match.params.pid
       }
+      console.log(props.match.params.pid, "props.match.params.pid")
       this.metricsIndex = 0;
     }
+
     handleDrawerOpen = () => {
       /**
        * Used for handling the state of the left nav bar.
@@ -75,7 +78,6 @@ class Header extends Component {
         if(proj.PID === value)
           this.props.onProjectSelect(proj)
       })
-      
     }
   
     onClick = (url) => {
@@ -235,6 +237,7 @@ class Header extends Component {
       );
     }
   }
+
   function mapStateToProps(state) {
     return {
         menuState: state.MenuActionReducer.data,
@@ -243,6 +246,7 @@ class Header extends Component {
         allProjects : state.projectListReducer.data
     }
   }
+
   function mapDispatchToProps(dispatch) {
     //will dispatch the async action
     return {
@@ -263,7 +267,7 @@ class Header extends Component {
       },
     }
   }
-  
+
 const HeaderComponent = withStyles(styles)(Header);
 // Had to return with - withRouter as Header is not being called as part of router from app.js
 // So accessing 'props.history' was not working.

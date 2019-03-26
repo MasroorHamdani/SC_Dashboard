@@ -1,5 +1,5 @@
 import React from "react";
-import { Route, Switch, Redirect} from "react-router-dom";
+import { Route, Switch, Redirect, withRouter} from "react-router-dom";
 import Dashboard from "./containers/dashboard/Dashboard";
 import Login from "./containers/Login";
 import Header from "./components/header/Header";
@@ -85,4 +85,6 @@ const styles = theme => ({
   App.propTypes = {
     classes: PropTypes.object.isRequired,
   };
- export default withStyles(styles)(App);
+// export default withStyles(styles)(App);
+const AppComponent = withStyles(styles)(App);
+export default withRouter(AppComponent)
