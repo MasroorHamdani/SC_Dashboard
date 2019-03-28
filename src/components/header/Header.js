@@ -34,10 +34,11 @@ class Header extends Component {
         projectList: [],
         arrowRef: null,
         profileOpen: false,
-        // oldPid: props.match.params.pid
       }
-      console.log(props.match.params.pid, "props.match.params.pid")
       this.metricsIndex = 0;
+      let addressArray = window.location.pathname.split('/');
+      let projectIndex = addressArray.indexOf('project');
+      this.pid = addressArray[projectIndex + 1];
     }
 
     handleDrawerOpen = () => {
@@ -129,12 +130,24 @@ class Header extends Component {
               if(row.NS === NAMESPACE['PROJECT_TEAM_ALLMEMBERS'])
                 projData.push(row);
             });
+          let pid = '', project = '';
+          if (this.pid) {
+            pid = this.pid;
+            projData.map((row) => {
+              if(row.PID === this.pid)
+                project = row;
+                return;
+            })
+          } else {
+            pid = projData[0].PID
+            project = projData[0]
+          }
           this.setState({
             projectList: projData,
-            PID: projData[0].PID
+            PID: pid
           }, function() {
-            this.props.onProjectSelect(projData[0])
-            this.props.onProjectList(projData)
+            this.props.onProjectSelect(project);
+            this.props.onProjectList(projData);
           })
       }
     }

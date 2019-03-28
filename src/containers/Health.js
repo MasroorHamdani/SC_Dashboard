@@ -26,13 +26,12 @@ class Health extends Component {
      * if yes get the data by calling internal functions,
      * or set the value first and then make the call.
      */
-        this.getHealthDeatails();
-        if(this.state.pid){
+        if(this.state.pid) {
             this.getHealthDeatails();
         } else if(this.props.projectSelected) {
             this.setState({
-                pid: this.props.projectSelected.PID},
-            function() {
+                pid: this.props.projectSelected.PID
+            }, function() {
                 this.getHealthDeatails();
             });
         }
@@ -101,7 +100,6 @@ class Health extends Component {
         /**
          * Function called from child component to redirect the page.
          */
-        // this.props.history.push(id);
         this.props.history.push(`${REACT_URLS['HEALTH_STATUS']}/${this.state.pid}/${id}`);
     };
     
@@ -113,7 +111,7 @@ class Health extends Component {
      */
         if(this.props.projectSelected && 
             !isEqual(this.props.projectSelected, prevProps.projectSelected)){
-            if(this.state.pid !== this.props.projectSelected.PID)
+            if(this.state.pid !== this.props.projectSelected.PID) {
                 this.setState({
                     pid: this.props.projectSelected.PID,
                     healthData: ''
@@ -121,6 +119,7 @@ class Health extends Component {
                     this.props.history.push(this.props.projectSelected.PID);
                     this.getHealthDeatails();
                 });
+            }
         }
 
         if(this.props.HealthStatus &&

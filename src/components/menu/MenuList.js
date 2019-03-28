@@ -15,12 +15,12 @@ return ([
     },
     {
       name: "Data Analysis",
-      url: "/data",
+      url: `/data/project/${pid}`,
       icon: "BarChartIcon"
     },
     {
       name: "View Reports",
-      url: `/report/${pid}`,
+      url: `/report/project/${pid}`,
       icon: "AssignmentIcon"
     },
     {
@@ -30,12 +30,12 @@ return ([
     },
     {
       name: "Health Status",
-      url: `/health/${pid}`,
+      url: `/health/project/${pid}`,
       icon: "FavoriteIcon"
     },
     {
       name: "Alert Data",
-      url: `/alert/${pid}`,
+      url: `/alert/project/${pid}`,
       icon: "NotificationImportantIcon"
     }])
 }

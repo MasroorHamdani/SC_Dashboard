@@ -48,7 +48,9 @@ class HealthStatusComponent extends Component {
         let newRow = [];
         data.map((row) => {
             row.info['ID'] = row.ID;
-            row.info.deviceStatus = <Chip label={capitalizeFirstLetter(row.info.status)} className={`${classes[`${row.info.status}Status`]}`}/>
+            row.info.deviceStatus = <Chip
+                label={row.info.status ? capitalizeFirstLetter(row.info.status) : 'NoUpdate'}
+                className={`${classes[`${row.info.status}Status`]}`}/>
             row.info.lastPing = formatDateTime(row.info.last_ping, DATE_TIME_FORMAT, DESCRIPTIVE_DATE_TIME_FORMAT);
             newRow.push(row.info);
         })

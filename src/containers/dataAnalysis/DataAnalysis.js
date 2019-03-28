@@ -294,8 +294,8 @@ class DataAnalysis extends Component {
         pid: this.props.projectSelected ? this.props.projectSelected.PID : dt.PID,
         timeZone: this.props.projectSelected  ? this.props.projectSelected.Region : dt.Region
       }, function() {
-          this.getInstallationLocation();
-        });
+        this.getInstallationLocation();
+      });
     }
   }
 
@@ -327,6 +327,7 @@ class DataAnalysis extends Component {
         dataAnalysis: {},
         value: ''
       }, function() {
+        this.props.history.push(this.props.projectSelected.PID);
         this.getInstallationLocation();
       });
   }

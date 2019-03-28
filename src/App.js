@@ -55,7 +55,7 @@ const styles = theme => ({
                   :
                   (<div className="container">
                     <CssBaseline />
-                    <Header {...this.props}/>
+                    <Header {...this.props}  params={this.props.match.params}/>
                     <Menu/>
                     <Switch>
                       <Route exact path="/" component={Dashboard} />
@@ -63,13 +63,13 @@ const styles = theme => ({
                       <Route path="/project/:pid/team/:uid?" component={ProjectTeamDetails} />
                       <Route path="/project/:pid?" component={ProjectDetails} />
                       <Route path="/profile/:userid?" component={UserProfile} />
-                      <Route path="/alert/:pid?" component={AlertDetails} />
-                      <Route path="/dispenser/:pid?" component={DispenserDetails} />
-                      <Route path="/data" component={DataAnalysis} />
+                      <Route path="/alert/project/:pid?" component={AlertDetails} />
+                      <Route path="/dispenser/project/:pid?" component={DispenserDetails} />
+                      <Route path="/data/project/:pid" component={DataAnalysis} />
                       <Route exact path="/report" component={Report} />
-                      <Route path="/report/:pid?" component={ReportView} />
-                      <Route path="/health/:pid/:insid" component={HealthStatus}/>
-                      <Route exact path="/health/:pid" component={Health}/>
+                      <Route path="/report/project/:pid?" component={ReportView} />
+                      <Route path="/health/project/:pid/:insid" component={HealthStatus}/>
+                      <Route exact path="/health/project/:pid" component={Health}/>
                       <Route path="/logout" component={Logout} />
                       <Redirect from="/login" to="/"/>
                       <Route component={NoMatch} />

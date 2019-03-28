@@ -57,22 +57,21 @@ class HealthStatus extends Component {
         if(this.props.projectSelected && 
             !isEqual(this.props.projectSelected, prevProps.projectSelected)){
             if(this.state.pid !== this.props.projectSelected.PID)
-            this.setState({pid: this.props.projectSelected.PID},
-                function() {
-                    // this.props.history.push(this.props.projectSelected.PID);
-                    let arr = this.props.match.url.split('/');
-                    arr[2] = this.props.projectSelected.PID;
-                    let url = arr.slice(0,3).join('/');
-                    this.props.history.push(url);
-                    // this.getHealthDetails();
+            this.setState({
+                pid: this.props.projectSelected.PID
+            }, function() {
+                let arr = this.props.match.url.split('/');
+                arr[3] = this.props.projectSelected.PID;
+                let url = arr.slice(0,4).join('/');
+                this.props.history.push(url);
             });
         }
 
         if (this.props.healthStatusLocation &&
             !isEqual(this.props.healthStatusLocation, prevProps.healthStatusLocation)) {
             this.setState({data: this.props.healthStatusLocation}, function() {
-                this.getLocationDetails();
                 this.formatHealthData();
+                this.getLocationDetails();
             })
         }
 

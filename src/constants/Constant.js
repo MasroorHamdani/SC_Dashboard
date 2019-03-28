@@ -60,9 +60,9 @@ export const REACT_URLS = {
     'ABOUT': '/about',
     'AUTH_RESET': '/auth-reset',
     'USER-PROFILE': '/profile',
-    'ALERT': '/alert',
-    'DISPENSER': '/dispenser',
-    'HEALTH_STATUS': '/health'
+    'ALERT': '/alert/project',
+    'DISPENSER': '/dispenser/project',
+    'HEALTH_STATUS': '/health/project'
 }
 
 export const DATE_TIME_FORMAT = 'YYYYMMDDHHmmss'
