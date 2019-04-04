@@ -78,43 +78,6 @@ export const HOUR_FORMAT = 'HH:mm'
 
 export const DESCRIPTIVE_DATE_TIME_FORMAT = 'dddd, MMMM Do, YYYY h:mm:ss a'
 
-export const ANALYTICS_TABS = {
-    0: 'FD',
-    1: 'PC',
-    2: 'AQ',
-    3: 'WD',
-    4: 'CLOGS'
-}
-
-export const ANALYTICS_SUB_TABS = {
-    'ALERT' : { 'key': 'alert',
-                'display': 'Alert'},
-    'DISPENSER' : {'key': 'dispenser',
-                'display': 'Dispenser'
-                },
-    'INSTALLATION_DETAILS' : {'key': 'installation',
-                            'display': "Installation Details"
-                            }
-}
-
-export const ANALYTICS_TAB = {
-    'FD': {'key': 'FD',
-                'value': 'FD',
-                'text': 'Feedback Tablet'},
-    'PC': {'key': 'PC',
-                'value': 'PC',
-                'text': 'People counting sensor'},
-    'AQ':{'key': 'AQ',
-                'value': 'AQ',
-                'text': 'Air quality sensor'},
-    'WD': {'key': 'WD',
-                'value': 'WD',
-                'text': 'Wetness Detection sensor'},
-    'CLOGS': {'key': 'CLOGS',
-                'value': 'CLOGS',
-                'text': 'Cleaner Logs'},
-}
-
 export const ANALYTICS_DATE = {
     'ONE_HOUR': '1h',
     'THREE_HOUR': '3h',
