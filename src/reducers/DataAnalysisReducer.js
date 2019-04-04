@@ -5,7 +5,7 @@ const dataAnalysis = (state = [], action) => {
         case PROJECT_ANALYSIS_DATA:
             return{
                 ...state,
-                data: action.data
+                data: action.data//data : {...state.dataAnalysis? {...state.dataAnalysis.data} : '', ...action.data} //
             };
         default:
             return state

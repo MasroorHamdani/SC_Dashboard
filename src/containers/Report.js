@@ -16,7 +16,8 @@ class Report extends Component {
         tab: 0,
         project: '',
         pid: '',
-        serviceChecked: [-1]
+        serviceChecked: [-1],
+        loading: true,
     });
 
     handleTabChange = (event, value) => {
@@ -144,7 +145,8 @@ class Report extends Component {
                 this.setState({
                     project: this.props.projectSelected.PID
                 }, function() {
-                        this.getLocations();
+                    this.props.history.push(this.props.projectSelected.PID);
+                    this.getLocations();
                 })
             }
         }

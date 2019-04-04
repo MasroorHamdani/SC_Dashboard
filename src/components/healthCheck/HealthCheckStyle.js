@@ -45,6 +45,12 @@ const styles = theme => ({
         backgroundColor: green[500],
         width: '35%'
     },
+    buttonProgress: {
+        width: '100%',
+        position: 'absolute',
+        right: '0%',
+        top: '64px'
+    },
 });
 
 export default styles;

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import {connect} from 'react-redux';
 import {isEqual} from 'lodash';
 import {withStyles, LinearProgress} from '@material-ui/core';
-import _ from 'lodash';
+import _, {groupBy} from 'lodash';
 import moment from 'moment-timezone';
 import DataAnalysisComponent from '../../components/dataAnalysis/DataAnalysis';
 import {getApiConfig} from '../../services/ApiCofig';
@@ -34,7 +34,7 @@ class DataAnalysis extends Component {
       func: '',
       page: '',
       loading: true,
-      selectedIndex: 0,
+      selectedIndex: 3,
       startDate: now,
       endDate: new Date(),
     };
@@ -167,9 +167,9 @@ class DataAnalysis extends Component {
       dataAnalysis: {},
       startDate: now,
       endDate : new Date(),
-      selectedIndex: 0
+      selectedIndex: 3
     }, function() {
-      this.handleDateChange(true);
+      this.handleDateChange('1d');
     });
   }
 
@@ -368,10 +368,7 @@ class DataAnalysis extends Component {
    * which can be accessed from the x-sc-session-token.
    */
     if (this.props.dataAnalysis &&
-      !isEqual(this.props.dataAnalysis, prevProps.dataAnalysis)
-      // &&
-      // isEqual(this.props.dataAnalysis.data.status, "success")
-      ){
+      !isEqual(this.props.dataAnalysis, prevProps.dataAnalysis)){
         if(isEqual(this.props.dataAnalysis.data.status, "success")) {
           let metricsData = getVector(this.props.dataAnalysis.data.data.allMetrics, this.state.deviceKey);
           this.setState({
@@ -394,7 +391,6 @@ class DataAnalysis extends Component {
             })
             referData[key] = value;
           })
-          // if(!this.state[this.state.deviceKey])
           this.setState({[this.state.deviceKey]: referData,
             loading: false,
           })
@@ -410,8 +406,9 @@ class DataAnalysis extends Component {
    */
     if (this.props.installationList &&
       (!isEqual(this.props.installationList, prevProps.installationList) ||
-      !this.state.installationList)) {
+      (!this.state.installationList || Object.keys(this.state.installationList).length === 0))) {
         let installationList = {}, i = 1;
+        let formattedData = groupBy(this.props.installationList, 'Type');
         this.props.installationList.map((tab) => {
           let list = {
             'key': tab.Type,
@@ -422,7 +419,22 @@ class DataAnalysis extends Component {
             'devid': tab.Devid,
             'pid': tab.PID
           }
-          if(installationList[tab.Type]) {
+          if((tab.Type === 'PT' || tab.Type === 'SS' || tab.Type === 'TR') && !installationList[tab.Type]) {
+          // This part is for stacking only the Dispenser data
+            installationList[tab.Type] = {};
+            installationList[tab.Type]['key'] = tab.Type;
+            installationList[tab.Type]['text'] = formattedData[tab.Type][0]['Display'];
+            installationList[tab.Type]['subType'] = formattedData[tab.Type][0]['SubType'];
+            installationList[tab.Type]['pid'] = formattedData[tab.Type][0]['PID'];
+            installationList[tab.Type]['devid'] = formattedData[tab.Type][0]['Devid'];
+            installationList[tab.Type]['type'] = formattedData[tab.Type][0]['Type'];
+            installationList[tab.Type]['data'] = formattedData[tab.Type];
+          }
+          else if((tab.Type === 'PT' || tab.Type === 'SS' || tab.Type === 'TR') && installationList[tab.Type]) {
+            return;
+          }
+          else if(installationList[tab.Type] &&
+            (tab.Type !== 'PT' || tab.Type!== 'SS' || tab.Type !== 'TR')) {
             installationList[`${tab.Type}-${i}`] = list;
             installationList[`${tab.Type}-${i}`]['key'] = `${installationList[`${tab.Type}-${i}`]['key']}-${i}`;
             i = i + 1;

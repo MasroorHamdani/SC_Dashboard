@@ -21,6 +21,7 @@ export const API_URLS = {
     'DEFAULT': 'default',
     'INSTALLATION': '/installations',
     'HEALTH': '/health',
+    'REPORTING_SERVICE': '/services/reporting'
 };
 
 export const DASHBOARD_METRIC = {
@@ -306,4 +307,22 @@ export const DATA_OPERATIONS = {
     'RESAMPLER': 'RESAMPLER'
 }
 
-export const LINK = "https://s3-ap-southeast-1.amazonaws.com/scprojectimages/Screen+Shot+2018-09-28+at+3.47.15+PM.png"
+export const DEVICE_TOOL_TIP = {
+    'AQ': 'Air Quality Devices',
+    'PC': 'People Count Devices',
+    'PT': 'Paper Towel Devices',
+    'WD': 'Wetness Detection Devices',
+    'GW': 'Gateway Devices'
+}
+
+export const DEVICE_TYPE = {
+    'AQ': 'Air Quality Devices',
+    'PC': 'People Count Devices',
+    'PT': 'Paper Towel Devices',
+    'WD': 'Wetness Detection Devices',
+    'GW': 'Gateway Devices',
+    'TR': 'Toilet Roll Devices'
+
+}
+export const LINK = "https://80y6zxl35d.execute-api.ap-southeast-1.amazonaws.com/beta/reports/NIE_NTU/13d204df-92c1-4013-bbbb-93762c64e2ff/312b6b13-4576-4041-bcb3-d092107d0902.pdf"
+//"https://s3-ap-southeast-1.amazonaws.com/scbins/CERTIS_AQ_CCK_T1/latest.ino.bin"

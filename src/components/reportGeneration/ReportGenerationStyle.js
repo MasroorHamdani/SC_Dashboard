@@ -71,7 +71,12 @@ const styles = theme => ({
         // marginRight: theme.spacing.unit,
         width: '50%',
     },
-
+    buttonProgress: {
+        width: '100%',
+        position: 'absolute',
+        right: '0%',
+        top: '64px'
+    },
 });
 
 export default styles;

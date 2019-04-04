@@ -31,7 +31,7 @@ class EnhancedTableHead extends Component {
                   sortDirection={orderBy === row.id ? order : false}
                 >
                   <Tooltip
-                    title="Sort"
+                    title={row.toolTip? row.toolTip : 'Sort'}
                     placement={row.numeric ? 'bottom-end' : 'bottom-start'}
                     enterDelay={300}
                   >

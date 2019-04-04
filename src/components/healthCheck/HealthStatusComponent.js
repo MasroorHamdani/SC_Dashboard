@@ -1,7 +1,8 @@
 import React, {Component} from 'react';
 
 import {withStyles, Typography, Paper,
-    AppBar, Tabs, Tab, Avatar, Chip} from '@material-ui/core';
+    AppBar, Tabs, Tab, Avatar, Chip,
+    LinearProgress} from '@material-ui/core';
 
 import toiletpaper from '../../images/toilet-paper.png';
 import peopleCounter from '../../images/people-counter.png';
@@ -52,6 +53,7 @@ class HealthStatusComponent extends Component {
                 label={row.info.status ? capitalizeFirstLetter(row.info.status) : 'NoUpdate'}
                 className={`${classes[`${row.info.status}Status`]}`}/>
             row.info.lastPing = formatDateTime(row.info.last_ping, DATE_TIME_FORMAT, DESCRIPTIVE_DATE_TIME_FORMAT);
+            row.info.label = `${row.ID} (${row.info.name})`;
             newRow.push(row.info);
         })
         this.setState({value,
@@ -61,13 +63,16 @@ class HealthStatusComponent extends Component {
     render() {
         const {classes, stateData} = this.props;
         this.formattedData = stateData.formattedData;
-        const rows = [{ id: 'name', numeric: 'left', disablePadding: false, label: 'Sensor Device'},
+        const rows = [{ id: 'label', numeric: 'left', disablePadding: false, label: 'Sensor Device'},
         { id: 'deviceStatus', numeric: 'left', disablePadding: false, label: 'Device Status'},
         { id: 'lastPing', numeric: 'left', disablePadding: false, label: 'Last Ping time'}]
         return(
             <div className={classes.root}>
+                {stateData.loading &&
+                    <LinearProgress className={classes.buttonProgress}/>
+                }
                 <main className={classes.content}>
-                    {(stateData.name && stateData.formattedData) ?
+                    {(stateData.name && stateData.formattedData && stateData.stateUpdated) ?
                         <Paper style={{ padding: 8 * 3 }}>
                             <div>
                                 <Typography variant="h6">{stateData.name}</Typography>

@@ -9,11 +9,21 @@ import "react-datepicker/dist/react-datepicker.css";
 
 import {formatDateTime} from '../../utils/DateFormat';
 import {ALERT_STATUS, DATE_TIME_FORMAT,
-    DESCRIPTIVE_DATE_TIME_FORMAT, HOUR_MIN_FORMAT} from '../../constants/Constant';
+    DESCRIPTIVE_DATE_TIME_FORMAT,
+    HOUR_MIN_FORMAT, DEVICE_TYPE} from '../../constants/Constant';
 
 import styles from './DataAnalysisStyle';
 
 class AlertAnalysis extends Component {
+    
+    filterData = (arr) => {
+        const {stateData} = this.props;
+        if (stateData.status)
+            arr = arr.filter(x => x.header.StatusInfo.Status.includes(stateData.status))
+        if (stateData.type)
+            arr = arr.filter(x => x.data.length > 0 ? x.data[0].Data.Type.includes(stateData.type): '' )
+        return arr;
+    }
     render() {
         const {classes, stateData, handleChangeStart,
             handleChangeEnd, getAlertData, showDate,
@@ -73,6 +83,7 @@ class AlertAnalysis extends Component {
                 </div>
             }
             {showFilter &&
+            <div>
                 <div className={classes.dateRow}>
                     <FormControl className={classes.formControl}>
                         <InputLabel htmlFor="age-native-helper">Location</InputLabel>
@@ -95,9 +106,45 @@ class AlertAnalysis extends Component {
                         Filter
                     </Button>
                 </div>
+                <div className={classes.dateRow}>
+                    <FormControl className={classes.formControl}>
+                        <InputLabel htmlFor="age-native-helper">Status</InputLabel>
+                        <Select native
+                            value={stateData.status}
+                            onChange={setStateValue}
+                            inputProps={{
+                                name: 'status',
+                                id: 'status',
+                            }}>
+                            <option value="" />
+                            {Object.keys(ALERT_STATUS).map((key, index) => {
+                                return <option value={key} name={key} key={index} >
+                                    {ALERT_STATUS[key]}</option>
+                            })}
+                        </Select>
+                    </FormControl>
+                    <FormControl className={classes.formControl}>
+                        <InputLabel htmlFor="age-native-helper">Device Type</InputLabel>
+                        <Select native
+                            value={stateData.type}
+                            onChange={setStateValue}
+                            inputProps={{
+                                name: 'type',
+                                id: 'type',
+                            }}>
+                            <option value="" />
+                            {Object.keys(DEVICE_TYPE).map((key, index) => {
+                                return <option value={key} name={key} key={index} >
+                                    {DEVICE_TYPE[key]}</option>
+                            })}
+                        </Select>
+                    </FormControl>
+                </div>
+            </div>
             }
             {alertData &&
-                    alertData.map((row, index) => {
+                (this.filterData(alertData)
+                    .map((row, index) => {
                         return (<ExpansionPanel key={index}>
                             {row.header &&
                                 <ExpansionPanelSummary className={classes.expansionRoot} expandIcon={<ExpandMoreIcon />}>
@@ -130,6 +177,7 @@ class AlertAnalysis extends Component {
                             })}
                         </ExpansionPanel>)
                     })
+        )
             }
             </div>
         )

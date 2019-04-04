@@ -15,8 +15,10 @@ class HealthStatus extends Component {
         super(props);
         this.state = {
             pid: props.match.params.pid,
-            insid: props.match.params.insid
+            insid: props.match.params.insid,
+            loading: true
         };
+        this.installationData = false;
     }
 
     componentDidMount() {
@@ -58,7 +60,8 @@ class HealthStatus extends Component {
             !isEqual(this.props.projectSelected, prevProps.projectSelected)){
             if(this.state.pid !== this.props.projectSelected.PID)
             this.setState({
-                pid: this.props.projectSelected.PID
+                pid: this.props.projectSelected.PID,
+                loading: true
             }, function() {
                 let arr = this.props.match.url.split('/');
                 arr[3] = this.props.projectSelected.PID;
@@ -68,7 +71,8 @@ class HealthStatus extends Component {
         }
 
         if (this.props.healthStatusLocation &&
-            !isEqual(this.props.healthStatusLocation, prevProps.healthStatusLocation)) {
+            (!isEqual(this.props.healthStatusLocation, prevProps.healthStatusLocation) ||
+            !this.state.formattedData)) {
             this.setState({data: this.props.healthStatusLocation}, function() {
                 this.formatHealthData();
                 this.getLocationDetails();
@@ -91,7 +95,8 @@ class HealthStatus extends Component {
         }
 
         if (this.props.installationList &&
-            !isEqual(this.props.installationList, prevProps.installationList)) {
+            (!isEqual(this.props.installationList, prevProps.installationList) ||
+            !this.installationData) && this.state.formattedData) {
             let installationList = groupBy(this.props.installationList,  'Devid');
             Object.keys(this.state.formattedData).map((key) => {
                 this.state.formattedData[key].map((row) => {
@@ -100,8 +105,12 @@ class HealthStatus extends Component {
                     }
                 })
             })
+            this.installationData = true
+            this.setState({stateUpdated: true,
+                loading: false})
         }
     }
+
     render() {
         return <HealthStatusComponent stateData={this.state}/>
     }

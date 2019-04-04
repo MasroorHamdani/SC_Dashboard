@@ -66,7 +66,7 @@ const styles = theme => ({
                       <Route path="/alert/project/:pid?" component={AlertDetails} />
                       <Route path="/dispenser/project/:pid?" component={DispenserDetails} />
                       <Route path="/data/project/:pid" component={DataAnalysis} />
-                      <Route exact path="/report" component={Report} />
+                      <Route exact path="/report/configure/project/:pid?" component={Report} />
                       <Route path="/report/project/:pid?" component={ReportView} />
                       <Route path="/health/project/:pid/:insid" component={HealthStatus}/>
                       <Route exact path="/health/project/:pid" component={Health}/>

@@ -17,9 +17,10 @@ class Health extends Component {
         super(props);
         this.state ={
             pid: props.match.params.pid,
-            oldPid: props.match.params.pid
+            loading: true,
         };
     }
+
     componentDidMount() {
     /**
      * Check id pid and timezone are present in state,
@@ -114,7 +115,8 @@ class Health extends Component {
             if(this.state.pid !== this.props.projectSelected.PID) {
                 this.setState({
                     pid: this.props.projectSelected.PID,
-                    healthData: ''
+                    healthData: '',
+                    loading: true
                 },function() {
                     this.props.history.push(this.props.projectSelected.PID);
                     this.getHealthDeatails();
@@ -145,6 +147,7 @@ class Health extends Component {
                     row[SUB2] = row.SUB2;
                 })
                 this.formatHealthData(deviceResponse)
+                this.setState({loading: false})
         }
     }
 

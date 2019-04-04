@@ -1,8 +1,9 @@
 import React, {Component} from 'react';
-import {withStyles, Typography, Avatar, Divider} from '@material-ui/core';
+import {withStyles, Typography, Avatar, Divider,
+    LinearProgress} from '@material-ui/core';
 
 import EnhancedTable from '../grid/Grid';
-import {SORTING} from '../../constants/Constant';
+import {SORTING, DEVICE_TOOL_TIP} from '../../constants/Constant';
 
 import toiletpaper from '../../images/toilet-paper.png';
 import peopleCounter from '../../images/people-counter.png';
@@ -61,6 +62,7 @@ class HealthCheck extends Component {
                     }
                     if (innerKey !== 'undefined') {
                         headerRow.push({ id: innerKey, numeric: 'left', disablePadding: false,
+                            toolTip: DEVICE_TOOL_TIP[innerKey],
                             label: <Avatar alt={innerKey} src={image} className={classes.bigAvatar}/> })
                         healthData[key][innerKey].map((row) => {
                             if(row.info) {
@@ -90,6 +92,9 @@ class HealthCheck extends Component {
         let passedData = this.tableData(classes);
         return (
             <div className={classes.root}>
+                {stateData.loading &&
+                    <LinearProgress className={classes.buttonProgress}/>
+                }
                 <main className={classes.content}>
                     {(stateData && stateData.healthData) ?
                         <div>
@@ -106,6 +111,7 @@ class HealthCheck extends Component {
                         <div><Typography variant="h6">No Health Status Data to display</Typography></div>
                     }
                 </main>
+            
             </div>
         )
     }

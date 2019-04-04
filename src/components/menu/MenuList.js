@@ -25,7 +25,7 @@ return ([
     },
     {
       name: "Configure Report",
-      url: "/report",
+      url: `/report/configure/project/${pid}`,
       icon: "SettingsIcon"
     },
     {
