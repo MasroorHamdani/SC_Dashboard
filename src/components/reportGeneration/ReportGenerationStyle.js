@@ -77,6 +77,28 @@ const styles = theme => ({
         right: '0%',
         top: '64px'
     },
+    dateRow: {
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        width: '35%',
+        margin: '16px',
+        marginLeft: '0px'
+    },
+    marginRight: {
+        marginRight: theme.spacing.unit
+    },
+    expand: {
+        transform: 'rotate(0deg)',
+        marginLeft: 'auto',
+        transition: theme.transitions.create('transform', {
+          duration: theme.transitions.duration.shortest,
+        }),
+    },
+    expandOpen: {
+        transform: 'rotate(180deg)',
+    },
 });
 
 export default styles;

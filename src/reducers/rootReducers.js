@@ -21,6 +21,7 @@ import projectSelectReducer from './ProjectSelectReducer';
 import projectListReducer from './ProjectListReducer';
 import HealthStatusReducer from './HealthStatusReducer';
 import HealthtSatusLocationSReducer from './HealthStatusLocationReducer';
+import ReportsListReducer from './ReportsListReducer';
 
 const reducers = {
     LoginReducer,
@@ -43,7 +44,8 @@ const reducers = {
     projectSelectReducer,
     projectListReducer,
     HealthStatusReducer,
-    HealthtSatusLocationSReducer
+    HealthtSatusLocationSReducer,
+    ReportsListReducer
 }
 
 // combines all the reducers which will be passed in Redux Store

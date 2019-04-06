@@ -35,21 +35,26 @@ const styles = theme => ({
     },
     unhealthyStatus: {
         backgroundColor: red[500],
-        width: '35%'
+        width: '50%'
     },
     warningStatus: {
         backgroundColor: orange[500],
-        width: '35%'
+        width: '50%'
     },
     healthyStatus: {
         backgroundColor: green[500],
-        width: '35%'
+        width: '50%'
     },
     buttonProgress: {
         width: '100%',
         position: 'absolute',
         right: '0%',
         top: '64px'
+    },
+    bigAvatar: {
+        margin: 10,
+        width: 40,
+        height: 40,
     },
 });
 

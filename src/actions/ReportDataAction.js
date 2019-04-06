@@ -1,6 +1,7 @@
 
 import ApiService from '../services/ApiService';
-import { SERVICE_REQUIREMENT, REPORT_SERVICE_LIST} from '../constants/ActionTypes';
+import { SERVICE_REQUIREMENT, REPORT_SERVICE_LIST,
+  REPORTS_LIST} from '../constants/ActionTypes';
 
 /**
  * Dispatched function to call the API service to get
@@ -39,6 +40,27 @@ export function reportServiceList(config) {
 function reportServiceListReceived(data) {
   return {
       type: REPORT_SERVICE_LIST,
+      data
+  }
+}
+
+/**
+ * Dispatched function to call the API service to get
+ * the Reports list to be displayed to user
+ * to select the service.
+ * @param {*} config 
+ */
+export function reportsList(config) {
+  return function (dispatch) {
+      ApiService(config).then(data => {
+        dispatch(reportListReceived(data.data))
+      })
+  }
+}
+
+function reportListReceived(data) {
+  return {
+      type: REPORTS_LIST,
       data
   }
 }

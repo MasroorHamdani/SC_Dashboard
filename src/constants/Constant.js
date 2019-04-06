@@ -1,6 +1,7 @@
 export const API_END_POINT = "https://4l6qi5oh0h.execute-api.ap-southeast-1.amazonaws.com/prod";
 //"https://1w5tcso1ol.execute-api.ap-southeast-1.amazonaws.com/alpha";
 
+export const S3_REPORTS_END_POINT = "https://80y6zxl35d.execute-api.ap-southeast-1.amazonaws.com/beta/reports";
 export const API_URLS = {
     "LOGIN": "/unauth/login",
     "REFRESH_TOKEN": "/unauth/login",
@@ -21,7 +22,8 @@ export const API_URLS = {
     'DEFAULT': 'default',
     'INSTALLATION': '/installations',
     'HEALTH': '/health',
-    'REPORTING_SERVICE': '/services/reporting'
+    'REPORTING_SERVICE': '/services/reporting',
+    'REPORTING_LIST': '/reports'
 };
 
 export const DASHBOARD_METRIC = {

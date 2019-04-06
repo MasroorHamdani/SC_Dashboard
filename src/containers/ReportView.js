@@ -2,9 +2,11 @@ import React, { Component } from 'react';
 import {connect} from 'react-redux';
 import {isEqual} from 'lodash';
 
-import {API_URLS} from '../constants/Constant';
+import {API_URLS, DATE_TIME_FORMAT} from '../constants/Constant';
 import {getApiConfig} from '../services/ApiCofig';
 import {reportServiceList} from '../actions/ReportDataAction';
+import {reportsList} from '../actions/ReportDataAction';
+import {formatDateTime} from '../utils/DateFormat';
 
 import Reports from '../components/reportGeneration/Reports';
 import { timingSafeEqual } from 'crypto';
@@ -12,9 +14,13 @@ import { timingSafeEqual } from 'crypto';
 class ReportView extends Component {
     constructor(props) {
         super(props);
+        let now = new Date();
+        now.setHours(now.getHours()-24);
         this.state ={
             pid: props.match.params.pid,
-            serviceChecked: [-1]
+            serviceChecked: [-1],
+            startDate: now,
+            endDate: new Date(),
         };
     }
 
@@ -30,19 +36,43 @@ class ReportView extends Component {
     }
 
     handleServiceToggle = value => () => {
-        // const { serviceChecked } = this.state,
-        //     newChecked = this.createCheckList(serviceChecked, value);
         this.setState({
             serviceChecked: value,
+            showDate: true
         }, function() {
-            console.log("API call for getting report list will go here")
-            // const endPoint = `${API_URLS['SERVICE_REQUIREMENTS']}/${value}`,
-            //     config = getApiConfig(endPoint, 'GET');
-            // this.props.onServiceRequirement(config);
+           this.getServiceReports()
         });
-        
     };
 
+    getServiceReports = () => {
+        const endPoint = `${API_URLS['PROJECT_DETAILS']}/${this.state.pid}${API_URLS['REPORTING_LIST']}`,
+            data_to_post = {
+                "ID": this.state.serviceChecked,
+                "Start": formatDateTime(this.state.startDate, DATE_TIME_FORMAT, DATE_TIME_FORMAT),
+                "End": formatDateTime(this.state.endDate, DATE_TIME_FORMAT, DATE_TIME_FORMAT)
+            },
+            config = getApiConfig(endPoint, 'POST', data_to_post);
+        this.props.onReportList(config);
+    }
+    handleChangeStart  = (date) => {
+    /**
+     * Handle datetime change for state date, from date picker
+     */
+        this.setState({
+            startDate: date,
+            dateChanged: true
+        });
+    }
+
+    handleChangeEnd  = (date) => {
+    /**
+     * Handle datetime change for end date, from date picker
+     */
+        this.setState({
+            endDate: date,
+            dateChanged: true
+        });
+    }
     componentDidMount() {
     /**
      * Check id pid and timezone are present in state,
@@ -78,22 +108,32 @@ class ReportView extends Component {
                 })
             }
         }
-
     /**
      * On getting the Service list from API.
      * This list will be displayed to user to select the report to be downloaded from
      */
-        // console.log(this.state.serviceList, !isEqual(this.props.reportServiceList, prevProps.reportServiceList));
         if (this.props.reportServiceList &&
             (!isEqual(this.props.reportServiceList, prevProps.reportServiceList) ||
             !this.state.serviceList)) {
             this.setState({serviceList: this.props.reportServiceList})
         }
+    /**
+     * On receiving the reports list for selected service.
+     */
+        if (this.props.reportsList &&
+            (!isEqual(this.props.reportsList, prevProps.reportsList) ||
+            !this.state.report)) {
+            this.setState({report: this.props.reportsList})
+        }
     }
     render() {
         return(
             <Reports stateData={this.state}
-            handleServiceToggle={this.handleServiceToggle}/>
+            handleServiceToggle={this.handleServiceToggle}
+            handleChangeStart={this.handleChangeStart}
+            handleChangeEnd={this.handleChangeEnd}
+            getServiceReports={this.getServiceReports}
+            />
         )
     }
 }
@@ -102,6 +142,7 @@ function mapStateToProps(state) {
     return {
         reportServiceList : state.ServiceRequirementReducer.data,
         projectSelected : state.projectSelectReducer.data,
+        reportsList : state.ReportsListReducer.data
     }
 }
   
@@ -109,7 +150,10 @@ function mapDispatchToProps(dispatch) {
     return {
         onReportServiceList: (config) => {
             dispatch(reportServiceList(config))
-        }
+        },
+        onReportList: (config) => {
+            dispatch(reportsList(config))
+        },
     }
 }
 

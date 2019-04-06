@@ -19,15 +19,15 @@ return ([
       icon: "BarChartIcon"
     },
     {
-      name: "View Reports",
+      name: "Reports",
       url: `/report/project/${pid}`,
       icon: "AssignmentIcon"
     },
-    {
-      name: "Configure Report",
-      url: `/report/configure/project/${pid}`,
-      icon: "SettingsIcon"
-    },
+    // {
+    //   name: "Configure Report",
+    //   url: `/report/configure/project/${pid}`,
+    //   icon: "SettingsIcon"
+    // },
     {
       name: "Health Status",
       url: `/health/project/${pid}`,

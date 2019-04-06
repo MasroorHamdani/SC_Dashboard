@@ -117,6 +117,7 @@ class GraphPlot extends Component {
                                                     strokeWidth={5}
                                                     dataKey={key}
                                                     dot={false}
+                                                    isAnimationActive={false}
                                                     // dot={{stroke: mapper['color']}}
                                                     // fill={mapper['color']}
                                                     stroke={mapper['color']}
@@ -125,7 +126,7 @@ class GraphPlot extends Component {
                                             }
                                             if (mapper['chartType'] === DATA_VIEW_TYPE['BAR']) {
                                                 return <Bar name={mapper['name']} key={key} dataKey={key}
-                                                    fill={mapper['color']} />
+                                                    fill={mapper['color']} isAnimationActive={false}/>
                                             }
                                             if (mapper['chartType'] === DATA_VIEW_TYPE['SCATTER']) {
                                                 return <Line name={mapper['name']}
@@ -133,7 +134,8 @@ class GraphPlot extends Component {
                                                     dataKey={key}
                                                     dot={{stroke: mapper['color']}}
                                                     fill={mapper['color']}
-                                                    stroke="none"/>
+                                                    stroke="none"
+                                                    isAnimationActive={false}/>
                                             }
                                             if (mapper['chartType'] === DATA_VIEW_TYPE['AREA']) {
                                                 return <Area type='monotone'
@@ -141,7 +143,8 @@ class GraphPlot extends Component {
                                                     key={key}
                                                     dataKey={key}
                                                     fill={mapper['color']}
-                                                    stroke={mapper['color']}/>
+                                                    stroke={mapper['color']}
+                                                    isAnimationActive={false}/>
                                             }
                                         })
                                     }

@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 
 import {withStyles, Typography, Paper,
     AppBar, Tabs, Tab, Avatar, Chip,
-    LinearProgress} from '@material-ui/core';
+    LinearProgress, Tooltip} from '@material-ui/core';
 
 import toiletpaper from '../../images/toilet-paper.png';
 import peopleCounter from '../../images/people-counter.png';
@@ -10,7 +10,8 @@ import airQuality from '../../images/air-quality.png';
 import wetnessDetection from '../../images/wetness-detection.png';
 import gatewayDevice from '../../images/wetness-detection.jpg';
 
-import {SORTING, DATE_TIME_FORMAT, DESCRIPTIVE_DATE_TIME_FORMAT} from '../../constants/Constant';
+import {SORTING, DATE_TIME_FORMAT,
+    DESCRIPTIVE_DATE_TIME_FORMAT, DEVICE_TOOL_TIP} from '../../constants/Constant';
 import {formatDateTime} from '../../utils/DateFormat';
 import {capitalizeFirstLetter} from '../../utils/FormatStrings';
 import EnhancedTable from '../grid/Grid';
@@ -64,8 +65,10 @@ class HealthStatusComponent extends Component {
         const {classes, stateData} = this.props;
         this.formattedData = stateData.formattedData;
         const rows = [{ id: 'label', numeric: 'left', disablePadding: false, label: 'Sensor Device'},
-        { id: 'deviceStatus', numeric: 'left', disablePadding: false, label: 'Device Status'},
-        { id: 'lastPing', numeric: 'left', disablePadding: false, label: 'Last Ping time'}]
+            { id: 'deviceStatus', numeric: 'left', disablePadding: false, label: 'Device Status'},
+            { id: 'lastPing', numeric: 'left', disablePadding: false, label: 'Last Ping time'}]
+        const searchList = [{ id: 'label', label: 'Sensor Device'},
+            { id: 'lastPing', label: 'Last Ping time'}]
         return(
             <div className={classes.root}>
                 {stateData.loading &&
@@ -106,7 +109,10 @@ class HealthStatusComponent extends Component {
                                         } else if(key === 'GW') {
                                             image = gatewayDevice;
                                         }
-                                        return <Tab key={key} label={<Avatar alt={key} src={image} className={classes.bigAvatar}/>} 
+                                        return <Tab key={key}
+                                            label={ <Tooltip title={DEVICE_TOOL_TIP[key]}>
+                                                    <Avatar alt={key} src={image} className={classes.bigAvatar}/>
+                                                </Tooltip>} 
                                             value={key}/>
                                     })}
                                 </Tabs>
@@ -118,7 +124,7 @@ class HealthStatusComponent extends Component {
                                     rowsPerPage={this.state.rowsPerPage} page={this.state.page}
                                     selected={this.state.selected} category='health'
                                     handleChange={this.handleChange}
-                                    // handleClick={handleClick}
+                                    searchList={searchList}
                                     redirectID="ID"
                                     allowDelete={false} allowEdit={false}/>
                                 </Typography>

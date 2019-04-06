@@ -156,37 +156,39 @@ class EnhancedTable extends React.Component {
   render() {
     const { classes, data, rows, order, orderBy,
         rowsPerPage, page, handleClick, category, redirectID, allowDelete,
-        allowEdit} = this.props;
+        allowEdit, searchList} = this.props;
     const emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
     const queryToLower = this.state.query.toLowerCase();
     return (
       <NamespacesConsumer>
             {
             t=><Paper className={classes.root}>
-          <div className={classes.searchSection}>
-          {/**
-          * Filter with all the column names,
-          * select any and type the value looking for in the text box,
-          * and the function will be called on key change and refine the data in the table
-          */}
-            <Select
-            displayEmpty
-            value={this.state.queryToColumn}
-            onChange={this.setQueryColumn}
-            >
-            <MenuItem value="" disabled>{t('selectColumn')}</MenuItem>
-            {rows.map(row => {
-              return <MenuItem value={row.id} key={row.id}>{row.label}</MenuItem>
-              }, this)}
-            </Select>
-            <TextField
-            className={classes.searchField}
-            disabled={this.state.queryToColumn ? false : true}
-            placeholder="All"
-            value={this.state.query}
-            onChange={e=>this.setState({query: e.target.value})}
-            />
-          </div>
+          {searchList &&
+            <div className={classes.searchSection}>
+            {/**
+            * Filter with all the column names,
+            * select any and type the value looking for in the text box,
+            * and the function will be called on key change and refine the data in the table
+            */}
+              <Select
+              displayEmpty
+              value={this.state.queryToColumn}
+              onChange={this.setQueryColumn}
+              >
+              <MenuItem value="" disabled>{t('selectColumn')}</MenuItem>
+              {searchList.map(row => {
+                return <MenuItem value={row.id} key={row.id}>{row.label}</MenuItem>
+                }, this)}
+              </Select>
+              <TextField
+              className={classes.searchField}
+              disabled={this.state.queryToColumn ? false : true}
+              placeholder="All"
+              value={this.state.query}
+              onChange={e=>this.setState({query: e.target.value})}
+              />
+            </div>
+          }
           <Table className={classes.table} aria-labelledby="tableTitle">
           {/**
           * Call the conpmnent which will set up the header of the grid.
