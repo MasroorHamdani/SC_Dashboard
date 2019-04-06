@@ -43,7 +43,6 @@ class HealthCheck extends Component {
         const {healthData} = this.props.stateData;
         let data = [], headerRow = [];
         if(healthData) {
-            console.log(healthData);
             headerRow.push({ id: 'name', numeric: 'left', disablePadding: false, label: 'Installation' })
             Object.keys(healthData).map((key) => {
                 let rowData = {};

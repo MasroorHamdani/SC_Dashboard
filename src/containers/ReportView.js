@@ -9,7 +9,6 @@ import {reportsList} from '../actions/ReportDataAction';
 import {formatDateTime} from '../utils/DateFormat';
 
 import Reports from '../components/reportGeneration/Reports';
-import { timingSafeEqual } from 'crypto';
 
 class ReportView extends Component {
     constructor(props) {
@@ -21,6 +20,7 @@ class ReportView extends Component {
             serviceChecked: [-1],
             startDate: now,
             endDate: new Date(),
+            report: ''
         };
     }
 
@@ -30,9 +30,16 @@ class ReportView extends Component {
      * The output of this API will be something like,
      * weekly, monthly yearly and so on!
      */
-        const endPoint = `${API_URLS['PROJECT_DETAILS']}/${this.state.pid}${API_URLS['REPORTING_SERVICE']}`,
+        this.setState({
+            serviceList: '',
+            report: '',
+            showDate: false,
+            serviceChecked: [-1]
+        }, function () {
+            const endPoint = `${API_URLS['PROJECT_DETAILS']}/${this.state.pid}${API_URLS['REPORTING_SERVICE']}`,
                 config = getApiConfig(endPoint, 'GET');
             this.props.onReportServiceList(config);
+        })
     }
 
     handleServiceToggle = value => () => {
@@ -98,10 +105,11 @@ class ReportView extends Component {
      */
         if(this.props.projectSelected && 
             !isEqual(this.props.projectSelected, prevProps.projectSelected)){
-            if(this.state.project !== this.props.projectSelected.PID){
+            if(this.state.pid !== this.props.projectSelected.PID){
                 this.setState({
                     pid: this.props.projectSelected.PID,
-                    serviceList: ''
+                    serviceList: '',
+                    report: ''
                 }, function() {
                     this.props.history.push(this.props.projectSelected.PID);
                     this.getReportServices();
@@ -113,16 +121,14 @@ class ReportView extends Component {
      * This list will be displayed to user to select the report to be downloaded from
      */
         if (this.props.reportServiceList &&
-            (!isEqual(this.props.reportServiceList, prevProps.reportServiceList) ||
-            !this.state.serviceList)) {
+            !isEqual(this.props.reportServiceList, prevProps.reportServiceList)) {
             this.setState({serviceList: this.props.reportServiceList})
         }
     /**
      * On receiving the reports list for selected service.
      */
         if (this.props.reportsList &&
-            (!isEqual(this.props.reportsList, prevProps.reportsList) ||
-            !this.state.report)) {
+            !isEqual(this.props.reportsList, prevProps.reportsList)) {
             this.setState({report: this.props.reportsList})
         }
     }
@@ -132,8 +138,7 @@ class ReportView extends Component {
             handleServiceToggle={this.handleServiceToggle}
             handleChangeStart={this.handleChangeStart}
             handleChangeEnd={this.handleChangeEnd}
-            getServiceReports={this.getServiceReports}
-            />
+            getServiceReports={this.getServiceReports}/>
         )
     }
 }
