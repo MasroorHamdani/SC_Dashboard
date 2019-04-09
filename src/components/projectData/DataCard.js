@@ -16,7 +16,7 @@ class DataCard extends Component{
             tabData = <GraphPlot graphData={graphData}
                         nameMapper={nameMapper} metrics={metrics}
                         classes={classes}
-                        stateData={stateData}/>;
+                        stateData={stateData} isDashboard={true}/>;
         return tabData;
     }
     render() {

@@ -3,20 +3,19 @@ import {connect} from 'react-redux';
 import {isEqual, groupBy} from 'lodash';
 
 import AlertAnalysis from "../components/dataAnalysis/AlertAnalysis";
-import {API_URLS, DATE_TIME_FORMAT, NAMESPACE_MAPPER} from '../constants/Constant';
+import {API_URLS, DATE_TIME_FORMAT, NAMESPACE_MAPPER,
+    RANGE_ERROR} from '../constants/Constant';
 import {getApiConfig} from '../services/ApiCofig';
 import {projectAlertList} from '../actions/DataAnalysis';
 import {projectSubMenuList} from '../actions/DataAnalysis';
-import {formatDateWithTimeZone} from '../utils/DateFormat';
+import {formatDateWithTimeZone, getTodaysStartDateTime} from '../utils/DateFormat';
 
 class AlertDetails extends Component {
     constructor(props) {
         super(props);
-        let now = new Date();
-        now.setHours(now.getHours()-12);
         this.state = {
             pid: props.match.params.pid,
-            startDate: now,
+            startDate: getTodaysStartDateTime(),
             endDate: new Date(),
             dateChanged: false,
             loading: true,
@@ -60,6 +59,19 @@ class AlertDetails extends Component {
         const endPoint = `${API_URLS['PROJECT_DETAILS']}/${this.state.pid}${API_URLS['WASHROOM_LOCATION']}`,
             config = getApiConfig(endPoint, 'GET');
         this.props.onDataAnalysisMenu(config);
+    }
+
+    componentDidCatch(error, errorInfo) {
+        // Catch errors in any components below and re-render with error message
+        if(error.toString().includes('RangeError: Invalid interval')) {
+            this.setState({
+                rangeError: RANGE_ERROR,
+                startDate: getTodaysStartDateTime()
+              })
+        } else {
+            console.log(error.toString())
+        }
+        // You can also log error messages to an error reporting service here
     }
 
     componentDidMount() {
@@ -187,6 +199,7 @@ class AlertDetails extends Component {
                 }
                 this.setState({'locationList': deviceResponse,
                     'alertData': finalDict,
+                    rangeError: ''
                     // loading: false,
                 })
             }

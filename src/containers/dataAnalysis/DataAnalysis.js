@@ -6,12 +6,13 @@ import _, {groupBy} from 'lodash';
 import moment from 'moment-timezone';
 import DataAnalysisComponent from '../../components/dataAnalysis/DataAnalysis';
 import {getApiConfig} from '../../services/ApiCofig';
-import {API_URLS, NAMESPACE_MAPPER} from '../../constants/Constant';
+import {API_URLS, NAMESPACE_MAPPER, RANGE_ERROR} from '../../constants/Constant';
 import {projectSubMenuList, projectInstallationList,
   projectAnalysisData, clearDataAnalysis} from '../../actions/DataAnalysis';
 import styles from './DataAvalysisStyle';
 import RadioButtonComponent from '../../components/dataAnalysis/RadioButtonController';
 import {getStartEndTime, getVector} from '../../utils/AnalyticsDataFormat';
+import {getXHourOldDateTime} from '../../utils/DateFormat';
 
 
 /***
@@ -21,8 +22,6 @@ class DataAnalysis extends Component {
   constructor(props) {
     super(props);
     // For setting start time as one hour prior to current time and end time as current time
-    let now = new Date();
-        now.setHours(now.getHours()-1);
     this.state = {
       value: '',
       projectList: [],
@@ -35,7 +34,7 @@ class DataAnalysis extends Component {
       page: '',
       loading: true,
       selectedIndex: 3,
-      startDate: now,
+      startDate: getXHourOldDateTime(24),
       endDate: new Date(),
     };
     this.menuIndex = 0;
@@ -156,8 +155,6 @@ class DataAnalysis extends Component {
    * in Data Analytics view.
    * It will reinitiate some of the state values to default one.
    */
-    let now = new Date();
-        now.setHours(now.getHours()-1);
     this.setState({
       tab: tab,
       deviceKey: deviceKey,
@@ -165,12 +162,21 @@ class DataAnalysis extends Component {
       subType: subType,
       pid: pid,
       dataAnalysis: {},
-      startDate: now,
+      startDate: getXHourOldDateTime(24),
       endDate : new Date(),
       selectedIndex: 3
     }, function() {
       this.handleDateChange('1d');
     });
+  }
+
+  refreshData = () => {
+    this.setState({
+      startDate: getXHourOldDateTime(24),
+      endDate : new Date()
+    }, function() {
+      this.handleDateChange();
+    })
   }
 
   handleDateChange = (param='', startDate='', endDate='') => {
@@ -185,7 +191,8 @@ class DataAnalysis extends Component {
     this.setState({
       start: formatedDate.start,
       end: formatedDate.end,
-      sessionHeader: ''
+      sessionHeader: '',
+      selectedIndex: formatedDate.selectedIndex ? formatedDate.selectedIndex : this.state.selectedIndex
     }, function() {
       this.getNewAnalyticsData();
     })
@@ -278,6 +285,19 @@ class DataAnalysis extends Component {
         }
       });
     }
+  }
+
+  componentDidCatch(error, errorInfo) {
+    // Catch errors in any components below and re-render with error message
+    if(error.toString().includes('RangeError: Invalid interval')) {
+        this.setState({
+            rangeError: RANGE_ERROR,
+            startDate: getXHourOldDateTime(12)
+          })
+    } else {
+        console.log(error.toString())
+    }
+    // You can also log error messages to an error reporting service here
   }
 
   componentDidMount() {
@@ -393,6 +413,7 @@ class DataAnalysis extends Component {
           })
           this.setState({[this.state.deviceKey]: referData,
             loading: false,
+            rangeError: '',
           })
         } else {
           this.setState({loading: false})
@@ -466,6 +487,7 @@ class DataAnalysis extends Component {
             handleChangeStart={this.handleChangeStart}
             handleListSelection={this.handleListSelection}
             handleChangeEnd={this.handleChangeEnd}
+            refreshData={this.refreshData}
             />
         }
         {this.state.loading &&

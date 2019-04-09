@@ -1,4 +1,4 @@
-import {blueGrey} from '@material-ui/core/colors';
+import {blueGrey, red} from '@material-ui/core/colors';
 const styles = theme => ({
     graph: {
         // margin: theme.spacing.unit * 4,
@@ -68,6 +68,9 @@ const styles = theme => ({
     },
     marginRight: {
         marginRight: theme.spacing.unit
+    },
+    errorMessage: {
+        color: red[500]
     }
 })
 

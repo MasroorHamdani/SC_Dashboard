@@ -41,3 +41,15 @@ export function getTimeDifference (startTime, endTime) {
     let hours = duration.asHours();
     return hours
 }
+
+export function getXHourOldDateTime (hours='') {
+    let now = new Date();
+    now.setHours(now.getHours()-hours);
+    return now
+}
+
+export function getTodaysStartDateTime () {
+    let dateTime = new Date();
+    dateTime.setHours(0,0,0,0);
+    return dateTime;
+}

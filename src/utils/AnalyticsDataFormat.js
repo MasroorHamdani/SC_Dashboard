@@ -130,37 +130,47 @@ export function getStartEndTime(param='', startDate='', endDate='', timeZone='')
  * timezone - will be based on project.
  * depending on the value of param, the start and end datetime will be calculated,
  * In case it is custom, the passed start and end date will be used to format it and send back.
+ * If nothing is passed by default set it to 24 hours, whcih is the default value.
  */
     let now = moment(),
-      start, end;
+      start, end, selectedIndex;
     if (param === ANALYTICS_DATE['ONE_HOUR']) {
       end = now.tz(timeZone).format(DATE_TIME_FORMAT);
       start = (now.subtract({ hours: 1})).tz(timeZone).format(DATE_TIME_FORMAT);
+      selectedIndex = 0;
     } else if(param === ANALYTICS_DATE['THREE_HOUR']) {
       end = now.tz(timeZone).format(DATE_TIME_FORMAT);
       start = (now.subtract({ hours: 3})).tz(timeZone).format(DATE_TIME_FORMAT);
+      selectedIndex = 1;
     } else if(param === ANALYTICS_DATE['TWELVE_HOUR']) {
       end = now.tz(timeZone).format(DATE_TIME_FORMAT);
       start = (now.subtract({ hours: 12})).tz(timeZone).format(DATE_TIME_FORMAT);
+      selectedIndex = 2;
     } else if(param === ANALYTICS_DATE['ONE_DAY']) {
       end = now.tz(timeZone).format(DATE_TIME_FORMAT);
       start = (now.subtract({ days: 1})).tz(timeZone).format(DATE_TIME_FORMAT);
+      selectedIndex = 3;
     } else if(param === ANALYTICS_DATE['THREE_DAY']) {
       end = now.tz(timeZone).format(DATE_TIME_FORMAT);
       start = (now.subtract({ days: 3})).tz(timeZone).format(DATE_TIME_FORMAT);
+      selectedIndex = 4;
     } else if(param === ANALYTICS_DATE['ONE_WEEK']) {
       end = now.tz(timeZone).format(DATE_TIME_FORMAT);
       start = (now.subtract({ weeks: 1})).tz(timeZone).format(DATE_TIME_FORMAT);
+      selectedIndex = 5;
     } else if(param === ANALYTICS_DATE['CUSTOM']) {
       end = moment(endDate, DATE_TIME_FORMAT).tz(timeZone).format(DATE_TIME_FORMAT);
       start = moment(startDate, DATE_TIME_FORMAT).tz(timeZone).format(DATE_TIME_FORMAT);
+      selectedIndex = -1;
     } else {
       end = now.tz(timeZone).format(DATE_TIME_FORMAT);
-      start = (now.subtract({ hours: 1})).tz(timeZone).format(DATE_TIME_FORMAT);
+      start = (now.subtract({ hours: 24})).tz(timeZone).format(DATE_TIME_FORMAT);
+      selectedIndex = 3;
     }
     return {
         'start': start,
-        'end': end
+        'end': end,
+        'selectedIndex': selectedIndex
     }
 }
 

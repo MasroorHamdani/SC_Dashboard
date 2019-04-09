@@ -73,6 +73,9 @@ class DateRowComponent extends Component {
                     <RefreshIcon className={classes.pointer}
                     onClick={handleRefresh}/>
                 }
+                {data.rangeError &&
+                    <Typography className={classes.errorMessage}>{data.rangeError}</Typography>
+                }
             </div>
         )
     }

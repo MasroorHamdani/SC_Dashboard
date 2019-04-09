@@ -179,7 +179,7 @@ class Header extends Component {
                 className={classes.title}
                 >
                 <img src="https://www.smartclean.sg/images/sc-logo.png" alt="logo" className={classes.logo}/>
-                <span className={classes.beta}>BETA</span>
+                {/* <span className={classes.beta}>BETA</span> */}
               </Typography>
               
               {/* Drop down with Project list and its selection */}

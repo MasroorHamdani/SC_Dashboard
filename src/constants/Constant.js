@@ -287,7 +287,8 @@ export const DEVICE_TYPE = {
     'WD': 'Wetness Detection Devices',
     'GW': 'Gateway Devices',
     'TR': 'Toilet Roll Devices'
-
 }
-export const LINK = "https://80y6zxl35d.execute-api.ap-southeast-1.amazonaws.com/beta/reports/NIE_NTU/13d204df-92c1-4013-bbbb-93762c64e2ff/312b6b13-4576-4041-bcb3-d092107d0902.pdf"
+
+export const RANGE_ERROR = "Please select Range within End Date limits - *Reset the time to Default"
+export const LINK = "https://80y6zxl35d.execute-api.ap-southeast-1.amazonaws.com/beta/reports/NIE_NTU/13d204df92c14013bbbb93762c64e2ff/312b6b1345764041bcb3d092107d0902.pdf"
 //"https://s3-ap-southeast-1.amazonaws.com/scbins/CERTIS_AQ_CCK_T1/latest.ino.bin"

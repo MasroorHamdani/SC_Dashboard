@@ -10,19 +10,17 @@ import { API_URLS, NAMESPACE, DASHBOARD_METRIC,
 import { getApiConfig } from '../../services/ApiCofig';
 import {projectAnalysisData, projectSubMenuList} from '../../actions/DataAnalysis';
 import {getVector} from '../../utils/AnalyticsDataFormat';
-import {formatDateWithTimeZone} from '../../utils/DateFormat';
+import {formatDateWithTimeZone, getXHourOldDateTime} from '../../utils/DateFormat';
 
 class Dashboard extends Component {
   constructor(props) {
     super(props);
-    let now =  new Date();
-      now.setHours(now.getHours()-1)
     this.state = {
       data : [],
       dashboardData : [],
       loading: true,
       endTime: new Date(),
-      startTime: now,
+      startTime: getXHourOldDateTime(1),
     }
     this.metricsIndex = 0;
   }

@@ -11,6 +11,11 @@ const styles = theme => ({
         height: '100vh',
         overflow: 'auto',
     },
+    dashboardRoot: {
+        width: '100%',
+        height: '400px',
+        overflow: 'auto',
+    },
     expansionRoot: {
         backgroundColor: grey[200],
         borderBottom: '1px solid rgba(0,0,0,.125)',
@@ -28,29 +33,34 @@ const styles = theme => ({
     },
     pending: {
         color: '#fff',
+        height: '25px',
         backgroundColor: yellow[700],
         padding:'0px !important',
         flexBasis: '10%'
     },
     resolved: {
         color: '#fff',
+        height: '25px',
         backgroundColor: green[500],
         padding:'0px !important',
         flexBasis: '10%'
     },
     blocked: {
         color: '#fff',
+        height: '25px',
         backgroundColor: blue[500],
         padding:'0px !important',
         flexBasis: '10%'
     },
     not_resolved: {
         color: '#fff',
+        height: '25px',
         backgroundColor: red[500],
         padding:'0px !important',
         flexBasis: '10%'
     },
     not_sent: {
+        height: '25px',
         padding:'0px !important',
         flexBasis: '10%'
     },
@@ -58,6 +68,15 @@ const styles = theme => ({
         flexBasis: '15%',
         flexShrink: 0,
     },
+    custimeDateRow: {
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        margin: '16px',
+        marginLeft: '0px'
+    },
+
     //Dispenser date picker
     dateRow: {
         display: 'flex',
@@ -93,6 +112,16 @@ const styles = theme => ({
     },
     marginRight: {
         marginRight: theme.spacing.unit
+    },
+    // Grap Plot CSS
+    alertBox: {
+        width: '55%'
+    },
+    otherData: {
+        width: '45%'
+    },
+    errorMessage: {
+        color: red[500]
     }
 })
 

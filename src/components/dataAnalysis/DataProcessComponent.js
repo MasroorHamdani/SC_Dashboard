@@ -27,6 +27,7 @@ class DataProcessingComponent extends Component {
                             if(stateData[stateData.deviceKey][metrics.metricID][dt.id]) {
                                 return <div className={classes.dateRow} key={index}>
                                     <TextField
+                                        disabled
                                         id="sampling"
                                         label="Sampling Rate"
                                         name="sampling"
@@ -39,6 +40,7 @@ class DataProcessingComponent extends Component {
                                             {t('unit')}
                                         </InputLabel>
                                         <NativeSelect
+                                            disabled
                                             value={stateData[stateData.deviceKey][metrics.metricID][dt.id].unit}
                                             onChange={event => handleSamplingChange(event, metrics.metricID, dt.id)}
                                             input={<Input name="unit" id="unit-native-label-placeholder" />}>

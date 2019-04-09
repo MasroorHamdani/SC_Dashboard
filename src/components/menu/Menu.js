@@ -92,7 +92,7 @@ class Menu extends Component {
             <ListItems menuList={this.state.menu} /></List>
           <Divider />
           {/* <List>{secondaryListItems}</List> */}
-          <Typography className={classes.version}>Version 0.01</Typography>
+          <Typography className={classes.version}>Version 0.02</Typography>
         </Drawer>
     );
   }

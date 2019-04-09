@@ -15,19 +15,19 @@ import {ALERT_STATUS, DATE_TIME_FORMAT,
 import styles from './DataAnalysisStyle';
 
 class AlertAnalysis extends Component {
-    
     filterData = (arr) => {
         const {stateData} = this.props;
         if (stateData.status)
-            arr = arr.filter(x => x.header.StatusInfo.Status.includes(stateData.status))
+            arr = arr.filter(x => x.header.StatusInfo.Status === stateData.status)
         if (stateData.type)
-            arr = arr.filter(x => x.data.length > 0 ? x.data[0].Data.Type.includes(stateData.type): '' )
+            arr = arr.filter(x => x.data.length > 0 ? x.data[0].Data.Type === stateData.type: '' )
         return arr;
     }
     render() {
         const {classes, stateData, handleChangeStart,
             handleChangeEnd, getAlertData, showDate,
-            setStateValue, showFilter} = this.props;
+            setStateValue, showFilter,
+            isDashboard} = this.props;
         let alertData;
         if(stateData.alertData) {
             alertData = stateData.alertData;
@@ -35,7 +35,7 @@ class AlertAnalysis extends Component {
             alertData = stateData;
         }
         return (
-            <div className={classes.root}>
+            <div className={isDashboard? classes.dashboardRoot : classes.root}>
             {stateData.loading &&
                 <LinearProgress className={classes.buttonProgress}/>
             }
@@ -81,6 +81,9 @@ class AlertAnalysis extends Component {
                         Go
                     </Button>
                 </div>
+            }
+            {stateData.rangeError &&
+                <Typography className={classes.errorMessage}>{stateData.rangeError}</Typography>
             }
             {showFilter &&
             <div>
@@ -149,13 +152,13 @@ class AlertAnalysis extends Component {
                             {row.header &&
                                 <ExpansionPanelSummary className={classes.expansionRoot} expandIcon={<ExpandMoreIcon />}>
                                 <div className={classes.heading}>
-                                    <Typography variant="h6">{row.header.StatusInfo.Reason}
+                                    <Typography component="h6">{row.header.StatusInfo.Reason}
                                     {row.header.name ?
                                         ` - ${row.header.name} (${row.header.locn})`
                                     :''}
                                     ({row.data.length > 0 ? `${row.data[0].Data.Type}` : ''})
                                     </Typography>
-                                    <Typography>
+                                    <Typography variant="caption">
                                         {formatDateTime(row.header.Timestamp,
                                             DATE_TIME_FORMAT,
                                             DESCRIPTIVE_DATE_TIME_FORMAT)}

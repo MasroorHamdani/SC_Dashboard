@@ -8,7 +8,7 @@ import LibraryBooksIcon from '@material-ui/icons/LibraryBooks';
 import SettingsIcon from '@material-ui/icons/Settings';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 
-import {ListItem, ListItemIcon, ListItemText} from '@material-ui/core';
+import {ListItem, ListItemIcon, ListItemText, Tooltip} from '@material-ui/core';
 import {Link} from "react-router-dom";
 
 class ListItems extends Component {
@@ -44,14 +44,17 @@ class ListItems extends Component {
                 const icon = row.icon;
                 return (
                     <ListItem button component={Link} to={row.url} key={index}>
-                        <ListItemIcon>
-                            {this.renderSwitch(icon)}
-                        </ListItemIcon>
+                        <Tooltip title={row.toolTip}>
+                            <ListItemIcon>
+                                {this.renderSwitch(icon)}
+                            </ListItemIcon>
+                        </Tooltip>
                         <NamespacesConsumer>
                         {
                             t=><ListItemText primary={t(row.name)} />
                         }
                         </NamespacesConsumer>
+                        
                     </ListItem>
                 )
             });

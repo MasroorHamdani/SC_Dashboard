@@ -153,8 +153,7 @@ class Health extends Component {
 
     render() {
         return <HealthCheck stateData={this.state}
-            handleClick={this.handleClick}
-            />
+            handleClick={this.handleClick}/>
     }
 }
 function mapStateToProps(state) {

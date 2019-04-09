@@ -12,6 +12,7 @@ const styles = theme => ({
     content: {
       minHeight: 10,
       // paddingTop: '56.25%',
+      display: 'flex'
     },
     actions: {
       display: 'flex',

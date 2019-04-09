@@ -43,7 +43,10 @@ class Reports extends Component {
             const link = document.createElement('a');
             link.href = url;
             link.setAttribute('download', 'report.pdf');
+            // Appending link to body is required specifically for downloading on firefox.
+            document.body.appendChild(link);
             link.click();
+            document.body.removeChild(link);
             window.URL.revokeObjectURL(url);
           }).catch((error) => {
               console.log(error);
@@ -77,9 +80,9 @@ class Reports extends Component {
                     {stateData.loading &&
                         <LinearProgress className={classes.buttonProgress}/>
                     }
-                    {stateData.serviceList ?
+                    {(stateData.serviceList && stateData.serviceList.length > 0) ?
                         <GridList 
-                            cellHeight={180} 
+                            cellHeight={200} 
                             className={classes.gridList}>
                         {stateData.serviceList.map((row) => (
                             <Card className={classes.card} key={row.ServiceID}>
@@ -98,10 +101,22 @@ class Reports extends Component {
                                         />
                                     </IconButton>
                                 }
-                                title={row.NS}
+                                title={row.Title}
                                 subheader={row.Description}
                                 />
-                                <CardContent>More contect will come here</CardContent>
+                                <CardContent>
+                                    {row.Schedule &&
+                                        <Typography><b>Schedule:</b> {row.Schedule.Every} {row.Schedule.Unit}</Typography>
+                                    }
+                                    {(Array.isArray(row.Actions) && row.Actions.length) &&
+                                        <Typography component="div">
+                                            {row.Actions.map((dt) => {
+                                                return <Typography><b>{dt.Endpoint} :</b> {dt.Value}</Typography>
+                                            })}
+                                        </Typography>
+                                    }
+                                    <Typography><b>Report created on:</b> {row.CreatedOn}</Typography>
+                                </CardContent>
                                 
                             </Card>
                             ))}
@@ -152,6 +167,10 @@ class Reports extends Component {
                             </Button>
                         </div>
                     }
+                    {stateData.rangeError &&
+                        <Typography className={classes.errorMessage}>{stateData.rangeError}</Typography>
+                    }
+
                     {stateData.report &&
                         <EnhancedTable data={stateData.report} rows={rows}
                         order={this.state.order} orderBy={this.state.orderBy}

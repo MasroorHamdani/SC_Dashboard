@@ -20,7 +20,7 @@ class AnalysisData extends Component {
     /**
      * Method for auto refresh or onclick refresh of the data
      */
-        this.props.handleDateChange()
+        this.props.refreshData()
     }
 
     componentDidMount() {

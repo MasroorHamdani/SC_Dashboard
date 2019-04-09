@@ -26,12 +26,12 @@ class HealthCheck extends Component {
     }
 
     handleChange = (name, value) => {
-        /**
-         * Generic function to set the state in case of any change in any of the fields
-         */
-            this.setState({
-                [name] : value
-            });
+    /**
+     * Generic function to set the state in case of any change in any of the fields
+     */
+        this.setState({
+            [name] : value
+        });
     }
 
     tableData = (classes) => {

@@ -5,8 +5,8 @@ const styles = theme => ({
     position: 'relative',
     whiteSpace: 'nowrap',
     // height: '100vh',
-    backgroundColor: blueGrey[900],//'#262f3e',//'#404854',
-    '& *': { color: 'rgba(255, 255, 255, 0.7)' },
+    backgroundColor: '#7aad6d',//blueGrey[900],
+    // '& *': { color: 'rgba(255, 255, 255, 0.7)' },
     width: drawerWidth,
     transition: theme.transitions.create('width', {
       easing: theme.transitions.easing.sharp,

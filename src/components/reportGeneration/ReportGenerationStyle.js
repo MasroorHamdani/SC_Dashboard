@@ -99,6 +99,9 @@ const styles = theme => ({
     expandOpen: {
         transform: 'rotate(180deg)',
     },
+    errorMessage: {
+        color: red[500]
+    }
 });
 
 export default styles;

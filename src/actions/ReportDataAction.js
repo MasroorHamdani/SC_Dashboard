@@ -32,7 +32,11 @@ function serviceRequirementReceived(data) {
 export function reportServiceList(config) {
   return function (dispatch) {
       ApiService(config).then(data => {
-        dispatch(reportServiceListReceived(data.data))
+        console.log(data)
+        if (data.data)
+          dispatch(reportServiceListReceived(data.data))
+        else if (data.data === null)
+          dispatch(reportServiceListReceived([]))
       })
   }
 }

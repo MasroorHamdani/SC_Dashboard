@@ -1,11 +1,12 @@
 import React, {Component} from 'react';
-import {Typography, Divider} from '@material-ui/core';
+import {withStyles, Typography, Divider} from '@material-ui/core';
 import {Line, XAxis, YAxis, CartesianGrid, Tooltip,
     Legend, ResponsiveContainer, Brush, ComposedChart,
     Bar, PieChart, Pie, Cell, Sector, Area} from 'recharts';
 import {METRIC_TYPE, DATA_VIEW_TYPE} from '../../constants/Constant';
 import DataProcessingComponent from './DataProcessComponent';
 import AlertAnalysis from './AlertAnalysis';
+import styles from './DataAnalysisStyle';
 
 class GraphPlot extends Component {
     state = ({
@@ -21,13 +22,13 @@ class GraphPlot extends Component {
     /**
      * For pie chart, on mouse hover this function is called.
      */
-    this.setState({
-        activeIndex: index,
-    });
+        this.setState({
+            activeIndex: index,
+        });
     }
     render() {
         const {classes, metrics, graphData, nameMapper,
-            stateData, handleSamplingChange} = this.props;
+            stateData, handleSamplingChange, isDashboard} = this.props;
         const renderActiveShape = (props) => {
         /**
          * This function will create an arc on mouse hover for pie chanrt 
@@ -81,7 +82,9 @@ class GraphPlot extends Component {
          * Check for the type of the graph and as per conditions decide what to show.
          */
             metrics.map((metric, index) => {
-                return <div key={index}>
+                return <div key={index}
+                className={isDashboard && metric['metricType'] === "raw_data"? classes.alertBox :
+                isDashboard && metric['metricType'] === "categorical" ? classes.otherData : ''} >
                 <Divider className={classes.seperator}/>
                     <DataProcessingComponent stateData={stateData}
                         handleSamplingChange={handleSamplingChange}
@@ -152,7 +155,9 @@ class GraphPlot extends Component {
                             </ResponsiveContainer>
                         }
                         {(metric.metricType === METRIC_TYPE['CATEGORICAL']) ?
-                            <ResponsiveContainer width='100%' height={400}>
+                            <ResponsiveContainer
+                            width='100%' 
+                            height={400}>
                                 {metric.dimensions[0].ctype === DATA_VIEW_TYPE['PIE'] ?
                                     <PieChart>
                                         <Pie
@@ -161,11 +166,10 @@ class GraphPlot extends Component {
                                             isAnimationActive={true}
                                             data={graphData[metric.metricID]} 
                                             labelLine={false}
-                                            outerRadius={120} 
+                                            outerRadius={isDashboard ? 80 : 120} 
                                             fill="#8884d8"
-                                            innerRadius={100}
-                                            onMouseEnter={this.onPieEnter}
-                                            >
+                                            innerRadius={isDashboard ? 60: 100}
+                                            onMouseEnter={this.onPieEnter}>
                                             {
                                                 graphData[metric.metricID].map((entry, index) =>
                                                     <Cell fill={entry.color} key={index}/>
@@ -193,7 +197,7 @@ class GraphPlot extends Component {
                         :
                         (metric.metricType === METRIC_TYPE['RAW_DATA'] &&
                             <AlertAnalysis stateData={graphData[metric.metricID]}
-                            showDate={false}/>
+                            showDate={false} isDashboard={isDashboard}/>
                         // :
                         //     <div>Can't find appropriate Pattern</div>
                         )
@@ -204,4 +208,4 @@ class GraphPlot extends Component {
         )
     }
 }
-export default GraphPlot;
+export default withStyles(styles)(GraphPlot);
