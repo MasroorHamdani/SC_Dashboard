@@ -440,28 +440,29 @@ class DataAnalysis extends Component {
             'devid': tab.Devid,
             'pid': tab.PID
           }
-          if((tab.Type === 'PT' || tab.Type === 'SS' || tab.Type === 'TR') && !installationList[tab.Type]) {
-          // This part is for stacking only the Dispenser data
-            installationList[tab.Type] = {};
-            installationList[tab.Type]['key'] = tab.Type;
-            installationList[tab.Type]['text'] = formattedData[tab.Type][0]['Display'];
-            installationList[tab.Type]['subType'] = formattedData[tab.Type][0]['SubType'];
-            installationList[tab.Type]['pid'] = formattedData[tab.Type][0]['PID'];
-            installationList[tab.Type]['devid'] = formattedData[tab.Type][0]['Devid'];
-            installationList[tab.Type]['type'] = formattedData[tab.Type][0]['Type'];
-            installationList[tab.Type]['data'] = formattedData[tab.Type];
-          }
-          else if((tab.Type === 'PT' || tab.Type === 'SS' || tab.Type === 'TR') && installationList[tab.Type]) {
-            return;
-          }
-          else if(installationList[tab.Type] &&
-            (tab.Type !== 'PT' || tab.Type!== 'SS' || tab.Type !== 'TR')) {
-            installationList[`${tab.Type}-${i}`] = list;
-            installationList[`${tab.Type}-${i}`]['key'] = `${installationList[`${tab.Type}-${i}`]['key']}-${i}`;
-            i = i + 1;
-          } else {
-            installationList[tab.Type] = list
-          }
+          if(tab['IsDataSource'] !== false)
+            if((tab.Type === 'PT' || tab.Type === 'SS' || tab.Type === 'TR') && !installationList[tab.Type]) {
+            // This part is for stacking only the Dispenser data
+              installationList[tab.Type] = {};
+              installationList[tab.Type]['key'] = tab.Type;
+              installationList[tab.Type]['text'] = formattedData[tab.Type][0]['Display'];
+              installationList[tab.Type]['subType'] = formattedData[tab.Type][0]['SubType'];
+              installationList[tab.Type]['pid'] = formattedData[tab.Type][0]['PID'];
+              installationList[tab.Type]['devid'] = formattedData[tab.Type][0]['Devid'];
+              installationList[tab.Type]['type'] = formattedData[tab.Type][0]['Type'];
+              installationList[tab.Type]['data'] = formattedData[tab.Type];
+            }
+            else if((tab.Type === 'PT' || tab.Type === 'SS' || tab.Type === 'TR') && installationList[tab.Type]) {
+              return;
+            }
+            else if(installationList[tab.Type] &&
+              (tab.Type !== 'PT' || tab.Type!== 'SS' || tab.Type !== 'TR')) {
+              installationList[`${tab.Type}-${i}`] = list;
+              installationList[`${tab.Type}-${i}`]['key'] = `${installationList[`${tab.Type}-${i}`]['key']}-${i}`;
+              i = i + 1;
+            } else {
+              installationList[tab.Type] = list
+            }
         })
         this.setState({installationList: installationList,loading: false,})
     }

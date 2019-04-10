@@ -1,4 +1,4 @@
-import red from '@material-ui/core/colors/red';
+import {red, green} from '@material-ui/core/colors';
 const styles = theme => ({
     root: {
         backgroundColor: theme.palette.background.paper,
@@ -21,7 +21,7 @@ const styles = theme => ({
         margin: theme.spacing.unit * 2,
     },
     avatar: {
-        backgroundColor: red[500],
+        backgroundColor: green[300],
         width: 60,
         height: 60,
     },

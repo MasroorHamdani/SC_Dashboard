@@ -5,13 +5,20 @@ const styles = theme => ({
     position: 'relative',
     whiteSpace: 'nowrap',
     // height: '100vh',
-    backgroundColor: '#7aad6d',//blueGrey[900],
+    backgroundColor: '#a9c8a4', //'#7aad6d',//blueGrey[900],
     // '& *': { color: 'rgba(255, 255, 255, 0.7)' },
     width: drawerWidth,
     transition: theme.transitions.create('width', {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.enteringScreen,
     }),
+  },
+  isActive: {
+    
+    boxShadow: '0 12px 20px -10px rgba(0, 172, 193,.28), 0 4px 20px 0 rgba(0, 0, 0,.12), 0 7px 8px -5px rgba(0, 172, 193,.2)',
+    backgroundColor: '#b7d1b4 !important',
+    // '&:hover': { backgroundColor: 'rgba(0, 0, 0, 0.0)'},
+    // '&:focus': { backgroundColor: 'rgba(0, 0, 0, 0.0)' }
   },
   drawerPaperClose: {
     // height: '100vh',

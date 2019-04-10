@@ -1,6 +1,7 @@
 import React, {Component} from "react";
 import { connect } from "react-redux";
 import {isEqual} from "lodash";
+import {withRouter} from "react-router-dom";
 import {Drawer, List, Divider, IconButton, withStyles, Typography} from '@material-ui/core';
 import classNames from 'classnames';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
@@ -67,6 +68,9 @@ class Menu extends Component {
     }
   }
 
+  activeRoute =(routeName) =>{
+    return this.props.location.pathname === routeName ? true : false;
+  }
   render() {
     const { classes } = this.props;
     /**
@@ -77,7 +81,6 @@ class Menu extends Component {
     return (
         <Drawer
           variant="permanent"
-          // color="default"
           classes={{
             paper: classNames(classes.drawerPaper, !this.state.open && classes.drawerPaperClose),
           }}
@@ -89,7 +92,7 @@ class Menu extends Component {
           </div>
           <Divider />
           <List>
-            <ListItems menuList={this.state.menu} /></List>
+            <ListItems menuList={this.state.menu} activeRoute={this.activeRoute}/></List>
           <Divider />
           {/* <List>{secondaryListItems}</List> */}
           <Typography className={classes.version}>Version 0.02</Typography>
@@ -111,4 +114,4 @@ function mapDispatchToProps(dispatch) {
       }
   }
 }
-export default withStyles(styles)(connect(mapStateToProps, mapDispatchToProps)(Menu));
+export default withStyles(styles)(connect(mapStateToProps, mapDispatchToProps)(withRouter(Menu)));

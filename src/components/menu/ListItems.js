@@ -8,8 +8,10 @@ import LibraryBooksIcon from '@material-ui/icons/LibraryBooks';
 import SettingsIcon from '@material-ui/icons/Settings';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 
-import {ListItem, ListItemIcon, ListItemText, Tooltip} from '@material-ui/core';
+import {ListItem, ListItemIcon, ListItemText, Tooltip, withStyles} from '@material-ui/core';
 import {Link} from "react-router-dom";
+
+import styles from "./MenuStyle";
 
 class ListItems extends Component {
     renderSwitch(param) {
@@ -38,12 +40,14 @@ class ListItems extends Component {
         }
     }
     render() {
-        const {menuList} = this.props;
+        const {menuList, classes,
+            activeRoute} = this.props;
         if(menuList) {
             const menu = menuList.map((row, index) => {
                 const icon = row.icon;
                 return (
-                    <ListItem button component={Link} to={row.url} key={index}>
+                    <ListItem button component={Link} to={row.url} key={index}
+                        className={activeRoute(row.url) ? classes.isActive: ''}>
                         <Tooltip title={row.toolTip}>
                             <ListItemIcon>
                                 {this.renderSwitch(icon)}
@@ -54,7 +58,6 @@ class ListItems extends Component {
                             t=><ListItemText primary={t(row.name)} />
                         }
                         </NamespacesConsumer>
-                        
                     </ListItem>
                 )
             });
@@ -67,4 +70,4 @@ class ListItems extends Component {
     }
 }
 
-export default ListItems;
+export default withStyles(styles)(ListItems);

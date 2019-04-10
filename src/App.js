@@ -56,7 +56,7 @@ const styles = theme => ({
                   (<div className="container">
                     <CssBaseline />
                     <Header {...this.props}  params={this.props.match.params}/>
-                    <Menu/>
+                    <Menu {...this.props}/>
                     <Switch>
                       <Route exact path="/" component={Dashboard} />
                       <Route path="/project/:pid/installations/:insid?" component={ProjectInstallationDetails} />

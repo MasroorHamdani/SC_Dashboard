@@ -7,6 +7,8 @@ import axios from 'axios';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
+import PageviewIcon from '@material-ui/icons/Pageview';
+
 import EnhancedTable from '../grid/Grid';
 import {S3_REPORTS_END_POINT, SORTING, DATE_TIME_FORMAT,
     DESCRIPTIVE_DATE_TIME_FORMAT} from '../../constants/Constant';
@@ -88,9 +90,8 @@ class Reports extends Component {
                             <Card className={classes.card} key={row.ServiceID}>
                                 <CardHeader
                                 avatar={
-                                    <Avatar aria-label="Recipe" className={classes.avatar}>
-                                    {/* {SERVICES[key]['avatar']} */}
-                                    test
+                                    <Avatar className={classes.avatar}>
+                                        <PageviewIcon />
                                     </Avatar>
                                 }
                                 action={
