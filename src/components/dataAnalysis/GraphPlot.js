@@ -21,6 +21,7 @@ class GraphPlot extends Component {
             activeIndex: index,
         });
     }
+
     render() {
         const {classes, metrics, graphData, nameMapper,
             stateData, handleSamplingChange, isDashboard} = this.props;
@@ -71,7 +72,7 @@ class GraphPlot extends Component {
                 </g>
             );
         };
-        return(
+        return (
         /**
          * Loop through metrics dimentions, in order to get all the graphs drawn.
          * Check for the type of the graph and as per conditions decide what to show.
@@ -105,6 +106,7 @@ class GraphPlot extends Component {
                                     }
                                     <CartesianGrid strokeDasharray="3 3"/>
                                     <Tooltip/>
+                                    {/* <Tooltip content={<CustomTooltip/>}/> */}
                                     <Legend />
                                     {/* <Brush dataKey='name' height={30} stroke="#8884d8"/> */}
                                     {nameMapper &&
@@ -156,6 +158,7 @@ class GraphPlot extends Component {
                                 {metric.dimensions[0].ctype === DATA_VIEW_TYPE['PIE'] ?
                                     <PieChart>
                                         <Pie
+                                            dataKey="value"
                                             activeIndex={this.state.activeIndex}
                                             activeShape={renderActiveShape}
                                             isAnimationActive={true}
@@ -192,7 +195,7 @@ class GraphPlot extends Component {
                         :
                         (metric.metricType === METRIC_TYPE['RAW_DATA'] &&
                             <AlertAnalysis stateData={graphData[metric.metricID]}
-                            showDate={false} isDashboard={isDashboard}/>
+                                isDashboard={isDashboard}/>
                         // :
                         //     <div>Can't find appropriate Pattern</div>
                         )
@@ -203,4 +206,40 @@ class GraphPlot extends Component {
         )
     }
 }
+
 export default withStyles(styles)(GraphPlot);
+
+
+// const CustomTooltip  = React.createClass({
+  
+//     getIntroOfPage(label) {
+//         let mapper =[];
+//     let toolTip = ''
+//       mapper.map((dt) => {
+//           if(dt['label'] === label && dt['toolTip']) {
+//             toolTip =  dt['toolTip']
+//         }
+//       })
+//       return toolTip;
+//     },
+  
+//     render() {
+//       const { active } = this.props;
+  
+//       if (active) {
+//         const { payload } = this.props;
+//           return (
+//             <div className="custom-tooltip">
+//              {payload.map((row) =>
+//              <div>
+//                <p className="label">{`${row.dataKey} : ${row.value}`}</p>
+//                <p className="intro">{this.getIntroOfPage(row.dataKey)}</p>
+//                </div>
+//              )}
+//             </div>
+//           );
+       
+//       }
+//       return null;
+//     }
+//   });

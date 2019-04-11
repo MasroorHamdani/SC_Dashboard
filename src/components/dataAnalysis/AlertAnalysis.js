@@ -23,6 +23,7 @@ class AlertAnalysis extends Component {
             arr = arr.filter(x => x.data.length > 0 ? x.data[0].Data.Type === stateData.type: '' )
         return arr;
     }
+
     render() {
         const {classes, stateData, handleChangeStart,
             handleChangeEnd, getAlertData, showDate,
@@ -35,7 +36,7 @@ class AlertAnalysis extends Component {
             alertData = stateData;
         }
         return (
-            <div className={isDashboard? classes.dashboardRoot : classes.root}>
+        <div className={isDashboard? classes.dashboardRoot : classes.root}>
             {stateData.loading &&
                 <LinearProgress className={classes.buttonProgress}/>
             }
@@ -86,64 +87,64 @@ class AlertAnalysis extends Component {
                 <Typography className={classes.errorMessage}>{stateData.rangeError}</Typography>
             }
             {showFilter &&
-            <div>
-                <div className={classes.dateRow}>
-                    <FormControl className={classes.formControl}>
-                        <InputLabel htmlFor="age-native-helper">Location</InputLabel>
-                        <Select native
-                            value={stateData.insid}
-                            onChange={setStateValue}
-                            inputProps={{
-                                name: 'insid',
-                                id: 'insid',
-                            }}>
-                        <option value="" />
-                        {stateData.locationList.map(function(loc) {
-                            return <option value={loc.insid} name={loc.insid} key={loc.insid} >
-                                {loc.name} | {loc.locn}</option>
-                        })}
-                        </Select>
-                    </FormControl>
-                    <Button variant="contained" color="primary"
-                        onClick={getAlertData}>
-                        Filter
-                    </Button>
-                </div>
-                <div className={classes.dateRow}>
-                    <FormControl className={classes.formControl}>
-                        <InputLabel htmlFor="age-native-helper">Status</InputLabel>
-                        <Select native
-                            value={stateData.status}
-                            onChange={setStateValue}
-                            inputProps={{
-                                name: 'status',
-                                id: 'status',
-                            }}>
+                <div>
+                    <div className={classes.dateRow}>
+                        <FormControl className={classes.formControl}>
+                            <InputLabel htmlFor="age-native-helper">Location</InputLabel>
+                            <Select native
+                                value={stateData.insid}
+                                onChange={setStateValue}
+                                inputProps={{
+                                    name: 'insid',
+                                    id: 'insid',
+                                }}>
                             <option value="" />
-                            {Object.keys(ALERT_STATUS).map((key, index) => {
-                                return <option value={key} name={key} key={index} >
-                                    {ALERT_STATUS[key]}</option>
-                            })}
-                        </Select>
-                    </FormControl>
-                    <FormControl className={classes.formControl}>
-                        <InputLabel htmlFor="age-native-helper">Device Type</InputLabel>
-                        <Select native
-                            value={stateData.type}
-                            onChange={setStateValue}
-                            inputProps={{
-                                name: 'type',
-                                id: 'type',
-                            }}>
-                            <option value="" />
-                            {Object.keys(DEVICE_TYPE).map((key, index) => {
-                                return <option value={key} name={key} key={index} >
-                                    {DEVICE_TYPE[key]}</option>
-                            })}
-                        </Select>
-                    </FormControl>
+                            {stateData.locationList.map(function(loc) {
+                                return <option value={loc.insid} name={loc.insid} key={loc.insid} >
+                                    {loc.name} | {loc.locn}</option>
+                                })}
+                            </Select>
+                        </FormControl>
+                        <Button variant="contained" color="primary"
+                            onClick={getAlertData}>
+                            Filter
+                        </Button>
+                    </div>
+                    <div className={classes.dateRow}>
+                        <FormControl className={classes.formControl}>
+                            <InputLabel htmlFor="age-native-helper">Status</InputLabel>
+                            <Select native
+                                value={stateData.status}
+                                onChange={setStateValue}
+                                inputProps={{
+                                    name: 'status',
+                                    id: 'status',
+                                }}>
+                                <option value="" />
+                                {Object.keys(ALERT_STATUS).map((key, index) => {
+                                    return <option value={key} name={key} key={index} >
+                                        {ALERT_STATUS[key]}</option>
+                                })}
+                            </Select>
+                        </FormControl>
+                        <FormControl className={classes.formControl}>
+                            <InputLabel htmlFor="age-native-helper">Device Type</InputLabel>
+                            <Select native
+                                value={stateData.type}
+                                onChange={setStateValue}
+                                inputProps={{
+                                    name: 'type',
+                                    id: 'type',
+                                }}>
+                                <option value="" />
+                                {Object.keys(DEVICE_TYPE).map((key, index) => {
+                                    return <option value={key} name={key} key={index} >
+                                        {DEVICE_TYPE[key]}</option>
+                                })}
+                            </Select>
+                        </FormControl>
+                    </div>
                 </div>
-            </div>
             }
             {alertData &&
                 (this.filterData(alertData)
@@ -180,9 +181,9 @@ class AlertAnalysis extends Component {
                             })}
                         </ExpansionPanel>)
                     })
-        )
+                )
             }
-            </div>
+        </div>
         )
     }
 }

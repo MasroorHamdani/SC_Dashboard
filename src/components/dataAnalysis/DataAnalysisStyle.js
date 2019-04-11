@@ -1,4 +1,4 @@
-import {grey, yellow, green, blue, red} from '@material-ui/core/colors';
+import {grey, yellow, green, blue, red, blueGrey} from '@material-ui/core/colors';
 const styles = theme => ({
     main: {
         width: '80%',
@@ -122,7 +122,27 @@ const styles = theme => ({
     },
     errorMessage: {
         color: red[500]
-    }
+    },
+    seperator: {
+        marginTop: theme.spacing.unit * 1,
+        marginBottom: theme.spacing.unit * 2,
+    },
+    //Line chart dimentions
+    lineChart: {
+        width: "80%",
+    },
+    //tile dimentions
+    tile: {
+        // width: '160px',
+        // height: '160px',
+        display: 'flex',
+        flexDirection: 'column',
+        backgroundColor: blueGrey[900],//'#262f3e',//'#404854',
+        '& *': { color: 'rgba(255, 255, 255, 0.7)' },
+        textAlign: 'center',
+        padding: theme.spacing.unit * 2
+    },
+
 })
 
 export default styles;

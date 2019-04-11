@@ -44,7 +44,6 @@ class AnalysisData extends Component {
             if(!tabData)
                 tabData = <GraphPlot graphData={graphData}
                         nameMapper={nameMapper} metrics={metrics}
-                        classes={classes}
                         stateData={this.props.stateData}
                         handleSamplingChange={this.props.handleSamplingChange}/>;
         return tabData;

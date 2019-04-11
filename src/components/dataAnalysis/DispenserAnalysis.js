@@ -102,7 +102,6 @@ class DispenserAnalysis extends Component {
                             timeList={TIME_LIST}/>
                         <GraphPlot graphData={graphData}
                         nameMapper={nameMapper} metrics={metrics}
-                        classes={classes}
                         stateData={stateData}
                         handleSamplingChange={handleSamplingChange}/>
                     </div>;
