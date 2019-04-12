@@ -92,7 +92,7 @@ class Menu extends Component {
           </div>
           <Divider />
           <List>
-            <ListItems menuList={this.state.menu} activeRoute={this.activeRoute}/></List>
+            <ListItems menuList={this.state.menu} activeRoute={this.activeRoute} menuState={this.state.open}/></List>
           <Divider />
           {/* <List>{secondaryListItems}</List> */}
           <Typography className={classes.version}>Version 0.02</Typography>

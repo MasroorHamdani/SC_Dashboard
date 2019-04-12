@@ -78,7 +78,7 @@ export const HOUR_MIN_FORMAT = 'hh:mm A'
 
 export const HOUR_FORMAT = 'HH:mm'
 
-export const DESCRIPTIVE_DATE_TIME_FORMAT = 'dddd, MMMM Do, YYYY h:mm:ss a'
+export const DESCRIPTIVE_DATE_TIME_FORMAT = 'dddd, MMMM Do, YYYY h:mm:ss A'
 
 export const ANALYTICS_DATE = {
     'ONE_HOUR': '1h',
@@ -249,7 +249,8 @@ export const DATA_VIEW_TYPE = {
     'SCATTER': 'scatter',
     'PIE': 'pie',
     'TILE': 'tile',
-    'AREA': 'area'
+    'AREA': 'area',
+    'VERTICAL': 'vertical'
 }
 
 export const ALERT_LEVEL = [

@@ -127,7 +127,8 @@ class DataAnalysis extends Component {
     }, function() {
       const endPoint = `${API_URLS['PROJECT_DETAILS']}/${pid}${API_URLS['PROJECT_LOCATION']}/${insid}`,
       params = {
-        'getinsinfo' : false
+        'getinsinfo' : false, // This is default set to false
+        'ignoreVirtualDevices' : true // This is default set to false
       },
       config = getApiConfig(endPoint, 'GET', '', params);
       this.props.onInstalationsList(config);
@@ -287,6 +288,21 @@ class DataAnalysis extends Component {
     }
   }
 
+  handleBarClick = (key) => {
+  /**
+   * Handling bar click. any bar which has a click function will call this API.
+   */
+    this.setState({ barClick: true });
+    this.handleDateChange();
+  }
+
+  handleClose = () => {
+  /**
+   * This function will close the modal opened while clicking on a bar
+   */
+    this.setState({ barClick: false });
+  }
+
   componentDidCatch(error, errorInfo) {
     // Catch errors in any components below and re-render with error message
     if(error.toString().includes('RangeError: Invalid interval')) {
@@ -429,7 +445,7 @@ class DataAnalysis extends Component {
       (!isEqual(this.props.installationList, prevProps.installationList) ||
       (!this.state.installationList || Object.keys(this.state.installationList).length === 0))) {
         let installationList = {}, i = 1;
-        let formattedData = groupBy(this.props.installationList, 'Type');
+        // let formattedData = groupBy(this.props.installationList, 'Type');
         this.props.installationList.map((tab) => {
           let list = {
             'key': tab.Type,
@@ -440,29 +456,30 @@ class DataAnalysis extends Component {
             'devid': tab.Devid,
             'pid': tab.PID
           }
-          if(tab['IsDataSource'] !== false)
-            if((tab.Type === 'PT' || tab.Type === 'SS' || tab.Type === 'TR') && !installationList[tab.Type]) {
-            // This part is for stacking only the Dispenser data
-              installationList[tab.Type] = {};
-              installationList[tab.Type]['key'] = tab.Type;
-              installationList[tab.Type]['text'] = formattedData[tab.Type][0]['Display'];
-              installationList[tab.Type]['subType'] = formattedData[tab.Type][0]['SubType'];
-              installationList[tab.Type]['pid'] = formattedData[tab.Type][0]['PID'];
-              installationList[tab.Type]['devid'] = formattedData[tab.Type][0]['Devid'];
-              installationList[tab.Type]['type'] = formattedData[tab.Type][0]['Type'];
-              installationList[tab.Type]['data'] = formattedData[tab.Type];
-            }
-            else if((tab.Type === 'PT' || tab.Type === 'SS' || tab.Type === 'TR') && installationList[tab.Type]) {
-              return;
-            }
-            else if(installationList[tab.Type] &&
-              (tab.Type !== 'PT' || tab.Type!== 'SS' || tab.Type !== 'TR')) {
-              installationList[`${tab.Type}-${i}`] = list;
-              installationList[`${tab.Type}-${i}`]['key'] = `${installationList[`${tab.Type}-${i}`]['key']}-${i}`;
-              i = i + 1;
-            } else {
-              installationList[tab.Type] = list
-            }
+          // This section was clubing the Dispenser type devices into one and show one entry on UI rather then multiple
+          // if((tab.Type === 'PT' || tab.Type === 'SS' || tab.Type === 'TR') && !installationList[tab.Type]) {
+          // // This part is for stacking only the Dispenser data
+          //   installationList[tab.Type] = {};
+          //   installationList[tab.Type]['key'] = tab.Type;
+          //   installationList[tab.Type]['text'] = formattedData[tab.Type][0]['Display'];
+          //   installationList[tab.Type]['subType'] = formattedData[tab.Type][0]['SubType'];
+          //   installationList[tab.Type]['pid'] = formattedData[tab.Type][0]['PID'];
+          //   installationList[tab.Type]['devid'] = formattedData[tab.Type][0]['Devid'];
+          //   installationList[tab.Type]['type'] = formattedData[tab.Type][0]['Type'];
+          //   installationList[tab.Type]['data'] = formattedData[tab.Type];
+          // }
+          // else if((tab.Type === 'PT' || tab.Type === 'SS' || tab.Type === 'TR') && installationList[tab.Type]) {
+          //   return;
+          // }
+          // else if(installationList[tab.Type]
+            // (tab.Type !== 'PT' || tab.Type!== 'SS' || tab.Type !== 'TR')) {
+          if(installationList[tab.Type]) {
+            installationList[`${tab.Type}-${i}`] = list;
+            installationList[`${tab.Type}-${i}`]['key'] = `${installationList[`${tab.Type}-${i}`]['key']}-${i}`;
+            i = i + 1;
+          } else if(tab.Type !== 'PT' && tab.Type !== 'SS' && tab.Type !== 'TR') {
+            installationList[tab.Type] = list
+          }
         })
         this.setState({installationList: installationList,loading: false,})
     }

@@ -35,7 +35,15 @@ class DataProcessingComponent extends Component {
                                         onChange={event => handleSamplingChange(event, metrics.metricID, dt.id)}
                                         margin="normal"
                                     />
-                                    <FormControl className={classes.formControl}>
+                                    <TextField
+                                        disabled
+                                        id="unit"
+                                        label={t('unit')}
+                                        name="unit"
+                                        value={stateData[stateData.deviceKey][metrics.metricID][dt.id].unit}
+                                        margin="normal"
+                                    />
+                                    {/* <FormControl className={classes.formControl}>
                                         <InputLabel shrink htmlFor="unit-native-label-placeholder">
                                             {t('unit')}
                                         </InputLabel>
@@ -51,7 +59,7 @@ class DataProcessingComponent extends Component {
                                             <option value='M' name="unit" key='month'>Month</option>
                                             <option value='Y' name="unit" key='year'>Year</option>
                                         </NativeSelect>
-                                    </FormControl>
+                                    </FormControl> */}
                                     <TextField
                                         disabled
                                         id={dt.id}

@@ -111,12 +111,13 @@ class Reports extends Component {
                                     }
                                     {(Array.isArray(row.Actions) && row.Actions.length) &&
                                         <Typography component="div">
-                                            {row.Actions.map((dt) => {
-                                                return <Typography><b>{dt.Endpoint} :</b> {dt.Value}</Typography>
+                                            {row.Actions.map((dt, index) => {
+                                                return <Typography key={index}><b>{dt.Endpoint} :</b> {dt.Value}</Typography>
                                             })}
                                         </Typography>
                                     }
-                                    <Typography><b>Report created on:</b> {row.CreatedOn}</Typography>
+                                    <Typography><b>Report created on:
+                                        </b> {formatDateTime(row.CreatedOn, DATE_TIME_FORMAT, DESCRIPTIVE_DATE_TIME_FORMAT)}</Typography>
                                 </CardContent>
                                 
                             </Card>

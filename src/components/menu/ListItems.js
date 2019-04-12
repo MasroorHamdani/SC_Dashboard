@@ -41,24 +41,26 @@ class ListItems extends Component {
     }
     render() {
         const {menuList, classes,
-            activeRoute} = this.props;
+            activeRoute, menuState} = this.props;
         if(menuList) {
             const menu = menuList.map((row, index) => {
                 const icon = row.icon;
                 return (
-                    <ListItem button component={Link} to={row.url} key={index}
-                        className={activeRoute(row.url) ? classes.isActive: ''}>
-                        <Tooltip title={row.toolTip}>
-                            <ListItemIcon>
-                                {this.renderSwitch(icon)}
-                            </ListItemIcon>
-                        </Tooltip>
-                        <NamespacesConsumer>
-                        {
-                            t=><ListItemText primary={t(row.name)} />
-                        }
-                        </NamespacesConsumer>
-                    </ListItem>
+                    <Tooltip title={!menuState ? row.toolTip : ''}>
+                        <ListItem button component={Link} to={row.url} key={index}
+                            className={activeRoute(row.url) ? classes.isActive: ''}>
+                            
+                                <ListItemIcon>
+                                    {this.renderSwitch(icon)}
+                                </ListItemIcon>
+                            <NamespacesConsumer>
+                            {
+                                t=>
+                                <ListItemText primary={t(row.name)} />
+                            }
+                            </NamespacesConsumer>
+                        </ListItem>
+                    </Tooltip>
                 )
             });
             return(
