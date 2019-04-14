@@ -375,7 +375,8 @@ class DataAnalysis extends Component {
    * Reducer for installations - 'DataAnalysisProjectListSubMenuReducer'
    */ 
     if (this.props.projectSubMenuList &&
-        !isEqual(this.props.projectSubMenuList, prevProps.projectSubMenuList)) {
+        (!isEqual(this.props.projectSubMenuList, prevProps.projectSubMenuList) ||
+        this.state.projectList.length === 0)) {
         let project = [],
           projObj = {}, SUB1, SUB2;;
         const deviceResponse = this.props.projectSubMenuList;
