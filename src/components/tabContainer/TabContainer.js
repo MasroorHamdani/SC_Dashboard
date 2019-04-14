@@ -46,20 +46,7 @@ class TabContainer extends Component {
      */
         const {category, data, handleClick, stateData} = this.props;
         let tabData, rows, searchList;
-        if (data && category === PROJECT_TABS['INSTALLATION']) {
-            rows = [{ id: 'name', numeric: 'center', disablePadding: false, label: 'Name' },
-                    { id: 'locn', numeric: 'center', disablePadding: false, label: 'Location' }];
-            searchList = [{ id: 'name', label: 'Name' },
-                    { id: 'locn', label: 'Location' }];
-            tabData = <Typography component="div">
-            <EnhancedTable data={data} rows={rows}
-                order={this.state.order} orderBy={this.state.orderBy}
-                rowsPerPage={this.state.rowsPerPage} page={this.state.page}
-                selected={this.state.selected} category={category}
-                searchList={searchList}
-                handleChange={this.handleChange} handleClick={handleClick} redirectID="insid"/>
-            </Typography>
-        } else if(stateData.teamInfo && category === PROJECT_TABS['TEAM']) {
+        if(stateData.teamInfo && category === PROJECT_TABS['TEAM']) {
             rows = [{ id: 'Firstname', numeric: 'center', disablePadding: false, label: 'Firstname' },
                     { id: 'Lastname', numeric: 'center', disablePadding: false, label: 'LastName' },
                     { id: 'Role', numeric: 'center', disablePadding: false, label: 'Role' },
@@ -79,6 +66,19 @@ class TabContainer extends Component {
                 searchList={searchList}
                 handleChange={this.handleChange} handleClick={handleClick} redirectID="UID"
                 allowDelete={false} allowEdit={true}/>
+            </Typography>
+        } else if (data && category === PROJECT_TABS['INSTALLATION']) {
+            rows = [{ id: 'name', numeric: 'center', disablePadding: false, label: 'Name' },
+                    { id: 'locn', numeric: 'center', disablePadding: false, label: 'Location' }];
+            searchList = [{ id: 'name', label: 'Name' },
+                    { id: 'locn', label: 'Location' }];
+            tabData = <Typography component="div">
+            <EnhancedTable data={data} rows={rows}
+                order={this.state.order} orderBy={this.state.orderBy}
+                rowsPerPage={this.state.rowsPerPage} page={this.state.page}
+                selected={this.state.selected} category={category}
+                searchList={searchList}
+                handleChange={this.handleChange} handleClick={handleClick} redirectID="insid"/>
             </Typography>
         }
         return (

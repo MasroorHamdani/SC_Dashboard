@@ -98,11 +98,11 @@ class HealthStatusComponent extends Component {
                                             })
                                         }
                                         let image = '';
-                                        if (key === 'PC') {
+                                        if (key === 'PC' || key === 'PPLCTR') {
                                             image = peopleCounter;
-                                        } else if(key === 'AQ') {
+                                        } else if(key === 'AQ' || key === 'ODRDTR') {
                                             image = airQuality;
-                                        } else if(key === 'PT') {
+                                        } else if(key === 'PT' || key === 'TR') {
                                             image = toiletpaper;
                                         } else if(key === 'WD') {
                                             image = wetnessDetection;

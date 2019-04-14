@@ -46,11 +46,11 @@ class ProjectDetail extends Component {
      * depending on that call the appropriate API
      */
     let url;
-    if (value === 'team' 
+    if (value === PROJECT_TABS['TEAM']
     // && (!this.props.projectData || !this.state.teamInfo)
     ) {
       url = API_URLS['TEAM_MEMBERS'];
-    } else if(value === 'installation' 
+    } else if(value === PROJECT_TABS['INSTALLATION'] 
     // && !this.props.projectData
     ) {
       url= `${PROJECT_TABS['INSTALLATION']}/${PROJECT_TABS['DETAILS']}`;
@@ -179,20 +179,16 @@ class ProjectDetail extends Component {
                   <Tab label={t('team')}
                     value='team'/>
                   <Tab label={t('installation')}
-                    value='installation'/>
+                    value='installations'/>
                 </Tabs>
               </AppBar>
               
-              {/* Once tab is selected the conditions will decide which section to be disnplayed
-              TabContainer is another component */}
-              {(this.state.value === 'team' && this.props.teamMembers)&& <TabContainer data={this.props.teamMembers}
+              {this.state.value &&
+                <TabContainer data={this.state.installationData}
                 stateData={this.state}
-                category={PROJECT_TABS['TEAM']}
-                handleClick={handleClick}>Team</TabContainer>}
-              {this.state.value === 'installation' && <TabContainer data={this.state.installationData}
-                stateData={this.state}
-                category={PROJECT_TABS['INSTALLATION']}
-                handleClick={handleClick}>Installation</TabContainer>}
+                category={this.state.value}
+                handleClick={handleClick}/>
+              }
             </Paper>
           </main>
           }</NamespacesConsumer>

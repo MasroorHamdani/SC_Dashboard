@@ -49,11 +49,11 @@ class HealthCheck extends Component {
                 // TODO: List of type devices will come from API latter on, for now it is hard coded!
                 Object.keys(healthData[key]).map((innerKey) => {
                     let image = '';
-                    if (innerKey === 'PC') {
+                    if (innerKey === 'PC' || innerKey === 'PPLCTR') {
                         image = peopleCounter;
-                    } else if(innerKey === 'AQ') {
+                    } else if(innerKey === 'AQ' || innerKey === 'ODRDTR') {
                         image = airQuality;
-                    } else if(innerKey === 'PT') {
+                    } else if(innerKey === 'PT' || innerKey === 'TR') {
                         image = toiletpaper;
                     } else if(innerKey === 'WD') {
                         image = wetnessDetection;
