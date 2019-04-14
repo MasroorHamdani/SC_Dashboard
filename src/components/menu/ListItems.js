@@ -46,8 +46,8 @@ class ListItems extends Component {
             const menu = menuList.map((row, index) => {
                 const icon = row.icon;
                 return (
-                    <Tooltip title={!menuState ? row.toolTip : ''}>
-                        <ListItem button component={Link} to={row.url} key={index}
+                    <Tooltip title={!menuState ? row.toolTip : ''} key={index}>
+                        <ListItem button component={Link} to={row.url}
                             className={activeRoute(row.url) ? classes.isActive: ''}>
                             
                                 <ListItemIcon>

@@ -149,6 +149,8 @@ class Health extends Component {
                 this.formatHealthData(deviceResponse)
                 this.setState({loading: false})
         }
+        if(this.state.loading)
+            this.setState({loading: false})
     }
 
     render() {

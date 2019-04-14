@@ -236,12 +236,12 @@ class GraphPlot extends Component {
                     )
                     
                     }
-                    <CustomModal
+                    {/* <CustomModal
                         header="Dispenser Details"
                         content="testing"//{deviceData}
                         handleClose={handleClose}
                         open={stateData.barClick}
-                        />
+                        /> */}
                 </div>
             })
         )
