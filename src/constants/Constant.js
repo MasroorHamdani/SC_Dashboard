@@ -1,4 +1,6 @@
-export const API_END_POINT = "https://4l6qi5oh0h.execute-api.ap-southeast-1.amazonaws.com/prod";
+
+export const API_END_POINT = process.env.REACT_APP_API_END_POINT
+//"https://4l6qi5oh0h.execute-api.ap-southeast-1.amazonaws.com/prod";
 //"https://1w5tcso1ol.execute-api.ap-southeast-1.amazonaws.com/alpha";
 
 export const S3_REPORTS_END_POINT = "https://80y6zxl35d.execute-api.ap-southeast-1.amazonaws.com/beta/reports";

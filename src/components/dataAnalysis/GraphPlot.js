@@ -204,7 +204,9 @@ class GraphPlot extends Component {
                                                                 color = '#dd2c00';
                                                             else if(entry[key] < 80 && entry[key] > 40)
                                                                 color = '#ffeb3b';
-                                                            return <Cell key={index} fill={color} onClick={e => handleBarClick(entry[key])}/>;
+                                                            return <Cell key={index} fill={color}
+                                                                // onClick={e => handleBarClick(entry[key])}
+                                                            />;
                                                         })
                                                     }
                                                 </Bar>
