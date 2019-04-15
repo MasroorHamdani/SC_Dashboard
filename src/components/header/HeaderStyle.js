@@ -12,8 +12,8 @@ const styles = theme => ({
     },
     appBar: {
       zIndex: theme.zIndex.drawer + 1,
-      background: 'linear-gradient(0.25turn, #fff, #8db788, #68a554)',
-      //'linear-gradient(0.25turn, #fff, #6577de, #3e50b8)',
+      background: `linear-gradient(0.25turn, #fff, ${theme.palette.primary.light}, ${theme.palette.primary.main})`,
+      //'linear-gradient(0.25turn, #fff, #8db788, #68a554)',
       transition: theme.transitions.create(['width', 'margin'], {
         easing: theme.transitions.easing.sharp,
         duration: theme.transitions.duration.leavingScreen,
