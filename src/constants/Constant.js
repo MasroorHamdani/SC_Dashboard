@@ -1,9 +1,9 @@
 
 export const API_END_POINT = process.env.REACT_APP_API_END_POINT
 //"https://4l6qi5oh0h.execute-api.ap-southeast-1.amazonaws.com/prod";
-//"https://1w5tcso1ol.execute-api.ap-southeast-1.amazonaws.com/alpha";
 
-export const S3_REPORTS_END_POINT = "https://80y6zxl35d.execute-api.ap-southeast-1.amazonaws.com/beta/reports";
+export const S3_REPORTS_END_POINT = process.env.REACT_APP_S3_REPORTS_END_POINT
+//"https://80y6zxl35d.execute-api.ap-southeast-1.amazonaws.com/beta/reports";
 export const API_URLS = {
     "LOGIN": "/unauth/login",
     "REFRESH_TOKEN": "/unauth/login",
@@ -294,5 +294,3 @@ export const DEVICE_TYPE = {
 }
 
 export const RANGE_ERROR = "Please select Range within End Date limits - *Reset the time to Default"
-export const LINK = "https://80y6zxl35d.execute-api.ap-southeast-1.amazonaws.com/beta/reports/NIE_NTU/13d204df92c14013bbbb93762c64e2ff/312b6b1345764041bcb3d092107d0902.pdf"
-//"https://s3-ap-southeast-1.amazonaws.com/scbins/CERTIS_AQ_CCK_T1/latest.ino.bin"
