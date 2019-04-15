@@ -134,7 +134,7 @@ class AlertDetails extends Component {
      */
         if(this.props.projectSelected && 
             !isEqual(this.props.projectSelected, prevProps.projectSelected)){
-            if(this.state.pid !== this.props.projectSelected.PID){
+            if(this.state.pid !== this.props.projectSelected.PID || !this.state.timeZone){
                 this.setState({
                     pid: this.props.projectSelected.PID,
                     timeZone: this.props.projectSelected.Region,
