@@ -1,0 +1,12 @@
+$footer-color :#534353;
+$footer-text-color : #FFFFFF;
+
+
+.app-footer {
+    text-align: center;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    color: $footer-text-color;
+    background-color: $footer-color;
+}
