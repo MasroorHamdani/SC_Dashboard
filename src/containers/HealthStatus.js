@@ -95,7 +95,7 @@ class HealthStatus extends Component {
         }
 
         if (this.props.installationList &&
-            (!isEqual(this.props.installationList, prevProps.installationList) ||
+            (!isEqual(this.props.installationList, prevProps.installationList) &&
             !this.installationData) && this.state.formattedData) {
             let installationList = groupBy(this.props.installationList,  'Devid');
             Object.keys(this.state.formattedData).map((key) => {
