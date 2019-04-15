@@ -12,6 +12,9 @@ function ApiService(configObject) {
     axios.defaults.baseURL = API_END_POINT;
     axios.defaults.timeout = 7000;
 
+    /**
+     * This part is called as soon as an API call is made
+     */
     axios.interceptors.request.use(
         reqConfig => {
             if (!reqConfig.url.includes(REACT_URLS['LOGIN']))
@@ -35,6 +38,13 @@ function ApiService(configObject) {
         window.location = REACT_URLS['LOGIN'];
     }
 
+    /**
+     * As soon as the response from API is returned.
+     * This part will be called. If the response is success it will be passed,
+     * Else this section will handle the Error part.
+     * For now only 401 is the status on Error being returned.
+     * So handling relogin for 401 status.
+     */
     axios.interceptors.response.use(undefined, err => {
         if (err.response) {
             if (err.response.config.url.includes(REACT_URLS['LOGIN']))
@@ -44,7 +54,7 @@ function ApiService(configObject) {
             if (err.response.status === 500) return Promise.reject(err);
         }
         // if (!err.response) return Promise.reject(err);
-        if (!isFetchingToken) {
+        if (err.response.status === 401 && !isFetchingToken) {
             isFetchingToken = true;
 
             const refreshToken = localStorage.getItem('refreshToken');
@@ -84,6 +94,11 @@ function ApiService(configObject) {
         return initTokenSubscriber;
     });
 
+    /**
+     * Once the request passes from response, the request will be passed to this part.
+     * for success the Promise with response will be returned,
+     * for error the Promise will be returned with error.
+     */
     return axios(config)
         .then(response => {
             return Promise.resolve(response);

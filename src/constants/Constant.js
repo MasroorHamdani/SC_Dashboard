@@ -1,20 +1,18 @@
 export const API_END_POINT = "https://4l6qi5oh0h.execute-api.ap-southeast-1.amazonaws.com/prod";
 //"https://1w5tcso1ol.execute-api.ap-southeast-1.amazonaws.com/alpha";
 
+export const S3_REPORTS_END_POINT = "https://80y6zxl35d.execute-api.ap-southeast-1.amazonaws.com/beta/reports";
 export const API_URLS = {
-    "LOGIN": "/unauth/login", //"/login-1-time",
-    "REFRESH_TOKEN": "/unauth/login",///refreshtoken",
-    // "DASHBOARD": "/auth/projects",
+    "LOGIN": "/unauth/login",
+    "REFRESH_TOKEN": "/unauth/login",
     "DASHBOARD": "/authV2/projects",
-    // "PROJECT_DETAILS": "/auth/projects",
     "PROJECT_DETAILS": "/authV2/projects",
-    "FORGOT_PASSWORD": "/unauth/password/change",//"/forgot-password",
-    "RESET_PASSWORD": "/unauth/password/confirm", //"/confirm-forgot-password",
+    "FORGOT_PASSWORD": "/unauth/password/change",
+    "RESET_PASSWORD": "/unauth/password/confirm",
     "AUTH_RESET_PASSWORD": "/unauth/password/authchallenge",
-    // "USER_PROFILE": "/auth/profile",
     "USER_PROFILE": "/authV2/profile",
-    // "DEVICE_DATA": "/auth/devices/data",
-    "DEVICE_DATA": "/authV2/devices/data/project",
+    // "DEVICE_DATA": "/authV2/devices/data/project",
+    "DEVICE_DATA": "/authV2/devices/datatemp/project",
     "DEVICE_METRICS": "/auth/devices/metrics",
     "SERVICE_REQUIREMENTS": "/auth/algorithms",
     "PROJECT_LOCATION": "/installations/devices",
@@ -23,7 +21,10 @@ export const API_URLS = {
     'TEAM_MEMBERS': 'team/members',
     'TEAM_ASSOCIATION': 'team/assoc',
     'DEFAULT': 'default',
-    'INSTALLATION': '/installations'
+    'INSTALLATION': '/installations',
+    'HEALTH': '/health',
+    'REPORTING_SERVICE': '/services/reporting',
+    'REPORTING_LIST': '/reports'
 };
 
 export const DASHBOARD_METRIC = {
@@ -63,56 +64,22 @@ export const REACT_URLS = {
     'ABOUT': '/about',
     'AUTH_RESET': '/auth-reset',
     'USER-PROFILE': '/profile',
-    'ALERT': '/alert',
-    'DISPENSER': '/dispenser'
+    'ALERT': '/alert/project',
+    'DISPENSER': '/dispenser/project',
+    'HEALTH_STATUS': '/health/project'
 }
 
 export const DATE_TIME_FORMAT = 'YYYYMMDDHHmmss'
 
-export const GRAPH_LABEL_TIME_FORMAT = 'HH:mm'//'DD/MM/YYYY HH:mm:ss'
+export const GRAPH_LABEL_TIME_FORMAT = 'HH:mm'
+
+export const GRAPH_LABEL_DATE_TIME_FORMAT = 'DD/MM/YYYY HH:mm:ss'
 
 export const HOUR_MIN_FORMAT = 'hh:mm A'
 
 export const HOUR_FORMAT = 'HH:mm'
 
-export const DESCRIPTIVE_DATE_TIME_FORMAT = 'dddd, MMMM Do, YYYY h:mm:ss a'
-
-export const ANALYTICS_TABS = {
-    0: 'FD',
-    1: 'PC',
-    2: 'AQ',
-    3: 'WD',
-    4: 'CLOGS'
-}
-
-export const ANALYTICS_SUB_TABS = {
-    'ALERT' : { 'key': 'alert',
-                'display': 'Alert'},
-    'DISPENSER' : {'key': 'dispenser',
-                'display': 'Dispenser'
-                },
-    'INSTALLATION_DETAILS' : {'key': 'installation',
-                            'display': "Installation Details"
-                            }
-}
-
-export const ANALYTICS_TAB = {
-    'FD': {'key': 'FD',
-                'value': 'FD',
-                'text': 'Feedback Tablet'},
-    'PC': {'key': 'PC',
-                'value': 'PC',
-                'text': 'People counting sensor'},
-    'AQ':{'key': 'AQ',
-                'value': 'AQ',
-                'text': 'Air quality sensor'},
-    'WD': {'key': 'WD',
-                'value': 'WD',
-                'text': 'Wetness Detection sensor'},
-    'CLOGS': {'key': 'CLOGS',
-                'value': 'CLOGS',
-                'text': 'Cleaner Logs'},
-}
+export const DESCRIPTIVE_DATE_TIME_FORMAT = 'dddd, MMMM Do, YYYY h:mm:ss A'
 
 export const ANALYTICS_DATE = {
     'ONE_HOUR': '1h',
@@ -283,7 +250,8 @@ export const DATA_VIEW_TYPE = {
     'SCATTER': 'scatter',
     'PIE': 'pie',
     'TILE': 'tile',
-    'AREA': 'area'
+    'AREA': 'area',
+    'VERTICAL': 'vertical'
 }
 
 export const ALERT_LEVEL = [
@@ -300,3 +268,29 @@ export const ALERT_LEVEL = [
 ]
 
 export const PASSWORD_REGEX = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,12})");
+
+export const DATA_OPERATIONS = {
+    'FILTER': 'FILTER',
+    'RESAMPLER': 'RESAMPLER'
+}
+
+export const DEVICE_TOOL_TIP = {
+    'AQ': 'Air Quality Devices',
+    'PC': 'People Count Devices',
+    'PT': 'Paper Towel Devices',
+    'WD': 'Wetness Detection Devices',
+    'GW': 'Gateway Devices'
+}
+
+export const DEVICE_TYPE = {
+    'AQ': 'Air Quality Devices',
+    'PC': 'People Count Devices',
+    'PT': 'Paper Towel Devices',
+    'WD': 'Wetness Detection Devices',
+    'GW': 'Gateway Devices',
+    'TR': 'Toilet Roll Devices'
+}
+
+export const RANGE_ERROR = "Please select Range within End Date limits - *Reset the time to Default"
+export const LINK = "https://80y6zxl35d.execute-api.ap-southeast-1.amazonaws.com/beta/reports/NIE_NTU/13d204df92c14013bbbb93762c64e2ff/312b6b1345764041bcb3d092107d0902.pdf"
+//"https://s3-ap-southeast-1.amazonaws.com/scbins/CERTIS_AQ_CCK_T1/latest.ino.bin"

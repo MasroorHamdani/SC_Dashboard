@@ -3,10 +3,11 @@ import { connect } from "react-redux";
 import {withStyles, Grid, CardContent,
     Typography, Card, CardHeader, IconButton,
     Divider, FormControl, InputLabel, TextField,
-    Select, LinearProgress} from '@material-ui/core';
+    Select, LinearProgress, List, ListItem} from '@material-ui/core';
 import {isEqual} from 'lodash';
 import ClearIcon from '@material-ui/icons/Clear';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
+import EditIcon from '@material-ui/icons/Edit';
 import styles from './ProjectTeamDetailsStyle';
 import CustomModal from '../../components/modal/Modal';
 import {API_URLS, PROJECT_TABS, NAMESPACE_MAPPER,
@@ -16,12 +17,14 @@ import {projectDetailData} from '../../actions/ProjectDataAction';
 import {profileData, profileDataUpdate} from '../../actions/UserProfileDataAction';
 import UserProfileData from '../../components/userProfile/UserProfileData';
 import {formatDateTime} from '../../utils/DateFormat';
+import {capitalizeFirstLetter} from '../../utils/FormatStrings';
 
 class ProjectInstallationDetails extends Component {
     constructor(props) {
         super(props);
         this.state = {
             open: false,
+            isEdit: false,
             deleteNotify: false,
             profileNotify: false,
             profile: {
@@ -38,23 +41,44 @@ class ProjectInstallationDetails extends Component {
             uid: props.match.params.uid,
             userLocation : {},
             loading: true,
-            sucess: false
         };
         this.info = false;
         this.earlyState = true;
     }
     
-    handleModalState = () => {
-        this.setState({ open: !this.state.open});
+    handleModalState = (isEdit=false) => {
+    /**
+     * Handle the modal open and close state.
+     * Modal shown to add a new allocation.
+     */
+        this.setState({'isEdit':isEdit,
+            open: !this.state.open});
     };
+
     handleModalDeleteState = () => {
+    /**
+     * Handle Modal which pops up while deleting users allocation.
+     * It is a confirmation modal
+     */
         this.setState({ deleteNotify: !this.state.deleteNotify});
     };
                         
     handleModalProfileState = () => {
+    /**
+     * Handles Profile update modal.
+     * On user profile update this will update
+     * user for successfull user profile update
+     */
         this.setState({ profileNotify: !this.state.profileNotify});
     }
+
     onAddtion = () => {
+    /**
+     * This will handle allocation of user to a new location.
+     * Validating for required parameters and formating time and setting up some state variables
+     * and finally calling the POST api.
+     * Or showing up error to user to fill all required fields.
+     */
         let startTime = formatDateTime(this.state.userLocation.ShiftStart, "hh:mm a", "HHmm"),
             endTime = formatDateTime(this.state.userLocation.ShiftEnd, "hh:mm a", "HHmm");
         if(this.state.userLocation.Tags && this.state.userLocation.ShiftStart &&
@@ -79,7 +103,11 @@ class ProjectInstallationDetails extends Component {
             this.setState({errorMessage : "Please enter all valid details"})
         }
     }
+
     handleChange = (event) => {
+    /**
+     * Common function to change the state variables.
+     */
         let {name, value} = event.target;
         if (name === 'Mute') {
             value = event.target.checked
@@ -91,7 +119,11 @@ class ProjectInstallationDetails extends Component {
               }
         });
     }
+
     handleSubmit = () => {
+    /**
+     * Function to update the user profile. Call the POST api and show user an update message
+     */
         const endPoint = `${API_URLS['USER_PROFILE']}`,
         param = {
             'uid': this.state.uid
@@ -100,7 +132,13 @@ class ProjectInstallationDetails extends Component {
         this.props.onProfileData(config, 'POST');
         this.earlyState = false;
     }
+
     onDelete = () =>{
+    /**
+     * For removing allocation for a user, once user confirms for deletion,
+     * this function will be called which will call the API and
+     * update user profile(delete the allocation)
+     */
         const endPoint = `${API_URLS['PROJECT_DETAILS']}/${this.state.pid}/
                         ${API_URLS['TEAM_ASSOCIATION']}`,
             param = {
@@ -112,12 +150,35 @@ class ProjectInstallationDetails extends Component {
         this.handleModalDeleteState();
         this.info = false;
     }
+
     removeLocation = (insID, name) => {
+    /**
+     * While user will click on remove allocation,
+     * a pop up will be shown to user.
+     * This function will show up the pop up with required details.
+     */
         this.setState({deleteAsso : insID})
         this.deleteInformation = `Do you Want Remove the User Association for location ${name}`;
         this.handleModalDeleteState();
     }
+
+    editLocation = (insID, name) => {
+        this.state.association.map((row) => {
+            if(row.InsID === insID) {
+                row['ShiftStart'] = formatDateTime(row.ShiftStart,"HHmm", "HH:mm")
+                row['ShiftEnd'] = formatDateTime(row.ShiftEnd,"HHmm", "HH:mm")
+                this.setState({userLocation: row}, function () {
+                    this.handleModalState(true)
+                })
+            }
+        })
+        
+    }
+
     addDetail = (event) => {
+    /***
+     * This function will be called to update the state while user selects a new allocation for any member.
+     */
         let {name, value} = event.target;
         this.setState({
             userLocation: {
@@ -126,7 +187,14 @@ class ProjectInstallationDetails extends Component {
             }
         })
     }
+
     tagDetail = (event) => {
+    /**
+     * Tags is a list and by default 'cleaningIssues' has to be allocated
+     * to every user allocated for any location.
+     * Also the API is expecting tags as a list bt UI treats it as a text, comma seperated.
+     * So this function will take care of these things.
+     */
         let {name, value} = event.target;
         let newValue = ['cleaningIssues'];
         let valArray = value.split(',');
@@ -144,7 +212,12 @@ class ProjectInstallationDetails extends Component {
             }
         })
     }
+
     getProfileData =() => {
+    /**
+     * Get the user profile data.
+     * Call the API for same.
+     */
         const endPoint = `${API_URLS['USER_PROFILE']}`,
             param = {
                 'uid': this.state.uid
@@ -154,10 +227,17 @@ class ProjectInstallationDetails extends Component {
         if(!this.earlyState)
             this.handleModalProfileState();
     }
+
     componentDidMount() {
         this.getProfileData();
     }
+
     getUserProfile = (userDetails) => {
+    /**
+     * Get complete user profile details, like users allocations and time and other details.
+     * user details will be passed in and 
+     * depending on namespace it will be either part of profile os association.
+     */
         let profile, association = [];
         if(userDetails[0]) {
             userDetails.map((row) => {
@@ -172,11 +252,38 @@ class ProjectInstallationDetails extends Component {
         return {profile: profile,
             association: association};
     }
+
     componentDidUpdate(prevProps, prevState) {
+    /**
+     * This part will listen to project selection change from the header component.
+     * On any change this will be called and the data will be changed in UI
+     * Reducer used - 'projectSelectReducer'.
+     * It will update the URL to show up new PID selected.
+     * and also make api call to update the user profile
+     */
+        if(this.props.projectSelected && 
+            !isEqual(this.props.projectSelected, prevProps.projectSelected)){
+            if(this.state.pid !== this.props.projectSelected.PID)
+                this.setState({pid: this.props.projectSelected.PID},
+                function() {
+                    let arr = this.props.match.url.split('/');
+                    arr[2] = this.props.projectSelected.PID;
+                    let url = arr.join('/');
+                    this.info = false;
+                    this.props.history.push(url);
+                    this.getProfileData();
+                });
+        }
+
+    /***
+     * Check if profile data is there or location list is there,
+     * this part is used to update the profile on UI and
+     * also set the location list, allocated and remaining ones
+     * on UI.
+     */
         if ((this.props.userProfile || this.props.locationList) &&
             (!isEqual(this.props.userProfile, prevProps.userProfile) ||
-            !isEqual(this.props.locationList, prevState.locationList))
-            ) {
+            !isEqual(this.props.locationList, prevState.locationList))) {
             if(!this.info) {
                 const endPoint = `${API_URLS['PROJECT_DETAILS']}/${this.state.pid}/
                     ${PROJECT_TABS['INSTALLATION']}/${PROJECT_TABS['DETAILS']}`,
@@ -202,6 +309,7 @@ class ProjectInstallationDetails extends Component {
                     userProfile['ID']= prevState.profile.ID;
                     userProfile['RFID']= prevState.profile.RFID;
                 }
+
                 if(!this.state.profile.Firstname) {
                     this.setState({
                         profile: userProfile,
@@ -231,25 +339,36 @@ class ProjectInstallationDetails extends Component {
                         })
                     })
                     this.setState({association: association,
-                        locationList: locationList});
+                        locationList: locationList,
+                        // loading: false
+                    });
                 }
             } else {
                 this.getProfileData();
             }
         }
+
+    /**
+     * Progress bar
+     */
         if(this.state.loading) {
             this.setState({
                 loading: false,
-                sucess: true
             })
         }
-      }
+    }
     
-    render(){
+    render() {
         let returnData;
         const {classes} = this.props;
         if(this.state.locationList) {
+            // Add user to a new location modal content
             returnData = <div>
+                {this.state.isEdit ?
+                    <Typography variant="h6">
+                        {this.state.userLocation.name} | {this.state.userLocation.locn}
+                    </Typography>
+                :
                 <FormControl className={classes.formControl}>
                     <InputLabel htmlFor="age-native-helper">Location</InputLabel>
                     <Select native
@@ -258,8 +377,7 @@ class ProjectInstallationDetails extends Component {
                         inputProps={{
                             name: 'InsID',
                             id: 'InsID',
-                            }}
-                    >
+                            }}>
                     <option value="" />
                     {this.state.locationList.map(function(loc) {
                         if(!loc.assigned)
@@ -268,6 +386,7 @@ class ProjectInstallationDetails extends Component {
                     })}
                     </Select>
                 </FormControl>
+                }
                 <Grid container spacing={24}>
                     <Grid item xs={12} sm={6}>
                         <TextField
@@ -349,10 +468,11 @@ class ProjectInstallationDetails extends Component {
                 </Grid>
             </div>
         }
+
         return (
             <div className={classes.root}>
                 {this.state.loading &&
-                    <LinearProgress/>
+                    <LinearProgress className={classes.buttonProgress}/>
                 }
                 <main className={classes.content}>
                 <UserProfileData 
@@ -366,16 +486,19 @@ class ProjectInstallationDetails extends Component {
                             <Card className={classes.card}>
                                 <CardHeader action={
                                     <IconButton>
-                                        <AddCircleOutlineIcon onClick={this.handleModalState}/>
+                                        <AddCircleOutlineIcon onClick={event => this.handleModalState()}/>
                                     </IconButton>
                                     }
                                 subheader="Location Assigned"/>
                                 {this.state.association &&
                                     this.state.association.map((dt, i) => {
+                                    // Display the allocated locations for the user per project
+                                    // With Edit and Delete options for the selections.
                                     return <Card className={classes.card} key={i}>
                                         <CardHeader
                                             action={
-                                            <IconButton>
+                                            <IconButton className={classes.iconButton}>
+                                                <EditIcon onClick={event => this.editLocation(dt.InsID, dt.name)}/>
                                                 <ClearIcon onClick={event => this.removeLocation(dt.InsID, dt.name)}/>
                                             </IconButton>
                                             }
@@ -388,13 +511,18 @@ class ProjectInstallationDetails extends Component {
                                                 <Typography component="p">
                                                 <b>Shift Ends At :</b> {formatDateTime(dt.ShiftEnd, "HHmm", "hh:mm A")}
                                                 </Typography>
-                                                <Typography component="p">
-                                                    <b>Tags associated :</b> {dt.Tags.map((dt, index) => {
-                                                        return <span key={index}> {dt} </span>
+                                                <Typography component="div">
+                                                    <b>Tags associated :</b> 
+                                                    <List dense={true}>
+                                                    {dt.Tags.map((dt, index) => {
+                                                        return <ListItem key={index}>
+                                                        {capitalizeFirstLetter(dt)}
+                                                        </ListItem>
                                                     })}
+                                                    </List>
                                                 </Typography>
                                                 <Typography component="p">
-                                                <b>Level :</b> {dt.Level}
+                                                <b>Level :</b> {capitalizeFirstLetter(dt.Level)}
                                                 </Typography>
                                             </CardContent>
                                         </Card>
@@ -403,14 +531,16 @@ class ProjectInstallationDetails extends Component {
                             </Card>
                         </Grid>
                     </Grid>
+                    {/* Modal for Associating user to new location */}
                     <CustomModal
                         header="Associate User with Location"
                         content={returnData}
-                        handleClose={this.handleModalState}
+                        handleClose={event => this.handleModalState()}
                         handleClick={this.onAddtion}
                         open={this.state.open}
                         showFooter={true}
                     />
+                    {/* Modal for remove user from a particular/selected location */}
                     <CustomModal
                         header="Remove User Association"
                         content={this.deleteInformation}
@@ -428,7 +558,8 @@ class ProjectInstallationDetails extends Component {
 function mapStateToProps(state) {
     return {
         locationList : state.ProjectDetailsReducer.data,
-        userProfile: state.UserProfileReducer.data
+        userProfile: state.UserProfileReducer.data,
+        projectSelected : state.projectSelectReducer.data,
     }
 }
   
@@ -443,8 +574,8 @@ function mapDispatchToProps(dispatch) {
             } else {
                 dispatch(profileData(config))
             }
-            
         }
     }
 }
+
 export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(ProjectInstallationDetails));

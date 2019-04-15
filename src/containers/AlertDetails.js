@@ -3,58 +3,111 @@ import {connect} from 'react-redux';
 import {isEqual, groupBy} from 'lodash';
 
 import AlertAnalysis from "../components/dataAnalysis/AlertAnalysis";
-import {API_URLS, DATE_TIME_FORMAT, NAMESPACE_MAPPER} from '../constants/Constant';
+import {API_URLS, DATE_TIME_FORMAT, NAMESPACE_MAPPER,
+    RANGE_ERROR} from '../constants/Constant';
 import {getApiConfig} from '../services/ApiCofig';
 import {projectAlertList} from '../actions/DataAnalysis';
 import {projectSubMenuList} from '../actions/DataAnalysis';
-import {formatDateWithTimeZone} from '../utils/DateFormat';
+import {formatDateWithTimeZone, getTodaysStartDateTime} from '../utils/DateFormat';
 
 class AlertDetails extends Component {
     constructor(props) {
         super(props);
-        let now = new Date();
-        now.setHours(now.getHours()-12);
         this.state = {
             pid: props.match.params.pid,
-            startDate: now,
+            startDate: getTodaysStartDateTime(),
             endDate: new Date(),
             dateChanged: false,
             loading: true,
-            success: false,
-            insid:''
+            insid: ''
         }
         this.info = false;
     }
 
     handleChangeStart  = (date) => {
+    /**
+     * Handle datetime change for state date, from date picker
+     */
         this.setState({
             startDate: date,
             dateChanged: true
           });
     }
+
     handleChangeEnd  = (date) => {
+    /**
+     * Handle datetime change for end date, from date picker
+     */
         this.setState({
             endDate: date,
             dateChanged: true
           });
     }
+
     setStateValue = (event) => {
+    /**
+     * Generic function to set the state variable
+     */
         let {name, value} = event.target;
         this.setState({[name]: value})
     }
-    componentDidMount() {
+
+    getInstallationLocation = () => {
+    /**
+     * Make an API call and get installation location details for selected project.
+     */
         const endPoint = `${API_URLS['PROJECT_DETAILS']}/${this.state.pid}${API_URLS['WASHROOM_LOCATION']}`,
             config = getApiConfig(endPoint, 'GET');
         this.props.onDataAnalysisMenu(config);
-        this.getAlertData();
     }
+
+    componentDidCatch(error, errorInfo) {
+        // Catch errors in any components below and re-render with error message
+        if(error.toString().includes('RangeError: Invalid interval')) {
+            this.setState({
+                rangeError: RANGE_ERROR,
+                startDate: getTodaysStartDateTime()
+              })
+        } else {
+            console.log(error.toString())
+        }
+        // You can also log error messages to an error reporting service here
+    }
+
+    componentDidMount() {
+    /**
+     * Check id pid and timezone are present in state,
+     * if yes get the data by calling internal functions,
+     * or set the value first and then make the call.
+     */
+        if(this.state.pid && this.state.timeZone){
+            this.getInstallationLocation();
+            this.getAlertData();
+        } else if(this.props.projectSelected || localStorage.getItem('projectSelected')) {
+            let dt = JSON.parse(localStorage.getItem('projectSelected'));
+            this.setState({
+                timeZone: this.props.projectSelected? this.props.projectSelected.Region: dt.Region
+            }, function() {
+                this.getInstallationLocation();
+                this.getAlertData();
+            });
+        }
+    }
+
     getAlertData = () => {
+    /**
+     * This function will check if installtion id was selected,
+     * if id is selected then call the api got for particuler id and get the alerts,
+     * else make a generic api call on project basis to get all the alerts.
+     * Timezone is considered, as devices are located at different locations,
+     * and DB has location specific data for installations,
+     * in order to show data to user being present in any part of the world,
+     * the datetime is generated as per the project timezone 
+     */
         this.setState({
             loading: true,
-            success: false,
         },function() {
-            let endPoint,
-                timeZone = localStorage.getItem(this.state.pid);
+            let endPoint;
             if(!this.state.insid) {
                 endPoint = `${API_URLS['PROJECT_ALERT']}/${this.state.pid}`;
             }
@@ -63,14 +116,52 @@ class AlertDetails extends Component {
                 this.showFilter = true;
             }
             let params = {
-                'start' : formatDateWithTimeZone(this.state.startDate, DATE_TIME_FORMAT, DATE_TIME_FORMAT, timeZone),
-                'end' : formatDateWithTimeZone(this.state.endDate, DATE_TIME_FORMAT, DATE_TIME_FORMAT, timeZone)
+                'start' : formatDateWithTimeZone(this.state.startDate, DATE_TIME_FORMAT, DATE_TIME_FORMAT,
+                    this.state.timeZone),
+                'end' : formatDateWithTimeZone(this.state.endDate, DATE_TIME_FORMAT, DATE_TIME_FORMAT,
+                    this.state.timeZone)
             },
             config = getApiConfig(endPoint, 'GET', '', params);
             this.props.onProjectAlert(config);
         })
     }
+
     componentDidUpdate(prevProps, prevState) {
+    /**
+     * This part will listen to project selection change from the header component.
+     * On any change this will be called and the data will be changed in UI
+     * Reducer used - 'projectSelectReducer'
+     */
+        if(this.props.projectSelected && 
+            !isEqual(this.props.projectSelected, prevProps.projectSelected)){
+            if(this.state.pid !== this.props.projectSelected.PID || !this.state.timeZone){
+                this.setState({
+                    pid: this.props.projectSelected.PID,
+                    timeZone: this.props.projectSelected.Region,
+                    insid: ''
+                }, function() {
+                        this.props.history.push(this.props.projectSelected.PID);
+                        this.getInstallationLocation()
+                        this.getAlertData();
+                })
+            }
+        }
+
+    /**
+     * This part will deal with alert data for project.
+     * The data from alert is returned as a list of ditionaries.
+     * The dictionaries will have different formats, defined by a key 'SortKey'
+     * One alert comprises of more then 2 dictionaries, so inorder to get the
+     * alert specific details, we have to flatted the response and groupby 'ID'.
+     * as different dictionaries which represengt same alert will have same ID,
+     * Once it is grouped by 'ID' we process the data. To get it in proper format.
+     * dictionary with 'SortKey' status will be added in header part and
+     * others will be added in data part.
+     * From UI the header will be the informations which is used to user at first hand,
+     * after clicking the alert the data will be shown,
+     * as data represents the different levels of alert messages and time.
+     * Do data is a list of messages, sent to different level for an Alert.
+     */
         if((this.props.projectAlert || this.props.projectLocationList) &&
             !isEqual(this.props.projectAlert, prevProps.projectAlert)) {
             let finalDict = [], data;
@@ -95,7 +186,7 @@ class AlertDetails extends Component {
                                     row.name = dt.name;
                                     row.locn = dt.locn;
                                 }
-                            })
+                            });
                             if(row.SortKey.includes('status')) {
                                 test['header'] = row;
                             } else {
@@ -107,17 +198,23 @@ class AlertDetails extends Component {
                     this.showFilter = true;
                 }
                 this.setState({'locationList': deviceResponse,
-                    'alertData': finalDict})
+                    'alertData': finalDict,
+                    rangeError: ''
+                    // loading: false,
+                })
             }
         }
-        
+
+    /**
+     * For loading/Progress bar this part is being used.
+     */
         if(this.state.loading) {
             this.setState({
               loading: false,
-              success: true,
             })
         }
     }
+
     render() {
         return(
             <AlertAnalysis stateData={this.state}
@@ -127,25 +224,28 @@ class AlertDetails extends Component {
             setStateValue={this.setStateValue}
             showDate={true}
             showFilter={this.showFilter}/>
-            
         )
     }
 }
+
 function mapStateToProps(state) {
     return {
         projectAlert : state.ProjectAlertReducer.data,
         projectLocationList : state.DataAnalysisProjectListSubMenuReducer.data,
-    }
-  }
-function mapDispatchToProps(dispatch) {
-    return {
-        onProjectAlert: (config) => {
-          dispatch(projectAlertList(config))
-        },
-        onDataAnalysisMenu: (config) => {
-            //will dispatch the async action
-              dispatch(projectSubMenuList(config))
-          },
+        projectSelected : state.projectSelectReducer.data,
     }
 }
+
+function mapDispatchToProps(dispatch) {
+    //will dispatch the async action
+    return {
+        onProjectAlert: (config) => {
+            dispatch(projectAlertList(config))
+        },
+        onDataAnalysisMenu: (config) => {
+            dispatch(projectSubMenuList(config))
+        },
+    }
+}
+
 export default connect(mapStateToProps, mapDispatchToProps)(AlertDetails);

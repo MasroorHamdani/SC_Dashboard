@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 import {TableHead, TableSortLabel, Tooltip, TableRow, TableCell} from '@material-ui/core';
 
 /**
- * Chile component - This is Grid hearde component,
- * which will take input and accordinly to that will add that many columns in the Grid(table)
+ * Child component - This is Grid hearder component,
+ * which will take input and according to that will add that many columns in the Grid(table)
  * Input passed are:
  * order - this indicates asc or Desc
  * orderby - which field to be used as the default sorted one.
@@ -12,10 +12,6 @@ import {TableHead, TableSortLabel, Tooltip, TableRow, TableCell} from '@material
  * onRequestSort it is a function, which will accept the column on which we can sort the table
  */
 class EnhancedTableHead extends Component {
-    // createSortHandler = property => event => {
-    //   this.props.onRequestSort(event, property);
-    // };
-  
     render() {
       const { order, orderBy, rows, onRequestSort, allowDelete,
         allowEdit } = this.props;
@@ -26,31 +22,27 @@ class EnhancedTableHead extends Component {
               return (
                 <TableCell
                   key={row.id}
-                  numeric={row.numeric}
+                  align={row.numeric}
                   padding={row.disablePadding ? 'none' : 'default'}
-                  sortDirection={orderBy === row.id ? order : false}
-                >
+                  sortDirection={orderBy === row.id ? order : false}>
                   <Tooltip
-                    title="Sort"
+                    title={row.toolTip? row.toolTip : 'Sort'}
                     placement={row.numeric ? 'bottom-end' : 'bottom-start'}
-                    enterDelay={300}
-                  >
+                    enterDelay={300}>
                     <TableSortLabel
                       active={orderBy === row.id}
                       direction={order}
-                    //   onClick={this.createSortHandler(row.id)}
-                      onClick={e => onRequestSort(e, row.id)}
-                    >
+                      onClick={e => onRequestSort(e, row.id)}>
                       {row.label}
                     </TableSortLabel>
                   </Tooltip>
                 </TableCell>
               );
             }, this)}
-            {allowDelete &&
+            {allowEdit &&
               <TableCell/>
             }
-            {allowEdit &&
+            {allowDelete &&
               <TableCell/>
             }
           </TableRow>
@@ -60,7 +52,6 @@ class EnhancedTableHead extends Component {
   }
   
   EnhancedTableHead.propTypes = {
-    // onRequestSort: PropTypes.func.isRequired,
     order: PropTypes.string.isRequired,
     orderBy: PropTypes.string.isRequired,
   };

@@ -1,5 +1,5 @@
 import React from "react";
-import { Route, Switch, Redirect} from "react-router-dom";
+import { Route, Switch, Redirect, withRouter} from "react-router-dom";
 import Dashboard from "./containers/dashboard/Dashboard";
 import Login from "./containers/Login";
 import Header from "./components/header/Header";
@@ -22,6 +22,9 @@ import DataAnalysis from "./containers/dataAnalysis/DataAnalysis";
 import Report from "./containers/Report";
 import AlertDetails from "./containers/AlertDetails";
 import DispenserDetails from "./containers/DispenserDetails";
+import ReportView from "./containers/ReportView";
+import Health from "./containers/Health";
+import HealthStatus from "./containers/HealthStatus";
 
 const styles = theme => ({
 
@@ -52,18 +55,21 @@ const styles = theme => ({
                   :
                   (<div className="container">
                     <CssBaseline />
-                    <Header/>
-                    <Menu />
+                    <Header {...this.props}  params={this.props.match.params}/>
+                    <Menu {...this.props}/>
                     <Switch>
                       <Route exact path="/" component={Dashboard} />
                       <Route path="/project/:pid/installations/:insid?" component={ProjectInstallationDetails} />
                       <Route path="/project/:pid/team/:uid?" component={ProjectTeamDetails} />
                       <Route path="/project/:pid?" component={ProjectDetails} />
                       <Route path="/profile/:userid?" component={UserProfile} />
-                      <Route path="/alert/:pid?" component={AlertDetails} />
-                      <Route path="/dispenser/:pid?" component={DispenserDetails} />
-                      <Route path="/data" component={DataAnalysis} />
-                      <Route path="/report" component={Report} />
+                      <Route path="/alert/project/:pid?" component={AlertDetails} />
+                      <Route path="/dispenser/project/:pid?" component={DispenserDetails} />
+                      <Route path="/data/project/:pid" component={DataAnalysis} />
+                      <Route exact path="/report/configure/project/:pid?" component={Report} />
+                      <Route path="/report/project/:pid?" component={ReportView} />
+                      <Route path="/health/project/:pid/:insid" component={HealthStatus}/>
+                      <Route exact path="/health/project/:pid" component={Health}/>
                       <Route path="/logout" component={Logout} />
                       <Redirect from="/login" to="/"/>
                       <Route component={NoMatch} />
@@ -79,4 +85,6 @@ const styles = theme => ({
   App.propTypes = {
     classes: PropTypes.object.isRequired,
   };
- export default withStyles(styles)(App);
+// export default withStyles(styles)(App);
+const AppComponent = withStyles(styles)(App);
+export default withRouter(AppComponent)

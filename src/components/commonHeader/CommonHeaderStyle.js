@@ -6,7 +6,7 @@ const styles = theme => ({
       flexGrow: 1,
     },
     appBar: {
-      background: 'linear-gradient(0.25turn, #fff, #6577de, #3e50b8)',
+      background: `linear-gradient(0.25turn, #fff, ${theme.palette.primary.light}, ${theme.palette.primary.main})`,
     },
     logo: {
       width: '20%'

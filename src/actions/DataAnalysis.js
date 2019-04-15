@@ -5,7 +5,7 @@ import {DATA_ANALYSIS_PROJECT_LIST_SUB_MENU, DATA_ANALYSIS_INSTALLATION_LIST,
 
 /**
  * Dispatched function to call the API service to get
- * the data for menu - List of all projects for a user
+ * the list of installations for passed project
  * @param {*} config 
  */
 export function projectInstallationList(config) {
@@ -23,30 +23,6 @@ export function projectInstallationList(config) {
 function dataReceived(data) {
   return {
       type: DATA_ANALYSIS_INSTALLATION_LIST,
-      data
-  }
-}
-
-/**
- * Dispatched function to call the API service to get
- * the data for menu - List of all projects for a user
- * @param {*} config 
- */
-export function projectMenuList(config) {
-  return function (dispatch) {
-      ApiService(config).then(data => {
-          //on success we will dispatch a sync action with the data
-          if(data && data.data)
-            dispatch(menuDataReceived(data.data))
-          // else
-          // dispatch(dataReceived(data.data))
-      })
-  }
-}
-
-function menuDataReceived(data) {
-  return {
-      type: DATA_ANALYSIS_MENU_LIST,
       data
   }
 }

@@ -17,22 +17,33 @@ class AnalysisData extends Component {
     }
     
     handleRefresh = () => {
-        this.props.handleDateChange()
+    /**
+     * Method for auto refresh or onclick refresh of the data
+     */
+        this.props.refreshData()
     }
 
     componentDidMount() {
+    /**
+     * Set up the interval, for auto refresh of graph data.
+     */
         setInterval((this.handleRefresh), AUTO_REFRESH_TIMEOUT);
     }
 
     generateDataAnalytics = (data, metrics, classes) => {
+    /**
+     * Call the service to get the graph data and name mapper
+     * for each graph to be display on a page
+     * Once that is received, call the GraphPlot component 
+     * with data and that will return the complete graph component.
+     */
         let dataAnalysis = data,
-            analyticsData = getFormatedGraphData(dataAnalysis, metrics),
+            analyticsData = getFormatedGraphData(dataAnalysis, metrics, this.props.stateData),
             graphData = analyticsData.graphData,
             nameMapper = analyticsData.nameMapper, tabData;
             if(!tabData)
                 tabData = <GraphPlot graphData={graphData}
                         nameMapper={nameMapper} metrics={metrics}
-                        classes={classes}
                         stateData={this.props.stateData}
                         handleSamplingChange={this.props.handleSamplingChange}/>;
         return tabData;

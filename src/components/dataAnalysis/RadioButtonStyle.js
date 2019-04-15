@@ -10,14 +10,14 @@ const styles = theme => ({
         padding: theme.spacing.unit * 1,
     },
     root: {
-        width: "23%",
+        width: '251px',//"23%",
         maxWidth: 360,
         wordBreak: 'break-word',
         backgroundColor: theme.palette.background.paper,
         overflow: 'auto',
         position: 'relative',
         maxHeight: 'auto',
-        marginLeft: -theme.spacing.unit * 5,
+        // marginLeft: -theme.spacing.unit * 5,
     },
     nested: {
         paddingLeft: theme.spacing.unit * 4,

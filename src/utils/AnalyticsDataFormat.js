@@ -2,12 +2,30 @@ import {_, groupBy} from 'lodash';
 import moment from 'moment-timezone';
 
 import {DATE_TIME_FORMAT, GRAPH_LABEL_TIME_FORMAT,
-    METRIC_TYPE, ANALYTICS_DATE} from '../constants/Constant';
+    METRIC_TYPE, ANALYTICS_DATE, GRAPH_LABEL_DATE_TIME_FORMAT,
+    NAMESPACE_MAPPER} from '../constants/Constant';
+import {formatDateTime, getTimeDifference} from '../utils/DateFormat';
 
-export function getFormatedGraphData(passedData, metrics) {
+export function getFormatedGraphData(passedData, metrics, stateData='') {
+/**
+ * Metrics data and metrics dimentions will be passed to this function
+ * This function will first loop through the metrics dimentions
+ * and based on metrics selected in loop, fetch the value from metrics data,
+ * and process the data.
+ * Validate the type of metrics, if it is Raw data, means some graph
+ * else it is alert data - Being used on Dashboard.
+ * For raw data, check if it is time series or categorical,
+ * as both have different data format.
+ * Also namemapper is being used in graph to set the name of the dimentions and color for them.
+ * For alert data, format the data expected as per the component.
+ * Next for graph type data, be it time series or categorical
+ * Group the data per metric type, and combine them,
+ * as in previous step there will be duplicate values,
+ * grouping them will get ride of duplicate values.
+ * Finally return the final data back to calling function
+ */
     let graphData = [], nameMapper = {};
     metrics.map(function(row) {
-        
         let metridId = row.metricID;
         let graphSection = [], mapper={};
             Object.keys(passedData[metridId]).map((key) => {
@@ -17,7 +35,13 @@ export function getFormatedGraphData(passedData, metrics) {
                             if(row.metricType === METRIC_TYPE['TIMESERIES']) {
                                 let graphElement = {};
                                 if(row.metricDataKey && row.metricDataKey === 't') {
-                                    graphElement['name'] = moment(vec.t, DATE_TIME_FORMAT).format(GRAPH_LABEL_TIME_FORMAT);
+                                    let timeDiffer = getTimeDifference(stateData.start, stateData.end);
+                                    if(timeDiffer <= 24) {
+                                        graphElement['name'] = formatDateTime(vec.t, DATE_TIME_FORMAT, GRAPH_LABEL_TIME_FORMAT)
+                                        //moment(vec.t, DATE_TIME_FORMAT).format(GRAPH_LABEL_TIME_FORMAT);
+                                    } else {
+                                        graphElement['name'] = formatDateTime(vec.t, DATE_TIME_FORMAT, GRAPH_LABEL_DATE_TIME_FORMAT)
+                                    }
                                 }
                                 graphElement[dim.id] = vec[dim.key];
                                 graphSection.push(graphElement)
@@ -29,20 +53,40 @@ export function getFormatedGraphData(passedData, metrics) {
                                 graphSection.push(graphElement)
                             }
                         })
-                    } else {
+                    } else if(stateData.projectLocationList) {
                         const data = groupBy(passedData[metridId][dim.id].data.Items,'ID');
-                        Object.keys(data).map((key, index) => {
-                            let test = {};
-                            test['data'] = [];
-                            data[key].map((row) => {
-                                if(row.SortKey.includes('status')) {
-                                    test['header'] = row;
-                                } else {
-                                    test['data'].push(row);
-                                }
-                            })
-                            graphSection.push(test)
+                        /**
+                         * This part is specifically for alerts data.
+                         * Mapping the location list name with locations ids
+                         * To show on UI on Home page
+                         */
+                        let deviceResponse = stateData.projectLocationList, SUB1, SUB2;
+                        deviceResponse.map((row) => {
+                            SUB1 = NAMESPACE_MAPPER[row['NS']].SUB1;
+                            SUB2 = NAMESPACE_MAPPER[row['NS']].SUB2;
+                            row[SUB1] =  row.SUB1;
+                            row[SUB2] = row.SUB2;
                         })
+                        if(data) {
+                            Object.keys(data).map((key, index) => {
+                                let test = {};
+                                test['data'] = [];
+                                data[key].map((row) => {
+                                    deviceResponse.map((dt) => {
+                                        if(dt.insid === row.InstallationID) {
+                                            row.name = dt.name;
+                                            row.locn = dt.locn;
+                                        }
+                                    });
+                                    if(row.SortKey.includes('status')) {
+                                        test['header'] = row;
+                                    } else {
+                                        test['data'].push(row);
+                                    }
+                                })
+                                graphSection.push(test)
+                            })
+                        }
                     }
                     mapper[dim.id] = {};
                     mapper[dim.id]['name'] = dim.name;
@@ -54,7 +98,7 @@ export function getFormatedGraphData(passedData, metrics) {
             })
         
         if(row.metricType !== METRIC_TYPE['RAW_DATA']) {
-            let combinedValues = groupBy(graphData[metridId], 'name');//_.groupBy(graphData[metridId], 'name');
+            let combinedValues = groupBy(graphData[metridId], 'name');
             let testData = [];
             Object.keys(combinedValues).map((key) => {
                 if(key && key != 'undefined') {
@@ -80,40 +124,63 @@ export function getFormatedGraphData(passedData, metrics) {
 
 
 export function getStartEndTime(param='', startDate='', endDate='', timeZone='') {
+/**
+ * Function which will take param as input, which specifies No of hours,
+ * startDate and End Date - In case of custom date time selection.
+ * timezone - will be based on project.
+ * depending on the value of param, the start and end datetime will be calculated,
+ * In case it is custom, the passed start and end date will be used to format it and send back.
+ * If nothing is passed by default set it to 24 hours, whcih is the default value.
+ */
     let now = moment(),
-      start, end;
+      start, end, selectedIndex;
     if (param === ANALYTICS_DATE['ONE_HOUR']) {
       end = now.tz(timeZone).format(DATE_TIME_FORMAT);
       start = (now.subtract({ hours: 1})).tz(timeZone).format(DATE_TIME_FORMAT);
+      selectedIndex = 0;
     } else if(param === ANALYTICS_DATE['THREE_HOUR']) {
       end = now.tz(timeZone).format(DATE_TIME_FORMAT);
       start = (now.subtract({ hours: 3})).tz(timeZone).format(DATE_TIME_FORMAT);
+      selectedIndex = 1;
     } else if(param === ANALYTICS_DATE['TWELVE_HOUR']) {
       end = now.tz(timeZone).format(DATE_TIME_FORMAT);
       start = (now.subtract({ hours: 12})).tz(timeZone).format(DATE_TIME_FORMAT);
+      selectedIndex = 2;
     } else if(param === ANALYTICS_DATE['ONE_DAY']) {
       end = now.tz(timeZone).format(DATE_TIME_FORMAT);
       start = (now.subtract({ days: 1})).tz(timeZone).format(DATE_TIME_FORMAT);
+      selectedIndex = 3;
     } else if(param === ANALYTICS_DATE['THREE_DAY']) {
       end = now.tz(timeZone).format(DATE_TIME_FORMAT);
       start = (now.subtract({ days: 3})).tz(timeZone).format(DATE_TIME_FORMAT);
+      selectedIndex = 4;
     } else if(param === ANALYTICS_DATE['ONE_WEEK']) {
       end = now.tz(timeZone).format(DATE_TIME_FORMAT);
       start = (now.subtract({ weeks: 1})).tz(timeZone).format(DATE_TIME_FORMAT);
+      selectedIndex = 5;
     } else if(param === ANALYTICS_DATE['CUSTOM']) {
       end = moment(endDate, DATE_TIME_FORMAT).tz(timeZone).format(DATE_TIME_FORMAT);
       start = moment(startDate, DATE_TIME_FORMAT).tz(timeZone).format(DATE_TIME_FORMAT);
+      selectedIndex = -1;
     } else {
       end = now.tz(timeZone).format(DATE_TIME_FORMAT);
-      start = (now.subtract({ hours: 1})).tz(timeZone).format(DATE_TIME_FORMAT);
+      start = (now.subtract({ hours: 24})).tz(timeZone).format(DATE_TIME_FORMAT);
+      selectedIndex = 3;
     }
     return {
         'start': start,
-        'end': end
+        'end': end,
+        'selectedIndex': selectedIndex
     }
 }
 
 export function getVector(metricsResponse, deviceKey) {
+/**
+ * This function will get the metric deive data, for every analytics graph,
+ * Format the data as per our requirement.
+ * window - is combination of sampling and Unit returned and passed to API,
+ * But on UI these are seperate, so for that have to get substring and assign to both fields.
+ */
     let dataMetrics = {}, path = [], metric = {};
     metricsResponse.map((metrics) => {
         dataMetrics['metricType'] = metrics['metricType'];
@@ -128,14 +195,30 @@ export function getVector(metricsResponse, deviceKey) {
                 // unit: vector.Unit,
                 shortName: vector.id,
                 color: vector.color,
-                statistic: vector.statistic,
                 chartType: vector.ctype,
                 showSamplingWidget: vector.showSamplingWidget,
+                statistic: vector.statistic,
                 window: vector.window,
                 sampling: vector.window.substr(0, vector.window.length-1) ? vector.window.substr(0, vector.window.length-1): 1,
                 unit: vector.window.substr(vector.window.length-1, 1),
                 type: deviceKey
-            };
+            }
+            // , actions = {};
+            // vector.actions.map((row) => {
+            //     let action = {};
+            //     action.type = row.type;
+            //     if(row.type === DATA_OPERATIONS['FILTER'])
+            //         action.criteria = row.criteria;
+            //     else if(row.type === DATA_OPERATIONS['RESAMPLER']) {
+            //         action.criteria = {};
+            //         action.criteria.statistic = row.criteria.statistic;
+            //         action.criteria.window = row.criteria.window;
+            //         action.criteria.sampling = row.criteria.window.substr(0, row.criteria.window.length-1) ? row.criteria.window.substr(0, row.criteria.window.length-1): 1;
+            //         action.criteria.unit = row.criteria.window.substr(row.criteria.window.length-1, 1);
+            //     }
+            //     actions.push(action);
+            // })
+            // vec.actions = actions;
             dataMetrics['vector'].push(vec)
             if(vector.showSamplingWidget)
                 path.push({[vector.id] : vec});
@@ -144,4 +227,4 @@ export function getVector(metricsResponse, deviceKey) {
     })
     return {'dataMetrics': dataMetrics,
             'metric': metric}
-  }
+}

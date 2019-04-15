@@ -7,12 +7,11 @@ import DataCard from './DataCard';
 
 class ProjectDataComponent extends Component {
     render() {
-        const { stateData, onClick,
-            projectActionRedirection } = this.props;
+        const { stateData, onClick} = this.props;
             if(stateData.dashboardData){
             const returnData = stateData.dashboardData.map((row, index) => {
                 return <DataCard key={index} onClick={onClick} row={row}
-                    projectActionRedirection={projectActionRedirection} stateData={stateData}/>
+                    stateData={stateData}/>
             });
             return (
                 <div className="flex-container">{returnData}</div>

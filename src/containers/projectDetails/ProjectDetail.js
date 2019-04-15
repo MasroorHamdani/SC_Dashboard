@@ -16,14 +16,20 @@ class ProjectDetails extends Component {
     }
 
     handleClick = (e, id, category) => {
+    /**
+     * Function called from child component to redirect the page.
+     */
         this.props.history.push(`${REACT_URLS['PROJECT_DETAILS']}/${this.state.pid}/${category}/${id}`);
-      };
+    };
 
     render() {
         const {classes} = this.props;
         return(
             <div className={classes.root}>
-                <ProjectDetail
+            {/**
+            * Call the component with all the props component and other state values and function
+            */}
+                <ProjectDetail {...this.props}
                 stateData={this.state}
                 handleClick={this.handleClick}/>
             </div>
@@ -37,9 +43,9 @@ function mapStateToProps(state) {
 }
 
 function mapDispatchToProps(dispatch) {
+    //will dispatch the async action
     return {
         onProjectData: (config) => {
-            //will dispatch the async action
             dispatch(projectData(config))
         }
     }

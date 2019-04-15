@@ -9,15 +9,26 @@ import "react-datepicker/dist/react-datepicker.css";
 
 import {formatDateTime} from '../../utils/DateFormat';
 import {ALERT_STATUS, DATE_TIME_FORMAT,
-    DESCRIPTIVE_DATE_TIME_FORMAT, HOUR_MIN_FORMAT} from '../../constants/Constant';
+    DESCRIPTIVE_DATE_TIME_FORMAT,
+    HOUR_MIN_FORMAT, DEVICE_TYPE} from '../../constants/Constant';
 
 import styles from './DataAnalysisStyle';
 
 class AlertAnalysis extends Component {
+    filterData = (arr) => {
+        const {stateData} = this.props;
+        if (stateData.status)
+            arr = arr.filter(x => x.header.StatusInfo.Status === stateData.status)
+        if (stateData.type)
+            arr = arr.filter(x => x.data.length > 0 ? x.data[0].Data.Type === stateData.type: '' )
+        return arr;
+    }
+
     render() {
         const {classes, stateData, handleChangeStart,
             handleChangeEnd, getAlertData, showDate,
-            setStateValue, showFilter} = this.props;
+            setStateValue, showFilter,
+            isDashboard} = this.props;
         let alertData;
         if(stateData.alertData) {
             alertData = stateData.alertData;
@@ -25,7 +36,7 @@ class AlertAnalysis extends Component {
             alertData = stateData;
         }
         return (
-            <div className={classes.root}>
+        <div className={isDashboard? classes.dashboardRoot : classes.root}>
             {stateData.loading &&
                 <LinearProgress className={classes.buttonProgress}/>
             }
@@ -43,7 +54,7 @@ class AlertAnalysis extends Component {
                         showYearDropdown
                         showTimeSelect
                         timeFormat="HH:mm"
-                        timeIntervals={15}
+                        timeIntervals={5}
                         dateFormat="MM/d/YY HH:mm"
                         timeCaption="Time"
                         maxDate={new Date()}
@@ -59,7 +70,7 @@ class AlertAnalysis extends Component {
                         showYearDropdown
                         showTimeSelect
                         timeFormat="HH:mm"
-                        timeIntervals={15}
+                        timeIntervals={5}
                         dateFormat="MM/d/YY HH:mm"
                         timeCaption="Time"
                         minDate={stateData.startDate}
@@ -72,43 +83,83 @@ class AlertAnalysis extends Component {
                     </Button>
                 </div>
             }
+            {stateData.rangeError &&
+                <Typography className={classes.errorMessage}>{stateData.rangeError}</Typography>
+            }
             {showFilter &&
-                <div className={classes.dateRow}>
-                    <FormControl className={classes.formControl}>
-                        <InputLabel htmlFor="age-native-helper">Location</InputLabel>
-                        <Select native
-                            value={stateData.insid}
-                            onChange={setStateValue}
-                            inputProps={{
-                                name: 'insid',
-                                id: 'insid',
-                            }}>
-                        <option value="" />
-                        {stateData.locationList.map(function(loc) {
-                            return <option value={loc.insid} name={loc.insid} key={loc.insid} >
-                                {loc.name} | {loc.locn}</option>
-                        })}
-                        </Select>
-                    </FormControl>
-                    <Button variant="contained" color="primary"
-                        onClick={getAlertData}>
-                        Filter
-                    </Button>
+                <div>
+                    <div className={classes.dateRow}>
+                        <FormControl className={classes.formControl}>
+                            <InputLabel htmlFor="age-native-helper">Location</InputLabel>
+                            <Select native
+                                value={stateData.insid}
+                                onChange={setStateValue}
+                                inputProps={{
+                                    name: 'insid',
+                                    id: 'insid',
+                                }}>
+                            <option value="" />
+                            {stateData.locationList.map(function(loc) {
+                                return <option value={loc.insid} name={loc.insid} key={loc.insid} >
+                                    {loc.name} | {loc.locn}</option>
+                                })}
+                            </Select>
+                        </FormControl>
+                        <Button variant="contained" color="primary"
+                            onClick={getAlertData}>
+                            Filter
+                        </Button>
+                    </div>
+                    <div className={classes.dateRow}>
+                        <FormControl className={classes.formControl}>
+                            <InputLabel htmlFor="age-native-helper">Status</InputLabel>
+                            <Select native
+                                value={stateData.status}
+                                onChange={setStateValue}
+                                inputProps={{
+                                    name: 'status',
+                                    id: 'status',
+                                }}>
+                                <option value="" />
+                                {Object.keys(ALERT_STATUS).map((key, index) => {
+                                    return <option value={key} name={key} key={index} >
+                                        {ALERT_STATUS[key]}</option>
+                                })}
+                            </Select>
+                        </FormControl>
+                        <FormControl className={classes.formControl}>
+                            <InputLabel htmlFor="age-native-helper">Device Type</InputLabel>
+                            <Select native
+                                value={stateData.type}
+                                onChange={setStateValue}
+                                inputProps={{
+                                    name: 'type',
+                                    id: 'type',
+                                }}>
+                                <option value="" />
+                                {Object.keys(DEVICE_TYPE).map((key, index) => {
+                                    return <option value={key} name={key} key={index} >
+                                        {DEVICE_TYPE[key]}</option>
+                                })}
+                            </Select>
+                        </FormControl>
+                    </div>
                 </div>
             }
             {alertData &&
-                    alertData.map((row, index) => {
+                (this.filterData(alertData)
+                    .map((row, index) => {
                         return (<ExpansionPanel key={index}>
                             {row.header &&
                                 <ExpansionPanelSummary className={classes.expansionRoot} expandIcon={<ExpandMoreIcon />}>
                                 <div className={classes.heading}>
-                                    <Typography variant="h6">{row.header.StatusInfo.Reason}
+                                    <Typography component="h6">{row.header.StatusInfo.Reason}
                                     {row.header.name ?
                                         ` - ${row.header.name} (${row.header.locn})`
                                     :''}
                                     ({row.data.length > 0 ? `${row.data[0].Data.Type}` : ''})
                                     </Typography>
-                                    <Typography>
+                                    <Typography variant="caption">
                                         {formatDateTime(row.header.Timestamp,
                                             DATE_TIME_FORMAT,
                                             DESCRIPTIVE_DATE_TIME_FORMAT)}
@@ -130,8 +181,9 @@ class AlertAnalysis extends Component {
                             })}
                         </ExpansionPanel>)
                     })
+                )
             }
-            </div>
+        </div>
         )
     }
 }

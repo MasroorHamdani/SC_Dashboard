@@ -2,45 +2,65 @@ import React, {Component} from 'react';
 import { NamespacesConsumer } from 'react-i18next';
 import DashboardIcon from '@material-ui/icons/Dashboard';
 import BarChartIcon from '@material-ui/icons/BarChart';
-import LayersIcon from '@material-ui/icons/Layers';
-import ExitToAppIcon from '@material-ui/icons/ExitToApp';
-import AccountBox from '@material-ui/icons/AccountBox';
-import {ListItem, ListItemIcon, ListItemText} from '@material-ui/core';
+import AssignmentIcon from '@material-ui/icons/Assignment';
+import NotificationImportantIcon from '@material-ui/icons/NotificationImportant';
+import LibraryBooksIcon from '@material-ui/icons/LibraryBooks';
+import SettingsIcon from '@material-ui/icons/Settings';
+import FavoriteIcon from '@material-ui/icons/Favorite';
+
+import {ListItem, ListItemIcon, ListItemText, Tooltip, withStyles} from '@material-ui/core';
 import {Link} from "react-router-dom";
+
+import styles from "./MenuStyle";
 
 class ListItems extends Component {
     renderSwitch(param) {
+        /**
+         * This function is used to display the relevant icons for menu.
+         * menu list will have the icon name give,
+         * which we need to define here and use in switch case.
+         */
         switch(param) {
             case 'DashboardIcon':
                 return <DashboardIcon/>;
             case 'BarChartIcon':
                 return <BarChartIcon/>;
-            case 'LayersIcon':
-                return <LayersIcon/>;
-            case 'ExitToAppIcon':
-                return <ExitToAppIcon/>
-            case 'AccountBox':
-                return <AccountBox/>;
+            case 'NotificationImportantIcon':
+                return <NotificationImportantIcon/>
+            case 'LibraryBooksIcon':
+                return <LibraryBooksIcon/>;
+            case 'AssignmentIcon':
+                return <AssignmentIcon/>;
+            case 'SettingsIcon':
+                return <SettingsIcon/>;
+            case 'FavoriteIcon':
+                return <FavoriteIcon/>;
             default:
                 return '';
         }
-      }
+    }
     render() {
-        const MenuList = this.props.data;
-        if(MenuList) {
-            const menu = MenuList.map((row,index) => {
+        const {menuList, classes,
+            activeRoute, menuState} = this.props;
+        if(menuList) {
+            const menu = menuList.map((row, index) => {
                 const icon = row.icon;
                 return (
-                            <ListItem button component={Link} to={row.url} key={index}>
+                    <Tooltip title={!menuState ? row.toolTip : ''} key={index}>
+                        <ListItem button component={Link} to={row.url}
+                            className={activeRoute(row.url) ? classes.isActive: ''}>
+                            
                                 <ListItemIcon>
                                     {this.renderSwitch(icon)}
                                 </ListItemIcon>
-                                <NamespacesConsumer>
-                                {
-                                    t=><ListItemText primary={t(row.name)} />
-                                }
-                                </NamespacesConsumer>
-                            </ListItem>
+                            <NamespacesConsumer>
+                            {
+                                t=>
+                                <ListItemText primary={t(row.name)} />
+                            }
+                            </NamespacesConsumer>
+                        </ListItem>
+                    </Tooltip>
                 )
             });
             return(
@@ -52,4 +72,4 @@ class ListItems extends Component {
     }
 }
 
-export default ListItems;
+export default withStyles(styles)(ListItems);

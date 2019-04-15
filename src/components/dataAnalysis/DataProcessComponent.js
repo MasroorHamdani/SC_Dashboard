@@ -8,6 +8,11 @@ import styles from './AnalysisDataStyle';
 import { NamespacesConsumer } from 'react-i18next';
 
 class DataProcessingComponent extends Component {
+/**
+ * This component is used for sampler.
+ * any dimension with show sampling as true, will be show up.
+ * Any change will be passsed to parent using the inherited function.
+ */
     render () {
         const {classes, stateData, handleSamplingChange,
                 metrics} = this.props;
@@ -22,6 +27,7 @@ class DataProcessingComponent extends Component {
                             if(stateData[stateData.deviceKey][metrics.metricID][dt.id]) {
                                 return <div className={classes.dateRow} key={index}>
                                     <TextField
+                                        disabled
                                         id="sampling"
                                         label="Sampling Rate"
                                         name="sampling"
@@ -29,11 +35,20 @@ class DataProcessingComponent extends Component {
                                         onChange={event => handleSamplingChange(event, metrics.metricID, dt.id)}
                                         margin="normal"
                                     />
-                                    <FormControl className={classes.formControl}>
+                                    <TextField
+                                        disabled
+                                        id="unit"
+                                        label={t('unit')}
+                                        name="unit"
+                                        value={stateData[stateData.deviceKey][metrics.metricID][dt.id].unit}
+                                        margin="normal"
+                                    />
+                                    {/* <FormControl className={classes.formControl}>
                                         <InputLabel shrink htmlFor="unit-native-label-placeholder">
                                             {t('unit')}
                                         </InputLabel>
                                         <NativeSelect
+                                            disabled
                                             value={stateData[stateData.deviceKey][metrics.metricID][dt.id].unit}
                                             onChange={event => handleSamplingChange(event, metrics.metricID, dt.id)}
                                             input={<Input name="unit" id="unit-native-label-placeholder" />}>
@@ -44,7 +59,7 @@ class DataProcessingComponent extends Component {
                                             <option value='M' name="unit" key='month'>Month</option>
                                             <option value='Y' name="unit" key='year'>Year</option>
                                         </NativeSelect>
-                                    </FormControl>
+                                    </FormControl> */}
                                     <TextField
                                         disabled
                                         id={dt.id}

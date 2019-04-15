@@ -1,4 +1,4 @@
-import {blueGrey} from '@material-ui/core/colors';
+import {red} from '@material-ui/core/colors';
 const styles = theme => ({
     graph: {
         // margin: theme.spacing.unit * 4,
@@ -6,9 +6,6 @@ const styles = theme => ({
         width: '100%',
         height: '100vh',
         overflow: 'auto',
-    },
-    lineChart: {
-        width: "80%",
     },
     select: {
         padding: theme.spacing.unit * 1,
@@ -42,17 +39,6 @@ const styles = theme => ({
     pointer: {
         cursor: 'pointer'
     },
-    //tile dimentions
-    tile: {
-        // width: '160px',
-        // height: '160px',
-        display: 'flex',
-        flexDirection: 'column',
-        backgroundColor: blueGrey[900],//'#262f3e',//'#404854',
-        '& *': { color: 'rgba(255, 255, 255, 0.7)' },
-        textAlign: 'center',
-        padding: theme.spacing.unit * 2
-    },
     // Temporary for Dispenser
     root: {
         padding: theme.spacing.unit * 3,
@@ -68,6 +54,9 @@ const styles = theme => ({
     },
     marginRight: {
         marginRight: theme.spacing.unit
+    },
+    errorMessage: {
+        color: red[500]
     }
 })
 

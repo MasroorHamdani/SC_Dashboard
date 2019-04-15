@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import {withStyles, FormControl, Radio, RadioGroup, FormControlLabel,
-    List, ListItem, ListItemText, Collapse} from '@material-ui/core';
-import {ExpandLess, ExpandMore} from '@material-ui/icons';
+    List, ListItem} from '@material-ui/core';
 import styles from './RadioButtonStyle';
 import { NamespacesConsumer } from 'react-i18next';
 
@@ -18,8 +17,7 @@ class RadioButtonComponent extends Component {
         this.props.handleChange();
     }
     render(){
-        const {classes, data, handleChange,
-            handleClick} = this.props;
+        const {classes, data, handleChange} = this.props;
         return(<NamespacesConsumer>
             {
             t=><List dense
@@ -28,34 +26,24 @@ class RadioButtonComponent extends Component {
                     {data.projectList &&
                         data.projectList.map((project, index) => {
                         return <div key={project.id}>
-                            <ListItem button className={classes.nested}
-                                onClick={event => handleClick(index)}>
-                                <ListItemText primary={project.name}/>
-                                {data[index] ? <ExpandLess /> : <ExpandMore />}
+                            <ListItem button key={index}>
+                                <FormControl component="fieldset" className={classes.formControl}>
+                                    <RadioGroup
+                                        aria-label={data.header}
+                                        name={data.header}
+                                        className={classes.group}
+                                        value={data.value}>
+                                        {project.devices &&
+                                            project.devices.map(function(key) {
+                                                let name = `${key.name} (${key.locn})`
+                                            return <FormControlLabel value={key.insid} key={key.insid}
+                                            control={<Radio 
+                                                onChange={event => handleChange(event, project.name, key.insid)}/>}
+                                                label={name} />
+                                        })}
+                                    </RadioGroup>
+                                </FormControl>
                             </ListItem>
-                            <Collapse in={data[index]} timeout="auto" unmountOnExit>
-                                <List dense component="div" disablePadding>
-                                    <ListItem button>
-                                        <FormControl component="fieldset" className={classes.formControl}>
-                                            <RadioGroup
-                                                aria-label={data.header}
-                                                name={data.header}
-                                                className={classes.group}
-                                                value={data.value}
-                                                >
-                                                {project.devices &&
-                                                    project.devices.map(function(key) {
-                                                        let name = `${key.name}(${key.locn})`
-                                                    return <FormControlLabel value={key.insid} key={key.insid}
-                                                    control={<Radio 
-                                                        onChange={event => handleChange(event, project.name, key.insid)}/>}
-                                                        label={name} />
-                                                })}
-                                            </RadioGroup>
-                                        </FormControl>
-                                    </ListItem>
-                                </List>
-                            </Collapse>
                         </div>
                     })}
                 </List>

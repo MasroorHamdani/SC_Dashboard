@@ -9,6 +9,9 @@ class LoginComponent extends React.Component {
   
     render() {
       const { onChange, onClick, data, onForgotClick, onForgotSubmit, onResetSubmit } = this.props;
+    /**
+     * Depending on status value, show revalant vie wto user
+     */
       if (data.status === LOGIN_STATUS['LOGIN']) {
         return (
           <SignInComponent data={data} onClick={onClick} onForgotClick={onForgotClick} onChange={onChange}/>

@@ -10,12 +10,13 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: space-evenly;
+  width: 100%;
 }
 .flex-container > div {
   margin: 10px;
   text-align: center;
   line-height: 30px;
-  font-size: 22px;
+  // font-size: 22px;
   width: 20em;
 }
 .forgot-paswd-btn {

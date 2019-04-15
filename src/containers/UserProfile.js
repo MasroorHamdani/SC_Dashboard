@@ -29,6 +29,9 @@ class UserProfile extends Component {
     }
       
     handleChange = (event) => {
+    /**
+     * Common function to set any fields value from UI in state.
+     */
         let {name, value} = event.target;
         if (name === 'Mute') {
             value = event.target.checked
@@ -41,12 +44,20 @@ class UserProfile extends Component {
         });
     }
     handleSubmit = () => {
+    /**
+     * Post API call to save the data for a user profile.
+     */
         this.earlyState = false;
         const endPoint = `${API_URLS['USER_PROFILE']}`,
         config = getApiConfig(endPoint, 'POST', this.state.profile);
         this.props.onProfileData(config, 'POST');
     }
+
     getUserProfile = (userDetails) => {
+    /**
+     * Profile API get more then profile data for a user,
+     * this function will get the profile specific data from data returned from API
+     */
         let profile;
         userDetails.map((row) => {
             if(row.NS === NAMESPACE['USER_PROFILE'])
@@ -55,10 +66,23 @@ class UserProfile extends Component {
         return profile;
     }
     handleModalProfileState = () => {
+    /**
+     * Update notification handling
+     */
         this.setState({ profileNotify: !this.state.profileNotify});
     }
     componentDidUpdate(prevProps, prevState) {
-        if (this.props.userProfile &&
+    /**
+     * Get profile data and format it and save in state variable.
+     * Same section will receive data for get data as well all once user profile is updated.
+     * in case of get api call, the return will be a list,
+     * so once the data is there, that is passed to a function
+     * which will get the profile relavant data and return.
+     * else the data from post will be directly passed to variable.
+     * In case of update, only the fields those were updated will be returned back,
+     * for that we use the old 'prevState' values for the rest of the variable
+     */
+        if(this.props.userProfile &&
         (!isEqual(this.props.userProfile, prevProps.userProfile) ||
             !this.state.profile.Firstname)) {
             const profile = this.props.userProfile[0] ? this.getUserProfile(this.props.userProfile): this.props.userProfile;
@@ -86,6 +110,9 @@ class UserProfile extends Component {
     }
 
     componentDidMount() {
+    /**
+     * Get API call for user profile
+     */
         const endPoint = `${API_URLS['USER_PROFILE']}`,
             config = getApiConfig(endPoint, 'GET');
         this.props.onProfileData(config);
@@ -119,7 +146,6 @@ function mapDispatchToProps(dispatch) {
             } else {
                 dispatch(profileData(config))
             }
-            
         }
     }
 }

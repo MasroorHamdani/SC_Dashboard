@@ -5,6 +5,9 @@ import {Button, Dialog, DialogTitle, DialogContent,
     DialogContentText, DialogActions} from '@material-ui/core';
 
 class CustomModal extends Component {
+    /**
+     * Generic Modal to be used accross the Web App.
+     */
     render() {
         const {handleClose, handleClick, open, header,
             content, showFooter, classes} = this.props;

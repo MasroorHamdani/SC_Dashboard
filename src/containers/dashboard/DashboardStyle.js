@@ -1,8 +1,7 @@
-import {green} from '@material-ui/core/colors';
 const styles = theme => ({
     root: {
       display: 'flex',
-      // width: '100%'
+      width: '100%'
     },
     appBarSpacer: theme.mixins.toolbar,
     content: {
@@ -22,6 +21,7 @@ const styles = theme => ({
     },
     gridList: {
       minHeight: 400,
+      width: '100%'
     },
     buttonProgress: {
       // color: green[500],

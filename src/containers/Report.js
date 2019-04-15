@@ -5,7 +5,7 @@ import ReportGeneration from '../components/reportGeneration/ReportGeneration';
 import {API_URLS, PROJECT_TABS, SERVICE_ATTR,
     SERVICE_TABS} from '../constants/Constant';
 import {getApiConfig} from '../services/ApiCofig';
-import {dashboardData} from '../actions/DashboardAction';
+// import {dashboardData} from '../actions/DashboardAction';
 import {projectDetailData} from '../actions/ProjectDataAction';
 import {installationDeviceData} from '../actions/InstallationDeviceData';
 import {serviceRequirementData} from '../actions/ReportDataAction';
@@ -15,7 +15,9 @@ class Report extends Component {
     state = ({
         tab: 0,
         project: '',
-        serviceChecked: [-1]
+        pid: '',
+        serviceChecked: [-1],
+        loading: true,
     });
 
     handleTabChange = (event, value) => {
@@ -41,7 +43,7 @@ class Report extends Component {
     };
 
     getLocations() {
-        const endPoint = `${API_URLS['PROJECT_DETAILS']}/${this.state.project}/${PROJECT_TABS['INSTALLATION']}/${PROJECT_TABS['DETAILS']}`,
+        const endPoint = `${API_URLS['PROJECT_DETAILS']}/${this.state.project}${API_URLS['WASHROOM_LOCATION']}`,
             config = getApiConfig(endPoint, 'GET');
         this.props.onProjectDetailData(config);
     };
@@ -50,8 +52,8 @@ class Report extends Component {
         this.setState(state => ({ [index]: !state[index],
                                     insid : insid }));
         if(!this.state[insid]) {
-            const endPoint = `${API_URLS['PROJECT_DETAILS']}/${pid}/
-                ${PROJECT_TABS['INSTALLATION']}/${PROJECT_TABS['DEVICES']}/${insid}`,
+            const endPoint = `${API_URLS['PROJECT_DETAILS']}/${pid}
+                ${API_URLS['PROJECT_LOCATION']}/${insid}`,
                 config = getApiConfig(endPoint, 'GET');
             this.props.onProjectInstallationData(config);
         }
@@ -112,12 +114,42 @@ class Report extends Component {
         // console.log("generate report function");
     }
     componentDidMount(){
-        const endPoint = API_URLS['DASHBOARD'],
-              config = getApiConfig(endPoint, 'GET');
-        this.props.onReport(config);
+        // const endPoint = API_URLS['DASHBOARD'],
+        //       config = getApiConfig(endPoint, 'GET');
+        // this.props.onReport(config);
+    /**
+     * Check id pid and timezone are present in state,
+     * if yes get the data by calling internal functions,
+     * or set the value first and then make the call.
+     */
+        if(this.state.project){
+            this.getLocations();
+        } else if(this.props.projectSelected) {
+            this.setState({
+                project: this.props.projectSelected.PID},
+            function() {
+                this.getLocations();
+            });
+        }
     };
 
     componentDidUpdate(prevProps, prevState) {
+    /**
+     * This part will listen to project selection change from the header component.
+     * On any change this will be called and the data will be changed in UI
+     * Reducer used - 'projectSelectReducer'
+     */
+        if(this.props.projectSelected && 
+            !isEqual(this.props.projectSelected, prevProps.projectSelected)){
+            if(this.state.project !== this.props.projectSelected.PID){
+                this.setState({
+                    project: this.props.projectSelected.PID
+                }, function() {
+                    this.props.history.push(this.props.projectSelected.PID);
+                    this.getLocations();
+                })
+            }
+        }
         if (this.props.installationDevice &&
         !isEqual(this.props.installationDevice, prevProps.installationDevice)) {
             this.setState({[this.state.insid] : this.props.installationDevice[0]});
@@ -148,7 +180,7 @@ class Report extends Component {
             <ReportGeneration stateData={this.state}
             handleTabChange={this.handleTabChange}
             data={this.props}
-            handleProjectSelectionChange={this.handleProjectSelectionChange}
+            // handleProjectSelectionChange={this.handleProjectSelectionChange}
             handleExpandClick={this.handleExpandClick}
             handleDeviceToggle={this.handleDeviceToggle}
             onNextClick={this.onNextClick}
@@ -163,18 +195,19 @@ class Report extends Component {
 function mapStateToProps(state) {
     return {
         installationDevice : state.InstallationDeviceReducer.data,
-        projectList : state.DashboardReducer.data,
+        // projectList : state.DashboardReducer.data,
         projectDetails : state.ProjectDetailsReducer.data,
-        serviceRequirements : state.ServiceRequirementReducer.data
+        serviceRequirements : state.ServiceRequirementReducer.data,
+        projectSelected : state.projectSelectReducer.data,
     }
 }
   
 function mapDispatchToProps(dispatch) {
     return {
-        onReport: (config) => {
-            //will dispatch the async action
-            dispatch(dashboardData(config))
-        },
+        // onReport: (config) => {
+        //     //will dispatch the async action
+        //     dispatch(dashboardData(config))
+        // },
         onProjectDetailData: (config) => {
             dispatch(projectDetailData(config))
         },

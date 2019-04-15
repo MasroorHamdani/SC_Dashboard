@@ -7,6 +7,10 @@ import styles from './AnalysisDataStyle';
 import RefreshIcon from '@material-ui/icons/Refresh';
 
 class DateRowComponent extends Component {
+/**
+ * Date component, which will show the Datetime picker for start and end date with a go button
+ * as well, some predefined options like, 1h, 2h etc along with refresh button.
+ */
     render () {
         const {classes, handleListSelection, handleChangeStart, handleChangeEnd,
             handleDatePicker, data, timeList, handleRefresh} = this.props;
@@ -25,7 +29,7 @@ class DateRowComponent extends Component {
                         showYearDropdown
                         showTimeSelect
                         timeFormat="HH:mm"
-                        timeIntervals={15}
+                        timeIntervals={5}
                         dateFormat="MM/d/YY HH:mm"
                         timeCaption="Time"
                         maxDate={new Date()}
@@ -41,7 +45,7 @@ class DateRowComponent extends Component {
                         showYearDropdown
                         showTimeSelect
                         timeFormat="HH:mm"
-                        timeIntervals={15}
+                        timeIntervals={5}
                         dateFormat="MM/d/YY HH:mm"
                         timeCaption="Time"
                         minDate={data.startDate}
@@ -68,6 +72,9 @@ class DateRowComponent extends Component {
                 {handleRefresh &&
                     <RefreshIcon className={classes.pointer}
                     onClick={handleRefresh}/>
+                }
+                {data.rangeError &&
+                    <Typography className={classes.errorMessage}>{data.rangeError}</Typography>
                 }
             </div>
         )
