@@ -478,7 +478,8 @@ class DataAnalysis extends Component {
             installationList[`${tab.Type}-${i}`] = list;
             installationList[`${tab.Type}-${i}`]['key'] = `${installationList[`${tab.Type}-${i}`]['key']}-${i}`;
             i = i + 1;
-          } else if(tab.Type !== 'PT' && tab.Type !== 'SS' && tab.Type !== 'TR') {
+          } else{
+          //if(tab.Type !== 'PT' && tab.Type !== 'SS' && tab.Type !== 'TR') {
             installationList[tab.Type] = list
           }
         })
