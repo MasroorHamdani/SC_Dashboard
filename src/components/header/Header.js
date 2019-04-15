@@ -178,7 +178,9 @@ class Header extends Component {
                 noWrap
                 className={classes.title}
                 >
-                <img src="https://www.smartclean.sg/images/sc-logo.png" alt="logo" className={classes.logo}/>
+                {/* <a href="http://localhost:3000/"> */}
+                  <img src="https://www.smartclean.sg/images/sc-logo.png" alt="logo" className={classes.logo}/>
+                {/* </a> */}
                 {/* <span className={classes.beta}>BETA</span> */}
               </Typography>
               
