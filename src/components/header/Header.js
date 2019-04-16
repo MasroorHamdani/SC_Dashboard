@@ -6,12 +6,13 @@ import classNames from 'classnames';
 
 import {AppBar, Toolbar, Badge, IconButton, Typography,
   withStyles, FormControl, Select,
-MenuItem, Divider, Popper, Paper} from '@material-ui/core';
+MenuItem, Divider, Popper, Paper, ListItem} from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import AccountBox from '@material-ui/icons/AccountBox';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
+import {Link} from "react-router-dom";
 
 import {NAMESPACE, API_URLS, REACT_URLS} from '../../constants/Constant';
 
@@ -176,14 +177,12 @@ class Header extends Component {
                 variant="h6"
                 color="inherit"
                 noWrap
-                className={classes.title}
-                >
-                {/* <a href="http://localhost:3000/"> */}
+                className={classes.title}>
+                <ListItem component={Link} to='/'>
                   <img src="https://www.smartclean.sg/images/sc-logo.png" alt="logo" className={classes.logo}/>
-                {/* </a> */}
+                </ListItem>
                 {/* <span className={classes.beta}>BETA</span> */}
               </Typography>
-              
               {/* Drop down with Project list and its selection */}
               {(this.state.projectList && this.state.projectList.length > 0) &&
                 <FormControl className={classes.formControl}>
