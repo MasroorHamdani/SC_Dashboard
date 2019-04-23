@@ -1,4 +1,4 @@
-import {_, groupBy} from 'lodash';
+import {_, groupBy, orderBy} from 'lodash';
 import moment from 'moment-timezone';
 
 import {DATE_TIME_FORMAT, GRAPH_LABEL_TIME_FORMAT,
@@ -93,7 +93,7 @@ export function getFormatedGraphData(passedData, metrics, stateData='') {
                     mapper[dim.id]['color'] = dim.color;
                     mapper[dim.id]['chartType'] = dim.ctype;
                 })
-                graphData[metridId] = graphSection;
+                graphData[metridId] = orderBy(graphSection, 'header.Timestamp', 'desc');
                 nameMapper[metridId] = mapper;
             })
         
