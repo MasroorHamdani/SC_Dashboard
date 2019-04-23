@@ -26,8 +26,7 @@ class DataAnalysisComponent extends Component {
                     {stateData.value &&
                         <AppBar position="static" color="default">
                             <Tabs
-                            // scrollable
-                            variant="scrollable"
+                            scrollable
                             scrollButtons="auto"
                             value={stateData.tab}
                             onChange={handleTabChange}

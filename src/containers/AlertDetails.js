@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import {connect} from 'react-redux';
-import {isEqual, groupBy} from 'lodash';
+import {isEqual, groupBy, orderBy} from 'lodash';
 
 import AlertAnalysis from "../components/dataAnalysis/AlertAnalysis";
 import {API_URLS, DATE_TIME_FORMAT, NAMESPACE_MAPPER,
@@ -198,7 +198,7 @@ class AlertDetails extends Component {
                     this.showFilter = true;
                 }
                 this.setState({'locationList': deviceResponse,
-                    'alertData': finalDict,
+                    'alertData': orderBy(finalDict, 'header.Timestamp', 'desc'),//finalDict,
                     rangeError: ''
                     // loading: false,
                 })

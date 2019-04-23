@@ -237,7 +237,9 @@ export const ALERT_STATUS = {
     'pending': 'Pending',
     'resolved': 'Resolved',
     'not_sent': 'Not Sent',
-    'blocked': 'Blocked'
+    'blocked': 'Blocked',
+    'work_started': 'Work Started',
+    'acknowledged': 'Acknowledged'
 }
 
 export const METRIC_TYPE = {
