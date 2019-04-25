@@ -238,6 +238,9 @@ class GraphPlot extends Component {
                     )
                     
                     }
+                    {(metric.metricType === METRIC_TYPE['TABLE_DATA'])&&
+                        <div>table data</div>
+                    }
                     {/* <CustomModal
                         header="Dispenser Details"
                         content="testing"//{deviceData}
