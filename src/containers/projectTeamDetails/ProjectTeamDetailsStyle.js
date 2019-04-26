@@ -45,6 +45,15 @@ const styles = theme => ({
         // margin: theme.spacing.unit,
         minWidth: 120,
     },
+    iconButton: {
+        '&:hover': { backgroundColor: 'rgba(255, 255, 255, 0.7)' }
+    },
+    buttonProgress: {
+        width: '100%',
+        position: 'absolute',
+        right: '0%',
+        top: '64px'
+      },
 });
 
 export default styles;

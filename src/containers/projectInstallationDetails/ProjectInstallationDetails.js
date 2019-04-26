@@ -100,17 +100,21 @@ class ProjectInstallationDetails extends Component {
 
     render(){
         const {classes} = this.props;
-        let installationData, tabData, rows;
+        let installationData, tabData, rows, searchList;
         if(this.props.installationDeviceData) {
             installationData = this.props.installationDeviceData;
-            rows = [{ id: 'Display', numeric: false, disablePadding: false, label: 'Name' },
-                    { id: 'Devid', numeric: false, disablePadding: false, label: 'Device Id' },
-                    { id: 'Type', numeric: false, disablePadding: false, label: 'Type' }]
+            rows = [{ id: 'Display', numeric: 'center', disablePadding: false, label: 'Name' },
+                    { id: 'Devid', numeric: 'center', disablePadding: false, label: 'Device Id' },
+                    { id: 'Type', numeric: 'center', disablePadding: false, label: 'Type' }];
+            searchList = [{ id: 'Display', label: 'Name' },
+                    { id: 'Devid', label: 'Device Id' },
+                    { id: 'Type', label: 'Type' }];
             tabData =
                 <EnhancedTable data={installationData} rows={rows}
                     order={this.state.order} orderBy={this.state.orderBy}
                     rowsPerPage={this.state.rowsPerPage} page={this.state.page}
                     selected={this.state.selected}
+                    searchList={searchList}
                     handleChange={this.handleChange} handleClick={this.handleClick} redirectID="Devid"/>
         }
             

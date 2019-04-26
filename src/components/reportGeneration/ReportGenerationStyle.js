@@ -1,4 +1,4 @@
-import red from '@material-ui/core/colors/red';
+import {red, green} from '@material-ui/core/colors';
 const styles = theme => ({
     root: {
         backgroundColor: theme.palette.background.paper,
@@ -21,7 +21,7 @@ const styles = theme => ({
         margin: theme.spacing.unit * 2,
     },
     avatar: {
-        backgroundColor: red[500],
+        backgroundColor: green[300],
         width: 60,
         height: 60,
     },
@@ -71,7 +71,37 @@ const styles = theme => ({
         // marginRight: theme.spacing.unit,
         width: '50%',
     },
-
+    buttonProgress: {
+        width: '100%',
+        position: 'absolute',
+        right: '0%',
+        top: '64px'
+    },
+    dateRow: {
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        width: '35%',
+        margin: '16px',
+        marginLeft: '0px'
+    },
+    marginRight: {
+        marginRight: theme.spacing.unit
+    },
+    expand: {
+        transform: 'rotate(0deg)',
+        marginLeft: 'auto',
+        transition: theme.transitions.create('transform', {
+          duration: theme.transitions.duration.shortest,
+        }),
+    },
+    expandOpen: {
+        transform: 'rotate(180deg)',
+    },
+    errorMessage: {
+        color: red[500]
+    }
 });
 
 export default styles;

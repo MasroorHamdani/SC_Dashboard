@@ -45,31 +45,40 @@ class TabContainer extends Component {
      *      It will specify if table will show up edit column of not
      */
         const {category, data, handleClick, stateData} = this.props;
-        let tabData, rows;
-        if (data && category === PROJECT_TABS['INSTALLATION']) {
-            rows = [{ id: 'name', numeric: false, disablePadding: false, label: 'Name' },
-                    { id: 'locn', numeric: false, disablePadding: false, label: 'Location' }]
-            tabData = <Typography component="div">
-            <EnhancedTable data={data} rows={rows}
-                order={this.state.order} orderBy={this.state.orderBy}
-                rowsPerPage={this.state.rowsPerPage} page={this.state.page}
-                selected={this.state.selected} category={category}
-                handleChange={this.handleChange} handleClick={handleClick} redirectID="insid"/>
-            </Typography>
-        } else if(stateData.teamInfo && category === PROJECT_TABS['TEAM']) {
-            rows = [{ id: 'Firstname', numeric: false, disablePadding: false, label: 'Firstname' },
-                    { id: 'Lastname', numeric: false, disablePadding: false, label: 'LastName' },
-                    { id: 'Role', numeric: false, disablePadding: false, label: 'Role' },
-                    { id: 'Status', numeric: false, disablePadding: false, label: 'Status' },
-                    { id: 'Association', numeric: false, disablePadding: false, label: 'Association'}
+        let tabData, rows, searchList;
+        if(stateData.teamInfo && category === PROJECT_TABS['TEAM']) {
+            rows = [{ id: 'Firstname', numeric: 'center', disablePadding: false, label: 'Firstname' },
+                    { id: 'Lastname', numeric: 'center', disablePadding: false, label: 'LastName' },
+                    { id: 'Role', numeric: 'center', disablePadding: false, label: 'Role' },
+                    { id: 'Status', numeric: 'center', disablePadding: false, label: 'Status' },
+                    { id: 'Association', numeric: 'center', disablePadding: false, label: 'Association'}
+                ];
+            searchList = [{ id: 'Firstname', label: 'Firstname' },
+                    { id: 'Lastname', label: 'LastName' },
+                    { id: 'Role', label: 'Role' },
+                    { id: 'Status', label: 'Status' },
                 ]
             tabData = <Typography component="div">
             <EnhancedTable data={stateData.teamInfo} rows={rows}
                 order={this.state.order} orderBy={this.state.orderBy}
                 rowsPerPage={this.state.rowsPerPage} page={this.state.page}
                 selected={this.state.selected} category={category}
+                searchList={searchList}
                 handleChange={this.handleChange} handleClick={handleClick} redirectID="UID"
                 allowDelete={false} allowEdit={true}/>
+            </Typography>
+        } else if (data && category === PROJECT_TABS['INSTALLATION']) {
+            rows = [{ id: 'name', numeric: 'center', disablePadding: false, label: 'Name' },
+                    { id: 'locn', numeric: 'center', disablePadding: false, label: 'Location' }];
+            searchList = [{ id: 'name', label: 'Name' },
+                    { id: 'locn', label: 'Location' }];
+            tabData = <Typography component="div">
+            <EnhancedTable data={data} rows={rows}
+                order={this.state.order} orderBy={this.state.orderBy}
+                rowsPerPage={this.state.rowsPerPage} page={this.state.page}
+                selected={this.state.selected} category={category}
+                searchList={searchList}
+                handleChange={this.handleChange} handleClick={handleClick} redirectID="insid"/>
             </Typography>
         }
         return (

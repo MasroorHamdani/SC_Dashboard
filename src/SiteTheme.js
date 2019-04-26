@@ -1,13 +1,15 @@
 import { createMuiTheme } from '@material-ui/core/styles';
-import indigo from '@material-ui/core/colors/indigo';
-import pink from '@material-ui/core/colors/pink';
-import red from '@material-ui/core/colors/red';
+import {pink, red} from '@material-ui/core/colors';
 
 // All the following keys are optional.
 // We try our best to provide a great default value.
 const theme = createMuiTheme({
   palette: {
-    primary: indigo,
+    primary: {
+      lighter: '#a9c8a4',
+      light: '#8db788',
+      main: '#68a554' //indigo,
+    },
     secondary: pink,
     error: red,
     // Used by `getContrastText()` to maximize the contrast between the background and

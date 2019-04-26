@@ -6,31 +6,43 @@ return ([
     {
       name: "Dashboard",
       url: "/",
-      icon: "DashboardIcon"
-    },
-    {
-      name: "Data Analysis",
-      url: "/data",
-      icon: "BarChartIcon"
-    },
-    {
-      name: "Configure Report",
-      url: "/report",
-      icon: "SettingsIcon"
-    },
-    {
-      name: "View Reports",
-      url: `/report/${pid}`,
-      icon: "AssignmentIcon"
-    },
-    {
-      name: "Alert Data",
-      url: `/alert/${pid}`,
-      icon: "NotificationImportantIcon"
+      icon: "DashboardIcon",
+      toolTip: "Dashboard"
     },
     {
       name: "Project details",
       url: `/project/${pid}`,
-      icon: "LibraryBooksIcon"
+      icon: "LibraryBooksIcon",
+      toolTip: "Project details"
+    },
+    {
+      name: "Data Analysis",
+      url: `/data/project/${pid}`,
+      icon: "BarChartIcon",
+      toolTip: "Data Analysis"
+    },
+    {
+      name: "Reports",
+      url: `/report/project/${pid}`,
+      icon: "AssignmentIcon",
+      toolTip: "Reports"
+    },
+    // {
+    //   name: "Configure Report",
+    //   url: `/report/configure/project/${pid}`,
+    //   icon: "SettingsIcon",
+    //   toolTip: "Configure Report"
+    // },
+    {
+      name: "Health Status",
+      url: `/health/project/${pid}`,
+      icon: "FavoriteIcon",
+      toolTip: "Health Status"
+    },
+    {
+      name: "Alert Data",
+      url: `/alert/project/${pid}`,
+      icon: "NotificationImportantIcon",
+      toolTip: "Alert Data"
     }])
 }

@@ -11,6 +11,7 @@ import {withStyles, AppBar, Tabs, Tab, Paper,
 import TabContainer from '../tabContainer/TabContainer';
 import {PROJECT_TABS, API_URLS, NAMESPACE_MAPPER} from '../../constants/Constant';
 import {getApiConfig} from '../../services/ApiCofig';
+import {capitalizeFirstLetter} from '../../utils/FormatStrings';
 import {projectDetailData, projectTeamData, projectTeamAsso} from '../../actions/ProjectDataAction';
 
 import styles from './ProjectDetailStyle';
@@ -45,11 +46,11 @@ class ProjectDetail extends Component {
      * depending on that call the appropriate API
      */
     let url;
-    if (value === 'team' 
+    if (value === PROJECT_TABS['TEAM']
     // && (!this.props.projectData || !this.state.teamInfo)
     ) {
       url = API_URLS['TEAM_MEMBERS'];
-    } else if(value === 'installation' 
+    } else if(value === PROJECT_TABS['INSTALLATION'] 
     // && !this.props.projectData
     ) {
       url= `${PROJECT_TABS['INSTALLATION']}/${PROJECT_TABS['DETAILS']}`;
@@ -138,7 +139,7 @@ class ProjectDetail extends Component {
               association[row.UID].map((dt) => {
                 this.props.projectData.map((d) => {
                   if(d.SUB1 === dt.InsID)
-                    tags.push([`${d.name} - ${d.locn} (${dt.Level})`])
+                    tags.push([`${d.name} - ${d.locn} (${capitalizeFirstLetter(dt.Level)})`])
                 })
               })
             row['Association'] = tags;
@@ -150,8 +151,7 @@ class ProjectDetail extends Component {
      * Loading progress bar
      */
     if(this.state.loading) {
-      this.setState({loading: false,
-      sucess: true});
+      this.setState({loading: false});
     }
   }
 
@@ -167,7 +167,7 @@ class ProjectDetail extends Component {
             {
             t=><main className={classes.content}>
             <Paper style={{ padding: 8 * 3 }}>
-            {/* Tab bar with options of team and installatio */}
+            {/* Tab bar with options of team and installation */}
                 <AppBar position="static" color="default">
                 <Tabs
                   value={this.state.value}
@@ -179,20 +179,16 @@ class ProjectDetail extends Component {
                   <Tab label={t('team')}
                     value='team'/>
                   <Tab label={t('installation')}
-                    value='installation'/>
+                    value='installations'/>
                 </Tabs>
               </AppBar>
               
-              {/* Once tab is selected the conditions will decide which section to be disnplayed
-              TabContainer is another component */}
-              {(this.state.value === 'team' && this.props.teamMembers)&& <TabContainer data={this.props.teamMembers}
+              {this.state.value &&
+                <TabContainer data={this.state.installationData}
                 stateData={this.state}
-                category={PROJECT_TABS['TEAM']}
-                handleClick={handleClick}>Team</TabContainer>}
-              {this.state.value === 'installation' && <TabContainer data={this.state.installationData}
-                stateData={this.state}
-                category={PROJECT_TABS['INSTALLATION']}
-                handleClick={handleClick}>Installation</TabContainer>}
+                category={this.state.value}
+                handleClick={handleClick}/>
+              }
             </Paper>
           </main>
           }</NamespacesConsumer>

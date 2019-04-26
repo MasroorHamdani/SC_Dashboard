@@ -20,7 +20,7 @@ class AnalysisData extends Component {
     /**
      * Method for auto refresh or onclick refresh of the data
      */
-        this.props.handleDateChange()
+        this.props.refreshData()
     }
 
     componentDidMount() {
@@ -38,15 +38,15 @@ class AnalysisData extends Component {
      * with data and that will return the complete graph component.
      */
         let dataAnalysis = data,
-            analyticsData = getFormatedGraphData(dataAnalysis, metrics),
+            analyticsData = getFormatedGraphData(dataAnalysis, metrics, this.props.stateData),
             graphData = analyticsData.graphData,
             nameMapper = analyticsData.nameMapper, tabData;
-            if(!tabData)
+            if(!tabData){
                 tabData = <GraphPlot graphData={graphData}
                         nameMapper={nameMapper} metrics={metrics}
-                        classes={classes}
                         stateData={this.props.stateData}
                         handleSamplingChange={this.props.handleSamplingChange}/>;
+            }
         return tabData;
     }
     render() {
@@ -56,7 +56,7 @@ class AnalysisData extends Component {
         let tabData;
         if (stateData.dataAnalysis && stateData.dataAnalysis.data){
             tabData = this.generateDataAnalytics(stateData.dataAnalysis.data.data.metrics,
-                stateData.dataAnalysis.data.data.allMetrics,
+                stateData.dataAnalysis.data.data.all_metrics,
                 classes);
         }
         return (

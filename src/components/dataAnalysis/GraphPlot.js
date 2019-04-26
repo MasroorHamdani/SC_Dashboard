@@ -1,40 +1,39 @@
 import React, {Component} from 'react';
-import {Typography, Divider} from '@material-ui/core';
+import {withStyles, Typography, Divider} from '@material-ui/core';
 import {Line, XAxis, YAxis, CartesianGrid, Tooltip,
     Legend, ResponsiveContainer, Brush, ComposedChart,
     Bar, PieChart, Pie, Cell, Sector, Area} from 'recharts';
 import {METRIC_TYPE, DATA_VIEW_TYPE} from '../../constants/Constant';
 import DataProcessingComponent from './DataProcessComponent';
 import AlertAnalysis from './AlertAnalysis';
+import CustomModal from '../modal/Modal';
+import styles from './DataAnalysisStyle';
 
 class GraphPlot extends Component {
     state = ({
         activeIndex: 0
     });
-    getInitialState = () =>{
-        return {
-          activeIndex: 0,
-        };
-    }
-    
+
     onPieEnter = (data, index) => {
     /**
      * For pie chart, on mouse hover this function is called.
      */
-    this.setState({
-        activeIndex: index,
-    });
+        this.setState({
+            activeIndex: index,
+        });
     }
+
     render() {
         const {classes, metrics, graphData, nameMapper,
-            stateData, handleSamplingChange} = this.props;
+            stateData, handleSamplingChange, isDashboard,
+            handleBarClick, handleClose} = this.props;
         const renderActiveShape = (props) => {
         /**
          * This function will create an arc on mouse hover for pie chanrt 
          */
             const RADIAN = Math.PI / 180;
             const { cx, cy, midAngle, innerRadius, outerRadius, startAngle,
-            endAngle, fill, payload, percent, value } = props;
+                endAngle, fill, payload, percent, value } = props;
             const sin = Math.sin(-RADIAN * midAngle);
             const cos = Math.cos(-RADIAN * midAngle);
             const sx = cx + (outerRadius + 10) * cos;
@@ -75,13 +74,16 @@ class GraphPlot extends Component {
                 </g>
             );
         };
-        return(
+        return (
         /**
          * Loop through metrics dimentions, in order to get all the graphs drawn.
          * Check for the type of the graph and as per conditions decide what to show.
          */
             metrics.map((metric, index) => {
-                return <div key={index}>
+                return <div key={index}
+                // metricType
+                className={isDashboard && metric['metric_type'] === "raw_data"? classes.alertBox :
+                isDashboard && metric['metric_type'] === "categorical" ? classes.otherData : ''} >
                 <Divider className={classes.seperator}/>
                     <DataProcessingComponent stateData={stateData}
                         handleSamplingChange={handleSamplingChange}
@@ -89,116 +91,202 @@ class GraphPlot extends Component {
                     <Typography gutterBottom variant="h5">
                         {metric.metricName}
                     </Typography>
-                        {(metric.metricType === METRIC_TYPE['TIMESERIES'] && metric.metricDataKey) &&
-                            <ResponsiveContainer width='100%' height={400}>
-                                <ComposedChart className={classes.lineChart} data={graphData[metric.metricID]}
-                                    margin={{top: 5, right: 30, left: 20, bottom: 5}}>
-                                    <XAxis dataKey="name" 
-                                        minTickGap={20}
-                                        label={{ value: 'Time of day', position: 'insideBottomRight', offset: -15}}
-                                        />
-                                    {metric.dimensions[0].type === 'derivedDim' ?
-                                        <YAxis type="category" width={120}
-                                        />
-                                    :
-                                        <YAxis
-                                        // label={{ value: 'Concentration (ppm)', angle: -90, position: 'insideLeft'}}//insideBottomLeft
-                                        />
-                                    }
-                                    <CartesianGrid strokeDasharray="3 3"/>
-                                    <Tooltip/>
-                                    <Legend />
-                                    {/* <Brush dataKey='name' height={30} stroke="#8884d8"/> */}
-                                    {nameMapper &&
-                                        Object.keys(nameMapper[metric.metricID]).map(key => {
-                                            let mapper = nameMapper[metric.metricID][key];
-                                            if(mapper['chartType'] === DATA_VIEW_TYPE['LINE']) {
-                                                return(<Line name={mapper['name']} key={key} type="monotone"
-                                                    strokeWidth={5}
-                                                    dataKey={key}
-                                                    dot={false}
-                                                    // dot={{stroke: mapper['color']}}
-                                                    // fill={mapper['color']}
-                                                    stroke={mapper['color']}
-                                                     // stroke="none"
-                                                    />)
-                                            }
-                                            if (mapper['chartType'] === DATA_VIEW_TYPE['BAR']) {
-                                                return <Bar name={mapper['name']} key={key} dataKey={key}
-                                                    fill={mapper['color']} />
-                                            }
-                                            if (mapper['chartType'] === DATA_VIEW_TYPE['SCATTER']) {
-                                                return <Line name={mapper['name']}
-                                                    key={key}
-                                                    dataKey={key}
-                                                    dot={{stroke: mapper['color']}}
-                                                    fill={mapper['color']}
-                                                    stroke="none"/>
-                                            }
-                                            if (mapper['chartType'] === DATA_VIEW_TYPE['AREA']) {
-                                                return <Area type='monotone'
-                                                    name={mapper['name']}
-                                                    key={key}
-                                                    dataKey={key}
-                                                    fill={mapper['color']}
-                                                    stroke={mapper['color']}/>
-                                            }
-                                        })
-                                    }
-                                </ComposedChart>
-                            </ResponsiveContainer>
-                        }
-                        {(metric.metricType === METRIC_TYPE['CATEGORICAL']) ?
-                            <ResponsiveContainer width='100%' height={400}>
-                                {metric.dimensions[0].ctype === DATA_VIEW_TYPE['PIE'] ?
-                                    <PieChart>
-                                        <Pie
-                                            activeIndex={this.state.activeIndex}
-                                            activeShape={renderActiveShape}
-                                            isAnimationActive={true}
-                                            data={graphData[metric.metricID]} 
-                                            labelLine={false}
-                                            outerRadius={120} 
-                                            fill="#8884d8"
-                                            innerRadius={100}
-                                            onMouseEnter={this.onPieEnter}
-                                            >
-                                            {
-                                                graphData[metric.metricID].map((entry, index) =>
-                                                    <Cell fill={entry.color} key={index}/>
-                                                )
-                                            }
-                                        </Pie>
-                                        <Legend/>
-                                    </PieChart>
+                    {(metric.metric_type === METRIC_TYPE['TIMESERIES'] && metric.metric_data_key) &&
+                        <ResponsiveContainer width='100%' height={400}>
+                            <ComposedChart className={classes.lineChart} data={graphData[metric.metric_id]} //metricID
+                                margin={{top: 5, right: 30, left: 20, bottom: 5}}>
+                                <XAxis dataKey="name" 
+                                    minTickGap={20}
+                                    label={{ value: 'Time of day', position: 'insideBottomRight', offset: -15}}
+                                    />
+                                {metric.dimensions[0].type === 'derivedDim' ?
+                                    <YAxis type="category" width={120}
+                                    />
                                 :
-                                    (metric.dimensions[0].ctype === DATA_VIEW_TYPE['TILE'] ?
-                                        <div className={classes.tile}
-                                            style={{backgroundColor:graphData[metric.metricID][0].color}}>
-                                            <Typography gutterBottom variant="h6">
-                                                {graphData[metric.metricID][0].name}
-                                            </Typography>
-                                            <Typography gutterBottom variant="h6">
-                                                {graphData[metric.metricID][0].value}
-                                            </Typography>
-                                        </div>
-                                    :
-                                        <div>Can't find appropriate Pattern!</div>
-                                    )
+                                    <YAxis
+                                    // label={{ value: 'Concentration (ppm)', angle: -90, position: 'insideLeft'}}//insideBottomLeft
+                                    />
                                 }
-                            </ResponsiveContainer>
-                        :
-                        (metric.metricType === METRIC_TYPE['RAW_DATA'] &&
-                            <AlertAnalysis stateData={graphData[metric.metricID]}
-                            showDate={false}/>
-                        // :
-                        //     <div>Can't find appropriate Pattern</div>
-                        )
-                        
-                        }
+                                <CartesianGrid strokeDasharray="3 3"/>
+                                <Tooltip/>
+                                {/* <Tooltip content={<CustomTooltip/>}/> */}
+                                <Legend />
+                                {/* <Brush dataKey='name' height={30} stroke="#8884d8"/> */}
+                                {nameMapper &&
+                                    Object.keys(nameMapper[metric.metric_id]).map(key => {
+                                        let mapper = nameMapper[metric.metric_id][key];
+                                        if(mapper['chartType'] === DATA_VIEW_TYPE['LINE']) {
+                                            return(<Line name={mapper['name']} key={key} type="monotone"
+                                                strokeWidth={5}
+                                                dataKey={key}
+                                                dot={false}
+                                                isAnimationActive={false}
+                                                // dot={{stroke: mapper['color']}}
+                                                // fill={mapper['color']}
+                                                stroke={mapper['color']}
+                                                    // stroke="none"
+                                                />)
+                                        }
+                                        if (mapper['chartType'] === DATA_VIEW_TYPE['BAR']) {
+                                            return <Bar name={mapper['name']} key={key} dataKey={key}
+                                                fill={mapper['color']} isAnimationActive={false}/>
+                                        }
+                                        if (mapper['chartType'] === DATA_VIEW_TYPE['SCATTER']) {
+                                            return <Line name={mapper['name']}
+                                                key={key}
+                                                dataKey={key}
+                                                dot={{stroke: mapper['color']}}
+                                                fill={mapper['color']}
+                                                stroke="none"
+                                                isAnimationActive={false}/>
+                                        }
+                                        if (mapper['chartType'] === DATA_VIEW_TYPE['AREA']) {
+                                            return <Area type='monotone'
+                                                name={mapper['name']}
+                                                key={key}
+                                                dataKey={key}
+                                                fill={mapper['color']}
+                                                stroke={mapper['color']}
+                                                isAnimationActive={false}/>
+                                        }
+                                    })
+                                }
+                            </ComposedChart>
+                        </ResponsiveContainer>
+                    }
+                    {(metric.metric_type === METRIC_TYPE['CATEGORICAL']) ?
+                        <ResponsiveContainer
+                        width='100%' 
+                        height={400}>
+                            {metric.dimensions[0].ctype === DATA_VIEW_TYPE['PIE'] ?
+                                <PieChart>
+                                    <Pie
+                                        dataKey="value"
+                                        activeIndex={this.state.activeIndex}
+                                        activeShape={renderActiveShape}
+                                        isAnimationActive={true}
+                                        data={graphData[metric.metric_id]} 
+                                        labelLine={false}
+                                        outerRadius={isDashboard ? 80 : 120} 
+                                        fill="#8884d8"
+                                        innerRadius={isDashboard ? 60: 100}
+                                        onMouseEnter={this.onPieEnter}>
+                                        {
+                                            graphData[metric.metric_id].map((entry, index) =>
+                                                <Cell fill={entry.color} key={index}/>
+                                            )
+                                        }
+                                    </Pie>
+                                    <Legend/>
+                                </PieChart>
+                            : metric.dimensions[0].ctype === DATA_VIEW_TYPE['VERTICAL'] ?
+                                <ResponsiveContainer width='100%' height={400}>
+                                    <ComposedChart layout="vertical" className={classes.lineChart}
+                                        data={graphData[metric.metric_id]}
+                                        margin={{top: 5, right: 30, left: 20, bottom: 5}}>
+                                        <YAxis dataKey="name" minTickGap={20} type="category"
+                                            label={{ value: 'Dispenser', angle: -90, position: 'insideLeft'}}/>
+                                        <XAxis type="number" 
+                                            label={{ value: 'Value', position: 'insideBottomRight', offset: 0}}/>
+                                        <CartesianGrid strokeDasharray="3 3"/>
+                                        <Tooltip/>
+                                        <Legend />
+                                        {nameMapper &&
+                                            Object.keys(nameMapper[metric.metric_id]).map(key => {
+                                                let mapper = nameMapper[metric.metric_id][key];
+                                                return <Bar name={mapper['name']} barSize={60} key={key}
+                                                    dataKey={key} isAnimationActive={false}>
+                                                    {
+                                                        graphData[metric.metric_id].map((entry, index) => {
+                                                            let color;
+                                                            if(entry[key] >= 80)
+                                                                color = '#1b5e20';
+                                                            else if(entry[key] <= 40)
+                                                                color = '#dd2c00';
+                                                            else if(entry[key] < 80 && entry[key] > 40)
+                                                                color = '#ffeb3b';
+                                                            return <Cell key={index} fill={color}
+                                                                // onClick={e => handleBarClick(entry[key])}
+                                                            />;
+                                                        })
+                                                    }
+                                                </Bar>
+                                            })
+                                        }
+                                    </ComposedChart>
+                                </ResponsiveContainer>
+                            : (metric.dimensions[0].ctype === DATA_VIEW_TYPE['TILE'] ?
+                                    <div className={classes.tile}
+                                        style={{backgroundColor:graphData[metric.metric_id][0].color}}>
+                                        <Typography gutterBottom variant="h6">
+                                            {graphData[metric.metric_id][0].name}
+                                        </Typography>
+                                        <Typography gutterBottom variant="h6">
+                                            {graphData[metric.metric_id][0].value}
+                                        </Typography>
+                                    </div>
+                                :
+                                    <div>Can't find appropriate Pattern!</div>
+                                )
+                            }
+                        </ResponsiveContainer>
+                    :
+                    (metric.metric_type === METRIC_TYPE['RAW_DATA'] &&
+                        <AlertAnalysis stateData={graphData[metric.metric_id]}
+                            isDashboard={isDashboard}/>
+                    // :
+                    //     <div>Can't find appropriate Pattern</div>
+                    )
+                    
+                    }
+                    {(metric.metric_type === METRIC_TYPE['TABLE_DATA'])&&
+                        <div>table data</div>
+                    }
+                    {/* <CustomModal
+                        header="Dispenser Details"
+                        content="testing"//{deviceData}
+                        handleClose={handleClose}
+                        open={stateData.barClick}
+                        /> */}
                 </div>
             })
         )
     }
 }
-export default GraphPlot;
+
+export default withStyles(styles)(GraphPlot);
+
+
+// const CustomTooltip  = React.createClass({
+  
+//     getIntroOfPage(label) {
+//         let mapper =[];
+//     let toolTip = ''
+//       mapper.map((dt) => {
+//           if(dt['label'] === label && dt['toolTip']) {
+//             toolTip =  dt['toolTip']
+//         }
+//       })
+//       return toolTip;
+//     },
+  
+//     render() {
+//       const { active } = this.props;
+  
+//       if (active) {
+//         const { payload } = this.props;
+//           return (
+//             <div className="custom-tooltip">
+//              {payload.map((row) =>
+//              <div>
+//                <p className="label">{`${row.dataKey} : ${row.value}`}</p>
+//                <p className="intro">{this.getIntroOfPage(row.dataKey)}</p>
+//                </div>
+//              )}
+//             </div>
+//           );
+       
+//       }
+//       return null;
+//     }
+//   });

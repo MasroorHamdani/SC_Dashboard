@@ -1,4 +1,4 @@
-import red from '@material-ui/core/colors/red';
+import {red, green} from '@material-ui/core/colors';
 const styles = theme => ({
     card: {
       // maxWidth: 400,
@@ -12,12 +12,13 @@ const styles = theme => ({
     content: {
       minHeight: 10,
       // paddingTop: '56.25%',
+      display: 'flex'
     },
     actions: {
       display: 'flex',
     },
     avatar: {
-      backgroundColor: red[500],
+      backgroundColor: green[300],//red[500],
     },
     pointer: {
       cursor: 'pointer'

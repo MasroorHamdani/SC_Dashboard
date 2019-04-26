@@ -29,7 +29,7 @@ class DateRowComponent extends Component {
                         showYearDropdown
                         showTimeSelect
                         timeFormat="HH:mm"
-                        timeIntervals={15}
+                        timeIntervals={5}
                         dateFormat="MM/d/YY HH:mm"
                         timeCaption="Time"
                         maxDate={new Date()}
@@ -45,7 +45,7 @@ class DateRowComponent extends Component {
                         showYearDropdown
                         showTimeSelect
                         timeFormat="HH:mm"
-                        timeIntervals={15}
+                        timeIntervals={5}
                         dateFormat="MM/d/YY HH:mm"
                         timeCaption="Time"
                         minDate={data.startDate}
@@ -72,6 +72,9 @@ class DateRowComponent extends Component {
                 {handleRefresh &&
                     <RefreshIcon className={classes.pointer}
                     onClick={handleRefresh}/>
+                }
+                {data.rangeError &&
+                    <Typography className={classes.errorMessage}>{data.rangeError}</Typography>
                 }
             </div>
         )

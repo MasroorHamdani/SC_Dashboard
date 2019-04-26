@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import {withStyles, AppBar, Tabs, Tab} from '@material-ui/core';
 import styles from './DataAnalysisStyle';
 import AnalysisData from './AnalysisData';
-import {ANALYTICS_TAB} from '../../constants/Constant';
 
 /**
  * It is s Child component which is in turn Parent Component with Tabs setup and
@@ -11,11 +10,16 @@ import {ANALYTICS_TAB} from '../../constants/Constant';
  * Data is passed as input from Parent container.
  */
 class DataAnalysisComponent extends Component {
+    constructor(props) {
+        super(props)
+        this.info = false;
+    }
     render() {
         const {classes, stateData, handleDateChange,
             handleTabChange, handleSamplingChange,
             handleDatePicker, handleChangeStart,
-            handleListSelection, handleChangeEnd} = this.props;
+            handleListSelection, handleChangeEnd,
+            refreshData} = this.props;
         return(
             <div className={classes.main}>
                 <div>
@@ -29,11 +33,15 @@ class DataAnalysisComponent extends Component {
                             indicatorColor="primary"
                             textColor="primary"
                             variant="fullWidth">
-                                {Object.keys(stateData.installationList).map((key)=> (
-                                    <Tab label={stateData.installationList[key]['text']}
-                                        value={stateData.installationList[key]['key']}
-                                        key={stateData.installationList[key]['key']}/>
-                                ))}
+                                {Object.keys(stateData.installationList).map((key)=> {
+                                    if(stateData.installationList && !this.info) {
+                                        this.info = true;
+                                        handleTabChange('', key)
+                                    }
+                                    return <Tab label={Array.isArray(stateData.installationList[key]) ? stateData.installationList[key][0]['text']: stateData.installationList[key]['text']}
+                                        value={Array.isArray(stateData.installationList[key]) ? stateData.installationList[key][0]['key']: stateData.installationList[key]['key']}
+                                        key={Array.isArray(stateData.installationList[key]) ? stateData.installationList[key][0]['key']: stateData.installationList[key]['key']}/>
+                                })}
                             </Tabs>
                         </AppBar>
                     }
@@ -44,7 +52,8 @@ class DataAnalysisComponent extends Component {
                         handleDatePicker={handleDatePicker}
                         handleChangeStart={handleChangeStart}
                         handleListSelection={handleListSelection}
-                        handleChangeEnd={handleChangeEnd}/>
+                        handleChangeEnd={handleChangeEnd}
+                        refreshData={refreshData}/>
                     }
                 </div>
             </div>

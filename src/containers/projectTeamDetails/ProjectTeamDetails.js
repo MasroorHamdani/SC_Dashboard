@@ -3,10 +3,11 @@ import { connect } from "react-redux";
 import {withStyles, Grid, CardContent,
     Typography, Card, CardHeader, IconButton,
     Divider, FormControl, InputLabel, TextField,
-    Select, LinearProgress} from '@material-ui/core';
+    Select, LinearProgress, List, ListItem} from '@material-ui/core';
 import {isEqual} from 'lodash';
 import ClearIcon from '@material-ui/icons/Clear';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
+import EditIcon from '@material-ui/icons/Edit';
 import styles from './ProjectTeamDetailsStyle';
 import CustomModal from '../../components/modal/Modal';
 import {API_URLS, PROJECT_TABS, NAMESPACE_MAPPER,
@@ -16,12 +17,14 @@ import {projectDetailData} from '../../actions/ProjectDataAction';
 import {profileData, profileDataUpdate} from '../../actions/UserProfileDataAction';
 import UserProfileData from '../../components/userProfile/UserProfileData';
 import {formatDateTime} from '../../utils/DateFormat';
+import {capitalizeFirstLetter} from '../../utils/FormatStrings';
 
 class ProjectInstallationDetails extends Component {
     constructor(props) {
         super(props);
         this.state = {
             open: false,
+            isEdit: false,
             deleteNotify: false,
             profileNotify: false,
             profile: {
@@ -38,19 +41,20 @@ class ProjectInstallationDetails extends Component {
             uid: props.match.params.uid,
             userLocation : {},
             loading: true,
-            sucess: false
         };
         this.info = false;
         this.earlyState = true;
     }
     
-    handleModalState = () => {
+    handleModalState = (isEdit=false) => {
     /**
      * Handle the modal open and close state.
      * Modal shown to add a new allocation.
      */
-        this.setState({ open: !this.state.open});
+        this.setState({'isEdit':isEdit,
+            open: !this.state.open});
     };
+
     handleModalDeleteState = () => {
     /**
      * Handle Modal which pops up while deleting users allocation.
@@ -67,6 +71,7 @@ class ProjectInstallationDetails extends Component {
      */
         this.setState({ profileNotify: !this.state.profileNotify});
     }
+
     onAddtion = () => {
     /**
      * This will handle allocation of user to a new location.
@@ -98,6 +103,7 @@ class ProjectInstallationDetails extends Component {
             this.setState({errorMessage : "Please enter all valid details"})
         }
     }
+
     handleChange = (event) => {
     /**
      * Common function to change the state variables.
@@ -113,6 +119,7 @@ class ProjectInstallationDetails extends Component {
               }
         });
     }
+
     handleSubmit = () => {
     /**
      * Function to update the user profile. Call the POST api and show user an update message
@@ -125,6 +132,7 @@ class ProjectInstallationDetails extends Component {
         this.props.onProfileData(config, 'POST');
         this.earlyState = false;
     }
+
     onDelete = () =>{
     /**
      * For removing allocation for a user, once user confirms for deletion,
@@ -142,6 +150,7 @@ class ProjectInstallationDetails extends Component {
         this.handleModalDeleteState();
         this.info = false;
     }
+
     removeLocation = (insID, name) => {
     /**
      * While user will click on remove allocation,
@@ -152,6 +161,20 @@ class ProjectInstallationDetails extends Component {
         this.deleteInformation = `Do you Want Remove the User Association for location ${name}`;
         this.handleModalDeleteState();
     }
+
+    editLocation = (insID, name) => {
+        this.state.association.map((row) => {
+            if(row.InsID === insID) {
+                row['ShiftStart'] = formatDateTime(row.ShiftStart,"HHmm", "HH:mm")
+                row['ShiftEnd'] = formatDateTime(row.ShiftEnd,"HHmm", "HH:mm")
+                this.setState({userLocation: row}, function () {
+                    this.handleModalState(true)
+                })
+            }
+        })
+        
+    }
+
     addDetail = (event) => {
     /***
      * This function will be called to update the state while user selects a new allocation for any member.
@@ -164,6 +187,7 @@ class ProjectInstallationDetails extends Component {
             }
         })
     }
+
     tagDetail = (event) => {
     /**
      * Tags is a list and by default 'cleaningIssues' has to be allocated
@@ -188,6 +212,7 @@ class ProjectInstallationDetails extends Component {
             }
         })
     }
+
     getProfileData =() => {
     /**
      * Get the user profile data.
@@ -202,9 +227,11 @@ class ProjectInstallationDetails extends Component {
         if(!this.earlyState)
             this.handleModalProfileState();
     }
+
     componentDidMount() {
         this.getProfileData();
     }
+
     getUserProfile = (userDetails) => {
     /**
      * Get complete user profile details, like users allocations and time and other details.
@@ -225,6 +252,7 @@ class ProjectInstallationDetails extends Component {
         return {profile: profile,
             association: association};
     }
+
     componentDidUpdate(prevProps, prevState) {
     /**
      * This part will listen to project selection change from the header component.
@@ -246,16 +274,16 @@ class ProjectInstallationDetails extends Component {
                     this.getProfileData();
                 });
         }
-        /***
-         * Check if profile data is there or location list is there,
-         * this part is used to update the profile on UI and
-         * also set the location list, allocated and remaining ones
-         * on UI.
-         */
+
+    /***
+     * Check if profile data is there or location list is there,
+     * this part is used to update the profile on UI and
+     * also set the location list, allocated and remaining ones
+     * on UI.
+     */
         if ((this.props.userProfile || this.props.locationList) &&
             (!isEqual(this.props.userProfile, prevProps.userProfile) ||
-            !isEqual(this.props.locationList, prevState.locationList))
-            ) {
+            !isEqual(this.props.locationList, prevState.locationList))) {
             if(!this.info) {
                 const endPoint = `${API_URLS['PROJECT_DETAILS']}/${this.state.pid}/
                     ${PROJECT_TABS['INSTALLATION']}/${PROJECT_TABS['DETAILS']}`,
@@ -281,6 +309,7 @@ class ProjectInstallationDetails extends Component {
                     userProfile['ID']= prevState.profile.ID;
                     userProfile['RFID']= prevState.profile.RFID;
                 }
+
                 if(!this.state.profile.Firstname) {
                     this.setState({
                         profile: userProfile,
@@ -310,29 +339,36 @@ class ProjectInstallationDetails extends Component {
                         })
                     })
                     this.setState({association: association,
-                        locationList: locationList});
+                        locationList: locationList,
+                        // loading: false
+                    });
                 }
             } else {
                 this.getProfileData();
             }
         }
+
     /**
      * Progress bar
      */
         if(this.state.loading) {
             this.setState({
                 loading: false,
-                sucess: true
             })
         }
-      }
+    }
     
-    render(){
+    render() {
         let returnData;
         const {classes} = this.props;
         if(this.state.locationList) {
             // Add user to a new location modal content
             returnData = <div>
+                {this.state.isEdit ?
+                    <Typography variant="h6">
+                        {this.state.userLocation.name} | {this.state.userLocation.locn}
+                    </Typography>
+                :
                 <FormControl className={classes.formControl}>
                     <InputLabel htmlFor="age-native-helper">Location</InputLabel>
                     <Select native
@@ -341,8 +377,7 @@ class ProjectInstallationDetails extends Component {
                         inputProps={{
                             name: 'InsID',
                             id: 'InsID',
-                            }}
-                    >
+                            }}>
                     <option value="" />
                     {this.state.locationList.map(function(loc) {
                         if(!loc.assigned)
@@ -351,6 +386,7 @@ class ProjectInstallationDetails extends Component {
                     })}
                     </Select>
                 </FormControl>
+                }
                 <Grid container spacing={24}>
                     <Grid item xs={12} sm={6}>
                         <TextField
@@ -432,10 +468,11 @@ class ProjectInstallationDetails extends Component {
                 </Grid>
             </div>
         }
+
         return (
             <div className={classes.root}>
                 {this.state.loading &&
-                    <LinearProgress/>
+                    <LinearProgress className={classes.buttonProgress}/>
                 }
                 <main className={classes.content}>
                 <UserProfileData 
@@ -449,17 +486,19 @@ class ProjectInstallationDetails extends Component {
                             <Card className={classes.card}>
                                 <CardHeader action={
                                     <IconButton>
-                                        <AddCircleOutlineIcon onClick={this.handleModalState}/>
+                                        <AddCircleOutlineIcon onClick={event => this.handleModalState()}/>
                                     </IconButton>
                                     }
                                 subheader="Location Assigned"/>
                                 {this.state.association &&
                                     this.state.association.map((dt, i) => {
                                     // Display the allocated locations for the user per project
+                                    // With Edit and Delete options for the selections.
                                     return <Card className={classes.card} key={i}>
                                         <CardHeader
                                             action={
-                                            <IconButton>
+                                            <IconButton className={classes.iconButton}>
+                                                <EditIcon onClick={event => this.editLocation(dt.InsID, dt.name)}/>
                                                 <ClearIcon onClick={event => this.removeLocation(dt.InsID, dt.name)}/>
                                             </IconButton>
                                             }
@@ -472,13 +511,18 @@ class ProjectInstallationDetails extends Component {
                                                 <Typography component="p">
                                                 <b>Shift Ends At :</b> {formatDateTime(dt.ShiftEnd, "HHmm", "hh:mm A")}
                                                 </Typography>
-                                                <Typography component="p">
-                                                    <b>Tags associated :</b> {dt.Tags.map((dt, index) => {
-                                                        return <span key={index}> {dt} </span>
+                                                <Typography component="div">
+                                                    <b>Tags associated :</b> 
+                                                    <List dense={true}>
+                                                    {dt.Tags.map((dt, index) => {
+                                                        return <ListItem key={index}>
+                                                        {capitalizeFirstLetter(dt)}
+                                                        </ListItem>
                                                     })}
+                                                    </List>
                                                 </Typography>
                                                 <Typography component="p">
-                                                <b>Level :</b> {dt.Level}
+                                                <b>Level :</b> {capitalizeFirstLetter(dt.Level)}
                                                 </Typography>
                                             </CardContent>
                                         </Card>
@@ -491,7 +535,7 @@ class ProjectInstallationDetails extends Component {
                     <CustomModal
                         header="Associate User with Location"
                         content={returnData}
-                        handleClose={this.handleModalState}
+                        handleClose={event => this.handleModalState()}
                         handleClick={this.onAddtion}
                         open={this.state.open}
                         showFooter={true}
@@ -533,4 +577,5 @@ function mapDispatchToProps(dispatch) {
         }
     }
 }
+
 export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(ProjectInstallationDetails));

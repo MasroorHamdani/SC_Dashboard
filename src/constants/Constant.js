@@ -1,6 +1,10 @@
-export const API_END_POINT = "https://4l6qi5oh0h.execute-api.ap-southeast-1.amazonaws.com/prod";
-//"https://1w5tcso1ol.execute-api.ap-southeast-1.amazonaws.com/alpha";
 
+export const API_END_POINT = process.env.REACT_APP_API_END_POINT
+//"https://4l6qi5oh0h.execute-api.ap-southeast-1.amazonaws.com/prod";
+
+export const NEW_API_END_POINT = "https://4l6qi5oh0h.execute-api.ap-southeast-1.amazonaws.com/betaV2"
+export const S3_REPORTS_END_POINT = process.env.REACT_APP_S3_REPORTS_END_POINT
+//"https://80y6zxl35d.execute-api.ap-southeast-1.amazonaws.com/beta/reports";
 export const API_URLS = {
     "LOGIN": "/unauth/login",
     "REFRESH_TOKEN": "/unauth/login",
@@ -10,7 +14,9 @@ export const API_URLS = {
     "RESET_PASSWORD": "/unauth/password/confirm",
     "AUTH_RESET_PASSWORD": "/unauth/password/authchallenge",
     "USER_PROFILE": "/authV2/profile",
-    "DEVICE_DATA": "/authV2/devices/data/project",
+    // "DEVICE_DATA": "/authV2/devices/data/project",
+    "DEVICE_DATA": "/authV2/devices/datatemp/project",
+    "NEW_DEVICE_DATA": "/authV2/devices/datanew/analytics/projects",
     "DEVICE_METRICS": "/auth/devices/metrics",
     "SERVICE_REQUIREMENTS": "/auth/algorithms",
     "PROJECT_LOCATION": "/installations/devices",
@@ -19,13 +25,20 @@ export const API_URLS = {
     'TEAM_MEMBERS': 'team/members',
     'TEAM_ASSOCIATION': 'team/assoc',
     'DEFAULT': 'default',
-    'INSTALLATION': '/installations'
+    'INSTALLATION': '/installations',
+    'HEALTH': '/health',
+    'REPORTING_SERVICE': '/services/reporting',
+    'REPORTING_LIST': '/reports'
 };
 
 export const DASHBOARD_METRIC = {
-    "ReqType": "default",
-    "Type": "DASHBOARD",
-    "SubType": "V1"
+    // "ReqType": "default",
+    // "Type": "DASHBOARD",
+    // "SubType": "V1"
+    "req_type": "DEFAULT",
+    "type": "DASHBOARD",
+    "sub_type": "V1",
+    "all_metrics": []
 }
 export const NEW_PASSWORD_REQUIRED = "NEW_PASSWORD_REQUIRED";
 
@@ -59,56 +72,22 @@ export const REACT_URLS = {
     'ABOUT': '/about',
     'AUTH_RESET': '/auth-reset',
     'USER-PROFILE': '/profile',
-    'ALERT': '/alert',
-    'DISPENSER': '/dispenser'
+    'ALERT': '/alert/project',
+    'DISPENSER': '/dispenser/project',
+    'HEALTH_STATUS': '/health/project'
 }
 
 export const DATE_TIME_FORMAT = 'YYYYMMDDHHmmss'
 
-export const GRAPH_LABEL_TIME_FORMAT = 'HH:mm'//'DD/MM/YYYY HH:mm:ss'
+export const GRAPH_LABEL_TIME_FORMAT = 'HH:mm'
+
+export const GRAPH_LABEL_DATE_TIME_FORMAT = 'DD/MM/YYYY HH:mm:ss'
 
 export const HOUR_MIN_FORMAT = 'hh:mm A'
 
 export const HOUR_FORMAT = 'HH:mm'
 
-export const DESCRIPTIVE_DATE_TIME_FORMAT = 'dddd, MMMM Do, YYYY h:mm:ss a'
-
-export const ANALYTICS_TABS = {
-    0: 'FD',
-    1: 'PC',
-    2: 'AQ',
-    3: 'WD',
-    4: 'CLOGS'
-}
-
-export const ANALYTICS_SUB_TABS = {
-    'ALERT' : { 'key': 'alert',
-                'display': 'Alert'},
-    'DISPENSER' : {'key': 'dispenser',
-                'display': 'Dispenser'
-                },
-    'INSTALLATION_DETAILS' : {'key': 'installation',
-                            'display': "Installation Details"
-                            }
-}
-
-export const ANALYTICS_TAB = {
-    'FD': {'key': 'FD',
-                'value': 'FD',
-                'text': 'Feedback Tablet'},
-    'PC': {'key': 'PC',
-                'value': 'PC',
-                'text': 'People counting sensor'},
-    'AQ':{'key': 'AQ',
-                'value': 'AQ',
-                'text': 'Air quality sensor'},
-    'WD': {'key': 'WD',
-                'value': 'WD',
-                'text': 'Wetness Detection sensor'},
-    'CLOGS': {'key': 'CLOGS',
-                'value': 'CLOGS',
-                'text': 'Cleaner Logs'},
-}
+export const DESCRIPTIVE_DATE_TIME_FORMAT = 'dddd, MMMM Do, YYYY h:mm:ss A'
 
 export const ANALYTICS_DATE = {
     'ONE_HOUR': '1h',
@@ -264,13 +243,16 @@ export const ALERT_STATUS = {
     'pending': 'Pending',
     'resolved': 'Resolved',
     'not_sent': 'Not Sent',
-    'blocked': 'Blocked'
+    'blocked': 'Blocked',
+    'work_started': 'Work Started',
+    'acknowledged': 'Acknowledged'
 }
 
 export const METRIC_TYPE = {
     'TIMESERIES' : 'timeseries',
     'CATEGORICAL' : 'categorical',
-    'RAW_DATA': 'raw_data'
+    'RAW_DATA': 'raw_data',
+    'TABLE_DATA': 'table_data'
 }
 
 export const DATA_VIEW_TYPE = {
@@ -279,7 +261,8 @@ export const DATA_VIEW_TYPE = {
     'SCATTER': 'scatter',
     'PIE': 'pie',
     'TILE': 'tile',
-    'AREA': 'area'
+    'AREA': 'area',
+    'VERTICAL': 'vertical'
 }
 
 export const ALERT_LEVEL = [
@@ -307,244 +290,21 @@ export const OPERATION_TYPE = {
     ON_DEMAND: 'ON_DEMAND'
 }
 
-export const LINK = "https://s3-ap-southeast-1.amazonaws.com/scprojectimages/Screen+Shot+2018-09-28+at+3.47.15+PM.png"
+export const DEVICE_TOOL_TIP = {
+    'AQ': 'Air Quality Devices',
+    'PC': 'People Count Devices',
+    'PT': 'Paper Towel Devices',
+    'WD': 'Wetness Detection Devices',
+    'GW': 'Gateway Devices'
+}
 
-export const tempData = [
-    {
-        "metric_id": "mid1",
-        "metric_name": "Times for Bad Feedbacks",
-        "metric_type": "timeseries",
-        "metric_data_key": "t",
-        "column_items": [
-            "t",
-            "uid",
-            "v_rating",
-            "v_reasons"
-        ],
-        "time_index": "t",
-        "dimensions": [
-            {
-                "id": "did1",
-                "key": "v_rating",
-                "color": "#27ae60",
-                "name": "Bad Feedbacks Times: Rating 4",
-                "ctype": "scatter",
-                "dkey": "key",
-                "show_sampling_widget": false,
-                "actions": [
-                    {
-                        "type": "FILTER",
-                        "criteria": {
-                            "op": "EQ",
-                            "field": "v_rating",
-                            "operand": "4",
-                            "is_numeric": true
-                        }
-                    }
-                ]
-            },
-            {
-                "id": "did2",
-                "key": "v_rating",
-                "color": "#2980b9",
-                "name": "Bad Feedbacks Times: Rating 3",
-                "ctype": "scatter",
-                "dkey": "key",
-                "show_sampling_widget": false,
-                "actions": [
-                    {
-                        "type": "FILTER",
-                        "criteria": {
-                            "op": "EQ",
-                            "field": "v_rating",
-                            "operand": "3",
-                            "is_numeric": true
-                        }
-                    }
-                ]
-            },
-            {
-                "id": "did3",
-                "key": "v_rating",
-                "color": "#8e44ad",
-                "name": "Bad Feedbacks Times: Rating 2",
-                "ctype": "scatter",
-                "dkey": "key",
-                "show_sampling_widget": false,
-                "actions": [
-                    {
-                        "type": "FILTER",
-                        "criteria": {
-                            "op": "EQ",
-                            "field": "v_rating",
-                            "operand": "2",
-                            "is_numeric": true
-                        }
-                    }
-                ]
-            },
-            {
-                "id": "did4",
-                "key": "v_rating",
-                "color": "#16a085",
-                "name": "Bad Feedbacks Times: Rating 1",
-                "ctype": "scatter",
-                "dkey": "key",
-                "show_sampling_widget": false,
-                "actions": [
-                    {
-                        "type": "FILTER",
-                        "criteria": {
-                            "op": "EQ",
-                            "field": "v_rating",
-                            "operand": "1",
-                            "is_numeric": true
-                        }
-                    }
-                ]
-            }
-        ]
-    },
-    {
-        "metric_id": "mid2",
-        "metric_name": "Sampled Feedbacks",
-        "metric_type": "timeseries",
-        "metric_data_key": "t",
-        "column_items": [
-            "t",
-            "uid",
-            "v_rating",
-            "v_reasons"
-        ],
-        "time_index": "t",
-        "dimensions": [
-            {
-                "id": "did1",
-                "key": "v_rating",
-                "color": "#16a085",
-                "name": "Good Feedbacks Sampled",
-                "ctype": "bar",
-                "dkey": "key",
-                "show_sampling_widget": true,
-                "actions": [
-                    {
-                        "type": "FILTER",
-                        "criteria": {
-                            "op": "LE",
-                            "field": "v_rating",
-                            "operand": "3",
-                            "is_numeric": true
-                        }
-                    },
-                    {
-                        "type": "RESAMPLER",
-                        "criteria": {
-                            "rule": "60T",
-                            "agg": "count",
-                            "window_type": "constant"
-                        }
-                    }
-                ]
-            },
-            {
-                "id": "did2",
-                "key": "v_rating",
-                "color": "#d35400",
-                "name": "Bad Feedbacks Sampled",
-                "ctype": "bar",
-                "dkey": "key",
-                "show_sampling_widget": true,
-                "actions": [
-                    {
-                        "type": "FILTER",
-                        "criteria": {
-                            "op": "GE",
-                            "field": "v_rating",
-                            "operand": "4",
-                            "is_numeric": true
-                        }
-                    },
-                    {
-                        "type": "RESAMPLER",
-                        "criteria": {
-                            "rule": "60T",
-                            "agg": "count",
-                            "window_type": "constant"
-                        }
-                    }
-                ]
-            }
-        ]
-    },
-    {
-        "metric_id": "mid3",
-        "metric_name": "Total Feedbacks",
-        "metric_type": "categorical",
-        "metric_data_key": "t",
-        "column_items": [
-            "t",
-            "uid",
-            "v_rating",
-            "v_reasons"
-        ],
-        "time_index": "t",
-        "dimensions": [
-            {
-                "id": "did2",
-                "key": "v_rating",
-                "color": "#27ae60",
-                "name": "Total Good Feedbacks",
-                "ctype": "pie",
-                "dkey": "key",
-                "show_sampling_widget": true,
-                "actions": [
-                    {
-                        "type": "FILTER",
-                        "criteria": {
-                            "op": "LE",
-                            "field": "v_rating",
-                            "operand": "3",
-                            "is_numeric": true
-                        }
-                    },
-                    {
-                        "type": "RESAMPLER",
-                        "criteria": {
-                            "rule": "Y",
-                            "agg": "count",
-                            "window_type": "constant"
-                        }
-                    }
-                ]
-            },
-            {
-                "id": "did3",
-                "key": "v_rating",
-                "color": "#c0392b",
-                "name": "Total Bad Feedbacks",
-                "ctype": "pie",
-                "dkey": "key",
-                "show_sampling_widget": true,
-                "actions": [
-                    {
-                        "type": "FILTER",
-                        "criteria": {
-                            "op": "LE",
-                            "field": "v_rating",
-                            "operand": "4",
-                            "is_numeric": true
-                        }
-                    },
-                    {
-                        "type": "RESAMPLER",
-                        "criteria": {
-                            "rule": "Y",
-                            "agg": "count",
-                            "window_type": "constant"
-                        }
-                    }
-                ]
-            }
-        ]
-    }
-];
+export const DEVICE_TYPE = {
+    'AQ': 'Air Quality Devices',
+    'PC': 'People Count Devices',
+    'PT': 'Paper Towel Devices',
+    'WD': 'Wetness Detection Devices',
+    'GW': 'Gateway Devices',
+    'TR': 'Toilet Roll Devices'
+}
+
+export const RANGE_ERROR = "Please select Range within End Date limits - *Reset the time to Default"

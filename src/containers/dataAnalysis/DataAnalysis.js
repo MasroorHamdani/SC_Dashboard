@@ -2,17 +2,18 @@ import React, { Component } from 'react';
 import {connect} from 'react-redux';
 import {isEqual} from 'lodash';
 import {withStyles, LinearProgress} from '@material-ui/core';
-import _ from 'lodash';
+import _, {groupBy} from 'lodash';
 import moment from 'moment-timezone';
 import DataAnalysisComponent from '../../components/dataAnalysis/DataAnalysis';
 import {getApiConfig} from '../../services/ApiCofig';
 import {API_URLS, NAMESPACE_MAPPER, DATA_OPERATIONS,
-  tempData, OPERATION_TYPE} from '../../constants/Constant';
+  OPERATION_TYPE, RANGE_ERROR} from '../../constants/Constant';
 import {projectSubMenuList, projectInstallationList,
   projectAnalysisData, clearDataAnalysis} from '../../actions/DataAnalysis';
 import styles from './DataAvalysisStyle';
 import RadioButtonComponent from '../../components/dataAnalysis/RadioButtonController';
 import {getStartEndTime, getVector} from '../../utils/AnalyticsDataFormat';
+import {getXHourOldDateTime} from '../../utils/DateFormat';
 
 
 /***
@@ -22,8 +23,6 @@ class DataAnalysis extends Component {
   constructor(props) {
     super(props);
     // For setting start time as one hour prior to current time and end time as current time
-    let now = new Date();
-        now.setHours(now.getHours()-1);
     this.state = {
       value: '',
       projectList: [],
@@ -35,9 +34,8 @@ class DataAnalysis extends Component {
       func: '',
       page: '',
       loading: true,
-      success: false,
-      selectedIndex: 0,
-      startDate: now,
+      selectedIndex: 3,
+      startDate: getXHourOldDateTime(24),
       endDate: new Date(),
     };
     this.menuIndex = 0;
@@ -69,6 +67,7 @@ class DataAnalysis extends Component {
         this.state.startDate, this.state.endDate)
     })
   }
+
   handleChangeStart  = (date) => {
   /**
    * This function will be called from the component 'DateRowComponent'
@@ -80,6 +79,7 @@ class DataAnalysis extends Component {
         startDate: date
     });
   }
+
   handleChangeEnd  = (date) => {
   /**
    * This function will be called from the component 'DateRowComponent'
@@ -91,6 +91,7 @@ class DataAnalysis extends Component {
         endDate: date
     });
   }
+
   handleListSelection = (event, value, index) => {
   /**
    * This function will be called from component 'DateRowComponent'
@@ -123,12 +124,12 @@ class DataAnalysis extends Component {
       value: insid,
       dataAnalysis: {},
       loading: true,
-      success: false,
       tab: ''
     }, function() {
       const endPoint = `${API_URLS['PROJECT_DETAILS']}/${pid}${API_URLS['PROJECT_LOCATION']}/${insid}`,
       params = {
-        'getinsinfo' : false
+        'getinsinfo' : false, // This is default set to false
+        'ignoreVirtualDevices' : true // This is default set to false
       },
       config = getApiConfig(endPoint, 'GET', '', params);
       this.props.onInstalationsList(config);
@@ -156,8 +157,6 @@ class DataAnalysis extends Component {
    * in Data Analytics view.
    * It will reinitiate some of the state values to default one.
    */
-    let now = new Date();
-        now.setHours(now.getHours()-1);
     this.setState({
       tab: tab,
       deviceKey: deviceKey,
@@ -165,12 +164,21 @@ class DataAnalysis extends Component {
       subType: subType,
       pid: pid,
       dataAnalysis: {},
-      startDate: now,
+      startDate: getXHourOldDateTime(24),
       endDate : new Date(),
-      selectedIndex: 0
+      selectedIndex: 3
     }, function() {
-      this.handleDateChange(true);
+      this.handleDateChange('1d');
     });
+  }
+
+  refreshData = () => {
+    this.setState({
+      startDate: getXHourOldDateTime(24),
+      endDate : new Date()
+    }, function() {
+      this.handleDateChange();
+    })
   }
 
   handleDateChange = (param='', startDate='', endDate='') => {
@@ -185,7 +193,8 @@ class DataAnalysis extends Component {
     this.setState({
       start: formatedDate.start,
       end: formatedDate.end,
-      sessionHeader: ''
+      sessionHeader: '',
+      selectedIndex: formatedDate.selectedIndex ? formatedDate.selectedIndex : this.state.selectedIndex
     }, function() {
       this.getNewAnalyticsData();
     })
@@ -217,23 +226,25 @@ class DataAnalysis extends Component {
    */
     this.setState({
       loading: true,
-      success: false,
     })
     let metrics = this.getMetric(),
     dataToPost = {
-      // "req_type" : OPERATION_TYPE['DEFAULT'],
-      // "type": this.state.deviceKey,
-      // "sub_type": this.state.subType
-      "ReqType": "default",
-      "Type": this.state.deviceKey,
-      "SubType": this.state.subType
+      "req_type" : OPERATION_TYPE['DEFAULT'],
+      "type": this.state.deviceKey,
+      "sub_type": 'AQ_V0', //this.state.subType,
+      "all_metrics": []
+      // "ReqType": "default",
+      // "Type": this.state.deviceKey,
+      // "SubType": this.state.subType
     };
+  
     if(metrics && metrics.metric.length > 0 &&
         metrics.allMetrics.length > 0 &&
         metrics.metric[0].type === this.state.deviceKey) {
       dataToPost = {
         "req_type" : OPERATION_TYPE['ON_DEMAND'],
         "type": this.state.deviceKey,
+        "sub_type": 'AQ_V0',//this.state.subType,
         "all_metrics": metrics.allMetrics
       };
       dataToPost.all_metrics.map((rows) => {
@@ -253,10 +264,13 @@ class DataAnalysis extends Component {
         })
       })
     }
-    const endPoint = `${API_URLS['DEVICE_DATA']}/${this.state.pid}/${this.state.deviceId}`,
+    const endPoint = `${API_URLS['NEW_DEVICE_DATA']}/${this.state.pid}`,
+    //`${API_URLS['DEVICE_DATA']}/${this.state.pid}/${this.state.deviceId}`,
       params = {
-        'start' : this.state.start,
-        'end': this.state.end,
+        // 'start'
+        'start_date_time' : this.state.start,
+        // 'end': 
+        'end_date_time' : this.state.end,
       };
     let headers = {
       'x-sc-session-token': this.state.sessionHeader ? this.state.sessionHeader : ''
@@ -292,6 +306,34 @@ class DataAnalysis extends Component {
     }
   }
 
+  handleBarClick = (key) => {
+  /**
+   * Handling bar click. any bar which has a click function will call this API.
+   */
+    this.setState({ barClick: true });
+    this.handleDateChange();
+  }
+
+  handleClose = () => {
+  /**
+   * This function will close the modal opened while clicking on a bar
+   */
+    this.setState({ barClick: false });
+  }
+
+  componentDidCatch(error, errorInfo) {
+    // Catch errors in any components below and re-render with error message
+    if(error.toString().includes('RangeError: Invalid interval')) {
+        this.setState({
+            rangeError: RANGE_ERROR,
+            startDate: getXHourOldDateTime(12)
+          })
+    } else {
+        console.log(error.toString())
+    }
+    // You can also log error messages to an error reporting service here
+  }
+
   componentDidMount() {
   /**
    * First function being called on loading.
@@ -300,15 +342,17 @@ class DataAnalysis extends Component {
    */
     if(this.state.pid && this.state.timeZone) {
       this.getInstallationLocation();
-    } else if(this.props.projectSelected) {
+    } else if(this.props.projectSelected || localStorage.getItem('projectSelected')) {
+      let dt = JSON.parse(localStorage.getItem('projectSelected'));
       this.setState({
-        pid: this.props.projectSelected.PID,
-        timeZone: this.props.projectSelected.Region
+        pid: this.props.projectSelected ? this.props.projectSelected.PID : dt.PID,
+        timeZone: this.props.projectSelected  ? this.props.projectSelected.Region : dt.Region
       }, function() {
-          this.getInstallationLocation();
-        });
+        this.getInstallationLocation();
+      });
     }
   }
+
   getInstallationLocation = () => {
     const endPoint = `${API_URLS['PROJECT_DETAILS']}/${this.state.pid}${API_URLS['WASHROOM_LOCATION']}`,
       config = getApiConfig(endPoint, 'GET');
@@ -337,9 +381,11 @@ class DataAnalysis extends Component {
         dataAnalysis: {},
         value: ''
       }, function() {
+        this.props.history.push(this.props.projectSelected.PID);
         this.getInstallationLocation();
       });
   }
+
   /**
    * This part will get the list of locations per project,
    * as the project will be selected in the header.
@@ -347,7 +393,8 @@ class DataAnalysis extends Component {
    * Reducer for installations - 'DataAnalysisProjectListSubMenuReducer'
    */ 
     if (this.props.projectSubMenuList &&
-        !isEqual(this.props.projectSubMenuList, prevProps.projectSubMenuList)) {
+        (!isEqual(this.props.projectSubMenuList, prevProps.projectSubMenuList) ||
+        this.state.projectList.length === 0)) {
         let project = [],
           projObj = {}, SUB1, SUB2;;
         const deviceResponse = this.props.projectSubMenuList;
@@ -363,25 +410,26 @@ class DataAnalysis extends Component {
         project.push(projObj);
         if(project[0] && project[0]['devices']) {
           this.setState({
-            projectList: project
+            projectList: project,
+            loading: false,
           })
         }
     }
+
   /**
    * This part is for data for selected device for selected time frame.
    * There is 'x-sc-session-token' passed in response, which is saved in state,
    * for being used in sampling, as sampling will run all the functions on the cached data
    * which can be accessed from the x-sc-session-token.
    */
-    if (this.props.dataAnalysis &&
-      !isEqual(this.props.dataAnalysis, prevProps.dataAnalysis) &&
-      isEqual(this.props.dataAnalysis.data.status, "success")){
-        //this.props.dataAnalysis.data.data.all_metrics
-        let metricsData = getVector(tempData, this.state.deviceKey);
+  if (this.props.dataAnalysis &&
+    !isEqual(this.props.dataAnalysis, prevProps.dataAnalysis)) {
+    if(isEqual(this.props.dataAnalysis.data.status, "success")) {
+        let metricsData = getVector(this.props.dataAnalysis.data.data.all_metrics, this.state.deviceKey);
         this.setState({
           sessionHeader: this.props.dataAnalysis.headers['x-sc-session-token'],
           metrics: metricsData.dataMetrics,
-          allMetrics: tempData,//this.props.dataAnalysis.data.data.all_metrics,
+          allMetrics: this.props.dataAnalysis.data.data.all_metrics,
           dataAnalysis: this.props.dataAnalysis
         });
         let referData = {};
@@ -393,27 +441,30 @@ class DataAnalysis extends Component {
               dt[d].actions.map((action) => {
                 val.push(action);
               })
-              // let val = {
-              //   'func' : dt[d].statistic,
-              //   'sampling': dt[d].sampling,
-              //   'unit': dt[d].unit
-              // }
               value[d] = val;
             })
           })
           referData[key] = value;
         })
-        if(!this.state[this.state.deviceKey])
-            this.setState({[this.state.deviceKey]: referData})
-    }
+        this.setState({[this.state.deviceKey]: referData,
+          loading: false,
+          rangeError: ''})
+      } else {
+        this.setState({loading: false})
+      }
+  }
+
+
   /**
    * This part deals with getting the sensor installation details for selected location.
    * One location can have multiple Devices of same type.
    * That is being handled by appending numbers to the type.
    */
     if (this.props.installationList &&
-      !isEqual(this.props.installationList, prevProps.installationList)) {
+      (!isEqual(this.props.installationList, prevProps.installationList) ||
+      (!this.state.installationList || Object.keys(this.state.installationList).length === 0))) {
         let installationList = {}, i = 1;
+        // let formattedData = groupBy(this.props.installationList, 'Type');
         this.props.installationList.map((tab) => {
           let list = {
             'key': tab.Type,
@@ -424,27 +475,35 @@ class DataAnalysis extends Component {
             'devid': tab.Devid,
             'pid': tab.PID
           }
+          // This section was clubing the Dispenser type devices into one and show one entry on UI rather then multiple
+          // if((tab.Type === 'PT' || tab.Type === 'SS' || tab.Type === 'TR') && !installationList[tab.Type]) {
+          // // This part is for stacking only the Dispenser data
+          //   installationList[tab.Type] = {};
+          //   installationList[tab.Type]['key'] = tab.Type;
+          //   installationList[tab.Type]['text'] = formattedData[tab.Type][0]['Display'];
+          //   installationList[tab.Type]['subType'] = formattedData[tab.Type][0]['SubType'];
+          //   installationList[tab.Type]['pid'] = formattedData[tab.Type][0]['PID'];
+          //   installationList[tab.Type]['devid'] = formattedData[tab.Type][0]['Devid'];
+          //   installationList[tab.Type]['type'] = formattedData[tab.Type][0]['Type'];
+          //   installationList[tab.Type]['data'] = formattedData[tab.Type];
+          // }
+          // else if((tab.Type === 'PT' || tab.Type === 'SS' || tab.Type === 'TR') && installationList[tab.Type]) {
+          //   return;
+          // }
+          // else if(installationList[tab.Type]
+            // (tab.Type !== 'PT' || tab.Type!== 'SS' || tab.Type !== 'TR')) {
           if(installationList[tab.Type]) {
             installationList[`${tab.Type}-${i}`] = list;
             installationList[`${tab.Type}-${i}`]['key'] = `${installationList[`${tab.Type}-${i}`]['key']}-${i}`;
             i = i + 1;
-          } else {
+          } else{
+          //if(tab.Type !== 'PT' && tab.Type !== 'SS' && tab.Type !== 'TR') {
             installationList[tab.Type] = list
           }
         })
-        this.setState({installationList: installationList})
+        this.setState({installationList: installationList,loading: false,})
     }
-  /**
-   * This section deals with progress bar.
-   * As the API data is served, this section will stop the progress bar loading.
-   */
-    if(this.state.loading) {
-      this.setState({
-        loading: false,
-        success: true,
-      })
-    }
-}
+  }
 
   render () {
     const {classes} = this.props;
@@ -466,6 +525,7 @@ class DataAnalysis extends Component {
             handleChangeStart={this.handleChangeStart}
             handleListSelection={this.handleListSelection}
             handleChangeEnd={this.handleChangeEnd}
+            refreshData={this.refreshData}
             />
         }
         {this.state.loading &&

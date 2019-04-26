@@ -10,35 +10,39 @@ import { API_URLS, NAMESPACE, DASHBOARD_METRIC,
 import { getApiConfig } from '../../services/ApiCofig';
 import {projectAnalysisData, projectSubMenuList} from '../../actions/DataAnalysis';
 import {getVector} from '../../utils/AnalyticsDataFormat';
-import {formatDateWithTimeZone} from '../../utils/DateFormat';
+import {formatDateWithTimeZone, getXHourOldDateTime} from '../../utils/DateFormat';
 
 class Dashboard extends Component {
   constructor(props) {
     super(props);
-    let now =  new Date();
-      now.setHours(now.getHours()-1)
     this.state = {
       data : [],
       dashboardData : [],
       loading: true,
-      success: false,
       endTime: new Date(),
-      startTime: now,
+      startTime: getXHourOldDateTime(1),
     }
     this.metricsIndex = 0;
   }
 
   getProjectData = () => {
-    let dataToPost = DASHBOARD_METRIC,
-      endPoint = `${API_URLS['DEVICE_DATA']}/${this.state.PID}/${API_URLS['DEFAULT']}`,
-      params = {
-        'start' : formatDateWithTimeZone(this.state.startTime, DATE_TIME_FORMAT, DATE_TIME_FORMAT, this.state.timeZone),
-        'end': formatDateWithTimeZone(this.state.endTime, DATE_TIME_FORMAT, DATE_TIME_FORMAT, this.state.timeZone),
-      },
-      config = getApiConfig(endPoint, 'POST', dataToPost, params);
-    this.props.onDataAnalysis(config);
+  /**
+   * Set the loading value to true to show up loading icon
+   * and call the api for fetch analytics data for selected project id.
+   */
+    this.setState({loading: true}, function() {
+      let dataToPost = DASHBOARD_METRIC,
+        endPoint = `${API_URLS['DEVICE_DATA']}/${this.state.PID}/${API_URLS['DEFAULT']}`,
+        params = {
+          'start' : formatDateWithTimeZone(this.state.startTime, DATE_TIME_FORMAT, DATE_TIME_FORMAT, this.state.timeZone),
+          'end': formatDateWithTimeZone(this.state.endTime, DATE_TIME_FORMAT, DATE_TIME_FORMAT, this.state.timeZone),
+        },
+        config = getApiConfig(endPoint, 'POST', dataToPost, params);
+      this.props.onDataAnalysis(config);
+    })
   }
-  componentDidMount(){
+
+  componentDidMount() {
   /**
    * First function being called on loading.
    * It will check if state.pid is present or not, if not, it will check what is the value
@@ -47,14 +51,24 @@ class Dashboard extends Component {
    */
     if(this.state.PID && this.state.timeZone) {
       this.getProjectData();
-    } else if(this.props.projectSelected) {
+    } else if(this.props.projectSelected || localStorage.getItem('projectSelected')) {
+      let dt = JSON.parse(localStorage.getItem('projectSelected'));
       this.setState({
-        PID: this.props.projectSelected.PID,
-        timeZone: this.props.projectSelected.Region},
-        function() {
+        PID: this.props.projectSelected ? this.props.projectSelected.PID : dt.PID,
+        timeZone: this.props.projectSelected ? this.props.projectSelected.Region : dt.Region
+      }, function() {
           this.getProjectData();
         });
     }
+  }
+
+  getInstallationLocation = () => {
+  /**
+   * Make an API call and get installation location details for selected project.
+   */
+      const endPoint = `${API_URLS['PROJECT_DETAILS']}/${this.state.PID}${API_URLS['WASHROOM_LOCATION']}`,
+          config = getApiConfig(endPoint, 'GET');
+      this.props.onDataAnalysisMenu(config);
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -78,6 +92,7 @@ class Dashboard extends Component {
           this.getProjectData();
         });
     }
+  
   /**
    * This part will get the dashboard data per project.
    * As the api will gte all the relavant data for project,
@@ -87,12 +102,13 @@ class Dashboard extends Component {
    * this data is used to mix with analutics and get the data in representable form
    * Reducer to get Analytics data for project - 'DataAnalysisReducer'
    */
-    if ((this.props.dashboardData || this.props.dataAnalysis) &&
+    if ((this.props.dashboardData || this.props.dataAnalysis || this.props.projectLocationList) &&
       ((!isEqual(this.props.dashboardData, prevProps.dashboardData) ||
-      !isEqual(this.props.dataAnalysis, prevProps.dataAnalysis)) ||
+      !isEqual(this.props.dataAnalysis, prevProps.dataAnalysis) ||
+      !isEqual(this.props.projectLocationList, prevProps.projectLocationList)) ||
       !this.state.dashboardData.length > 0)) {
         let projData = [], dashboardData = [];
-        if(this.props.dashboardData && this.props.dashboardData.length > 0){
+        if(this.props.dashboardData && this.props.dashboardData.length > 0) {
           this.props.dashboardData.map((row) => {
             if(row.NS === NAMESPACE['PROJECT_TEAM_ALLMEMBERS'])
               projData.push(row);
@@ -103,6 +119,7 @@ class Dashboard extends Component {
             let projObj = {}, metricsData={};
             const deviceResponse = this.props.dataAnalysis.data.data;
             if(this.props.dataAnalysis.data.status === "success") {
+              this.getInstallationLocation();
               metricsData = getVector(this.props.dataAnalysis.data.data.allMetrics, 'DASHBOARD');
               projObj['PID'] = deviceResponse.pid;
               projData.map((row) => {
@@ -127,17 +144,12 @@ class Dashboard extends Component {
             dashboardData.push(projObj);
             this.setState({
               dashboardData: dashboardData,
+              loading: false
             });
-            if(this.props.projectLocationList &&
-              !isEqual(this.props.projectLocationList, prevProps.projectLocationList)) {
-                this.setState({projectLocationList: this.props.projectLocationList })
-            }
-            if(this.state.loading) {
-              this.setState({
-                loading: false,
-                success: true
-              })
-            }
+        }
+        if(this.props.projectLocationList &&
+          !isEqual(this.props.projectLocationList, prevProps.projectLocationList)) {
+            this.setState({projectLocationList: this.props.projectLocationList })
         }
     }
   }
@@ -183,7 +195,9 @@ function mapDispatchToProps(dispatch) {
     },
   }
 }
+
 Dashboard.propTypes = {
   classes: PropTypes.object.isRequired,
 };
+
 export default withStyles(styles)(connect(mapStateToProps, mapDispatchToProps)(Dashboard));

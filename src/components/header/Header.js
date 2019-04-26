@@ -6,12 +6,13 @@ import classNames from 'classnames';
 
 import {AppBar, Toolbar, Badge, IconButton, Typography,
   withStyles, FormControl, Select,
-MenuItem, Divider, Popper, Paper} from '@material-ui/core';
+MenuItem, Divider, Popper, Paper, ListItem} from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import AccountBox from '@material-ui/icons/AccountBox';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
+import {Link} from "react-router-dom";
 
 import {NAMESPACE, API_URLS, REACT_URLS} from '../../constants/Constant';
 
@@ -36,7 +37,11 @@ class Header extends Component {
         profileOpen: false,
       }
       this.metricsIndex = 0;
+      let addressArray = window.location.pathname.split('/');
+      let projectIndex = addressArray.indexOf('project');
+      this.pid = addressArray[projectIndex + 1];
     }
+
     handleDrawerOpen = () => {
       /**
        * Used for handling the state of the left nav bar.
@@ -75,7 +80,6 @@ class Header extends Component {
         if(proj.PID === value)
           this.props.onProjectSelect(proj)
       })
-      
     }
   
     onClick = (url) => {
@@ -97,12 +101,21 @@ class Header extends Component {
   
     componentDidUpdate(prevProps, prevState) {
     /**
+     * Save the changed project id in local storage as well, being used while refreshing the page.
+     */
+      if(this.props.projectSelected &&
+        !isEqual(this.props.projectSelected, prevProps.projectSelected)) {
+          localStorage.setItem('projectSelected', JSON.stringify(this.props.projectSelected))
+      }
+  
+    /**
      * Manage the internal state as per the reducer value for left menu value.
      */
       if(this.props.menuState &&
         !isEqual(this.props.menuState, prevProps.menuState)) {
           this.setState({open: this.props.menuState.open})
       }
+
     /**
      * After the Project list is receiver in reducer.
      * filter the projects as per the namespace,
@@ -118,15 +131,28 @@ class Header extends Component {
               if(row.NS === NAMESPACE['PROJECT_TEAM_ALLMEMBERS'])
                 projData.push(row);
             });
+          let pid = '', project = '';
+          if (this.pid) {
+            pid = this.pid;
+            projData.map((row) => {
+              if(row.PID === this.pid)
+                project = row;
+                return;
+            })
+          } else {
+            pid = projData[0].PID
+            project = projData[0]
+          }
           this.setState({
             projectList: projData,
-            PID: projData[0].PID
+            PID: pid
           }, function() {
-            this.props.onProjectSelect(projData[0])
-            this.props.onProjectList(projData)
+            this.props.onProjectSelect(project);
+            this.props.onProjectList(projData);
           })
       }
     }
+
     render() {
       const { classes } = this.props;
       const {profileOpen, arrowRef} = this.state;
@@ -151,12 +177,12 @@ class Header extends Component {
                 variant="h6"
                 color="inherit"
                 noWrap
-                className={classes.title}
-                >
-                <img src="https://www.smartclean.sg/images/sc-logo.png" alt="logo" className={classes.logo}/>
-                <span className={classes.beta}>BETA</span>
+                className={classes.title}>
+                <ListItem component={Link} to='/'>
+                  <img src="https://www.smartclean.sg/images/sc-logo.png" alt="logo" className={classes.logo}/>
+                </ListItem>
+                {/* <span className={classes.beta}>BETA</span> */}
               </Typography>
-              
               {/* Drop down with Project list and its selection */}
               {(this.state.projectList && this.state.projectList.length > 0) &&
                 <FormControl className={classes.formControl}>
@@ -215,16 +241,17 @@ class Header extends Component {
                   </MenuItem>
                 </Paper>
               </Popper>
-              <IconButton color="inherit">
+              {/* <IconButton color="inherit">
                 <Badge badgeContent={4} color="secondary">
                   <NotificationsIcon />
                 </Badge>
-              </IconButton>
+              </IconButton> */}
             </Toolbar>
           </AppBar>
       );
     }
   }
+
   function mapStateToProps(state) {
     return {
         menuState: state.MenuActionReducer.data,
@@ -233,6 +260,7 @@ class Header extends Component {
         allProjects : state.projectListReducer.data
     }
   }
+
   function mapDispatchToProps(dispatch) {
     //will dispatch the async action
     return {
@@ -253,7 +281,7 @@ class Header extends Component {
       },
     }
   }
-  
+
 const HeaderComponent = withStyles(styles)(Header);
 // Had to return with - withRouter as Header is not being called as part of router from app.js
 // So accessing 'props.history' was not working.

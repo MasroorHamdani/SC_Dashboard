@@ -32,8 +32,7 @@ class RadioButtonComponent extends Component {
                                         aria-label={data.header}
                                         name={data.header}
                                         className={classes.group}
-                                        value={data.value}
-                                        >
+                                        value={data.value}>
                                         {project.devices &&
                                             project.devices.map(function(key) {
                                                 let name = `${key.name} (${key.locn})`

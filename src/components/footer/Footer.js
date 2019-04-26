@@ -23,7 +23,7 @@ class Footer extends Component {
           {
             t=> <Typography
                 component="h6"
-                color="inherit"
+                // color="inherit"
                 noWrap
                 className={classes.title}>
                 {t('footer-note')}

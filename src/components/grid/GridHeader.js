@@ -12,10 +12,6 @@ import {TableHead, TableSortLabel, Tooltip, TableRow, TableCell} from '@material
  * onRequestSort it is a function, which will accept the column on which we can sort the table
  */
 class EnhancedTableHead extends Component {
-    // createSortHandler = property => event => {
-    //   this.props.onRequestSort(event, property);
-    // };
-  
     render() {
       const { order, orderBy, rows, onRequestSort, allowDelete,
         allowEdit } = this.props;
@@ -26,21 +22,17 @@ class EnhancedTableHead extends Component {
               return (
                 <TableCell
                   key={row.id}
-                  numeric={row.numeric}
+                  align={row.numeric}
                   padding={row.disablePadding ? 'none' : 'default'}
-                  sortDirection={orderBy === row.id ? order : false}
-                >
+                  sortDirection={orderBy === row.id ? order : false}>
                   <Tooltip
-                    title="Sort"
+                    title={row.toolTip? row.toolTip : 'Sort'}
                     placement={row.numeric ? 'bottom-end' : 'bottom-start'}
-                    enterDelay={300}
-                  >
+                    enterDelay={300}>
                     <TableSortLabel
                       active={orderBy === row.id}
                       direction={order}
-                    //   onClick={this.createSortHandler(row.id)}
-                      onClick={e => onRequestSort(e, row.id)}
-                    >
+                      onClick={e => onRequestSort(e, row.id)}>
                       {row.label}
                     </TableSortLabel>
                   </Tooltip>
@@ -60,7 +52,6 @@ class EnhancedTableHead extends Component {
   }
   
   EnhancedTableHead.propTypes = {
-    // onRequestSort: PropTypes.func.isRequired,
     order: PropTypes.string.isRequired,
     orderBy: PropTypes.string.isRequired,
   };
