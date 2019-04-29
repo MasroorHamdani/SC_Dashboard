@@ -37,14 +37,14 @@ class Reports extends Component {
             method: 'GET',
             responseType: 'blob', // important
             headers: {
-                'Content-Type': 'application/pdf',
-                'Accept': 'application/pdf'
+                'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',//'application/pdf',
+                'Accept': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'//'application/pdf'
             }
           }).then((response) => {
             const url = window.URL.createObjectURL(new Blob([response.data]));
             const link = document.createElement('a');
             link.href = url;
-            link.setAttribute('download', 'report.pdf');
+            link.setAttribute('download', 'report.xlsx');
             // Appending link to body is required specifically for downloading on firefox.
             document.body.appendChild(link);
             link.click();
@@ -65,6 +65,7 @@ class Reports extends Component {
             let rows = [], searchList = [];
             if(stateData.report) {
                 stateData.report.map((row) => {
+                    console.log(row, "row");
                     row['generatedOn'] = formatDateTime(row['GeneratedOn'], DATE_TIME_FORMAT, DESCRIPTIVE_DATE_TIME_FORMAT)
                     row['link'] = <div onClick={e=>this.downLoadFile(row['Path'])}>
                                     <Avatar alt='download' src={download}></Avatar>

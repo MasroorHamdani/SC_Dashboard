@@ -159,8 +159,8 @@ export function getStartEndTime(param='', startDate='', endDate='', timeZone='')
       start = (now.subtract({ weeks: 1})).tz(timeZone).format(DATE_TIME_FORMAT);
       selectedIndex = 5;
     } else if(param === ANALYTICS_DATE['CUSTOM']) {
-      end = moment(endDate, DATE_TIME_FORMAT).tz(timeZone).format(DATE_TIME_FORMAT);
-      start = moment(startDate, DATE_TIME_FORMAT).tz(timeZone).format(DATE_TIME_FORMAT);
+      end = moment(endDate, DATE_TIME_FORMAT).format(DATE_TIME_FORMAT);
+      start = moment(startDate, DATE_TIME_FORMAT).format(DATE_TIME_FORMAT);
       selectedIndex = -1;
     } else {
       end = now.tz(timeZone).format(DATE_TIME_FORMAT);
