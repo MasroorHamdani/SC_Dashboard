@@ -32,19 +32,35 @@ class Reports extends Component {
     }
     downLoadFile = (url) => {
         let newUrl = `${S3_REPORTS_END_POINT}/${url}`
+        let fileType = url.split('.')[url.split('.').length-1];
+        let fileName = url.split('/')[url.split('/').length-1];
+        let header;
+        if(fileType === 'pdf') {
+            header = {
+                'Content-Type': 'application/pdf',
+                'Accept': 'application/pdf'
+            }
+        } else if(fileType === 'xlsx') {
+            header = {
+                'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                'Accept': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+            }
+        } else if(fileType === 'csv') {
+            header = {
+                'Content-Type': 'text/csv',
+                'Accept': 'text/csv'
+            }
+        }
         axios({
             url: newUrl,
             method: 'GET',
             responseType: 'blob', // important
-            headers: {
-                'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',//'application/pdf',
-                'Accept': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'//'application/pdf'
-            }
+            headers: header
           }).then((response) => {
             const url = window.URL.createObjectURL(new Blob([response.data]));
             const link = document.createElement('a');
             link.href = url;
-            link.setAttribute('download', 'report.xlsx');
+            link.setAttribute('download', fileName);
             // Appending link to body is required specifically for downloading on firefox.
             document.body.appendChild(link);
             link.click();
@@ -65,7 +81,6 @@ class Reports extends Component {
             let rows = [], searchList = [];
             if(stateData.report) {
                 stateData.report.map((row) => {
-                    console.log(row, "row");
                     row['generatedOn'] = formatDateTime(row['GeneratedOn'], DATE_TIME_FORMAT, DESCRIPTIVE_DATE_TIME_FORMAT)
                     row['link'] = <div onClick={e=>this.downLoadFile(row['Path'])}>
                                     <Avatar alt='download' src={download}></Avatar>
