@@ -34,7 +34,7 @@ class Reports extends Component {
         let newUrl = `${S3_REPORTS_END_POINT}/${url}`
         let fileType = url.split('.')[url.split('.').length-1];
         let fileName = url.split('/')[url.split('/').length-1];
-        let header;
+        let header, responseType = 'blob';
         if(fileType === 'pdf') {
             header = {
                 'Content-Type': 'application/pdf',
@@ -45,6 +45,7 @@ class Reports extends Component {
                 'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
                 'Accept': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
             }
+            responseType = 'arraybuffer'
         } else if(fileType === 'csv') {
             header = {
                 'Content-Type': 'text/csv',
@@ -54,7 +55,7 @@ class Reports extends Component {
         axios({
             url: newUrl,
             method: 'GET',
-            responseType: 'blob', // important
+            responseType: responseType, // important
             headers: header
           }).then((response) => {
             const url = window.URL.createObjectURL(new Blob([response.data]));
