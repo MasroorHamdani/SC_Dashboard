@@ -31,21 +31,29 @@ class Reports extends Component {
         }
     }
     downLoadFile = (url) => {
-        let newUrl = `${S3_REPORTS_END_POINT}/${url}`
-        let fileType = url.split('.')[url.split('.').length-1];
-        let fileName = url.split('/')[url.split('/').length-1];
-        let header, responseType = 'blob';
+        let newUrl = `${S3_REPORTS_END_POINT}/${url}`,
+            fileType = url.split('.')[url.split('.').length-1],
+            fileName = url.split('/')[url.split('/').length-1],
+            header, responseType = 'blob';
         if(fileType === 'pdf') {
             header = {
                 'Content-Type': 'application/pdf',
                 'Accept': 'application/pdf'
             }
         } else if(fileType === 'xlsx') {
+            // header = {
+            //     'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            //     'Accept': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+            // }
+            // responseType = 'arraybuffer'
             header = {
-                'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-                'Accept': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+                'Accept': 'application/vnd.ms-excel' 
             }
-            responseType = 'arraybuffer'
+        } else if(fileType === 'xls') {
+            header = {
+                'Content-Type': 'application/vnd.ms-excel',
+                'Accept': 'application/vnd.ms-excel' 
+            }
         } else if(fileType === 'csv') {
             header = {
                 'Content-Type': 'text/csv',
