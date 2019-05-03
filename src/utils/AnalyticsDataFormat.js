@@ -36,13 +36,13 @@ export function getFormatedGraphData(passedData, metrics, stateData='') {
                             if(row.metric_type === METRIC_TYPE['TIMESERIES']) {
                                 let graphElement = {};
                                 //metricDataKey
-                                if(row.metric_data_key && row.metric_data_key === 't') {
+                                if(row.metric_data_key && (row.metric_data_key === 't' || row.metric_data_key === 'AGG')) {
                                     let timeDiffer = getTimeDifference(stateData.start, stateData.end);
                                     if(timeDiffer <= 24) {
-                                        graphElement['name'] = formatDateTime(vec.t, DATE_TIME_FORMAT, GRAPH_LABEL_TIME_FORMAT)
+                                        graphElement['name'] = formatDateTime(vec[row.metric_data_key], DATE_TIME_FORMAT, GRAPH_LABEL_TIME_FORMAT)
                                         //moment(vec.t, DATE_TIME_FORMAT).format(GRAPH_LABEL_TIME_FORMAT);
                                     } else {
-                                        graphElement['name'] = formatDateTime(vec.t, DATE_TIME_FORMAT, GRAPH_LABEL_DATE_TIME_FORMAT)
+                                        graphElement['name'] = formatDateTime(vec[row.metric_data_key], DATE_TIME_FORMAT, GRAPH_LABEL_DATE_TIME_FORMAT)
                                     }
                                 }
                                 graphElement[dim.id] = vec[dim.key];
