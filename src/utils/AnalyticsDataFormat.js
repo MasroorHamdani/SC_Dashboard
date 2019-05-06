@@ -1,10 +1,11 @@
-import {_, groupBy, orderBy} from 'lodash';
+import {_, groupBy, orderBy, sortBy} from 'lodash';
 import moment from 'moment-timezone';
 
 import {DATE_TIME_FORMAT, GRAPH_LABEL_TIME_FORMAT,
     METRIC_TYPE, ANALYTICS_DATE, GRAPH_LABEL_DATE_TIME_FORMAT,
     NAMESPACE_MAPPER} from '../constants/Constant';
-import {formatDateTime, getTimeDifference} from '../utils/DateFormat';
+import {formatDateTime, getTimeDifference,
+    getTodaysStartDateTime} from '../utils/DateFormat';
 
 export function getFormatedGraphData(passedData, metrics, stateData='') {
 /**
@@ -28,74 +29,74 @@ export function getFormatedGraphData(passedData, metrics, stateData='') {
     metrics.map(function(row) {
         let metridId = row.metricID;
         let graphSection = [], mapper={};
-            Object.keys(passedData[metridId]).map((key) => {
-                row.dimensions.map((dim) => {
-                    if(row.metricType !== METRIC_TYPE['RAW_DATA']) {
-                        passedData[metridId][dim.id].data.map((vec) => {
-                            if(row.metricType === METRIC_TYPE['TIMESERIES']) {
-                                let graphElement = {};
-                                if(row.metricDataKey && row.metricDataKey === 't') {
-                                    let timeDiffer = getTimeDifference(stateData.start, stateData.end);
-                                    if(timeDiffer <= 24) {
-                                        graphElement['name'] = formatDateTime(vec.t, DATE_TIME_FORMAT, GRAPH_LABEL_TIME_FORMAT)
-                                        //moment(vec.t, DATE_TIME_FORMAT).format(GRAPH_LABEL_TIME_FORMAT);
-                                    } else {
-                                        graphElement['name'] = formatDateTime(vec.t, DATE_TIME_FORMAT, GRAPH_LABEL_DATE_TIME_FORMAT)
-                                    }
+        Object.keys(passedData[metridId]).map((key) => {
+            row.dimensions.map((dim) => {
+                if(row.metricType !== METRIC_TYPE['RAW_DATA']) {
+                    passedData[metridId][dim.id].data.map((vec) => {
+                        if(row.metricType === METRIC_TYPE['TIMESERIES']) {
+                            let graphElement = {};
+                            if(row.metricDataKey && row.metricDataKey === 't') {
+                                let timeDiffer = getTimeDifference(stateData.start, stateData.end);
+                                if(timeDiffer) {
+                                    graphElement['name'] = formatDateTime(vec.t, DATE_TIME_FORMAT, GRAPH_LABEL_TIME_FORMAT)
+                                    //moment(vec.t, DATE_TIME_FORMAT).format(GRAPH_LABEL_TIME_FORMAT);
+                                } else {
+                                    graphElement['name'] = formatDateTime(vec.t, DATE_TIME_FORMAT, GRAPH_LABEL_DATE_TIME_FORMAT)
                                 }
-                                graphElement[dim.id] = vec[dim.key];
-                                graphSection.push(graphElement)
-                            } else if(row.metricType === METRIC_TYPE['CATEGORICAL']) {
-                                let graphElement = {};
-                                graphElement['name'] = dim.name;
-                                graphElement['value'] = vec[dim.key];
-                                graphElement['color'] = dim.color;
-                                graphSection.push(graphElement)
                             }
-                        })
-                    } else if(stateData.projectLocationList) {
-                        const data = groupBy(passedData[metridId][dim.id].data.Items,'ID');
-                        /**
-                         * This part is specifically for alerts data.
-                         * Mapping the location list name with locations ids
-                         * To show on UI on Home page
-                         */
-                        let deviceResponse = stateData.projectLocationList, SUB1, SUB2;
-                        deviceResponse.map((row) => {
-                            SUB1 = NAMESPACE_MAPPER[row['NS']].SUB1;
-                            SUB2 = NAMESPACE_MAPPER[row['NS']].SUB2;
-                            row[SUB1] =  row.SUB1;
-                            row[SUB2] = row.SUB2;
-                        })
-                        if(data) {
-                            Object.keys(data).map((key, index) => {
-                                let test = {};
-                                test['data'] = [];
-                                data[key].map((row) => {
-                                    deviceResponse.map((dt) => {
-                                        if(dt.insid === row.InstallationID) {
-                                            row.name = dt.name;
-                                            row.locn = dt.locn;
-                                        }
-                                    });
-                                    if(row.SortKey.includes('status')) {
-                                        test['header'] = row;
-                                    } else {
-                                        test['data'].push(row);
-                                    }
-                                })
-                                graphSection.push(test)
-                            })
+                            graphElement[dim.id] = vec[dim.key];
+                            graphSection.push(graphElement)
+                        } else if(row.metricType === METRIC_TYPE['CATEGORICAL']) {
+                            let graphElement = {};
+                            graphElement['name'] = dim.name;
+                            graphElement['value'] = vec[dim.key];
+                            graphElement['color'] = dim.color;
+                            graphSection.push(graphElement)
                         }
+                    })
+                } else if(stateData.projectLocationList) {
+                    const data = groupBy(passedData[metridId][dim.id].data.Items,'ID');
+                    /**
+                     * This part is specifically for alerts data.
+                     * Mapping the location list name with locations ids
+                     * To show on UI on Home page
+                     */
+                    let deviceResponse = stateData.projectLocationList, SUB1, SUB2;
+                    deviceResponse.map((row) => {
+                        SUB1 = NAMESPACE_MAPPER[row['NS']].SUB1;
+                        SUB2 = NAMESPACE_MAPPER[row['NS']].SUB2;
+                        row[SUB1] =  row.SUB1;
+                        row[SUB2] = row.SUB2;
+                    })
+                    if(data) {
+                        Object.keys(data).map((key, index) => {
+                            let test = {};
+                            test['data'] = [];
+                            data[key].map((row) => {
+                                deviceResponse.map((dt) => {
+                                    if(dt.insid === row.InstallationID) {
+                                        row.name = dt.name;
+                                        row.locn = dt.locn;
+                                    }
+                                });
+                                if(row.SortKey.includes('status')) {
+                                    test['header'] = row;
+                                } else {
+                                    test['data'].push(row);
+                                }
+                            })
+                            graphSection.push(test)
+                        })
                     }
-                    mapper[dim.id] = {};
-                    mapper[dim.id]['name'] = dim.name;
-                    mapper[dim.id]['color'] = dim.color;
-                    mapper[dim.id]['chartType'] = dim.ctype;
-                })
-                graphData[metridId] = orderBy(graphSection, 'header.Timestamp', 'desc');
-                nameMapper[metridId] = mapper;
+                }
+                mapper[dim.id] = {};
+                mapper[dim.id]['name'] = dim.name;
+                mapper[dim.id]['color'] = dim.color;
+                mapper[dim.id]['chartType'] = dim.ctype;
             })
+            graphData[metridId] = orderBy(graphSection, 'header.Timestamp', 'desc');
+            nameMapper[metridId] = mapper;
+        })
         
         if(row.metricType !== METRIC_TYPE['RAW_DATA']) {
             let combinedValues = groupBy(graphData[metridId], 'name');
@@ -114,7 +115,7 @@ export function getFormatedGraphData(passedData, metrics, stateData='') {
                 }
             })
             if(testData.length > 0)
-                graphData[metridId] = testData;
+                graphData[metridId] = sortBy(testData,'name');//testData;
         }
     })
     return {graphData: graphData,
@@ -158,6 +159,10 @@ export function getStartEndTime(param='', startDate='', endDate='', timeZone='')
       end = now.tz(timeZone).format(DATE_TIME_FORMAT);
       start = (now.subtract({ weeks: 1})).tz(timeZone).format(DATE_TIME_FORMAT);
       selectedIndex = 5;
+    } else if(param === ANALYTICS_DATE['TODAY']) {
+        end = now.tz(timeZone).format(DATE_TIME_FORMAT);
+        start = formatDateTime(getTodaysStartDateTime(), DATE_TIME_FORMAT, DATE_TIME_FORMAT);
+        selectedIndex = 6;
     } else if(param === ANALYTICS_DATE['CUSTOM']) {
       end = moment(endDate, DATE_TIME_FORMAT).format(DATE_TIME_FORMAT);
       start = moment(startDate, DATE_TIME_FORMAT).format(DATE_TIME_FORMAT);

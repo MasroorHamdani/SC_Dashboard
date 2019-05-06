@@ -107,7 +107,7 @@ class Reports extends Component {
                     {stateData.loading &&
                         <LinearProgress className={classes.buttonProgress}/>
                     }
-                    {(stateData.serviceList && stateData.serviceList.length > 0) ?
+                    {(stateData.serviceList && stateData.serviceList.length > 0) &&
                         <GridList 
                             cellHeight={250} 
                             className={classes.gridList}>
@@ -148,7 +148,8 @@ class Reports extends Component {
                             </Card>
                             ))}
                         </GridList>
-                    :
+                    }
+                    { (!stateData.loading && (!stateData.serviceList || stateData.serviceList.length === 0)) &&
                         <div><Typography variant="h6">No Services for given Project</Typography></div>
                     }
                     {stateData.showDate &&

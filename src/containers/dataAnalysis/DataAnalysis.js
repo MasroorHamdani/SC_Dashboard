@@ -12,7 +12,7 @@ import {projectSubMenuList, projectInstallationList,
 import styles from './DataAvalysisStyle';
 import RadioButtonComponent from '../../components/dataAnalysis/RadioButtonController';
 import {getStartEndTime, getVector} from '../../utils/AnalyticsDataFormat';
-import {getXHourOldDateTime} from '../../utils/DateFormat';
+import {getXHourOldDateTime, getTodaysStartDateTime} from '../../utils/DateFormat';
 
 
 /***
@@ -33,8 +33,8 @@ class DataAnalysis extends Component {
       func: '',
       page: '',
       loading: true,
-      selectedIndex: 3,
-      startDate: getXHourOldDateTime(24),
+      selectedIndex: 6,
+      startDate: getTodaysStartDateTime(),
       endDate: new Date(),
     };
     this.menuIndex = 0;
@@ -163,20 +163,20 @@ class DataAnalysis extends Component {
       subType: subType,
       pid: pid,
       dataAnalysis: {},
-      startDate: getXHourOldDateTime(24),
+      startDate: getTodaysStartDateTime(),
       endDate : new Date(),
-      selectedIndex: 3
+      selectedIndex: 6
     }, function() {
-      this.handleDateChange('1d');
+      this.handleDateChange('Today');
     });
   }
 
   refreshData = () => {
     this.setState({
-      startDate: getXHourOldDateTime(24),
+      startDate: getTodaysStartDateTime(),
       endDate : new Date()
     }, function() {
-      this.handleDateChange();
+      this.handleDateChange('Today');
     })
   }
 
@@ -432,6 +432,9 @@ class DataAnalysis extends Component {
             loading: false,
             rangeError: '',
           })
+        } else if(isEqual(this.props.dataAnalysis.data.status, 'nodata')) {
+          this.setState({loading: false, dataAnalysis: 'No Data Found'})
+          
         } else {
           this.setState({loading: false})
         }
