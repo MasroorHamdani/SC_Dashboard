@@ -192,6 +192,8 @@ class DataAnalysis extends Component {
     this.setState({
       start: formatedDate.start,
       end: formatedDate.end,
+      startDate: formatedDate.startTime ? formatedDate.startTime : this.state.startDate ,
+      endDate: formatedDate.endTime ? formatedDate.endTime : this.state.endDate,
       sessionHeader: '',
       selectedIndex: formatedDate.selectedIndex ? formatedDate.selectedIndex : this.state.selectedIndex
     }, function() {
@@ -435,7 +437,10 @@ class DataAnalysis extends Component {
         } else if(isEqual(this.props.dataAnalysis.data.status, 'nodata')) {
           this.setState({loading: false, dataAnalysis: 'No Data Found'})
           
-        } else {
+        } else if(isEqual(this.props.dataAnalysis.data.status, 'failed')) {
+          this.setState({loading: false, dataAnalysis: this.props.dataAnalysis.data.data.message})
+        }
+        else {
           this.setState({loading: false})
         }
     }

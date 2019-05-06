@@ -134,34 +134,48 @@ export function getStartEndTime(param='', startDate='', endDate='', timeZone='')
  * If nothing is passed by default set it to 24 hours, whcih is the default value.
  */
     let now = moment(),
-      start, end, selectedIndex;
+      start, end, selectedIndex, startTime, endTime;
     if (param === ANALYTICS_DATE['ONE_HOUR']) {
       end = now.tz(timeZone).format(DATE_TIME_FORMAT);
       start = (now.subtract({ hours: 1})).tz(timeZone).format(DATE_TIME_FORMAT);
+      endTime = now.tz(timeZone).toDate();
+      startTime = (now.subtract({ hours: 1})).tz(timeZone).toDate();
       selectedIndex = 0;
     } else if(param === ANALYTICS_DATE['THREE_HOUR']) {
       end = now.tz(timeZone).format(DATE_TIME_FORMAT);
       start = (now.subtract({ hours: 3})).tz(timeZone).format(DATE_TIME_FORMAT);
+      endTime = now.tz(timeZone).toDate();
+      startTime = (now.subtract({ hours: 3})).tz(timeZone).toDate();
       selectedIndex = 1;
     } else if(param === ANALYTICS_DATE['TWELVE_HOUR']) {
       end = now.tz(timeZone).format(DATE_TIME_FORMAT);
       start = (now.subtract({ hours: 12})).tz(timeZone).format(DATE_TIME_FORMAT);
+      endTime = now.tz(timeZone).toDate();
+      startTime = (now.subtract({ hours: 12})).tz(timeZone).toDate();
       selectedIndex = 2;
     } else if(param === ANALYTICS_DATE['ONE_DAY']) {
       end = now.tz(timeZone).format(DATE_TIME_FORMAT);
       start = (now.subtract({ days: 1})).tz(timeZone).format(DATE_TIME_FORMAT);
+      endTime = now.tz(timeZone).toDate();
+      startTime = (now.subtract({ days: 1})).tz(timeZone).toDate();
       selectedIndex = 3;
     } else if(param === ANALYTICS_DATE['THREE_DAY']) {
       end = now.tz(timeZone).format(DATE_TIME_FORMAT);
       start = (now.subtract({ days: 3})).tz(timeZone).format(DATE_TIME_FORMAT);
+      endTime = now.tz(timeZone).toDate();
+      startTime = (now.subtract({ days: 3})).tz(timeZone).toDate();
       selectedIndex = 4;
     } else if(param === ANALYTICS_DATE['ONE_WEEK']) {
       end = now.tz(timeZone).format(DATE_TIME_FORMAT);
       start = (now.subtract({ weeks: 1})).tz(timeZone).format(DATE_TIME_FORMAT);
+      endTime = now.tz(timeZone).toDate();
+      startTime = (now.subtract({ weeks: 1})).tz(timeZone).toDate();
       selectedIndex = 5;
     } else if(param === ANALYTICS_DATE['TODAY']) {
         end = now.tz(timeZone).format(DATE_TIME_FORMAT);
         start = formatDateTime(getTodaysStartDateTime(), DATE_TIME_FORMAT, DATE_TIME_FORMAT);
+        endTime = now.tz(timeZone).toDate();
+        startTime = getTodaysStartDateTime();
         selectedIndex = 6;
     } else if(param === ANALYTICS_DATE['CUSTOM']) {
       end = moment(endDate, DATE_TIME_FORMAT).format(DATE_TIME_FORMAT);
@@ -170,12 +184,16 @@ export function getStartEndTime(param='', startDate='', endDate='', timeZone='')
     } else {
       end = now.tz(timeZone).format(DATE_TIME_FORMAT);
       start = (now.subtract({ hours: 24})).tz(timeZone).format(DATE_TIME_FORMAT);
+      endTime = now.tz(timeZone).toDate();
+      startTime = (now.subtract({ hours: 24})).tz(timeZone).toDate();
       selectedIndex = 3;
     }
     return {
         'start': start,
         'end': end,
-        'selectedIndex': selectedIndex
+        'selectedIndex': selectedIndex,
+        'startTime': startTime,
+        'endTime': endTime
     }
 }
 
