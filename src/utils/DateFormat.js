@@ -39,7 +39,7 @@ export function getTimeDifference (startTime, endTime) {
     // moment(endTime.diff(startTime)).format("m[m] s[s]")
     // let duration = moment.duration(endTime.diff(startTime));
     // let hours = duration.asHours();
-    let start = moment('20190406000000', DATE_TIME_FORMAT),
+    let start = moment(startTime, DATE_TIME_FORMAT),
         end = moment(endTime, DATE_TIME_FORMAT);
     return start.isSame(end, 'date');
 }
