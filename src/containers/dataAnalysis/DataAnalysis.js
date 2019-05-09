@@ -13,7 +13,7 @@ import {projectSubMenuList, projectInstallationList,
 import styles from './DataAvalysisStyle';
 import RadioButtonComponent from '../../components/dataAnalysis/RadioButtonController';
 import {getStartEndTime, getVector} from '../../utils/AnalyticsDataFormat';
-import {getXHourOldDateTime} from '../../utils/DateFormat';
+import {getXHourOldDateTime, getTodaysStartDateTime} from '../../utils/DateFormat';
 
 
 /***
@@ -34,8 +34,8 @@ class DataAnalysis extends Component {
       func: '',
       page: '',
       loading: true,
-      selectedIndex: 3,
-      startDate: getXHourOldDateTime(24),
+      selectedIndex: 6,
+      startDate: getTodaysStartDateTime(),
       endDate: new Date(),
     };
     this.menuIndex = 0;
@@ -101,7 +101,8 @@ class DataAnalysis extends Component {
    * And the index is saved in state to highlight the selected list item.
    */
     this.setState({
-        selectedIndex: index
+        selectedIndex: index,
+        indexValue : index === 6 ? '15min' : value
     }, function () {
         this.handleDateChange(value)
     })
@@ -164,20 +165,22 @@ class DataAnalysis extends Component {
       subType: subType,
       pid: pid,
       dataAnalysis: {},
-      startDate: getXHourOldDateTime(24),
+      startDate: getTodaysStartDateTime(),
       endDate : new Date(),
-      selectedIndex: 3
+      selectedIndex: 6,
+      indexValue: '15min'
     }, function() {
-      this.handleDateChange('1d');
+      this.handleDateChange('Today');
     });
   }
 
   refreshData = () => {
     this.setState({
-      startDate: getXHourOldDateTime(24),
-      endDate : new Date()
+      startDate: getTodaysStartDateTime(),
+      endDate : new Date(),
+      indexValue: '15min'
     }, function() {
-      this.handleDateChange();
+      this.handleDateChange('Today');
     })
   }
 
@@ -193,6 +196,8 @@ class DataAnalysis extends Component {
     this.setState({
       start: formatedDate.start,
       end: formatedDate.end,
+      startDate: formatedDate.startTime ? formatedDate.startTime : this.state.startDate ,
+      endDate: formatedDate.endTime ? formatedDate.endTime : this.state.endDate,
       sessionHeader: '',
       selectedIndex: formatedDate.selectedIndex ? formatedDate.selectedIndex : this.state.selectedIndex
     }, function() {
@@ -255,8 +260,9 @@ class DataAnalysis extends Component {
               rowData.map((val) => {
                 if(val.type === dt.type) {
                   dt.criteria.agg = val.criteria.statistic? val.criteria.statistic: dt.criteria.agg;
-                  dt.criteria.rule = val.criteria.sampling && val.criteria.unit ?
-                    val.criteria.sampling + val.criteria.unit : dt.criteria.rule;
+                  dt.criteria.rule = this.state.indexValue;
+                  //val.criteria.sampling && val.criteria.unit ?
+                    //val.criteria.sampling + val.criteria.unit : dt.criteria.rule;
                 }
               })
             }
@@ -449,11 +455,16 @@ class DataAnalysis extends Component {
         this.setState({[this.state.deviceKey]: referData,
           loading: false,
           rangeError: ''})
-      } else {
-        this.setState({loading: false})
-      }
+        } else if(isEqual(this.props.dataAnalysis.data.status, 'nodata')) {
+          this.setState({loading: false, dataAnalysis: 'No Data Found'})
+          
+        } else if(isEqual(this.props.dataAnalysis.data.status, 'failed')) {
+          this.setState({loading: false, dataAnalysis: this.props.dataAnalysis.data.data.message})
+        }
+        else {
+          this.setState({loading: false})
+        }
   }
-
 
   /**
    * This part deals with getting the sensor installation details for selected location.

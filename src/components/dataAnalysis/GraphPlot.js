@@ -97,6 +97,7 @@ class GraphPlot extends Component {
                                 margin={{top: 5, right: 30, left: 20, bottom: 5}}>
                                 <XAxis dataKey="name" 
                                     minTickGap={20}
+                                    // type="number"
                                     label={{ value: 'Time of day', position: 'insideBottomRight', offset: -15}}
                                     />
                                 {metric.dimensions[0].type === 'derivedDim' ?

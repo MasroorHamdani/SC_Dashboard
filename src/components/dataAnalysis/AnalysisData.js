@@ -58,6 +58,8 @@ class AnalysisData extends Component {
             tabData = this.generateDataAnalytics(stateData.dataAnalysis.data.data.metrics,
                 stateData.dataAnalysis.data.data.all_metrics,
                 classes);
+        } else if(typeof(stateData.dataAnalysis) === 'string') {
+            tabData = stateData.dataAnalysis;
         }
         return (
             <div className={classes.graph}>

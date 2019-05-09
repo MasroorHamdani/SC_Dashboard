@@ -96,7 +96,7 @@ class HealthCheck extends Component {
                     <LinearProgress className={classes.buttonProgress}/>
                 }
                 <main className={classes.content}>
-                    {(stateData && stateData.healthData) ?
+                    {(stateData && stateData.healthData) &&
                         <div>
                             <EnhancedTable rows={passedData.rows} data={passedData.data}
                             order={this.state.order} orderBy={this.state.orderBy}
@@ -107,7 +107,8 @@ class HealthCheck extends Component {
                             redirectID="ID"
                             />
                         </div>
-                    :
+                    }
+                    {(!stateData.loading && !stateData.healthData) &&
                         <div><Typography variant="h6">No Health Status Data to display</Typography></div>
                     }
                 </main>

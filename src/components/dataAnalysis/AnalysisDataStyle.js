@@ -57,6 +57,9 @@ const styles = theme => ({
     },
     errorMessage: {
         color: red[500]
+    },
+    noLeftPadding: {
+        paddingLeft: '0px'
     }
 })
 

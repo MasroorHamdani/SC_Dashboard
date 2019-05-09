@@ -59,7 +59,8 @@ class DateRowComponent extends Component {
                 </div>
                 <List dense={true} className={classes.timeList}>
                     {timeList.map((timeLine) => {
-                        return <ListItem key={timeLine.key} name={timeLine.name} value={timeLine.value}
+                        return <ListItem className={classes.noLeftPadding}
+                        key={timeLine.key} name={timeLine.name} value={timeLine.value}
                         onClick={e => handleListSelection(e, timeLine.text, timeLine.value)}>
                             < ListItemText
                             primary={<Typography type="span"

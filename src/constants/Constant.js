@@ -96,6 +96,7 @@ export const ANALYTICS_DATE = {
     'ONE_DAY': '1d',
     'THREE_DAY': '3d',
     'ONE_WEEK': '1w',
+    'TODAY': 'Today',
     'CUSTOM': 'custom'
 }
 // process.env.REACT_APP_SECRET_CODE
@@ -103,6 +104,12 @@ export const ANALYTICS_DATE = {
 export const AUTO_REFRESH_TIMEOUT = 600000; // Time in milliseconds - 10 mins -> 10 * 60 * 1000
 
 export const TIME_LIST = [
+    {
+        name: "today",
+        key: "today",
+        value: 6,
+        text: "Today"
+    },
     {
         name: "last1Hour",
         key: "last1Hour",
@@ -138,7 +145,7 @@ export const TIME_LIST = [
         key: "last1Week",
         value: 5,
         text: "1w"
-    },
+    }
 ];
 
 export const FUNCTION_LIST = [

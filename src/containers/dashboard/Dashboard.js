@@ -10,7 +10,7 @@ import { API_URLS, NAMESPACE, DASHBOARD_METRIC,
 import { getApiConfig } from '../../services/ApiCofig';
 import {projectAnalysisData, projectSubMenuList} from '../../actions/DataAnalysis';
 import {getVector} from '../../utils/AnalyticsDataFormat';
-import {formatDateWithTimeZone, getXHourOldDateTime} from '../../utils/DateFormat';
+import {formatDateWithTimeZone, formatDateTime, getTodaysStartDateTime} from '../../utils/DateFormat';
 
 class Dashboard extends Component {
   constructor(props) {
@@ -20,7 +20,7 @@ class Dashboard extends Component {
       dashboardData : [],
       loading: true,
       endTime: new Date(),
-      startTime: getXHourOldDateTime(1),
+      startTime: getTodaysStartDateTime(),
     }
     this.metricsIndex = 0;
   }
@@ -34,7 +34,7 @@ class Dashboard extends Component {
       let dataToPost = DASHBOARD_METRIC,
         endPoint = `${API_URLS['DEVICE_DATA']}/${this.state.PID}/${API_URLS['DEFAULT']}`,
         params = {
-          'start' : formatDateWithTimeZone(this.state.startTime, DATE_TIME_FORMAT, DATE_TIME_FORMAT, this.state.timeZone),
+          'start' : formatDateTime(this.state.startTime, DATE_TIME_FORMAT, DATE_TIME_FORMAT),
           'end': formatDateWithTimeZone(this.state.endTime, DATE_TIME_FORMAT, DATE_TIME_FORMAT, this.state.timeZone),
         },
         config = getApiConfig(endPoint, 'POST', dataToPost, params);
