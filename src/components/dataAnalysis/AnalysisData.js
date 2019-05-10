@@ -73,7 +73,10 @@ class AnalysisData extends Component {
                     handleChangeRaw={this.handleChangeRaw}
                     />
             }
-            {tabData}
+            <div className={classes.grapPlot}>
+                {tabData}
+            </div>
+            
             </div>
         )
     }

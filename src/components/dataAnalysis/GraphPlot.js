@@ -82,12 +82,12 @@ class GraphPlot extends Component {
             metrics.map((metric, index) => {
                 return <div key={index}
                 className={isDashboard && metric['metricType'] === "raw_data"? classes.alertBox :
-                isDashboard && metric['metricType'] === "categorical" ? classes.otherData : ''} >
+                isDashboard && metric['metricType'] === "categorical" ? classes.dashboardPie : classes.otherData} >
                 <Divider className={classes.seperator}/>
-                    <DataProcessingComponent stateData={stateData}
+                    {/* <DataProcessingComponent stateData={stateData}
                         handleSamplingChange={handleSamplingChange}
-                        metrics={metric}/>
-                    <Typography gutterBottom variant="h5">
+                        metrics={metric}/> */}
+                    <Typography gutterBottom variant="h6">
                         {metric.metricName}
                     </Typography>
                     {(metric.metricType === METRIC_TYPE['TIMESERIES'] && metric.metricDataKey) &&
@@ -117,7 +117,7 @@ class GraphPlot extends Component {
                                         let mapper = nameMapper[metric.metricID][key];
                                         if(mapper['chartType'] === DATA_VIEW_TYPE['LINE']) {
                                             return(<Line name={mapper['name']} key={key} type="monotone"
-                                                strokeWidth={5}
+                                                // strokeWidth={2}
                                                 dataKey={key}
                                                 dot={false}
                                                 isAnimationActive={false}
