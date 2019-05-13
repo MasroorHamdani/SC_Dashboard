@@ -290,21 +290,6 @@ class DataAnalysis extends Component {
     }
   }
 
-  handleBarClick = (key) => {
-  /**
-   * Handling bar click. any bar which has a click function will call this API.
-   */
-    this.setState({ barClick: true });
-    this.handleDateChange();
-  }
-
-  handleClose = () => {
-  /**
-   * This function will close the modal opened while clicking on a bar
-   */
-    this.setState({ barClick: false });
-  }
-
   componentDidCatch(error, errorInfo) {
     // Catch errors in any components below and re-render with error message
     if(error.toString().includes('RangeError: Invalid interval')) {
@@ -536,6 +521,7 @@ function mapStateToProps(state) {
       installationList : state.DataAnalysisInstallationListReducer.data,
       dataAnalysis : state.DataAnalysisReducer.data,
       projectSelected : state.projectSelectReducer.data,
+      modalDataAnalysis : state.ModalDataAnalysisReducer.data
   }
 }
 

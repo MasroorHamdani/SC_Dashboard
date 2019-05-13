@@ -15,6 +15,7 @@ class CustomModal extends Component {
             <Dialog
                 open={open}
                 onClose={handleClose}
+                maxWidth='md'
                 // scroll="paper"
                 aria-describedby="alert-dialog-description"
                 aria-labelledby="responsive-dialog-title">

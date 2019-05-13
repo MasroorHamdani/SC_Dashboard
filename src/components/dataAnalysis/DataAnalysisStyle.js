@@ -120,6 +120,9 @@ const styles = theme => ({
     otherData: {
         width: '50%'
     },
+    customModal: {
+        width: '100%'
+    },
     dashboardPie: {
         width: '45%'
     },

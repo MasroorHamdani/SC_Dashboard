@@ -19,7 +19,7 @@ class DataAnalysisComponent extends Component {
             handleTabChange, handleSamplingChange,
             handleDatePicker, handleChangeStart,
             handleListSelection, handleChangeEnd,
-            refreshData} = this.props;
+            refreshData, handleBarClick} = this.props;
         return(
             <div className={classes.main}>
                 <div>
@@ -53,7 +53,8 @@ class DataAnalysisComponent extends Component {
                         handleChangeStart={handleChangeStart}
                         handleListSelection={handleListSelection}
                         handleChangeEnd={handleChangeEnd}
-                        refreshData={refreshData}/>
+                        refreshData={refreshData}
+                        handleBarClick={handleBarClick}/>
                     }
                 </div>
             </div>

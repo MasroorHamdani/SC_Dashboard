@@ -62,7 +62,8 @@ const styles = theme => ({
         paddingLeft: '0px'
     },
     grapPlot: {
-        display: 'flex'
+        display: 'flex',
+        flexWrap: 'wrap'
     }
 })
 
