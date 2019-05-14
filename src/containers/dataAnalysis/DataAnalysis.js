@@ -8,7 +8,7 @@ import DataAnalysisComponent from '../../components/dataAnalysis/DataAnalysis';
 import {getApiConfig} from '../../services/ApiCofig';
 import {API_URLS, NAMESPACE_MAPPER, RANGE_ERROR} from '../../constants/Constant';
 import {projectSubMenuList, projectInstallationList,
-  projectAnalysisData, clearDataAnalysis} from '../../actions/DataAnalysis';
+  projectAnalysisData, clearDataAnalysis, modalProjectAnalysisData} from '../../actions/DataAnalysis';
 import styles from './DataAvalysisStyle';
 import RadioButtonComponent from '../../components/dataAnalysis/RadioButtonController';
 import {getStartEndTime, getVector} from '../../utils/AnalyticsDataFormat';
@@ -27,6 +27,8 @@ class DataAnalysis extends Component {
       projectList: [],
       start: 0,
       end: 0,
+      modalStart: 0,
+      modalEnd: 0,
       tab: '',
       sampling: '',
       unit: '',
@@ -36,6 +38,8 @@ class DataAnalysis extends Component {
       selectedIndex: 6,
       startDate: getTodaysStartDateTime(),
       endDate: new Date(),
+      modalStartDate: getTodaysStartDateTime(),
+      modalEndDate: new Date(),
     };
     this.menuIndex = 0;
   }
@@ -75,7 +79,8 @@ class DataAnalysis extends Component {
    * this function will save the date time in startDate object
    */
     this.setState({
-        startDate: date
+        startDate: date,
+        modalStartDate: date
     });
   }
 
@@ -87,11 +92,12 @@ class DataAnalysis extends Component {
    * this function will save the date time in endDate object
    */
     this.setState({
-        endDate: date
+        endDate: date,
+        modalEndDate: date
     });
   }
 
-  handleListSelection = (event, value, index) => {
+  handleListSelection = (event, value, index, type) => {
   /**
    * This function will be called from component 'DateRowComponent'
    * on selecting and list for time,
@@ -99,11 +105,22 @@ class DataAnalysis extends Component {
    * the value is sent to next function to calculate the start and end date time.
    * And the index is saved in state to highlight the selected list item.
    */
-    this.setState({
-        selectedIndex: index
-    }, function () {
-        this.handleDateChange(value)
-    })
+    console.log(type, "type")
+    if (type === 'default') {
+      this.setState({
+        selectedIndex: index,
+        modalSelectedIndex: index
+      }, function () {
+          this.handleDateChange(value)
+      })
+    } else if (type === 'modal') {
+      this.setState({
+        modalSelectedIndex: index
+      }, function () {
+          this.handleDateChange(value, type)
+      })
+    }
+    
   }
 
   handleChange = (event, pid, insid) => {
@@ -165,7 +182,10 @@ class DataAnalysis extends Component {
       dataAnalysis: {},
       startDate: getTodaysStartDateTime(),
       endDate : new Date(),
-      selectedIndex: 6
+      modalStartDate: getTodaysStartDateTime(),
+      modalEndDate : new Date(),
+      selectedIndex: 6,
+      modalSelectedIndex: 6
     }, function() {
       this.handleDateChange('Today');
     });
@@ -180,7 +200,7 @@ class DataAnalysis extends Component {
     })
   }
 
-  handleDateChange = (param='', startDate='', endDate='') => {
+  handleDateChange = (param='', type='default', startDate='', endDate='') => {
   /**
    * This function is called from multiple sources.
    * Internally as well as well from component 'AnalysisData' directly
@@ -191,13 +211,21 @@ class DataAnalysis extends Component {
     let formatedDate = getStartEndTime(param, startDate, endDate, this.state.timeZone);
     this.setState({
       start: formatedDate.start,
+      modalStart: formatedDate.start,
       end: formatedDate.end,
-      startDate: formatedDate.startTime ? formatedDate.startTime : this.state.startDate ,
+      modalEnd: formatedDate.end,
+      startDate: formatedDate.startTime ? formatedDate.startTime : this.state.startDate,
+      modalStartDate: formatedDate.startTime ? formatedDate.startTime : this.state.startDate ,
       endDate: formatedDate.endTime ? formatedDate.endTime : this.state.endDate,
+      modalEndDate: formatedDate.endTime ? formatedDate.endTime : this.state.endDate,
       sessionHeader: '',
-      selectedIndex: formatedDate.selectedIndex ? formatedDate.selectedIndex : this.state.selectedIndex
+      selectedIndex: formatedDate.selectedIndex ? formatedDate.selectedIndex : this.state.selectedIndex,
+      modalSelectedIndex: formatedDate.selectedIndex ? formatedDate.selectedIndex : this.state.modalSelectedIndex
     }, function() {
-      this.getNewAnalyticsData();
+      if (type === 'default')
+        this.getNewAnalyticsData();
+      else if (type === 'modal')
+        this.getModalAnalyticsData();
     })
   }
 
@@ -214,6 +242,29 @@ class DataAnalysis extends Component {
     }
     return {'metric' : metrics,
             'allMetrics': allMetrics}
+  }
+
+  getModalAnalyticsData = () => {
+    this.setState({
+      loading: true,
+    })
+    
+    let dataToPost = {
+      "ReqType": "default",
+      "Type": this.state.deviceKey,
+      "SubType": this.state.subType
+    };
+
+    const endPoint = `${API_URLS['DEVICE_DATA']}/${this.state.pid}/${this.state.deviceId}`,
+      params = {
+        'start' : this.state.modalStart,
+        'end': this.state.modalEnd,
+      };
+    let headers = {
+      'x-sc-session-token': this.state.sessionHeader ? this.state.sessionHeader : ''
+    },
+    config = getApiConfig(endPoint, 'POST', dataToPost, params, headers);
+    this.props.onModalDataAnalysis(config, endPoint);
   }
 
   getNewAnalyticsData = () => {
@@ -478,6 +529,16 @@ class DataAnalysis extends Component {
         })
         this.setState({installationList: installationList,loading: false,})
     }
+    if (this.props.modalDataAnalysis &&
+      !isEqual(this.props.modalDataAnalysis, prevProps.modalDataAnalysis)) {
+        let metricsData = getVector(this.props.modalDataAnalysis.data.data.allMetrics, this.state.deviceKey);
+        this.setState({
+          modalSessionHeader: this.props.modalDataAnalysis.headers['x-sc-session-token'],
+          modalMetrics: metricsData.dataMetrics,
+          modalAllMetrics: this.props.modalDataAnalysis.data.data.allMetrics,
+          modalDataAnalysis: this.props.modalDataAnalysis,
+          loading: false});
+      }
   }
 
   render () {
@@ -501,6 +562,8 @@ class DataAnalysis extends Component {
             handleListSelection={this.handleListSelection}
             handleChangeEnd={this.handleChangeEnd}
             refreshData={this.refreshData}
+            getModalAnalyticsData={this.getModalAnalyticsData}
+            modalHandleListSelection={this.modalHandleListSelection}
             />
         }
         {this.state.loading &&
@@ -532,6 +595,9 @@ function mapDispatchToProps(dispatch) {
   return {
     onDataAnalysisMenu: (config) => {
       dispatch(projectSubMenuList(config))
+    },
+    onModalDataAnalysis: (config) => {
+      dispatch(modalProjectAnalysisData(config))
     },
     onInstalationsList: (config) => {
       dispatch(projectInstallationList(config))

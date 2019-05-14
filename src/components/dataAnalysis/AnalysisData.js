@@ -34,25 +34,31 @@ class AnalysisData extends Component {
     /**
      * Handling bar click. any bar which has a click function will call this API.
      */
-        this.setState({ barClick: true }, function() {
-            this.detailAnalytics(metricID)
+        this.setState({ barClick: true, selectedMetric: metricID}, function() {
+            this.props.getModalAnalyticsData();
         });
         // this.handleDateChange();
         
     }
     
-    detailAnalytics = (metricID) => {
+    fetchModalData = () => {
     /**
-     * On clicking any bar in the graph, this function will be called.
+     * On clicking any bar in the graph, this function will be called internally.
      * This function will access the existing data and fetch the required one - the data for clicked metric
      * and pass that to a generic function to create data to display, which will be latter on passed to modal.
      */
-        let metricsData = {[metricID]: this.props.stateData.dataAnalysis.data.data.metrics[metricID]},
-            metricIndex = this.props.stateData.dataAnalysis.data.data.allMetrics.findIndex(p => p.metricID == metricID),
-            metricDim = [];
-            metricDim.push(this.props.stateData.dataAnalysis.data.data.allMetrics[metricIndex]);
-        this.setState({customModalData: this.generateDataAnalytics(metricsData, metricDim, this.props.classes, true)})
+        let metricsData = {
+                [this.state.selectedMetric]:
+                this.props.stateData.modalDataAnalysis.data.data.metrics[this.state.selectedMetric]
+            },
+        metricIndex = this.props.stateData.modalDataAnalysis.data.data.allMetrics.findIndex(p =>
+            p.metricID == this.state.selectedMetric),
+        metricDim = [];
+        metricDim.push(this.props.stateData.modalDataAnalysis.data.data.allMetrics[metricIndex]);
+        return this.generateDataAnalytics(metricsData, metricDim, this.props.classes, true);
+        // this.setState({customModalData: this.generateDataAnalytics(metricsData, metricDim, this.props.classes, true)})
     }
+
     handleClose = () => {
     /**
      * This function will close the modal opened while clicking on a bar
@@ -86,7 +92,8 @@ class AnalysisData extends Component {
                         handleChangeEnd={this.props.handleChangeEnd}
                         handleListSelection={this.props.handleListSelection}
                         data={this.props.stateData}
-                        timeList={TIME_LIST}/>
+                        timeList={TIME_LIST}
+                        isCustomModal={isCustomModal}/>
                     <GraphPlot graphData={graphData}
                         nameMapper={nameMapper} metrics={metrics}
                         stateData={this.props.stateData}
@@ -106,12 +113,15 @@ class AnalysisData extends Component {
         const {classes, stateData, handleDatePicker,
             handleChangeStart, handleListSelection,
             handleChangeEnd} = this.props;
-        let tabData;
+        let tabData, customModalData;
         if (stateData.dataAnalysis && stateData.dataAnalysis.data && !this.state.barClick){
             tabData = this.generateDataAnalytics(stateData.dataAnalysis.data.data.metrics,
                 stateData.dataAnalysis.data.data.allMetrics, classes, false);
         } else if(typeof(stateData.dataAnalysis) === 'string' && !this.state.barClick) {
             tabData = stateData.dataAnalysis;
+        }
+        if (stateData.modalMetrics && this.state.barClick) {
+            customModalData = this.fetchModalData();
         }
         return (
             <div className={classes.graph}>
@@ -130,7 +140,7 @@ class AnalysisData extends Component {
             </div>
             <CustomModal
                 header="Data Analytics Details"
-                content={this.state.customModalData}
+                content={customModalData}
                 handleClose={this.handleClose}
                 open={this.state.barClick}
                 />

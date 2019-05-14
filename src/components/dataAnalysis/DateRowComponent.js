@@ -13,7 +13,8 @@ class DateRowComponent extends Component {
  */
     render () {
         const {classes, handleListSelection, handleChangeStart, handleChangeEnd,
-            handleDatePicker, data, timeList, handleRefresh} = this.props;
+            handleDatePicker, data, timeList, handleRefresh,
+            isCustomModal} = this.props;
         return (
             <div className={classes.dateRow}>
                 <div className={classes.dateRow}>
@@ -61,10 +62,10 @@ class DateRowComponent extends Component {
                     {timeList.map((timeLine) => {
                         return <ListItem className={classes.noLeftPadding}
                         key={timeLine.key} name={timeLine.name} value={timeLine.value}
-                        onClick={e => handleListSelection(e, timeLine.text, timeLine.value)}>
+                        onClick={e => handleListSelection(e, timeLine.text, timeLine.value, isCustomModal ? 'modal' : 'default')}>
                             < ListItemText
                             primary={<Typography type="span"
-                            style={(data.selectedIndex === timeLine.value)?
+                            style={(isCustomModal ? data.modalSelectedIndex === timeLine.value : data.selectedIndex === timeLine.value)?
                                 { fontWeight: 'bold' }: {fontWeight: 'inherit'}}>{timeLine.text}</Typography>}
                             />
                         </ListItem>
