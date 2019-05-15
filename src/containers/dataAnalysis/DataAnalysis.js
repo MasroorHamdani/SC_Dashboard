@@ -52,7 +52,8 @@ class DataAnalysis extends Component {
    * of teh param along with staet and end time
    */
     let start = moment(this.state.startDate),
-    end = moment(this.state.endDate);
+    end = moment(this.state.endDate),
+    newEndDate, newModalEndDate;
     if(type === 'modal') {
       start = moment(this.state.modalStartDate);
       end = moment(this.state.modalEndDate);
@@ -64,11 +65,14 @@ class DataAnalysis extends Component {
     // Calculation to make sure api will always get max 7 days diff.
     // From start to 7 days.
     if(days > 7) {
-      end = _.cloneDeep(this.state.startDate);
+      end = _.cloneDeep(type === 'modal' ? this.state.modalStartDate : this.state.startDate);
       end.setHours(end.getHours()+(7*24));
+      newEndDate = type === 'default' ? end : this.state.endDate;
+      newModalEndDate = end
       this.setState({
         endDate: type === 'default' ? end : this.state.endDate,
-        modalEndData: end})
+        modalEndDate: end
+      })
     }
     this.setState({
         selectedIndex: type === 'default' ? -1 : this.state.selectedIndex,
