@@ -231,7 +231,7 @@ class EnhancedTable extends React.Component {
                                 {Array.isArray(n[id]) ?
                                   <List dense={true}>
                                     {n[id].map((value, index) => {
-                                      return <ListItem key={index}>
+                                      return <ListItem key={index} className={classes.denseList}>
                                         {value}
                                       </ListItem>
                                     })}

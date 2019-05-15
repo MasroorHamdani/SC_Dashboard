@@ -24,6 +24,9 @@ const styles = theme => ({
     pointer: {
       cursor: 'pointer'
     },
+    denseList: {
+      paddingLeft: '0px'
+    }
   });
 
   export default styles;
