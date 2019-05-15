@@ -37,33 +37,35 @@ class AnalysisData extends Component {
         this.setState({ barClick: true, selectedMetric: metricID}, function() {
             this.props.getModalAnalyticsData();
         });
-        // this.handleDateChange();
-        
-    }
-    
-    fetchModalData = () => {
-    /**
-     * On clicking any bar in the graph, this function will be called internally.
-     * This function will access the existing data and fetch the required one - the data for clicked metric
-     * and pass that to a generic function to create data to display, which will be latter on passed to modal.
-     */
-        let metricsData = {
-                [this.state.selectedMetric]:
-                this.props.stateData.modalDataAnalysis.data.data.metrics[this.state.selectedMetric]
-            },
-        metricIndex = this.props.stateData.modalDataAnalysis.data.data.allMetrics.findIndex(p =>
-            p.metricID == this.state.selectedMetric),
-        metricDim = [];
-        metricDim.push(this.props.stateData.modalDataAnalysis.data.data.allMetrics[metricIndex]);
-        return this.generateDataAnalytics(metricsData, metricDim, this.props.classes, true);
-        // this.setState({customModalData: this.generateDataAnalytics(metricsData, metricDim, this.props.classes, true)})
     }
 
     handleClose = () => {
     /**
      * This function will close the modal opened while clicking on a bar
      */
-        this.setState({ barClick: false });
+        this.setState({ barClick: false});
+    }
+
+    fetchModalData = (isString) => {
+    /**
+     * On clicking any bar in the graph, this function will be called internally.
+     * This function will access the existing data and fetch the required one - the data for clicked metric
+     * and pass that to a generic function to create data to display, which will be latter on passed to modal.
+     */
+        if(!isString) {
+            let metricsData = {
+                [this.state.selectedMetric]:
+                this.props.stateData.modalDataAnalysis.data.data.metrics[this.state.selectedMetric]
+            },
+            metricIndex = this.props.stateData.modalDataAnalysis.data.data.allMetrics.findIndex(p =>
+                p.metricID == this.state.selectedMetric),
+            metricDim = [];
+            metricDim.push(this.props.stateData.modalDataAnalysis.data.data.allMetrics[metricIndex]);
+            return this.generateDataAnalytics(metricsData, metricDim, this.props.classes, true);
+        } else {
+            return this.generateDataAnalytics('', '', this.props.classes, true, isString);
+        }
+        
     }
 
     componentDidMount() {
@@ -73,56 +75,75 @@ class AnalysisData extends Component {
         setInterval((this.handleRefresh), AUTO_REFRESH_TIMEOUT);
     }
 
-    generateDataAnalytics = (data, metrics, classes, isCustomModal=false) => {
+    generateDataAnalytics = (data, metrics, classes, isCustomModal=false, isString=false) => {
     /**
      * Call the service to get the graph data and name mapper
      * for each graph to be display on a page
      * Once that is received, call the GraphPlot component 
      * with data and that will return the complete graph component.
      */
-        let dataAnalysis = data,
-            analyticsData = getFormatedGraphData(dataAnalysis, metrics, this.props.stateData),
-            graphData = analyticsData.graphData,
-            nameMapper = analyticsData.nameMapper, tabData;
-            
-            if(this.state.barClick) {
-                tabData = <div className={classes.dispenserGraph}>
-                    <DateRowComponent handleDatePicker={this.props.handleDatePicker}
-                        handleChangeStart={this.props.handleChangeStart}
-                        handleChangeEnd={this.props.handleChangeEnd}
-                        handleListSelection={this.props.handleListSelection}
-                        data={this.props.stateData}
-                        timeList={TIME_LIST}
-                        isCustomModal={isCustomModal}/>
-                    <GraphPlot graphData={graphData}
+        let tabData;
+        if(!isString) {
+            let dataAnalysis = data,
+                analyticsData = getFormatedGraphData(dataAnalysis, metrics, this.props.stateData),
+                graphData = analyticsData.graphData,
+                nameMapper = analyticsData.nameMapper;
+                
+                if(this.state.barClick && isCustomModal) {
+                    tabData = <div className={classes.dispenserGraph}>
+                        <DateRowComponent handleDatePicker={this.props.handleDatePicker}
+                            modalHandleChangeStart={this.props.modalHandleChangeStart}
+                            modalHandleChangeEnd={this.props.modalHandleChangeEnd}
+                            handleListSelection={this.props.handleListSelection}
+                            data={this.props.stateData}
+                            timeList={TIME_LIST}
+                            isCustomModal={isCustomModal}/>
+                        <GraphPlot graphData={graphData}
+                            nameMapper={nameMapper} metrics={metrics}
+                            stateData={this.props.stateData}
+                            handleSamplingChange={this.props.handleSamplingChange}
+                            handleBarClick={this.handleBarClick}
+                            isCustomModal={isCustomModal}/>
+                    </div>;
+                } else if(!tabData)
+                    tabData = <GraphPlot graphData={graphData}
                         nameMapper={nameMapper} metrics={metrics}
                         stateData={this.props.stateData}
                         handleSamplingChange={this.props.handleSamplingChange}
-                        handleBarClick={this.handleBarClick}
-                        isCustomModal={isCustomModal}/>
-                </div>;
-            } else if(!tabData && !this.state.barClick)
-                tabData = <GraphPlot graphData={graphData}
-                    nameMapper={nameMapper} metrics={metrics}
-                    stateData={this.props.stateData}
-                    handleSamplingChange={this.props.handleSamplingChange}
-                    handleBarClick={this.handleBarClick}/>;
+                        handleBarClick={this.handleBarClick}/>;
+        } else {
+            if(this.state.barClick && isCustomModal) {
+                tabData = <div className={classes.dispenserGraph}>
+                    <DateRowComponent handleDatePicker={this.props.handleDatePicker}
+                    modalHandleChangeStart={this.props.modalHandleChangeStart}
+                    modalHandleChangeEnd={this.props.modalHandleChangeEnd}
+                    handleListSelection={this.props.handleListSelection}
+                    data={this.props.stateData}
+                    timeList={TIME_LIST}
+                    isCustomModal={isCustomModal}/>
+                    {this.props.stateData.modalDataAnalysis}
+                </div>
+            }
+        }
         return tabData;
     }
     render() {
         const {classes, stateData, handleDatePicker,
             handleChangeStart, handleListSelection,
             handleChangeEnd} = this.props;
-        let tabData, customModalData;
-        if (stateData.dataAnalysis && stateData.dataAnalysis.data && !this.state.barClick){
+        let tabData, customModalData = '';
+        if (stateData.dataAnalysis && stateData.dataAnalysis.data){
             tabData = this.generateDataAnalytics(stateData.dataAnalysis.data.data.metrics,
                 stateData.dataAnalysis.data.data.allMetrics, classes, false);
         } else if(typeof(stateData.dataAnalysis) === 'string' && !this.state.barClick) {
             tabData = stateData.dataAnalysis;
         }
-        if (stateData.modalMetrics && this.state.barClick) {
+        if (stateData.modalDataAnalysis && stateData.modalDataAnalysis.data  && this.state.barClick) {
             customModalData = this.fetchModalData();
+        } else if(typeof(stateData.modalDataAnalysis) === 'string' && this.state.barClick) {
+            customModalData = this.fetchModalData(true);
         }
+
         return (
             <div className={classes.graph}>
             {stateData.deviceKey === stateData.tab &&
@@ -133,6 +154,7 @@ class AnalysisData extends Component {
                     data={stateData}
                     timeList={TIME_LIST}
                     handleRefresh={this.handleRefresh}
+                    isCustomModal={false}
                 />
             }
             <div className={classes.grapPlot}>

@@ -19,7 +19,8 @@ class DataAnalysisComponent extends Component {
             handleTabChange, handleSamplingChange,
             handleDatePicker, handleChangeStart,
             handleListSelection, handleChangeEnd,
-            refreshData, handleBarClick, getModalAnalyticsData} = this.props;
+            refreshData, handleBarClick, getModalAnalyticsData,
+            modalHandleChangeStart, modalHandleChangeEnd} = this.props;
         return(
             <div className={classes.main}>
                 <div>
@@ -55,7 +56,9 @@ class DataAnalysisComponent extends Component {
                         handleChangeEnd={handleChangeEnd}
                         refreshData={refreshData}
                         handleBarClick={handleBarClick}
-                        getModalAnalyticsData={getModalAnalyticsData}/>
+                        getModalAnalyticsData={getModalAnalyticsData}
+                        modalHandleChangeStart={modalHandleChangeStart}
+                        modalHandleChangeEnd={modalHandleChangeEnd}/>
                     }
                 </div>
             </div>

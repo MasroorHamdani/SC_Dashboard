@@ -93,7 +93,8 @@ class GraphPlot extends Component {
                     {(metric.metricType === METRIC_TYPE['TIMESERIES'] && metric.metricDataKey) &&
                         <ResponsiveContainer width='100%' height={400}>
                             <ComposedChart className={classes.lineChart} data={graphData[metric.metricID]}
-                                margin={{top: 5, right: 30, left: 20, bottom: 5}}>
+                                margin={{top: 5, right: 30, left: 20, bottom: 5}}
+                                onClick={e => !isCustomModal? handleBarClick(metric.metricID): ''}>
                                 <XAxis dataKey="name" 
                                     minTickGap={20}
                                     // type="number"
@@ -123,20 +124,20 @@ class GraphPlot extends Component {
                                                 activeDot={{onClick: () => !isCustomModal? handleBarClick(metric.metricID): ''}}
                                                 isAnimationActive={false}
                                                 stroke={mapper['color']}
-                                                onClick={e => !isCustomModal? handleBarClick(metric.metricID): ''}
+                                                // onClick={e => !isCustomModal? handleBarClick(metric.metricID): ''}
                                                 />)
                                         }
                                         if (mapper['chartType'] === DATA_VIEW_TYPE['BAR']) {
                                             return <Bar name={mapper['name']} key={key} dataKey={key}
                                                 fill={mapper['color']} isAnimationActive={false}
-                                                onClick={e => !isCustomModal? handleBarClick(metric.metricID): ''}
+                                                // onClick={e => !isCustomModal? handleBarClick(metric.metricID): ''}
                                                 />
                                         }
                                         if (mapper['chartType'] === DATA_VIEW_TYPE['SCATTER']) {
                                             return <Line name={mapper['name']}
                                                 key={key}
                                                 dataKey={key}
-                                                activeDot={{onClick: () => !isCustomModal? handleBarClick(metric.metricID): ''}}
+                                                // activeDot={{onClick: () => !isCustomModal? handleBarClick(metric.metricID): ''}}
                                                 // dot={{stroke: mapper['color'] , onClick: () => !isCustomModal? handleBarClick(metric.metricID): ''}}
                                                 fill={mapper['color']}
                                                 stroke={mapper['color']}
