@@ -10,13 +10,14 @@ class CustomModal extends Component {
      */
     render() {
         const {handleClose, handleClick, open, header,
-            content, showFooter, classes} = this.props;
+            content, showFooter, classes, fullWidth} = this.props;
         return(
             <Dialog
                 open={open}
                 onClose={handleClose}
                 maxWidth='md'
                 // scroll="paper"
+                fullWidth={fullWidth}
                 aria-describedby="alert-dialog-description"
                 aria-labelledby="responsive-dialog-title">
                 <DialogTitle id="responsive-dialog-title">{header}</DialogTitle>

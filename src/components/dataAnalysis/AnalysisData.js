@@ -165,6 +165,7 @@ class AnalysisData extends Component {
                 content={customModalData}
                 handleClose={this.handleClose}
                 open={this.state.barClick}
+                fullWidth={true}
                 />
             </div>
         )
