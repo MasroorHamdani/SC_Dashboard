@@ -131,7 +131,7 @@ class AnalysisData extends Component {
         const {classes, stateData, handleDatePicker,
             handleChangeStart, handleListSelection,
             handleChangeEnd} = this.props;
-        let tabData, customModalData = '';
+        let tabData, customModalData = <div className={classes.modalIniatialDimentions}></div>;
         if (stateData.dataAnalysis && stateData.dataAnalysis.data){
             tabData = this.generateDataAnalytics(stateData.dataAnalysis.data.data.metrics,
                 stateData.dataAnalysis.data.data.allMetrics, classes, false);

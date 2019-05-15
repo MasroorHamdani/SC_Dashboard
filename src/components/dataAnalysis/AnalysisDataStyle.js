@@ -64,6 +64,9 @@ const styles = theme => ({
     grapPlot: {
         display: 'flex',
         flexWrap: 'wrap'
+    },
+    modalIniatialDimentions: {
+        height: '500px',
     }
 })
 
