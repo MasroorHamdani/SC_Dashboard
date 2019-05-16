@@ -7,7 +7,7 @@ import {DATE_TIME_FORMAT, GRAPH_LABEL_TIME_FORMAT,
 import {formatDateTime, getTimeDifference,
     getTodaysStartDateTime} from '../utils/DateFormat';
 
-export function getFormatedGraphData(passedData, metrics, stateData='') {
+export function getFormatedGraphData(passedData, metrics, stateData='', isCustomModal=false) {
 /**
  * Metrics data and metrics dimentions will be passed to this function
  * This function will first loop through the metrics dimentions
@@ -36,10 +36,9 @@ export function getFormatedGraphData(passedData, metrics, stateData='') {
                     passedData[metridId][dim.id].data.map((vec) => {
                         if(row.metric_type === METRIC_TYPE['TIMESERIES']) {
                             let graphElement = {};
-                            //metricDataKey
-                            console.log(row, "row")
                             if(row.metric_data_key && (row.metric_data_key === 't' || row.metric_data_key === 'AGG')) {
-                                let timeDiffer = getTimeDifference(stateData.start, stateData.end);
+                                let timeDiffer = getTimeDifference(isCustomModal ? stateData.modalStart : stateData.start,
+                                    isCustomModal ? stateData.modalEnd : stateData.end);
                                 if(timeDiffer) {
                                     graphElement['name'] = formatDateTime(vec[row.metric_data_key], DATE_TIME_FORMAT, GRAPH_LABEL_TIME_FORMAT)
                                     //moment(vec.t, DATE_TIME_FORMAT).format(GRAPH_LABEL_TIME_FORMAT);

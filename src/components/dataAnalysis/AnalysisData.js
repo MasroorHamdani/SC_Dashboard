@@ -57,10 +57,10 @@ class AnalysisData extends Component {
                 [this.state.selectedMetric]:
                 this.props.stateData.modalDataAnalysis.data.data.metrics[this.state.selectedMetric]
             },
-            metricIndex = this.props.stateData.modalDataAnalysis.data.data.allMetrics.findIndex(p =>
-                p.metricID == this.state.selectedMetric),
+            metricIndex = this.props.stateData.modalDataAnalysis.data.data.all_metrics.findIndex(p =>
+                p.metric_id == this.state.selectedMetric),
             metricDim = [];
-            metricDim.push(this.props.stateData.modalDataAnalysis.data.data.allMetrics[metricIndex]);
+            metricDim.push(this.props.stateData.modalDataAnalysis.data.data.all_metrics[metricIndex]);
             return this.generateDataAnalytics(metricsData, metricDim, this.props.classes, true);
         } else {
             return this.generateDataAnalytics('', '', this.props.classes, true, isString);
@@ -85,7 +85,7 @@ class AnalysisData extends Component {
         let tabData;
         if(!isString) {
             let dataAnalysis = data,
-                analyticsData = getFormatedGraphData(dataAnalysis, metrics, this.props.stateData),
+                analyticsData = getFormatedGraphData(dataAnalysis, metrics, this.props.stateData, isCustomModal),
                 graphData = analyticsData.graphData,
                 nameMapper = analyticsData.nameMapper;
                 
