@@ -9,6 +9,8 @@ import peopleCounter from '../../images/people-counter.png';
 import airQuality from '../../images/air-quality.png';
 import wetnessDetection from '../../images/wetness-detection.png';
 import gatewayDevice from '../../images/wetness-detection.jpg';
+import feedbackDevice from '../../images/feedback_device.png';
+
 
 import {SORTING, DATE_TIME_FORMAT,
     DESCRIPTIVE_DATE_TIME_FORMAT, DEVICE_TOOL_TIP} from '../../constants/Constant';
@@ -108,6 +110,8 @@ class HealthStatusComponent extends Component {
                                             image = wetnessDetection;
                                         } else if(key === 'GW') {
                                             image = gatewayDevice;
+                                        } else if(key === 'FD') {
+                                            image = feedbackDevice;
                                         }
                                         return <Tab key={key}
                                             label={ <Tooltip title={DEVICE_TOOL_TIP[key]}>
