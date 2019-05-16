@@ -118,6 +118,12 @@ const styles = theme => ({
         width: '55%'
     },
     otherData: {
+        width: '50%'
+    },
+    customModal: {
+        width: '100%'
+    },
+    dashboardPie: {
         width: '45%'
     },
     errorMessage: {
@@ -141,8 +147,7 @@ const styles = theme => ({
         '& *': { color: 'rgba(255, 255, 255, 0.7)' },
         textAlign: 'center',
         padding: theme.spacing.unit * 2
-    },
-
+    }
 })
 
 export default styles;

@@ -11,6 +11,7 @@ import {formatDateTime} from '../../utils/DateFormat';
 import {ALERT_STATUS, DATE_TIME_FORMAT,
     DESCRIPTIVE_DATE_TIME_FORMAT,
     HOUR_MIN_FORMAT, DEVICE_TYPE} from '../../constants/Constant';
+import {capitalizeFirstLetter} from '../../utils/FormatStrings';
 
 import styles from './DataAnalysisStyle';
 
@@ -164,6 +165,11 @@ class AlertAnalysis extends Component {
                                             DATE_TIME_FORMAT,
                                             DESCRIPTIVE_DATE_TIME_FORMAT)}
                                     </Typography>
+                                    {row.header.ResolvedBy.UserID != 'null' &&
+                                        <Typography variant="caption">
+                                            Resolved By: {capitalizeFirstLetter(row.header.ResolvedBy.UserID)}
+                                        </Typography>
+                                    }
                                     </div>
                                     <Chip
                                         label={ALERT_STATUS[row.header.StatusInfo.Status]}

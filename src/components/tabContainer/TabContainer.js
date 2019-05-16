@@ -47,11 +47,11 @@ class TabContainer extends Component {
         const {category, data, handleClick, stateData} = this.props;
         let tabData, rows, searchList;
         if(stateData.teamInfo && category === PROJECT_TABS['TEAM']) {
-            rows = [{ id: 'Firstname', numeric: 'center', disablePadding: false, label: 'Firstname' },
-                    { id: 'Lastname', numeric: 'center', disablePadding: false, label: 'LastName' },
-                    { id: 'Role', numeric: 'center', disablePadding: false, label: 'Role' },
-                    { id: 'Status', numeric: 'center', disablePadding: false, label: 'Status' },
-                    { id: 'Association', numeric: 'center', disablePadding: false, label: 'Association'}
+            rows = [{ id: 'Firstname', numeric: 'left', disablePadding: false, label: 'Firstname' },
+                    { id: 'Lastname', numeric: 'left', disablePadding: false, label: 'LastName' },
+                    { id: 'Role', numeric: 'left', disablePadding: false, label: 'Role' },
+                    { id: 'Status', numeric: 'left', disablePadding: false, label: 'Status' },
+                    { id: 'Association', numeric: 'left', disablePadding: false, label: 'Association'}
                 ];
             searchList = [{ id: 'Firstname', label: 'Firstname' },
                     { id: 'Lastname', label: 'LastName' },
@@ -68,8 +68,8 @@ class TabContainer extends Component {
                 allowDelete={false} allowEdit={true}/>
             </Typography>
         } else if (data && category === PROJECT_TABS['INSTALLATION']) {
-            rows = [{ id: 'name', numeric: 'center', disablePadding: false, label: 'Name' },
-                    { id: 'locn', numeric: 'center', disablePadding: false, label: 'Location' }];
+            rows = [{ id: 'name', numeric: 'left', disablePadding: false, label: 'Name' },
+                    { id: 'locn', numeric: 'left', disablePadding: false, label: 'Location' }];
             searchList = [{ id: 'name', label: 'Name' },
                     { id: 'locn', label: 'Location' }];
             tabData = <Typography component="div">

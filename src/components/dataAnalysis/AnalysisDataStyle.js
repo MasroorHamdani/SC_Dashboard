@@ -60,6 +60,13 @@ const styles = theme => ({
     },
     noLeftPadding: {
         paddingLeft: '0px'
+    },
+    grapPlot: {
+        display: 'flex',
+        flexWrap: 'wrap'
+    },
+    modalIniatialDimentions: {
+        height: '500px',
     }
 })
 

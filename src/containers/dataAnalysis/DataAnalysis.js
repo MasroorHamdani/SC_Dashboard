@@ -9,7 +9,7 @@ import {getApiConfig} from '../../services/ApiCofig';
 import {API_URLS, NAMESPACE_MAPPER, DATA_OPERATIONS,
   OPERATION_TYPE, RANGE_ERROR} from '../../constants/Constant';
 import {projectSubMenuList, projectInstallationList,
-  projectAnalysisData, clearDataAnalysis} from '../../actions/DataAnalysis';
+  projectAnalysisData, clearDataAnalysis, modalProjectAnalysisData} from '../../actions/DataAnalysis';
 import styles from './DataAvalysisStyle';
 import RadioButtonComponent from '../../components/dataAnalysis/RadioButtonController';
 import {getStartEndTime, getVector} from '../../utils/AnalyticsDataFormat';
@@ -28,6 +28,8 @@ class DataAnalysis extends Component {
       projectList: [],
       start: 0,
       end: 0,
+      modalStart: 0,
+      modalEnd: 0,
       tab: '',
       sampling: '',
       unit: '',
@@ -37,38 +39,53 @@ class DataAnalysis extends Component {
       selectedIndex: 6,
       startDate: getTodaysStartDateTime(),
       endDate: new Date(),
+      modalStartDate: getTodaysStartDateTime(),
+      modalEndDate: new Date(),
     };
     this.menuIndex = 0;
   }
 
-  handleDatePicker = () => {
+  handleDatePicker = (type) => {
   /**
    * This function will called from component 'DateRowComponent'
    * on hitting th 'GO' buttomn for submitting the start and end date time.
    * As the selected date is custom it will call the function with custom keyword passed as one
    * of teh param along with staet and end time
    */
-    let start = moment(this.state.startDate);
-    let end = moment(this.state.endDate);
+    let start = moment(this.state.startDate),
+    end = moment(this.state.endDate),
+    newEndDate, newModalEndDate;
+    if(type === 'modal') {
+      start = moment(this.state.modalStartDate);
+      end = moment(this.state.modalEndDate);
+    }
+    
     let duration = moment.duration(end.diff(start));
     let days = duration.asDays();
 
     // Calculation to make sure api will always get max 7 days diff.
     // From start to 7 days.
     if(days > 7) {
-      end = _.cloneDeep(this.state.startDate);
+      end = _.cloneDeep(type === 'modal' ? this.state.modalStartDate : this.state.startDate);
       end.setHours(end.getHours()+(7*24));
-      this.setState({endDate: end})
+      newEndDate = type === 'default' ? end : this.state.endDate;
+      newModalEndDate = end
+      this.setState({
+        endDate: type === 'default' ? end : this.state.endDate,
+        modalEndDate: end
+      })
     }
     this.setState({
-        selectedIndex: -1,
+        selectedIndex: type === 'default' ? -1 : this.state.selectedIndex,
+        modalSelectedIndex: -1
     }, function () {
-    this.handleDateChange('custom',
-        this.state.startDate, this.state.endDate)
+    this.handleDateChange('custom', type, 
+      type === 'modal' ?  this.state.modalStartDate : this.state.startDate,
+      type === 'modal' ?  this.state.modalEndDate : this.state.endDate)
     })
   }
 
-  handleChangeStart  = (date) => {
+  handleChangeStart = (date) => {
   /**
    * This function will be called from the component 'DateRowComponent'
    * on selecting the date/time in startDate DatePicker,
@@ -76,7 +93,20 @@ class DataAnalysis extends Component {
    * this function will save the date time in startDate object
    */
     this.setState({
-        startDate: date
+        startDate: date,
+        modalStartDate: date
+    });
+  }
+
+  modalHandleChangeStart = (date) => {
+  /**
+   * This function will be called from the component 'DateRowComponent'
+   * on selecting the date/time in startDate DatePicker,
+   * which will pass the date selected as param and
+   * this function will save the date time in startDate object
+   */
+    this.setState({
+        modalStartDate: date
     });
   }
 
@@ -88,11 +118,23 @@ class DataAnalysis extends Component {
    * this function will save the date time in endDate object
    */
     this.setState({
-        endDate: date
+        endDate: date,
+        modalEndDate: date
+    });
+  }
+  modalHandleChangeEnd  = (date) => {
+  /**
+   * This function will be called from the component 'DateRowComponent'
+   * on selecting the date/time in endDate DatePicker,
+   * which will pass the date selected as param and
+   * this function will save the date time in endDate object
+   */
+    this.setState({
+        modalEndDate: date
     });
   }
 
-  handleListSelection = (event, value, index) => {
+  handleListSelection = (event, value, index, type) => {
   /**
    * This function will be called from component 'DateRowComponent'
    * on selecting and list for time,
@@ -100,12 +142,22 @@ class DataAnalysis extends Component {
    * the value is sent to next function to calculate the start and end date time.
    * And the index is saved in state to highlight the selected list item.
    */
-    this.setState({
+    if (type === 'default') {
+      this.setState({
         selectedIndex: index,
-        indexValue : index === 6 ? '15min' : value
-    }, function () {
-        this.handleDateChange(value)
-    })
+        indexValue : index === 6 ? '15min' : value,
+        modalSelectedIndex: index
+      }, function () {
+          this.handleDateChange(value)
+      })
+    } else if (type === 'modal') {
+      this.setState({
+        modalSelectedIndex: index
+      }, function () {
+          this.handleDateChange(value, type)
+      })
+    }
+    
   }
 
   handleChange = (event, pid, insid) => {
@@ -165,9 +217,13 @@ class DataAnalysis extends Component {
       subType: subType,
       pid: pid,
       dataAnalysis: {},
+      modalDataAnalysis: {},
       startDate: getTodaysStartDateTime(),
       endDate : new Date(),
+      modalStartDate: getTodaysStartDateTime(),
+      modalEndDate : new Date(),
       selectedIndex: 6,
+      modalSelectedIndex: 6,
       indexValue: '15min'
     }, function() {
       this.handleDateChange('Today');
@@ -184,7 +240,7 @@ class DataAnalysis extends Component {
     })
   }
 
-  handleDateChange = (param='', startDate='', endDate='') => {
+  handleDateChange = (param='', type='default', startDate='', endDate='') => {
   /**
    * This function is called from multiple sources.
    * Internally as well as well from component 'AnalysisData' directly
@@ -194,14 +250,22 @@ class DataAnalysis extends Component {
    */
     let formatedDate = getStartEndTime(param, startDate, endDate, this.state.timeZone);
     this.setState({
-      start: formatedDate.start,
-      end: formatedDate.end,
-      startDate: formatedDate.startTime ? formatedDate.startTime : this.state.startDate ,
-      endDate: formatedDate.endTime ? formatedDate.endTime : this.state.endDate,
+      start: type === 'default' ? formatedDate.start : this.state.start,
+      modalStart: formatedDate.start,
+      end: type === 'default' ? formatedDate.end : this.state.end,
+      modalEnd: formatedDate.end,
+      startDate: type === 'default' ? formatedDate.startTime ? formatedDate.startTime : this.state.startDate : this.state.startDate,
+      modalStartDate: formatedDate.startTime ? formatedDate.startTime : this.state.modalStartDate ,
+      endDate: type === 'default' ? formatedDate.endTime ? formatedDate.endTime : this.state.endDate : this.state.endDate,
+      modalEndDate: formatedDate.endTime ? formatedDate.endTime : this.state.modalEndDate,
       sessionHeader: '',
-      selectedIndex: formatedDate.selectedIndex ? formatedDate.selectedIndex : this.state.selectedIndex
+      selectedIndex: type === 'default' ? formatedDate.selectedIndex ? formatedDate.selectedIndex : this.state.selectedIndex : this.state.selectedIndex,
+      modalSelectedIndex: formatedDate.selectedIndex ? formatedDate.selectedIndex : this.state.modalSelectedIndex
     }, function() {
-      this.getNewAnalyticsData();
+      if (type === 'default')
+        this.getNewAnalyticsData();
+      else if (type === 'modal')
+        this.getModalAnalyticsData();
     })
   }
 
@@ -220,6 +284,30 @@ class DataAnalysis extends Component {
             'allMetrics': allMetrics}
   }
 
+  getModalAnalyticsData = () => {
+    this.setState({
+      loading: true,
+    })
+    
+    let dataToPost = {
+      "req_type" : OPERATION_TYPE['DEFAULT'],
+      "type": 'AQ',//this.state.deviceKey,
+      "sub_type": 'AQ_V0', //this.state.subType,
+      "all_metrics": []
+    };
+    // const endPoint = `${API_URLS['DEVICE_DATA']}/${this.state.pid}/${this.state.deviceId}`,
+    const endPoint = `${API_URLS['NEW_DEVICE_DATA']}/${this.state.pid}`,
+      params = {
+        'start_date_time' : this.state.modalStart,
+        'end_date_time' : this.state.modalEnd,
+      };
+    let headers = {
+      'x-sc-session-token': this.state.sessionHeader ? this.state.sessionHeader : ''
+    },
+    config = getApiConfig(endPoint, 'POST', dataToPost, params, headers);
+    this.props.onModalDataAnalysis(config, endPoint);
+  }
+
   getNewAnalyticsData = () => {
   /**
    * This function is called internally for API call.
@@ -235,7 +323,7 @@ class DataAnalysis extends Component {
     let metrics = this.getMetric(),
     dataToPost = {
       "req_type" : OPERATION_TYPE['DEFAULT'],
-      "type": this.state.deviceKey,
+      "type": 'AQ',//this.state.deviceKey,
       "sub_type": 'AQ_V0', //this.state.subType,
       "all_metrics": []
       // "ReqType": "default",
@@ -248,7 +336,7 @@ class DataAnalysis extends Component {
         metrics.metric[0].type === this.state.deviceKey) {
       dataToPost = {
         "req_type" : OPERATION_TYPE['ON_DEMAND'],
-        "type": this.state.deviceKey,
+        "type": 'AQ',//this.state.deviceKey,
         "sub_type": 'AQ_V0',//this.state.subType,
         "all_metrics": metrics.allMetrics
       };
@@ -310,21 +398,6 @@ class DataAnalysis extends Component {
         [this.state.deviceKey]: {...this.state[this.state.deviceKey]}
       })
     }
-  }
-
-  handleBarClick = (key) => {
-  /**
-   * Handling bar click. any bar which has a click function will call this API.
-   */
-    this.setState({ barClick: true });
-    this.handleDateChange();
-  }
-
-  handleClose = () => {
-  /**
-   * This function will close the modal opened while clicking on a bar
-   */
-    this.setState({ barClick: false });
   }
 
   componentDidCatch(error, errorInfo) {
@@ -514,6 +587,26 @@ class DataAnalysis extends Component {
         })
         this.setState({installationList: installationList,loading: false,})
     }
+    if (this.props.modalDataAnalysis &&
+      !isEqual(this.props.modalDataAnalysis, prevProps.modalDataAnalysis)) {
+        if(isEqual(this.props.modalDataAnalysis.data.status, "success")) {
+          let metricsData = getVector(this.props.modalDataAnalysis.data.data.all_metrics, this.state.deviceKey);
+          this.setState({
+            modalSessionHeader: this.props.modalDataAnalysis.headers['x-sc-session-token'],
+            modalMetrics: metricsData.dataMetrics,
+            modalAllMetrics: this.props.modalDataAnalysis.data.data.all_metrics,
+            modalDataAnalysis: this.props.modalDataAnalysis,
+            loading: false});
+        } else if(isEqual(this.props.modalDataAnalysis.data.status, 'nodata')) {
+          this.setState({loading: false, modalDataAnalysis: 'No Data Found'})
+          
+        } else if(isEqual(this.props.modalDataAnalysis.data.status, 'failed')) {
+          this.setState({loading: false, modalDataAnalysis: this.props.modalDataAnalysis.data.data.message})
+        }
+        else {
+          this.setState({loading: false})
+        }
+      }
   }
 
   render () {
@@ -537,6 +630,9 @@ class DataAnalysis extends Component {
             handleListSelection={this.handleListSelection}
             handleChangeEnd={this.handleChangeEnd}
             refreshData={this.refreshData}
+            getModalAnalyticsData={this.getModalAnalyticsData}
+            modalHandleChangeStart={this.modalHandleChangeStart}
+            modalHandleChangeEnd={this.modalHandleChangeEnd}
             />
         }
         {this.state.loading &&
@@ -557,6 +653,7 @@ function mapStateToProps(state) {
       installationList : state.DataAnalysisInstallationListReducer.data,
       dataAnalysis : state.DataAnalysisReducer.data,
       projectSelected : state.projectSelectReducer.data,
+      modalDataAnalysis : state.ModalDataAnalysisReducer.data
   }
 }
 
@@ -567,6 +664,9 @@ function mapDispatchToProps(dispatch) {
   return {
     onDataAnalysisMenu: (config) => {
       dispatch(projectSubMenuList(config))
+    },
+    onModalDataAnalysis: (config) => {
+      dispatch(modalProjectAnalysisData(config))
     },
     onInstalationsList: (config) => {
       dispatch(projectInstallationList(config))

@@ -37,6 +37,7 @@ export function getFormatedGraphData(passedData, metrics, stateData='') {
                         if(row.metric_type === METRIC_TYPE['TIMESERIES']) {
                             let graphElement = {};
                             //metricDataKey
+                            console.log(row, "row")
                             if(row.metric_data_key && (row.metric_data_key === 't' || row.metric_data_key === 'AGG')) {
                                 let timeDiffer = getTimeDifference(stateData.start, stateData.end);
                                 if(timeDiffer) {

@@ -6,7 +6,6 @@ import {Line, XAxis, YAxis, CartesianGrid, Tooltip,
 import {METRIC_TYPE, DATA_VIEW_TYPE} from '../../constants/Constant';
 import DataProcessingComponent from './DataProcessComponent';
 import AlertAnalysis from './AlertAnalysis';
-import CustomModal from '../modal/Modal';
 import styles from './DataAnalysisStyle';
 
 class GraphPlot extends Component {
@@ -26,7 +25,7 @@ class GraphPlot extends Component {
     render() {
         const {classes, metrics, graphData, nameMapper,
             stateData, handleSamplingChange, isDashboard,
-            handleBarClick, handleClose} = this.props;
+            handleBarClick, handleClose, isCustomModal} = this.props;
         const renderActiveShape = (props) => {
         /**
          * This function will create an arc on mouse hover for pie chanrt 
@@ -80,25 +79,26 @@ class GraphPlot extends Component {
          * Check for the type of the graph and as per conditions decide what to show.
          */
             metrics.map((metric, index) => {
-                return <div key={index}
-                // metricType
+            return <div key={index}
                 className={isDashboard && metric['metric_type'] === "raw_data"? classes.alertBox :
-                isDashboard && metric['metric_type'] === "categorical" ? classes.otherData : ''} >
+                isDashboard && metric['metric_type'] === "categorical" ? classes.dashboardPie : 
+                isCustomModal ? classes.customModal : classes.otherData} >
                 <Divider className={classes.seperator}/>
-                    <DataProcessingComponent stateData={stateData}
+                    {/* <DataProcessingComponent stateData={stateData}
                         handleSamplingChange={handleSamplingChange}
-                        metrics={metric}/>
-                    <Typography gutterBottom variant="h5">
+                        metrics={metric}/> */}
+                    <Typography gutterBottom variant="h6">
                         {metric.metricName}
                     </Typography>
                     {(metric.metric_type === METRIC_TYPE['TIMESERIES'] && metric.metric_data_key) &&
                         <ResponsiveContainer width='100%' height={400}>
-                            <ComposedChart className={classes.lineChart} data={graphData[metric.metric_id]} //metricID
-                                margin={{top: 5, right: 30, left: 20, bottom: 5}}>
+                            <ComposedChart className={classes.lineChart} data={graphData[metric.metric_id]}
+                                margin={{top: 5, right: 30, left: 20, bottom: 5}}
+                                onClick={e => !isCustomModal? handleBarClick(metric.metric_id): ''}>
                                 <XAxis dataKey="name" 
                                     minTickGap={20}
                                     // type="number"
-                                    label={{ value: 'Time of day', position: 'insideBottomRight', offset: -15}}
+                                    label={{ value: 'Time of day', position: 'insideBottomRight', offset: -3}}
                                     />
                                 {metric.dimensions[0].type === 'derivedDim' ?
                                     <YAxis type="category" width={120}
@@ -118,28 +118,35 @@ class GraphPlot extends Component {
                                         let mapper = nameMapper[metric.metric_id][key];
                                         if(mapper['chartType'] === DATA_VIEW_TYPE['LINE']) {
                                             return(<Line name={mapper['name']} key={key} type="monotone"
-                                                strokeWidth={5}
+                                                // strokeWidth={2}
                                                 dataKey={key}
                                                 dot={false}
+                                                activeDot={{onClick: () => !isCustomModal? handleBarClick(metric.metricID): ''}}
                                                 isAnimationActive={false}
-                                                // dot={{stroke: mapper['color']}}
-                                                // fill={mapper['color']}
                                                 stroke={mapper['color']}
-                                                    // stroke="none"
+                                                // onClick={e => !isCustomModal? handleBarClick(metric.metricID): ''}
                                                 />)
                                         }
                                         if (mapper['chartType'] === DATA_VIEW_TYPE['BAR']) {
                                             return <Bar name={mapper['name']} key={key} dataKey={key}
-                                                fill={mapper['color']} isAnimationActive={false}/>
+                                                fill={mapper['color']} isAnimationActive={false}
+                                                // onClick={e => !isCustomModal? handleBarClick(metric.metricID): ''}
+                                                />
                                         }
                                         if (mapper['chartType'] === DATA_VIEW_TYPE['SCATTER']) {
                                             return <Line name={mapper['name']}
                                                 key={key}
                                                 dataKey={key}
-                                                dot={{stroke: mapper['color']}}
+                                                // activeDot={{onClick: () => !isCustomModal? handleBarClick(metric.metricID): ''}}
+                                                // dot={{stroke: mapper['color'] , onClick: () => !isCustomModal? handleBarClick(metric.metricID): ''}}
                                                 fill={mapper['color']}
-                                                stroke="none"
-                                                isAnimationActive={false}/>
+                                                stroke={mapper['color']}
+                                                strokeWidth={0}
+                                                legendType="circle"
+                                                // stroke="none"
+                                                isAnimationActive={false}
+                                                
+                                                />
                                         }
                                         if (mapper['chartType'] === DATA_VIEW_TYPE['AREA']) {
                                             return <Area type='monotone'
@@ -243,12 +250,6 @@ class GraphPlot extends Component {
                     {(metric.metric_type === METRIC_TYPE['TABLE_DATA'])&&
                         <div>table data</div>
                     }
-                    {/* <CustomModal
-                        header="Dispenser Details"
-                        content="testing"//{deviceData}
-                        handleClose={handleClose}
-                        open={stateData.barClick}
-                        /> */}
                 </div>
             })
         )
