@@ -85,7 +85,7 @@ class AnalysisData extends Component {
         let tabData;
         if(!isString) {
             let dataAnalysis = data,
-                analyticsData = getFormatedGraphData(dataAnalysis, metrics, this.props.stateData),
+                analyticsData = getFormatedGraphData(dataAnalysis, metrics, this.props.stateData, isCustomModal),
                 graphData = analyticsData.graphData,
                 nameMapper = analyticsData.nameMapper;
                 
