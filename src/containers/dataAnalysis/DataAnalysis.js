@@ -279,17 +279,34 @@ class DataAnalysis extends Component {
     return {'metric' : metrics,
             'allMetrics': allMetrics}
   }
+  getModalAnalyticsDataWithMetricId = (metricId) => {
+    this.setState({selectedMetric: metricId},
+      function() {
+        this.getModalAnalyticsData();
+      })
+  }
 
   getModalAnalyticsData = () => {
     this.setState({
       loading: true,
     })
     
-    let dataToPost = {
-      "ReqType": "default",
-      "Type": this.state.deviceKey,
-      "SubType": this.state.subType
-    };
+    let metrics = this.getMetric(),
+      dataToPost = {
+        "ReqType": "default",
+        "Type": this.state.deviceKey,
+        "SubType": this.state.subType,
+        "metrics": []
+      };
+    if(metrics && metrics.metric.length > 0 &&
+      metrics.allMetrics.length > 0 &&
+      metrics.metric[0].type === this.state.deviceKey) {
+        let metricIndex = metrics.allMetrics.findIndex(p => p.metricID == this.state.selectedMetric);
+        dataToPost = {
+          "metrics": []
+        };
+        dataToPost.metrics.push(metrics.allMetrics[metricIndex]);
+    }
     const endPoint = `${API_URLS['DEVICE_DATA']}/${this.state.pid}/${this.state.deviceId}`,
       params = {
         'start' : this.state.modalStart,
@@ -607,7 +624,7 @@ class DataAnalysis extends Component {
             handleListSelection={this.handleListSelection}
             handleChangeEnd={this.handleChangeEnd}
             refreshData={this.refreshData}
-            getModalAnalyticsData={this.getModalAnalyticsData}
+            getModalAnalyticsDataWithMetricId={this.getModalAnalyticsDataWithMetricId}
             modalHandleChangeStart={this.modalHandleChangeStart}
             modalHandleChangeEnd={this.modalHandleChangeEnd}
             />

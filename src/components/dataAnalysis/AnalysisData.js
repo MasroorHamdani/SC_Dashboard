@@ -34,8 +34,8 @@ class AnalysisData extends Component {
     /**
      * Handling bar click. any bar which has a click function will call this API.
      */
-        this.setState({ barClick: true, selectedMetric: metricID}, function() {
-            this.props.getModalAnalyticsData();
+        this.setState({ barClick: true}, function() {
+            this.props.getModalAnalyticsDataWithMetricId(metricID);
         });
     }
 
@@ -53,15 +53,8 @@ class AnalysisData extends Component {
      * and pass that to a generic function to create data to display, which will be latter on passed to modal.
      */
         if(!isString) {
-            let metricsData = {
-                [this.state.selectedMetric]:
-                this.props.stateData.modalDataAnalysis.data.data.metrics[this.state.selectedMetric]
-            },
-            metricIndex = this.props.stateData.modalDataAnalysis.data.data.allMetrics.findIndex(p =>
-                p.metricID == this.state.selectedMetric),
-            metricDim = [];
-            metricDim.push(this.props.stateData.modalDataAnalysis.data.data.allMetrics[metricIndex]);
-            return this.generateDataAnalytics(metricsData, metricDim, this.props.classes, true);
+            return this.generateDataAnalytics(this.props.stateData.modalDataAnalysis.data.data.metrics,
+                this.props.stateData.modalDataAnalysis.data.data.allMetrics, this.props.classes, true);
         } else {
             return this.generateDataAnalytics('', '', this.props.classes, true, isString);
         }
