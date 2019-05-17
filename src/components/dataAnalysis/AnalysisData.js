@@ -35,7 +35,7 @@ class AnalysisData extends Component {
      * Handling bar click. any bar which has a click function will call this API.
      */
         this.setState({ barClick: true, selectedMetric: metricID}, function() {
-            this.props.getModalAnalyticsData();
+            this.props.getModalAnalyticsDataWithMetric(metricID);
         });
     }
 
@@ -61,7 +61,7 @@ class AnalysisData extends Component {
                 p.metric_id == this.state.selectedMetric),
             metricDim = [];
             metricDim.push(this.props.stateData.modalDataAnalysis.data.data.all_metrics[metricIndex]);
-            return this.generateDataAnalytics(metricsData, metricDim, this.props.classes, true);
+            return this.generateDataAnalytics(this.props.stateData.modalDataAnalysis.data.data.metrics, this.props.stateData.modalDataAnalysis.data.data.all_metrics, this.props.classes, true);
         } else {
             return this.generateDataAnalytics('', '', this.props.classes, true, isString);
         }
