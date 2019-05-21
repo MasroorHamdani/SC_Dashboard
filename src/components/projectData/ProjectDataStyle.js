@@ -19,7 +19,7 @@ const styles = theme => ({
       display: 'flex',
     },
     avatar: {
-      backgroundColor: green[300],//red[500],
+      backgroundColor: `${theme.palette.primary.main}`,
     },
     pointer: {
       cursor: 'pointer'

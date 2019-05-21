@@ -26,7 +26,9 @@ export const API_URLS = {
     'INSTALLATION': '/installations',
     'HEALTH': '/health',
     'REPORTING_SERVICE': '/services/reporting',
-    'REPORTING_LIST': '/reports'
+    'REPORTING_LIST': '/reports',
+    'PARTNER': '/unauth/partners/',
+    'THEME': '/general'
 };
 
 export const DASHBOARD_METRIC = {

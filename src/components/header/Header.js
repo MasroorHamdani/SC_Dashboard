@@ -179,7 +179,7 @@ class Header extends Component {
                 noWrap
                 className={classes.title}>
                 <ListItem component={Link} to='/'>
-                  <img src="https://www.smartclean.sg/images/sc-logo.png" alt="logo" className={classes.logo}/>
+                  <img src={localStorage.getItem('logo') ? localStorage.getItem('logo') : "https://www.smartclean.sg/images/sc-logo.png"} alt="logo" className={classes.logo}/>
                 </ListItem>
                 {/* <span className={classes.beta}>BETA</span> */}
               </Typography>

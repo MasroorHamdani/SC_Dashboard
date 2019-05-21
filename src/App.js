@@ -43,7 +43,7 @@ const styles = theme => ({
                     <CssBaseline />
                     <ButtonAppBar/>
                     <Switch>
-                      <Route path="/login" component={Login} />
+                      <Route path="/:partnerid?/login" component={Login} />
                       <Route path="/auth-reset" component={AuthReset} />
                       <Route path="/about" component={About} />
                       <Route path="/contact" component={Contact} />
@@ -71,7 +71,7 @@ const styles = theme => ({
                       <Route path="/health/project/:pid/:insid" component={HealthStatus}/>
                       <Route exact path="/health/project/:pid" component={Health}/>
                       <Route path="/logout" component={Logout} />
-                      <Redirect from="/login" to="/"/>
+                      <Redirect from="/:partnerid?/login" to="/"/>
                       <Route component={NoMatch} />
                     </Switch>
                     <Footer/>

@@ -26,7 +26,8 @@ class Login extends React.Component {
         code: '',
         codeLabel: "Enter Verification code Sent to your Email",
         errorMessage: '',
-        disableBtn: false
+        disableBtn: false,
+        partnerid: props.match.params.partnerid,
     };
     this.state = this.initialState;
   }
@@ -150,6 +151,12 @@ class Login extends React.Component {
     return data;
   }
 
+  componentDidMount() {
+    const endPoint = `${API_URLS['PARTNER']}${this.state.partnerid? this.state.partnerid : 'default'}${API_URLS['THEME']}`,
+      config = getApiConfig(endPoint, 'GET');
+        // this.props.onProjectHealth(config);
+    console.log(endPoint, "endPoint");
+  }
   componentDidUpdate(prevProps, prevState) {
   /**
    * Handle Login Flow
