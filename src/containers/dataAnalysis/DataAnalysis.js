@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import {connect} from 'react-redux';
 import {isEqual} from 'lodash';
 import {withStyles, LinearProgress} from '@material-ui/core';
-import _, {groupBy} from 'lodash';
+import _, {groupBy, sortBy} from 'lodash';
 import moment from 'moment-timezone';
 import DataAnalysisComponent from '../../components/dataAnalysis/DataAnalysis';
 import {getApiConfig} from '../../services/ApiCofig';
@@ -193,10 +193,11 @@ class DataAnalysis extends Component {
    * on tab selection.
    * It will make further calls to setup state values.
    */
-    Object.keys(this.state.installationList).map((key) => {
-      if(key === tab) {
-        this.setStateValue(tab, this.state.installationList[key].type,
-          this.state.installationList[key].devid, this.state.installationList[key].subType, this.state.installationList[key].pid)
+    // Object.keys(this.state.installationList).map((key) => {
+    this.state.installationList.map((row) => {
+      if(row.key === tab) {
+        this.setStateValue(tab, row.type,
+          row.devid, row.subType, row.pid) //this.state.installationList[key]
       }
     })
   };
@@ -553,6 +554,17 @@ class DataAnalysis extends Component {
             'devid': tab.Devid,
             'pid': tab.PID
           }
+          if(list.key === 'FD') {
+            list['index'] = 0;
+          } else if(list.key === 'PPLCTR' || list.key === 'PC') {
+            list['index'] = 1;
+          } else if(list.key === 'ODRDTR' || list.key === 'AQ') {
+            list['index'] = 2;
+          } else if(list.key === 'WD') {
+            list['index'] = 3;
+          } else {
+            list['index'] = 4;
+          }
           // This section was clubing the Dispenser type devices into one and show one entry on UI rather then multiple
           // if((tab.Type === 'PT' || tab.Type === 'SS' || tab.Type === 'TR') && !installationList[tab.Type]) {
           // // This part is for stacking only the Dispenser data
@@ -579,7 +591,7 @@ class DataAnalysis extends Component {
             installationList[tab.Type] = list
           }
         })
-        this.setState({installationList: installationList,loading: false,})
+        this.setState({installationList: sortBy(installationList,'index'), loading: false,})//sortBy(installationList,'index')
     }
     if (this.props.modalDataAnalysis &&
       !isEqual(this.props.modalDataAnalysis, prevProps.modalDataAnalysis)) {

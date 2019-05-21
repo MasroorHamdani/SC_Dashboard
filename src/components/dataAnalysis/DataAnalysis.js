@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import {withStyles, AppBar, Tabs, Tab} from '@material-ui/core';
+import {isEmpty} from 'lodash';
 import styles from './DataAnalysisStyle';
 import AnalysisData from './AnalysisData';
 
@@ -24,7 +25,7 @@ class DataAnalysisComponent extends Component {
         return(
             <div className={classes.main}>
                 <div>
-                    {stateData.value &&
+                    {(stateData.value && !isEmpty(stateData.installationList)) &&
                         <AppBar position="static" color="default">
                             <Tabs
                             scrollable
@@ -34,14 +35,16 @@ class DataAnalysisComponent extends Component {
                             indicatorColor="primary"
                             textColor="primary"
                             variant="fullWidth">
-                                {Object.keys(stateData.installationList).map((key)=> {
+                            {/* Object.keys(stateData.installationList).map((key)=> { */}
+                                {stateData.installationList.map((row)=> {
                                     if(stateData.installationList && !this.info) {
                                         this.info = true;
-                                        handleTabChange('', key)
+                                        handleTabChange('', row.key)
                                     }
-                                    return <Tab label={Array.isArray(stateData.installationList[key]) ? stateData.installationList[key][0]['text']: stateData.installationList[key]['text']}
-                                        value={Array.isArray(stateData.installationList[key]) ? stateData.installationList[key][0]['key']: stateData.installationList[key]['key']}
-                                        key={Array.isArray(stateData.installationList[key]) ? stateData.installationList[key][0]['key']: stateData.installationList[key]['key']}/>
+                                    return <Tab label={Array.isArray(row) ? row[0]['text']: row['text']}
+                                        value={Array.isArray(row) ? row[0]['key']: row['key']}
+                                        key={Array.isArray(row) ? row[0]['key']: row['key']}/>
+                                        // stateData.installationList[key]
                                 })}
                             </Tabs>
                         </AppBar>
