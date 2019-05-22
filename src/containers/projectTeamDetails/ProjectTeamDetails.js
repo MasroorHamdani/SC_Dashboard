@@ -268,7 +268,7 @@ class ProjectInstallationDetails extends Component {
                 function() {
                     let arr = this.props.match.url.split('/');
                     arr[2] = this.props.projectSelected.PID;
-                    let url = arr.join('/');
+                    let url = arr.join('/'); //arr.slice(0, arr.length-1).join('/');//
                     this.info = false;
                     this.props.history.push(url);
                     this.getProfileData();

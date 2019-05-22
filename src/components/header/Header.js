@@ -40,6 +40,8 @@ class Header extends Component {
       let addressArray = window.location.pathname.split('/');
       let projectIndex = addressArray.indexOf('project');
       this.pid = addressArray[projectIndex + 1];
+      let mainIndex = addressArray.indexOf('optimus');
+      this.partnerid = addressArray[mainIndex + 1] !== 'project' ? addressArray[mainIndex + 1] : ''
     }
 
     handleDrawerOpen = () => {
@@ -123,8 +125,8 @@ class Header extends Component {
      * Select the first project as the default one.
      */
       if(this.props.projectList &&
-        !isEqual(this.props.projectList, prevProps.projectList) ||
-        !this.state.projectList.length > 0) {
+        (!isEqual(this.props.projectList, prevProps.projectList) ||
+        !this.state.projectList.length > 0)) {
           let projData = [];
           if(this.props.projectList.length > 0)
             this.props.projectList.map((row) => {
@@ -231,11 +233,11 @@ class Header extends Component {
                 <Paper className={classes.paper}>
                   <MenuItem disabled>{user}</MenuItem>                    
                   <Divider />
-                  <MenuItem onClick={e => this.onClick(REACT_URLS['USER-PROFILE'])}>
+                  <MenuItem onClick={e => this.onClick(REACT_URLS.USER_PROFILE(this.partnerid))}>
                     <IconButton><AccountBox /></IconButton>
                     Profile
                   </MenuItem>
-                  <MenuItem onClick={e => this.onClick(REACT_URLS['LOGOUT'])}>
+                  <MenuItem onClick={e => this.onClick(REACT_URLS.LOGOUT(this.partnerid))}>
                     <IconButton><ExitToAppIcon /></IconButton>
                     Logout
                   </MenuItem>

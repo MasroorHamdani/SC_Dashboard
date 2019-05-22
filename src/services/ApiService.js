@@ -4,6 +4,10 @@ import { merge } from "lodash-es";
 import {API_END_POINT, API_URLS, REACT_URLS} from "../constants/Constant";
 
 function ApiService(configObject) {
+    if(!localStorage.getItem('main')) {
+        const urlEndPoint = 'hello';//`${API_URLS['PARTNER']}${this.props.match.params.partnerid? this.props.match.params.partnerid : 'default'}${API_URLS['THEME']}`;
+        console.log(urlEndPoint, "urlEndPoint");
+    }
     const url = API_END_POINT,
         newUrl = `${url}${configObject.url}`;
     const config = merge({}, configObject, {

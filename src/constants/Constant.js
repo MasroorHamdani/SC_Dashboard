@@ -28,7 +28,7 @@ export const API_URLS = {
     'REPORTING_SERVICE': '/services/reporting',
     'REPORTING_LIST': '/reports',
     'PARTNER': '/unauth/partners/',
-    'THEME': '/general'
+    'THEME': '/theme'
 };
 
 export const DASHBOARD_METRIC = {
@@ -60,18 +60,19 @@ export const SORTING = {
 
 export const REACT_URLS = {
     'BASEURL': 'optimus',
-    'LOGIN': '/login',
-    'DASHBOARD': '/',
-    'PROJECT_DETAILS': '/project',
-    'LOGOUT': '/logout',
+    'LOGIN': (partnerId) => partnerId ?  `/${partnerId}/login` : '/login',
+    'DASHBOARD': (partnerId) => partnerId ? `/${partnerId}/` : '/',
+    'PROJECT_DETAILS': (partnerId) => partnerId ? `/${partnerId}/project` :'/project',
+    'LOGOUT': (partnerId) => partnerId ? `/${partnerId}/logout` : '/logout',
     'CONTACT': '/contact',
     'ABOUT': '/about',
-    'AUTH_RESET': '/auth-reset',
-    'USER-PROFILE': '/profile',
-    'ALERT': '/alert/project',
-    'DISPENSER': '/dispenser/project',
-    'HEALTH_STATUS': '/health/project'
+    'AUTH_RESET': (partnerId) => partnerId ? `/${partnerId}/auth-reset` : '/auth-reset',
+    'USER_PROFILE': (partnerId) => partnerId ? `/${partnerId}/profile` :'/profile',
+    'ALERT': (partnerId) => partnerId ? `/${partnerId}/alert/project` : '/alert/project',
+    'DISPENSER': (partnerId) => partnerId ? `/${partnerId}/dispenser/project` : '/dispenser/project',
+    'HEALTH_STATUS': (partnerId) => partnerId ? `/${partnerId}/health/project` : '/health/project'
 }
+// "ALERT': (partnerId) => partnerId ? `${partnerId}/project/${pid}`: `/project/${pid}`
 
 export const DATE_TIME_FORMAT = 'YYYYMMDDHHmmss'
 

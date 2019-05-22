@@ -8,7 +8,7 @@ class NoMatch extends Component {
     render() {
         const { classes } = this.props;
         if (!localStorage.getItem('idToken')) {
-            this.props.history.push(REACT_URLS['LOGIN']);
+            this.props.history.push(REACT_URLS.LOGIN);
             return null
         } else {
             return (

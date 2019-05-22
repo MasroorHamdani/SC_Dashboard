@@ -11,6 +11,7 @@ import { getApiConfig } from '../services/ApiCofig';
 import {forgotPassword} from '../actions/ForgotPasswordAction';
 import {resetPassword} from '../actions/ResetPasswordAction';
 import { userLogin } from "../actions/LoginAction";
+import {partnerTheme} from "../actions/DashboardAction";
 
 class Login extends React.Component {
   constructor(props) {
@@ -152,11 +153,13 @@ class Login extends React.Component {
   }
 
   componentDidMount() {
-    const endPoint = `${API_URLS['PARTNER']}${this.state.partnerid? this.state.partnerid : 'default'}${API_URLS['THEME']}`,
-      config = getApiConfig(endPoint, 'GET');
-        // this.props.onProjectHealth(config);
-    console.log(endPoint, "endPoint");
+    if(!localStorage.getItem('main')) {
+      const endPoint = `${API_URLS['PARTNER']}${this.state.partnerid? this.state.partnerid : 'default'}${API_URLS['THEME']}`,
+        config = getApiConfig(endPoint, 'GET');
+      this.props.onPartnerTheme(config);
+    }
   }
+
   componentDidUpdate(prevProps, prevState) {
   /**
    * Handle Login Flow
@@ -218,7 +221,7 @@ class Login extends React.Component {
           });
         }
         if(localStorage.getItem('previousPath') &&
-          localStorage.getItem('previousPath') !== `${REACT_URLS['BASEURL']}/${REACT_URLS['LOGIN']}`) {
+          localStorage.getItem('previousPath') !== `/${REACT_URLS['BASEURL']}${REACT_URLS.LOGIN(this.state.partnerid)}`) {
               let urlArray = localStorage.getItem('previousPath').split('/'),
                 newUrl;
               if(urlArray[0] === '' && urlArray[1] === REACT_URLS['BASEURL']) {
@@ -226,7 +229,7 @@ class Login extends React.Component {
               }
               this.props.history.push(newUrl);
         } else {
-          this.props.history.push(REACT_URLS['DASHBOARD']);
+          this.props.history.push(REACT_URLS.DASHBOARD(this.state.partnerid));
         }
       }
     }
@@ -292,6 +295,20 @@ class Login extends React.Component {
           });
         }
     }
+  /**
+   * Handle fetching the partner theme and pushing the theme in localstorage,
+   * which will be uase by the theme setting for white labelling
+   */
+  if (this.props.partnerTheme &&
+    !isEqual(this.props.partnerTheme, prevProps.partnerTheme)) {
+      localStorage.setItem('main', this.props.partnerTheme[0].Details.main)
+      localStorage.setItem('footer', this.props.partnerTheme[0].Details.footerText)
+      localStorage.setItem('highlighter', this.props.partnerTheme[0].Details.highlighter)
+      localStorage.setItem('light', this.props.partnerTheme[0].Details.light)
+      localStorage.setItem('lighter', this.props.partnerTheme[0].Details.lighter)
+      localStorage.setItem('logo', this.props.partnerTheme[0].Details.logo)
+      window.location.reload()
+    }
   }
   render() {
       return (
@@ -309,7 +326,8 @@ function mapStateToProps(state) {
   return {
       userLogin : state.LoginReducer.data,
       forgotPassword: state.ForgotPasswordReducer.data,
-      resetPassword : state.ResetPasswordReducer.data
+      resetPassword : state.ResetPasswordReducer.data,
+      partnerTheme: state.PartnerThemeReducer.data
   }
 }
 
@@ -324,6 +342,9 @@ function mapDispatchToProps(dispatch) {
       },
       onResetPassword: (config) => {
         dispatch(resetPassword(config))
+      },
+      onPartnerTheme: (config) => {
+        dispatch(partnerTheme(config))
       }
   }
 }

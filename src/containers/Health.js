@@ -17,6 +17,7 @@ class Health extends Component {
         super(props);
         this.state ={
             pid: props.match.params.pid,
+            partnerId: props.match.params.partnerid,
             loading: true,
         };
     }
@@ -101,7 +102,7 @@ class Health extends Component {
         /**
          * Function called from child component to redirect the page.
          */
-        this.props.history.push(`${REACT_URLS['HEALTH_STATUS']}/${this.state.pid}/${id}`);
+        this.props.history.push(`${REACT_URLS.HEALTH_STATUS(this.state.partnerId)}/${this.state.pid}/${id}`);
     };
     
     componentDidUpdate(prevProps, prevState) {

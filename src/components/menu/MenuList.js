@@ -1,29 +1,29 @@
-export function mainMenuList (pid) {
+export function mainMenuList (pid, partnerId) {
   /**
    * Generate the left nav list, with pid being passsed to generate the URL
    */
 return ([
     {
       name: "Dashboard",
-      url: "/",
+      url: partnerId ? `/${partnerId}/`: "/",
       icon: "DashboardIcon",
       toolTip: "Dashboard"
     },
     {
       name: "Project details",
-      url: `/project/${pid}`,
+      url: partnerId ? `/${partnerId}/project/${pid}`: `/project/${pid}`,
       icon: "LibraryBooksIcon",
       toolTip: "Project details"
     },
     {
       name: "Data Analysis",
-      url: `/data/project/${pid}`,
+      url: partnerId ? `/${partnerId}/data/project/${pid}` : `/data/project/${pid}`,
       icon: "BarChartIcon",
       toolTip: "Data Analysis"
     },
     {
       name: "Reports",
-      url: `/report/project/${pid}`,
+      url: partnerId ? `/${partnerId}/report/project/${pid}` : `/report/project/${pid}`,
       icon: "AssignmentIcon",
       toolTip: "Reports"
     },
@@ -35,13 +35,13 @@ return ([
     // },
     {
       name: "Health Status",
-      url: `/health/project/${pid}`,
+      url: partnerId ? `/${partnerId}/health/project/${pid}` : `/health/project/${pid}`,
       icon: "FavoriteIcon",
       toolTip: "Health Status"
     },
     {
       name: "Alert Data",
-      url: `/alert/project/${pid}`,
+      url: partnerId ? `/${partnerId}/alert/project/${pid}` : `/alert/project/${pid}`,
       icon: "NotificationImportantIcon",
       toolTip: "Alert Data"
     }])
