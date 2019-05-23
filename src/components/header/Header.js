@@ -40,8 +40,9 @@ class Header extends Component {
       let addressArray = window.location.pathname.split('/');
       let projectIndex = addressArray.indexOf('project');
       this.pid = addressArray[projectIndex + 1];
-      let mainIndex = addressArray.indexOf('optimus');
-      this.partnerid = addressArray[mainIndex + 1] !== 'project' ? addressArray[mainIndex + 1] : ''
+      // let mainIndex = addressArray.indexOf('optimus');
+      // this.partnerid = addressArray[mainIndex + 1];
+      this.partnerid = localStorage.getItem('partnerid');
     }
 
     handleDrawerOpen = () => {

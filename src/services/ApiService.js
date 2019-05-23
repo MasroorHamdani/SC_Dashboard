@@ -4,9 +4,35 @@ import { merge } from "lodash-es";
 import {API_END_POINT, API_URLS, REACT_URLS} from "../constants/Constant";
 
 function ApiService(configObject) {
-    if(!localStorage.getItem('main')) {
-        const urlEndPoint = 'hello';//`${API_URLS['PARTNER']}${this.props.match.params.partnerid? this.props.match.params.partnerid : 'default'}${API_URLS['THEME']}`;
-        console.log(urlEndPoint, "urlEndPoint");
+    let addressArray = window.location.pathname.split('/'),
+        mainIndex = addressArray.indexOf('optimus'),
+        partnerid = (addressArray[mainIndex + 1] !== 'profile' &&
+        addressArray[mainIndex + 1] !== 'project' &&
+        addressArray[mainIndex + 1] !== 'alert' &&
+        addressArray[mainIndex + 1] !== 'dispenser' &&
+        addressArray[mainIndex + 1] !== 'data' &&
+        addressArray[mainIndex + 1] !== 'report' &&
+        addressArray[mainIndex + 1] !== 'health') ? addressArray[mainIndex + 1] : 'default';
+    if(!localStorage.getItem('main') || localStorage.getItem('partnerid') !== partnerid) {
+        const urlEndPoint = `${API_END_POINT}${API_URLS['PARTNER']}${partnerid}${API_URLS['THEME']}`;
+        axios({
+            method:'GET',
+            url: urlEndPoint,
+            headers: {'Content-Type':'application/json'
+            }
+        })
+        .then(function(data) {
+            localStorage.setItem('main', data.data[0].Details.main);
+            localStorage.setItem('footer', data.data[0].Details.footerText);
+            localStorage.setItem('highlighter', data.data[0].Details.highlighter);
+            localStorage.setItem('light', data.data[0].Details.light);
+            localStorage.setItem('lighter', data.data[0].Details.lighter);
+            localStorage.setItem('logo', data.data[0].Details.logo);
+            localStorage.setItem('partnerid', partnerid);
+        })
+        .catch((err) => {
+            console.log(`Error Captured: ${err}`);
+        });
     }
     const url = API_END_POINT,
         newUrl = `${url}${configObject.url}`;

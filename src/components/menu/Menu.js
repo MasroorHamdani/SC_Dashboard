@@ -17,7 +17,8 @@ class Menu extends Component {
     this.state = {
       open: true,
       pid: '',
-      menu: []
+      menu: [],
+      partnerid: localStorage.getItem('partnerid')
     }
   }
 
@@ -36,12 +37,12 @@ class Menu extends Component {
      * else set the state first and then get the updated menu
      */
     if(this.state.pid) {
-      this.setState({menu: mainMenuList(this.state.pid, 'FARNEK')});//this.state.partnerid
+      this.setState({menu: mainMenuList(this.state.pid, this.state.partnerid)});
     } else if(this.props.projectSelected){
       this.setState({
         pid:this.props.projectSelected.PID,
-        partnerid:this.props.projectSelected.partnerid,
-        menu:mainMenuList(this.props.projectSelected.PID, 'FARNEK')//this.props.projectSelected.partnerid)
+        // partnerid:this.props.projectSelected.partnerid,
+        menu:mainMenuList(this.props.projectSelected.PID, this.state.partnerid)//'FARNEK'
       })
     }
   }
@@ -64,8 +65,8 @@ class Menu extends Component {
       !isEqual(this.props.projectSelected, prevProps.projectSelected)) {
         this.setState({
           pid:this.props.projectSelected.PID,
-          partnerid:this.props.projectSelected.partnerid,
-          menu:mainMenuList(this.props.projectSelected.PID, 'FARNEK')//this.props.projectSelected.partnerid)
+          // partnerid:this.props.projectSelected.partnerid,
+          menu:mainMenuList(this.props.projectSelected.PID, this.state.partnerid)
         });
     }
   }

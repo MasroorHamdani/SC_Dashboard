@@ -20,7 +20,7 @@ class Login extends React.Component {
         username: 'Username',
         password: 'Password',
         confpassword: "Password",
-        loading: false,
+        loading: true,
         success: false,
         email: 'Email',
         status: 'login',
@@ -28,7 +28,7 @@ class Login extends React.Component {
         codeLabel: "Enter Verification code Sent to your Email",
         errorMessage: '',
         disableBtn: false,
-        partnerid: props.match.params.partnerid,
+        partnerid: props.match.params.partnerid ? props.match.params.partnerid : 'default',
     };
     this.state = this.initialState;
   }
@@ -153,7 +153,7 @@ class Login extends React.Component {
   }
 
   componentDidMount() {
-    if(!localStorage.getItem('main')) {
+    if(!localStorage.getItem('main') || localStorage.getItem('partnerid') !== this.state.partnerid) {
       const endPoint = `${API_URLS['PARTNER']}${this.state.partnerid? this.state.partnerid : 'default'}${API_URLS['THEME']}`,
         config = getApiConfig(endPoint, 'GET');
       this.props.onPartnerTheme(config);
@@ -301,13 +301,20 @@ class Login extends React.Component {
    */
   if (this.props.partnerTheme &&
     !isEqual(this.props.partnerTheme, prevProps.partnerTheme)) {
-      localStorage.setItem('main', this.props.partnerTheme[0].Details.main)
-      localStorage.setItem('footer', this.props.partnerTheme[0].Details.footerText)
-      localStorage.setItem('highlighter', this.props.partnerTheme[0].Details.highlighter)
-      localStorage.setItem('light', this.props.partnerTheme[0].Details.light)
-      localStorage.setItem('lighter', this.props.partnerTheme[0].Details.lighter)
-      localStorage.setItem('logo', this.props.partnerTheme[0].Details.logo)
-      window.location.reload()
+      // if(this.state.partnerid != localStorage.getItem('partnerid')) {
+        localStorage.setItem('main', this.props.partnerTheme[0].Details.main);
+        localStorage.setItem('footer', this.props.partnerTheme[0].Details.footerText);
+        localStorage.setItem('highlighter', this.props.partnerTheme[0].Details.highlighter);
+        localStorage.setItem('light', this.props.partnerTheme[0].Details.light);
+        localStorage.setItem('lighter', this.props.partnerTheme[0].Details.lighter);
+        localStorage.setItem('logo', this.props.partnerTheme[0].Details.logo);
+        localStorage.setItem('partnerid', this.state.partnerid? this.state.partnerid : 'default');
+      // }
+      // window.location.reload()
+      this.setState({
+        loading: false,
+        success: true,
+      });
     }
   }
   render() {
