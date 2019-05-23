@@ -20,7 +20,7 @@ class Login extends React.Component {
         username: 'Username',
         password: 'Password',
         confpassword: "Password",
-        loading: true,
+        loading: false,
         success: false,
         email: 'Email',
         status: 'login',
@@ -154,9 +154,15 @@ class Login extends React.Component {
 
   componentDidMount() {
     if(!localStorage.getItem('main') || localStorage.getItem('partnerid') !== this.state.partnerid) {
-      const endPoint = `${API_URLS['PARTNER']}${this.state.partnerid? this.state.partnerid : 'default'}${API_URLS['THEME']}`,
-        config = getApiConfig(endPoint, 'GET');
-      this.props.onPartnerTheme(config);
+      this.setState(
+      {
+        success: false,
+        loading: true,
+      }, function() {
+        const endPoint = `${API_URLS['PARTNER']}${this.state.partnerid? this.state.partnerid : 'default'}${API_URLS['THEME']}`,
+          config = getApiConfig(endPoint, 'GET');
+        this.props.onPartnerTheme(config);
+      });
     }
   }
 

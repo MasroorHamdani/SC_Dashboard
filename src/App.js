@@ -71,7 +71,7 @@ const styles = theme => ({
                       <Route path="/:partnerid?/health/project/:pid/:insid" component={HealthStatus}/>
                       <Route exact path="/:partnerid?/health/project/:pid" component={Health}/>
                       <Route path="/:partnerid?/logout" component={Logout} />
-                      <Redirect from="/:partnerid?/login" to="/"/>
+                      <Redirect from="/:partnerid?/login" to="/:partnerid?/"/>
                       <Route component={NoMatch} />
                     </Switch>
                     <Footer/>

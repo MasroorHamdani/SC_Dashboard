@@ -22,13 +22,15 @@ function ApiService(configObject) {
             }
         })
         .then(function(data) {
-            localStorage.setItem('main', data.data[0].Details.main);
-            localStorage.setItem('footer', data.data[0].Details.footerText);
-            localStorage.setItem('highlighter', data.data[0].Details.highlighter);
-            localStorage.setItem('light', data.data[0].Details.light);
-            localStorage.setItem('lighter', data.data[0].Details.lighter);
-            localStorage.setItem('logo', data.data[0].Details.logo);
-            localStorage.setItem('partnerid', partnerid);
+            if(data && data.data) {
+                localStorage.setItem('main', data.data[0].Details.main);
+                localStorage.setItem('footer', data.data[0].Details.footerText);
+                localStorage.setItem('highlighter', data.data[0].Details.highlighter);
+                localStorage.setItem('light', data.data[0].Details.light);
+                localStorage.setItem('lighter', data.data[0].Details.lighter);
+                localStorage.setItem('logo', data.data[0].Details.logo);
+                localStorage.setItem('partnerid', partnerid);
+            }
         })
         .catch((err) => {
             console.log(`Error Captured: ${err}`);
