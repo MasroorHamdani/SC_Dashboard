@@ -302,7 +302,6 @@ class Login extends React.Component {
    */
   if (this.props.partnerTheme &&
     !isEqual(this.props.partnerTheme, prevProps.partnerTheme)) {
-      // if(this.state.partnerid != localStorage.getItem('partnerid')) {
         localStorage.setItem('main', this.props.partnerTheme[0].Details.main);
         localStorage.setItem('footer', this.props.partnerTheme[0].Details.footerText);
         localStorage.setItem('highlighter', this.props.partnerTheme[0].Details.highlighter);
@@ -310,9 +309,7 @@ class Login extends React.Component {
         localStorage.setItem('lighter', this.props.partnerTheme[0].Details.lighter);
         localStorage.setItem('logo', this.props.partnerTheme[0].Details.logo);
         localStorage.setItem('partnerid', this.state.partnerid? this.state.partnerid : 'default');
-      // }
-      // window.location.reload()
-      this.props.onPageLoading(false);
+        this.props.onPageLoading(false);
     }
   }
   render() {

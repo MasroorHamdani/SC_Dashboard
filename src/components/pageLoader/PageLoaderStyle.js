@@ -1,14 +1,15 @@
 const styles = theme => ({
     overlay: {
-        background: "rgba(255, 255, 255, 1)",
-        position: "fixed",
+        background: 'rgba(255, 255, 255, 1)',
+        position: 'fixed',
         top: 0,
         left: 0,
         right: 0,
         bottom: 0,
-        overflow: "hidden",
+        overflow: 'hidden',
         zIndex: 99999,
-        padding: "1em",
+        paddingLeft: '50%',
+        paddingTop: '25%'
     },
     spinner: {
         display: 'inline-block',
@@ -19,6 +20,7 @@ const styles = theme => ({
           position: 'absolute',
           width: '40px',
           height: '40px',
+          padding: '1em',
           border: '15px solid transparent',
           borderTopColor: theme.palette.primary.main, 
           borderRightColor: theme.palette.primary.main,
@@ -31,6 +33,7 @@ const styles = theme => ({
           position: 'absolute',
           width: '40px',
           height: '40px',
+          padding: '1em',
           border:'15px solid transparent',
           borderBottomColor: theme.palette.primary.main,
           borderLeftColor: theme.palette.primary.main,
