@@ -1,5 +1,5 @@
 import ApiService from '../services/ApiService';
-import { USER_LOGIN, AUTH_KEY_SET } from '../constants/ActionTypes';
+import { USER_LOGIN, AUTH_KEY_SET, PAGE_LOADING} from '../constants/ActionTypes';
 
 function loginSuccessful(data) {
   return {
@@ -41,5 +41,18 @@ export function setAuthKey(config) {
     ApiService(config).then(data => {
       dispatch(authSetSuccessful(data.data))
     })
+  }
+}
+
+
+/**
+ * Dispatched function to keep the track of page loading,
+ * through out the website
+ * @param {*} value 
+ */
+export function pageLoading(value) {
+  return {
+      type: PAGE_LOADING,
+      data : {isLoading: value}
   }
 }

@@ -1,4 +1,4 @@
-import { TOOGLE_MENU } from "../constants/ActionTypes";
+import { TOOGLE_MENU} from "../constants/ActionTypes";
 /* Reducer for Login functionality */
 const toggleMenu = (state = [], action) => {
     switch(action.type) {
@@ -6,7 +6,7 @@ const toggleMenu = (state = [], action) => {
             return{
                 ...state,
                 data: action.data
-            };
+            }
         default:
             return state
     }

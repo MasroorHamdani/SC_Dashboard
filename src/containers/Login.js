@@ -10,7 +10,7 @@ import LoginComponent from "../components/login/Login";
 import { getApiConfig } from '../services/ApiCofig';
 import {forgotPassword} from '../actions/ForgotPasswordAction';
 import {resetPassword} from '../actions/ResetPasswordAction';
-import { userLogin } from "../actions/LoginAction";
+import { userLogin, pageLoading} from "../actions/LoginAction";
 import {partnerTheme} from "../actions/DashboardAction";
 
 class Login extends React.Component {
@@ -65,7 +65,7 @@ class Login extends React.Component {
       success: false,
       loading: true,
       disableBtn: true
-    });
+    })
     const endPoint = `${API_URLS['FORGOT_PASSWORD']}/${this.state.email}`,
         config = getApiConfig(endPoint, 'GET');
     this.props.onForgotPassword(config);
@@ -154,15 +154,10 @@ class Login extends React.Component {
 
   componentDidMount() {
     if(!localStorage.getItem('main') || localStorage.getItem('partnerid') !== this.state.partnerid) {
-      this.setState(
-      {
-        success: false,
-        loading: true,
-      }, function() {
-        const endPoint = `${API_URLS['PARTNER']}${this.state.partnerid? this.state.partnerid : 'default'}${API_URLS['THEME']}`,
-          config = getApiConfig(endPoint, 'GET');
-        this.props.onPartnerTheme(config);
-      });
+      this.props.onPageLoading(true);
+      const endPoint = `${API_URLS['PARTNER']}${this.state.partnerid? this.state.partnerid : 'default'}${API_URLS['THEME']}`,
+        config = getApiConfig(endPoint, 'GET');
+      this.props.onPartnerTheme(config);
     }
   }
 
@@ -317,10 +312,7 @@ class Login extends React.Component {
         localStorage.setItem('partnerid', this.state.partnerid? this.state.partnerid : 'default');
       // }
       // window.location.reload()
-      this.setState({
-        loading: false,
-        success: true,
-      });
+      this.props.onPageLoading(false);
     }
   }
   render() {
@@ -358,6 +350,9 @@ function mapDispatchToProps(dispatch) {
       },
       onPartnerTheme: (config) => {
         dispatch(partnerTheme(config))
+      },
+      onPageLoading: (value) => {
+        dispatch(pageLoading(value))
       }
   }
 }

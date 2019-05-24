@@ -25,6 +25,7 @@ import DispenserDetails from "./containers/DispenserDetails";
 import ReportView from "./containers/ReportView";
 import Health from "./containers/Health";
 import HealthStatus from "./containers/HealthStatus";
+import PageLoader from "./components/pageLoader/PageLoader";
 
 const styles = theme => ({
 
@@ -35,9 +36,19 @@ const styles = theme => ({
     }
     render() {
       const Contact = () => <h2>Contact</h2>
+      let addressArray = window.location.pathname.split('/'),
+        mainIndex = addressArray.indexOf('optimus'),
+        partnerid = (addressArray[mainIndex + 1] !== 'profile' &&
+        addressArray[mainIndex + 1] !== 'project' &&
+        addressArray[mainIndex + 1] !== 'alert' &&
+        addressArray[mainIndex + 1] !== 'dispenser' &&
+        addressArray[mainIndex + 1] !== 'data' &&
+        addressArray[mainIndex + 1] !== 'report' &&
+        addressArray[mainIndex + 1] !== 'health') ? addressArray[mainIndex + 1] : 'default';
         return(
           <MuiThemeProvider theme={theme}>
               <div className="common-container">
+                <PageLoader/>
                 { !localStorage.getItem('idToken') ?
                   (<div>
                     <CssBaseline />

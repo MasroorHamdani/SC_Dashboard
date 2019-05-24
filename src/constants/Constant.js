@@ -290,7 +290,7 @@ export const DATA_OPERATIONS = {
 }
 
 export const DEVICE_TOOL_TIP = {
-    'AQ': 'Air Quality Devices',
+    'ODRDTR': 'Air Quality Devices',
     'PC': 'People Count Devices',
     'PT': 'Paper Towel Devices',
     'WD': 'Wetness Detection Devices',
@@ -298,7 +298,7 @@ export const DEVICE_TOOL_TIP = {
 }
 
 export const DEVICE_TYPE = {
-    'AQ': 'Air Quality Devices',
+    'ODRDTR': 'Air Quality Devices',
     'PC': 'People Count Devices',
     'PT': 'Paper Towel Devices',
     'WD': 'Wetness Detection Devices',
