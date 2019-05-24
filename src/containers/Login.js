@@ -65,7 +65,7 @@ class Login extends React.Component {
       success: false,
       loading: true,
       disableBtn: true
-    })
+    });
     const endPoint = `${API_URLS['FORGOT_PASSWORD']}/${this.state.email}`,
         config = getApiConfig(endPoint, 'GET');
     this.props.onForgotPassword(config);
