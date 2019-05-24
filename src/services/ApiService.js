@@ -2,6 +2,11 @@ import axios from 'axios';
 import { merge } from "lodash-es";
 
 import {API_END_POINT, API_URLS, REACT_URLS} from "../constants/Constant";
+import {pageLoading} from "../actions/LoginAction";
+
+import configureStore from "../store";
+
+const store = configureStore();
 
 function ApiService(configObject) {
     let addressArray = window.location.pathname.split('/'),
@@ -14,6 +19,8 @@ function ApiService(configObject) {
         addressArray[mainIndex + 1] !== 'report' &&
         addressArray[mainIndex + 1] !== 'health') ? addressArray[mainIndex + 1] : 'default';
     if(!localStorage.getItem('main') || localStorage.getItem('partnerid') !== partnerid) {
+        store.dispatch(pageLoading(true));
+
         const urlEndPoint = `${API_END_POINT}${API_URLS['PARTNER']}${partnerid}${API_URLS['THEME']}`;
         axios({
             method:'GET',
@@ -30,10 +37,12 @@ function ApiService(configObject) {
                 localStorage.setItem('lighter', data.data[0].Details.lighter);
                 localStorage.setItem('logo', data.data[0].Details.logo);
                 localStorage.setItem('partnerid', partnerid);
+                store.dispatch(pageLoading(false));
             }
         })
         .catch((err) => {
             console.log(`Error Captured: ${err}`);
+            store.dispatch(pageLoading(false))
         });
     }
     const url = API_END_POINT,
