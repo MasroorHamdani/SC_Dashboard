@@ -309,7 +309,7 @@ class Login extends React.Component {
         localStorage.setItem('logo', this.props.partnerTheme[0].Details.logo);
         localStorage.setItem('partnerid', this.state.partnerid? this.state.partnerid : '');
         this.props.onPageLoading(false);
-    }
+    }// TODO - For empty/null response have to fix it
   }
   render() {
       return (
