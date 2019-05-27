@@ -1,8 +1,7 @@
 import React from 'react';
 import { connect } from "react-redux";
-import {isEqual} from "lodash";
+import _, {isEqual} from "lodash";
 import JWTDecode from 'jwt-decode';
-import _ from 'lodash';
 
 import { API_URLS, REACT_URLS, NEW_PASSWORD_REQUIRED,
   LOGIN_STATUS, PASSWORD_REGEX} from "../constants/Constant";

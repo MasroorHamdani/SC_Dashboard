@@ -17,7 +17,9 @@ function ApiService(configObject) {
         addressArray[mainIndex + 1] !== 'dispenser' &&
         addressArray[mainIndex + 1] !== 'data' &&
         addressArray[mainIndex + 1] !== 'report' &&
-        addressArray[mainIndex + 1] !== 'health') ? addressArray[mainIndex + 1] : '';
+        addressArray[mainIndex + 1] !== 'health' &&
+        addressArray[mainIndex + 1] !== 'login' &&
+        addressArray[mainIndex + 1] !== 'logout') ? addressArray[mainIndex + 1] : '';
     if(!localStorage.getItem('main') || localStorage.getItem('partnerid') !== partnerid) {
         store.dispatch(pageLoading(true));
 

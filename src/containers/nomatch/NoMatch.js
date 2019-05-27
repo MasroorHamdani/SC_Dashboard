@@ -15,7 +15,9 @@ class NoMatch extends Component {
                         props.match.params.partnerid !== 'dispenser' &&
                         props.match.params.partnerid !== 'data' &&
                         props.match.params.partnerid !== 'report' &&
-                        props.match.params.partnerid !== 'health') ? props.match.params.partnerid : ''
+                        props.match.params.partnerid !== 'health' &&
+                        props.match.params.partnerid !== 'login' &&
+                        props.match.params.partnerid !== 'logout') ? props.match.params.partnerid : ''
         }
     }
     render() {
