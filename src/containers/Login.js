@@ -28,7 +28,7 @@ class Login extends React.Component {
         codeLabel: "Enter Verification code Sent to your Email",
         errorMessage: '',
         disableBtn: false,
-        partnerid: props.match.params.partnerid ? props.match.params.partnerid : 'default',
+        partnerid: props.match.params.partnerid,
     };
     this.state = this.initialState;
   }
@@ -155,7 +155,7 @@ class Login extends React.Component {
   componentDidMount() {
     if(!localStorage.getItem('main') || localStorage.getItem('partnerid') !== this.state.partnerid) {
       this.props.onPageLoading(true);
-      const endPoint = `${API_URLS['PARTNER']}${this.state.partnerid? this.state.partnerid : 'default'}${API_URLS['THEME']}`,
+      const endPoint = `${API_URLS['PARTNER']}${this.state.partnerid? this.state.partnerid.toUpperCase() : 'default'}${API_URLS['THEME']}`,
         config = getApiConfig(endPoint, 'GET');
       this.props.onPartnerTheme(config);
     }
@@ -207,7 +207,7 @@ class Login extends React.Component {
         });
         localStorage.setItem('session', responseData['Session']);
         localStorage.setItem('username', this.state.username);
-        this.props.history.push(REACT_URLS['AUTH_RESET']);
+        this.props.history.push(REACT_URLS.AUTH_RESET());
       } else {
         localStorage.setItem('idToken', responseData['AuthenticationResult']['IdToken']);
         localStorage.setItem('refreshToken', responseData['AuthenticationResult']['RefreshToken']);
@@ -226,7 +226,7 @@ class Login extends React.Component {
               let urlArray = localStorage.getItem('previousPath').split('/'),
                 newUrl;
               if(urlArray[0] === '' && urlArray[1] === REACT_URLS['BASEURL']) {
-                newUrl = urlArray.slice(2).join("/")
+                newUrl = this.state.partnerid ? urlArray.slice(3).join("/") : urlArray.slice(2).join("/");
               }
               this.props.history.push(newUrl);
         } else {
@@ -308,7 +308,7 @@ class Login extends React.Component {
         localStorage.setItem('light', this.props.partnerTheme[0].Details.light);
         localStorage.setItem('lighter', this.props.partnerTheme[0].Details.lighter);
         localStorage.setItem('logo', this.props.partnerTheme[0].Details.logo);
-        localStorage.setItem('partnerid', this.state.partnerid? this.state.partnerid : 'default');
+        localStorage.setItem('partnerid', this.state.partnerid? this.state.partnerid : '');
         this.props.onPageLoading(false);
     }
   }

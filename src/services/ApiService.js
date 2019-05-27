@@ -17,11 +17,11 @@ function ApiService(configObject) {
         addressArray[mainIndex + 1] !== 'dispenser' &&
         addressArray[mainIndex + 1] !== 'data' &&
         addressArray[mainIndex + 1] !== 'report' &&
-        addressArray[mainIndex + 1] !== 'health') ? addressArray[mainIndex + 1] : 'default';
+        addressArray[mainIndex + 1] !== 'health') ? addressArray[mainIndex + 1] : '';
     if(!localStorage.getItem('main') || localStorage.getItem('partnerid') !== partnerid) {
         store.dispatch(pageLoading(true));
 
-        const urlEndPoint = `${API_END_POINT}${API_URLS['PARTNER']}${partnerid}${API_URLS['THEME']}`;
+        const urlEndPoint = `${API_END_POINT}${API_URLS['PARTNER']}${partnerid ? partnerid.toUpperCase() : 'default'}${API_URLS['THEME']}`;
         axios({
             method:'GET',
             url: urlEndPoint,
@@ -58,7 +58,7 @@ function ApiService(configObject) {
      */
     axios.interceptors.request.use(
         reqConfig => {
-            if (!reqConfig.url.includes(REACT_URLS['LOGIN']))
+            if (!reqConfig.url.includes(REACT_URLS.LOGIN()))
                 reqConfig.headers.authorization = localStorage.getItem('idToken');
             return reqConfig;
         },
@@ -76,7 +76,7 @@ function ApiService(configObject) {
         isFetchingToken = false;
         localStorage.clear();
         localStorage.setItem('previousPath', window.location.pathname);
-        window.location = REACT_URLS['LOGIN'];
+        window.location = REACT_URLS.LOGIN(partnerid);
     }
 
     /**
@@ -88,7 +88,7 @@ function ApiService(configObject) {
      */
     axios.interceptors.response.use(undefined, err => {
         if (err.response) {
-            if (err.response.config.url.includes(REACT_URLS['LOGIN']))
+            if (err.response.config.url.includes(REACT_URLS.LOGIN(partnerid)))
                 return Promise.reject(err);
             if (err.response.status === 403) return forceLogout();
             // if (err.response.status !== 401) return Promise.reject(err);

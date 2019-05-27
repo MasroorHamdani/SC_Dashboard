@@ -50,7 +50,7 @@ const styles = theme => ({
                       <Route path="/about" component={About} />
                       <Route path="/contact" component={Contact} />
                       {/* when none of the above match, <NoMatch> will be rendered */}
-                      <Route component={NoMatch} />
+                      <Route path="/:partnerid?/*" component={NoMatch} />
                     </Switch>
                     <Footer/>
                   </div>)
@@ -60,10 +60,7 @@ const styles = theme => ({
                     <Header {...this.props}  params={this.props.match.params}/>
                     <Menu {...this.props}/>
                     <Switch>
-                      <Route exact path="/:partnerid?/" component={Dashboard} />
-                      <Route path="/:partnerid?/project/:pid/installations/:insid?" component={ProjectInstallationDetails} />
-                      <Route path="/:partnerid?/project/:pid/team/:uid?" component={ProjectTeamDetails} />
-                      <Route path="/:partnerid?/project/:pid?" component={ProjectDetails} />
+                      
                       <Route path="/:partnerid?/profile/:userid?" component={UserProfile} />
                       <Route path="/:partnerid?/alert/project/:pid?" component={AlertDetails} />
                       <Route path="/:partnerid?/dispenser/project/:pid?" component={DispenserDetails} />
@@ -72,7 +69,11 @@ const styles = theme => ({
                       <Route path="/:partnerid?/report/project/:pid?" component={ReportView} />
                       <Route path="/:partnerid?/health/project/:pid/:insid" component={HealthStatus}/>
                       <Route exact path="/:partnerid?/health/project/:pid" component={Health}/>
+                      <Route path="/:partnerid?/project/:pid/installations/:insid?" component={ProjectInstallationDetails} />
+                      <Route path="/:partnerid?/project/:pid/team/:uid?" component={ProjectTeamDetails} />
+                      <Route path="/:partnerid?/project/:pid?" component={ProjectDetails} />
                       <Route path="/:partnerid?/logout" component={Logout} />
+                      <Route exact path="/:partnerid?/" component={Dashboard} />
                       <Redirect from="/:partnerid?/login" to="/:partnerid?/"/>
                       <Route component={NoMatch} />
                     </Switch>
