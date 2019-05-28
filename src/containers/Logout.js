@@ -6,9 +6,15 @@ export default class Logout extends React.Component {
     /**
      * Clear local storage and redirect user to login screen
      */
-        localStorage.clear();
-        this.props.history.push(REACT_URLS.LOGIN(this.props.match.params.partnerid));
-      }
+      let footer = localStorage.getItem('footer'),
+        logo = localStorage.getItem('logo'),
+        partnerid = localStorage.getItem('partnerid')
+      localStorage.clear();
+      localStorage.setItem('footer', footer);
+      localStorage.setItem('logo', logo);
+      localStorage.setItem('partnerid', partnerid);
+      this.props.history.push(REACT_URLS.LOGIN(this.props.match.params.partnerid));
+    }
     render() {
         return null
     }
