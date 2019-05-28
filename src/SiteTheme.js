@@ -6,10 +6,10 @@ import {pink, red} from '@material-ui/core/colors';
 const theme = createMuiTheme({
   palette: {
     primary: {
-      highlighter: localStorage.getItem('highlighter') ? localStorage.getItem('highlighter') : '#b7d1b4', //'#fbdfb7', //
-      lighter: localStorage.getItem('lighter') ? localStorage.getItem('lighter') : '#a9c8a4', //'#f3ce97',// 
-      light: localStorage.getItem('light') ? localStorage.getItem('light') : '#8db788', //'#f9ad3c'
-      main: localStorage.getItem('main') ? localStorage.getItem('main') : '#68a554' //indigo, '#f75010'
+      highlighter: localStorage.getItem('highlighter') ? localStorage.getItem('highlighter') : '#b7d1b4',
+      lighter: localStorage.getItem('lighter') ? localStorage.getItem('lighter') : '#a9c8a4', 
+      light: localStorage.getItem('light') ? localStorage.getItem('light') : '#8db788',
+      main: localStorage.getItem('main') ? localStorage.getItem('main') : '#68a554'
     },
     secondary: pink,
     error: red,

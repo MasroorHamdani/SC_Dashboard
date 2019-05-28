@@ -307,3 +307,10 @@ export const DEVICE_TYPE = {
 }
 
 export const RANGE_ERROR = "Please select Range within End Date limits - *Reset the time to Default"
+
+export const THEME = {
+    highlighter: '#b7d1b4',
+    lighter: '#a9c8a4',
+    light: '#8db788',
+    main: '#68a554'
+}

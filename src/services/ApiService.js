@@ -2,11 +2,6 @@ import axios from 'axios';
 import { merge } from "lodash-es";
 
 import {API_END_POINT, API_URLS, REACT_URLS} from "../constants/Constant";
-import {pageLoading} from "../actions/LoginAction";
-
-import configureStore from "../store";
-
-const store = configureStore();
 
 function ApiService(configObject) {
     let addressArray = window.location.pathname.split('/'),
@@ -20,34 +15,8 @@ function ApiService(configObject) {
         addressArray[mainIndex + 1] !== 'health' &&
         addressArray[mainIndex + 1] !== 'login' &&
         addressArray[mainIndex + 1] !== 'logout') ? addressArray[mainIndex + 1] : '';
-    if(!localStorage.getItem('main') || localStorage.getItem('partnerid') !== partnerid) {
-        store.dispatch(pageLoading(true));
 
-        const urlEndPoint = `${API_END_POINT}${API_URLS['PARTNER']}${partnerid ? partnerid.toUpperCase() : 'default'}${API_URLS['THEME']}`;
-        axios({
-            method:'GET',
-            url: urlEndPoint,
-            headers: {'Content-Type':'application/json'
-            }
-        })
-        .then(function(data) {
-            if(data && data.data) {
-                localStorage.setItem('main', data.data[0].Details.main);
-                localStorage.setItem('footer', data.data[0].Details.footerText);
-                localStorage.setItem('highlighter', data.data[0].Details.highlighter);
-                localStorage.setItem('light', data.data[0].Details.light);
-                localStorage.setItem('lighter', data.data[0].Details.lighter);
-                localStorage.setItem('logo', data.data[0].Details.logo);
-                localStorage.setItem('partnerid', partnerid);
-                store.dispatch(pageLoading(false));
-            }
-        })
-        .catch((err) => {
-            console.log(`Error Captured: ${err}`);
-            store.dispatch(pageLoading(false))
-        });
-    }
-    const url = API_END_POINT,
+        const url = API_END_POINT,
         newUrl = `${url}${configObject.url}`;
     const config = merge({}, configObject, {
         url: newUrl.replace(/\s/g, "")

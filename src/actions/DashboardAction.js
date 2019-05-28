@@ -1,5 +1,5 @@
 import ApiService from '../services/ApiService';
-import { DASHBOARD_DATA, PARTNER_THEME } from '../constants/ActionTypes';
+import { DASHBOARD_DATA, PARTNER_THEME} from '../constants/ActionTypes';
 
 function dataReceived(data) {
   return {
@@ -25,7 +25,6 @@ export function dashboardData(config) {
       })
   }
 }
-
 
 export function partnerTheme(config) {
   return function (dispatch) {

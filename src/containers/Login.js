@@ -9,8 +9,7 @@ import LoginComponent from "../components/login/Login";
 import { getApiConfig } from '../services/ApiCofig';
 import {forgotPassword} from '../actions/ForgotPasswordAction';
 import {resetPassword} from '../actions/ResetPasswordAction';
-import { userLogin, pageLoading} from "../actions/LoginAction";
-import {partnerTheme} from "../actions/DashboardAction";
+import { userLogin} from "../actions/LoginAction";
 
 class Login extends React.Component {
   constructor(props) {
@@ -151,15 +150,6 @@ class Login extends React.Component {
     return data;
   }
 
-  componentDidMount() {
-    if(!localStorage.getItem('main') || localStorage.getItem('partnerid') !== this.state.partnerid) {
-      this.props.onPageLoading(true);
-      const endPoint = `${API_URLS['PARTNER']}${this.state.partnerid? this.state.partnerid.toUpperCase() : 'default'}${API_URLS['THEME']}`,
-        config = getApiConfig(endPoint, 'GET');
-      this.props.onPartnerTheme(config);
-    }
-  }
-
   componentDidUpdate(prevProps, prevState) {
   /**
    * Handle Login Flow
@@ -295,21 +285,6 @@ class Login extends React.Component {
           });
         }
     }
-  /**
-   * Handle fetching the partner theme and pushing the theme in localstorage,
-   * which will be uase by the theme setting for white labelling
-   */
-  if (this.props.partnerTheme &&
-    !isEqual(this.props.partnerTheme, prevProps.partnerTheme)) {
-        localStorage.setItem('main', this.props.partnerTheme[0].Details.main);
-        localStorage.setItem('footer', this.props.partnerTheme[0].Details.footerText);
-        localStorage.setItem('highlighter', this.props.partnerTheme[0].Details.highlighter);
-        localStorage.setItem('light', this.props.partnerTheme[0].Details.light);
-        localStorage.setItem('lighter', this.props.partnerTheme[0].Details.lighter);
-        localStorage.setItem('logo', this.props.partnerTheme[0].Details.logo);
-        localStorage.setItem('partnerid', this.state.partnerid? this.state.partnerid : '');
-        this.props.onPageLoading(false);
-    }// TODO - For empty/null response have to fix it
   }
   render() {
       return (
@@ -328,7 +303,6 @@ function mapStateToProps(state) {
       userLogin : state.LoginReducer.data,
       forgotPassword: state.ForgotPasswordReducer.data,
       resetPassword : state.ResetPasswordReducer.data,
-      partnerTheme: state.PartnerThemeReducer.data
   }
 }
 
@@ -344,12 +318,6 @@ function mapDispatchToProps(dispatch) {
       onResetPassword: (config) => {
         dispatch(resetPassword(config))
       },
-      onPartnerTheme: (config) => {
-        dispatch(partnerTheme(config))
-      },
-      onPageLoading: (value) => {
-        dispatch(pageLoading(value))
-      }
   }
 }
 

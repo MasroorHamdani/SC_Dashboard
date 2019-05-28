@@ -43,16 +43,3 @@ export function setAuthKey(config) {
     })
   }
 }
-
-
-/**
- * Dispatched function to keep the track of page loading,
- * through out the website
- * @param {*} value 
- */
-export function pageLoading(value) {
-  return {
-      type: PAGE_LOADING,
-      data : {isLoading: value}
-  }
-}
