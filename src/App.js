@@ -27,11 +27,10 @@ import HealthStatus from "./containers/HealthStatus";
 import PageLoader from "./components/pageLoader/PageLoader";
 
 import axios from 'axios';
-import {API_END_POINT, API_URLS, THEME} from "./constants/Constant";
+import {API_END_POINT, API_URLS} from "./constants/Constant";
 
 class App extends React.Component {
     constructor(props) {
-
       super(props);
       this.state = {
         holdComponents: true
@@ -60,39 +59,29 @@ class App extends React.Component {
         })
         .then(function(data) {
             if(data && data.data) {
-                localStorage.setItem('main', data.data[0].Details.main);
                 localStorage.setItem('footer', data.data[0].Details.footerText);
-                localStorage.setItem('highlighter', data.data[0].Details.highlighter);
-                localStorage.setItem('light', data.data[0].Details.light);
-                localStorage.setItem('lighter', data.data[0].Details.lighter);
                 localStorage.setItem('logo', data.data[0].Details.logo);
-                localStorage.setItem('partnerid', partnerid);
                 theme.palette.primary={
-                  highlighter: localStorage.getItem('highlighter') ? localStorage.getItem('highlighter') : theme.palette.primary.highlighter,
-                  lighter: localStorage.getItem('lighter') ? localStorage.getItem('lighter') : theme.palette.primary.lighter,
-                  light: localStorage.getItem('light') ? localStorage.getItem('light') : theme.palette.primary.light,
-                  main: localStorage.getItem('main') ? localStorage.getItem('main') : theme.palette.primary.main
+                  highlighter: data.data[0].Details.highlighter ? data.data[0].Details.highlighter : theme.palette.primary.highlighter,
+                  lighter: data.data[0].Details.lighter ? data.data[0].Details.lighter : theme.palette.primary.lighter,
+                  light: data.data[0].Details.light ? data.data[0].Details.light : theme.palette.primary.light,
+                  main: data.data[0].Details.main ? data.data[0].Details.main : theme.palette.primary.main
                 }
                 self.setState({holdComponents: false});
             } else if (data && data.data === null) {
-                localStorage.setItem('main', THEME.main);
-                localStorage.setItem('highlighter', THEME.highlighter);
-                localStorage.setItem('light', THEME.light);
-                localStorage.setItem('lighter', THEME.lighter);
-                localStorage.setItem('partnerid', partnerid);
-                theme.palette.primary={
-                  highlighter: THEME.highlighter,
-                  lighter: THEME.lighter,
-                  light: THEME.light,
-                  main: THEME.main
-                }
+                localStorage.setItem('footer', '');
+                localStorage.setItem('logo', '');
                 self.setState({holdComponents: false});
             }
         })
         .catch((err) => {
             console.log(`Error Captured: ${err}`);
+            localStorage.setItem('footer', '');
+            localStorage.setItem('logo', '');
             self.setState({holdComponents: false})
         });
+        // Partner id has to be update for all the conditions, so moved separate.
+        localStorage.setItem('partnerid', partnerid);
     }
     render() {
       // const Contact = () => <h2>Contact</h2>

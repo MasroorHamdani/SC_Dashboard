@@ -4,6 +4,8 @@ import { merge } from "lodash-es";
 import {API_END_POINT, API_URLS, REACT_URLS} from "../constants/Constant";
 
 function ApiService(configObject) {
+    // This part will fetch the partnerid from URL if any,
+    // Which is used for redirection latter on
     let addressArray = window.location.pathname.split('/'),
         mainIndex = addressArray.indexOf('optimus'),
         partnerid = (addressArray[mainIndex + 1] !== 'profile' &&

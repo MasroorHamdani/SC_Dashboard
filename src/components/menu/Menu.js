@@ -98,7 +98,7 @@ class Menu extends Component {
             <ListItems menuList={this.state.menu} activeRoute={this.activeRoute} menuState={this.state.open}/></List>
           <Divider />
           {/* <List>{secondaryListItems}</List> */}
-          <Typography className={classes.version}>Version 0.02</Typography>
+          <Typography className={classes.version}>Version 0.03</Typography>
         </Drawer>
     );
   }

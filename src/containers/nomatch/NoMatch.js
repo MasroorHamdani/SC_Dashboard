@@ -8,6 +8,8 @@ class NoMatch extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            // This part will fetch the partnerid from URL if any,
+            // Which is used for redirection if page is invalid
             partnerid : (props.match.params.partnerid && 
                         props.match.params.partnerid !== 'profile' &&
                         props.match.params.partnerid !== 'project' &&

@@ -7,11 +7,11 @@ class PageLoader extends Component {
     render() {
         const {classes} = this.props;
         return <div>
-                <div className={classes.overlay}>
-                    <div className={classes.spinner} />
-                </div>
+            <div className={classes.overlay}>
+                <div className={classes.spinner} />
             </div>
+        </div>
     }
 }
 
-export default (withStyles(styles)(PageLoader));
+export default withStyles(styles)(PageLoader)
