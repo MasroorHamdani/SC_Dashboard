@@ -17,7 +17,8 @@ class Menu extends Component {
     this.state = {
       open: true,
       pid: '',
-      menu: []
+      menu: [],
+      partnerid: localStorage.getItem('partnerid')
     }
   }
 
@@ -36,11 +37,12 @@ class Menu extends Component {
      * else set the state first and then get the updated menu
      */
     if(this.state.pid) {
-      this.setState({menu: mainMenuList(this.state.pid)});
+      this.setState({menu: mainMenuList(this.state.pid, this.state.partnerid)});
     } else if(this.props.projectSelected){
       this.setState({
         pid:this.props.projectSelected.PID,
-        menu:mainMenuList(this.props.projectSelected.PID)
+        // partnerid:this.props.projectSelected.partnerid,
+        menu:mainMenuList(this.props.projectSelected.PID, this.state.partnerid)//'FARNEK'
       })
     }
   }
@@ -63,7 +65,8 @@ class Menu extends Component {
       !isEqual(this.props.projectSelected, prevProps.projectSelected)) {
         this.setState({
           pid:this.props.projectSelected.PID,
-          menu:mainMenuList(this.props.projectSelected.PID)
+          // partnerid:this.props.projectSelected.partnerid,
+          menu:mainMenuList(this.props.projectSelected.PID, this.state.partnerid)
         });
     }
   }
@@ -95,7 +98,7 @@ class Menu extends Component {
             <ListItems menuList={this.state.menu} activeRoute={this.activeRoute} menuState={this.state.open}/></List>
           <Divider />
           {/* <List>{secondaryListItems}</List> */}
-          <Typography className={classes.version}>Version 0.02</Typography>
+          <Typography className={classes.version}>Version 0.03</Typography>
         </Drawer>
     );
   }

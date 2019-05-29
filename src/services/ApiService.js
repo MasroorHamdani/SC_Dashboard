@@ -4,17 +4,28 @@ import { merge } from "lodash-es";
 import {API_END_POINT, API_URLS, REACT_URLS, NEW_API_END_POINT} from "../constants/Constant";
 
 function ApiService(configObject) {
-    let newUrl;
+    // This part will fetch the partnerid from URL if any,
+    // Which is used for redirection latter on
+    let addressArray = window.location.pathname.split('/'),
+        mainIndex = addressArray.indexOf('optimus'),
+        partnerid = (addressArray[mainIndex + 1] !== 'profile' &&
+        addressArray[mainIndex + 1] !== 'project' &&
+        addressArray[mainIndex + 1] !== 'alert' &&
+        addressArray[mainIndex + 1] !== 'dispenser' &&
+        addressArray[mainIndex + 1] !== 'data' &&
+        addressArray[mainIndex + 1] !== 'report' &&
+        addressArray[mainIndex + 1] !== 'health' &&
+        addressArray[mainIndex + 1] !== 'login' &&
+        addressArray[mainIndex + 1] !== 'logout') ? addressArray[mainIndex + 1] : '';
+        
+    let url, newUrl
     if(configObject.url.includes('datanew')) {
-        const url = NEW_API_END_POINT;
+        url = NEW_API_END_POINT;
         newUrl = `${url}${configObject.url}`;
-        // const config = merge({}, configObject, {
-        //     url: newUrl.replace(/\s/g, "")
-        // });
         axios.defaults.baseURL = NEW_API_END_POINT;
         axios.defaults.timeout = 7000;
     } else {
-        const url = API_END_POINT;
+        url = API_END_POINT;
         newUrl = `${url}${configObject.url}`;
         // const config = merge({}, configObject, {
         //     url: newUrl.replace(/\s/g, "")
@@ -32,7 +43,7 @@ function ApiService(configObject) {
      */
     axios.interceptors.request.use(
         reqConfig => {
-            if (!reqConfig.url.includes(REACT_URLS['LOGIN']))
+            if (!reqConfig.url.includes(REACT_URLS.LOGIN()))
                 reqConfig.headers.authorization = localStorage.getItem('idToken');
             return reqConfig;
         },
@@ -50,7 +61,7 @@ function ApiService(configObject) {
         isFetchingToken = false;
         localStorage.clear();
         localStorage.setItem('previousPath', window.location.pathname);
-        window.location = REACT_URLS['LOGIN'];
+        window.location = REACT_URLS.LOGIN(partnerid);
     }
 
     /**
@@ -62,7 +73,7 @@ function ApiService(configObject) {
      */
     axios.interceptors.response.use(undefined, err => {
         if (err.response) {
-            if (err.response.config.url.includes(REACT_URLS['LOGIN']))
+            if (err.response.config.url.includes(REACT_URLS.LOGIN(partnerid)))
                 return Promise.reject(err);
             if (err.response.status === 403) return forceLogout();
             // if (err.response.status !== 401) return Promise.reject(err);

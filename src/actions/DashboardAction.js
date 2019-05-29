@@ -1,5 +1,5 @@
 import ApiService from '../services/ApiService';
-import { DASHBOARD_DATA } from '../constants/ActionTypes';
+import { DASHBOARD_DATA, PARTNER_THEME} from '../constants/ActionTypes';
 
 function dataReceived(data) {
   return {
@@ -23,5 +23,24 @@ export function dashboardData(config) {
           else
             dispatch(dataReceived(data.data))
       })
+  }
+}
+
+export function partnerTheme(config) {
+  return function (dispatch) {
+    ApiService(config).then(data => {
+        //on success we will dispatch a sync action with the data
+        dispatch(partnerThemeReceived(data.data))
+    })
+    .catch(error => {
+      dispatch(partnerThemeReceived(error))
+    })
+  }
+}
+
+function partnerThemeReceived(data) {
+  return {
+    type: PARTNER_THEME,
+    data
   }
 }

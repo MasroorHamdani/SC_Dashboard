@@ -21,7 +21,7 @@ const styles = theme => ({
         margin: theme.spacing.unit * 2,
     },
     avatar: {
-        backgroundColor: green[300],
+        backgroundColor: `${theme.palette.primary.main}`,
         width: 60,
         height: 60,
     },

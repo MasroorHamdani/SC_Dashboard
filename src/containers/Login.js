@@ -1,8 +1,7 @@
 import React from 'react';
 import { connect } from "react-redux";
-import {isEqual} from "lodash";
+import _, {isEqual} from "lodash";
 import JWTDecode from 'jwt-decode';
-import _ from 'lodash';
 
 import { API_URLS, REACT_URLS, NEW_PASSWORD_REQUIRED,
   LOGIN_STATUS, PASSWORD_REGEX} from "../constants/Constant";
@@ -10,7 +9,7 @@ import LoginComponent from "../components/login/Login";
 import { getApiConfig } from '../services/ApiCofig';
 import {forgotPassword} from '../actions/ForgotPasswordAction';
 import {resetPassword} from '../actions/ResetPasswordAction';
-import { userLogin } from "../actions/LoginAction";
+import { userLogin} from "../actions/LoginAction";
 
 class Login extends React.Component {
   constructor(props) {
@@ -26,7 +25,8 @@ class Login extends React.Component {
         code: '',
         codeLabel: "Enter Verification code Sent to your Email",
         errorMessage: '',
-        disableBtn: false
+        disableBtn: false,
+        partnerid: props.match.params.partnerid,
     };
     this.state = this.initialState;
   }
@@ -196,7 +196,7 @@ class Login extends React.Component {
         });
         localStorage.setItem('session', responseData['Session']);
         localStorage.setItem('username', this.state.username);
-        this.props.history.push(REACT_URLS['AUTH_RESET']);
+        this.props.history.push(REACT_URLS.AUTH_RESET());
       } else {
         localStorage.setItem('idToken', responseData['AuthenticationResult']['IdToken']);
         localStorage.setItem('refreshToken', responseData['AuthenticationResult']['RefreshToken']);
@@ -211,15 +211,15 @@ class Login extends React.Component {
           });
         }
         if(localStorage.getItem('previousPath') &&
-          localStorage.getItem('previousPath') !== `${REACT_URLS['BASEURL']}/${REACT_URLS['LOGIN']}`) {
+          localStorage.getItem('previousPath') !== `/${REACT_URLS['BASEURL']}${REACT_URLS.LOGIN(this.state.partnerid)}`) {
               let urlArray = localStorage.getItem('previousPath').split('/'),
                 newUrl;
               if(urlArray[0] === '' && urlArray[1] === REACT_URLS['BASEURL']) {
-                newUrl = urlArray.slice(2).join("/")
+                newUrl = this.state.partnerid ? urlArray.slice(3).join("/") : urlArray.slice(2).join("/");
               }
               this.props.history.push(newUrl);
         } else {
-          this.props.history.push(REACT_URLS['DASHBOARD']);
+          this.props.history.push(REACT_URLS.DASHBOARD(this.state.partnerid));
         }
       }
     }
@@ -302,7 +302,7 @@ function mapStateToProps(state) {
   return {
       userLogin : state.LoginReducer.data,
       forgotPassword: state.ForgotPasswordReducer.data,
-      resetPassword : state.ResetPasswordReducer.data
+      resetPassword : state.ResetPasswordReducer.data,
   }
 }
 
@@ -317,7 +317,7 @@ function mapDispatchToProps(dispatch) {
       },
       onResetPassword: (config) => {
         dispatch(resetPassword(config))
-      }
+      },
   }
 }
 

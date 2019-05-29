@@ -63,8 +63,8 @@ class HealthStatus extends Component {
                 loading: true
             }, function() {
                 let arr = this.props.match.url.split('/');
-                arr[3] = this.props.projectSelected.PID;
-                let url = arr.slice(0,4).join('/');
+                arr[4] = this.props.projectSelected.PID;
+                let url = arr.slice(0,5).join('/');
                 this.props.history.push(url);
             });
         }

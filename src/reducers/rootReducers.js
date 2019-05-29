@@ -23,6 +23,7 @@ import HealthStatusReducer from './HealthStatusReducer';
 import HealthtSatusLocationSReducer from './HealthStatusLocationReducer';
 import ReportsListReducer from './ReportsListReducer';
 import ModalDataAnalysisReducer from './ModalDataAnalysisReducer';
+import PartnerThemeReducer from './PartnerThemeReducer';
 
 const reducers = {
     LoginReducer,
@@ -47,7 +48,8 @@ const reducers = {
     HealthStatusReducer,
     HealthtSatusLocationSReducer,
     ReportsListReducer,
-    ModalDataAnalysisReducer
+    ModalDataAnalysisReducer,
+    PartnerThemeReducer,
 }
 
 // combines all the reducers which will be passed in Redux Store
