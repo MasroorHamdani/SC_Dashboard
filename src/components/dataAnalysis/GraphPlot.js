@@ -10,7 +10,13 @@ import styles from './DataAnalysisStyle';
 
 class GraphPlot extends Component {
     state = ({
-        activeIndex: 0
+        activeIndex: 0,
+        opacity: {
+            did1:1,
+            did2:1,
+            did3:1,
+            did4:1
+        }
     });
 
     onPieEnter = (data, index) => {
@@ -19,6 +25,30 @@ class GraphPlot extends Component {
      */
         this.setState({
             activeIndex: index,
+        });
+    }
+
+    handleLegendMouseEnter = (o) =>{
+        const { dataKey } = o;
+        const { opacity } = this.state;
+        Object.keys(opacity).map(key => {
+            opacity[key] = 0.5
+        })
+        this.setState({
+            opacity: { ...opacity, [dataKey]: 1 },
+        });
+    }
+      
+    handleLegendMouseLeave = (o) =>{
+        const { dataKey } = o;
+        const { opacity } = this.state;
+        Object.keys(opacity).map(key => {
+            opacity[key] = 1
+        })
+        this.setState({
+            opacity: { ...opacity,
+                // [dataKey]: 1
+            },
         });
     }
 
@@ -111,7 +141,8 @@ class GraphPlot extends Component {
                                 <CartesianGrid strokeDasharray="3 3"/>
                                 <Tooltip/>
                                 {/* <Tooltip content={<CustomTooltip/>}/> */}
-                                <Legend />
+                                <Legend onMouseEnter={this.handleLegendMouseEnter}
+                                    onMouseLeave={this.handleLegendMouseLeave}/>
                                 {/* <Brush dataKey='name' height={30} stroke="#8884d8"/> */}
                                 {nameMapper &&
                                     Object.keys(nameMapper[metric.metricID]).map(key => {
@@ -125,12 +156,14 @@ class GraphPlot extends Component {
                                                 isAnimationActive={false}
                                                 stroke={mapper['color']}
                                                 // onClick={e => !isCustomModal? handleBarClick(metric.metricID): ''}
+                                                strokeOpacity={this.state.opacity[key]}
                                                 />)
                                         }
                                         if (mapper['chartType'] === DATA_VIEW_TYPE['BAR']) {
                                             return <Bar name={mapper['name']} key={key} dataKey={key}
                                                 fill={mapper['color']} isAnimationActive={false}
                                                 // onClick={e => !isCustomModal? handleBarClick(metric.metricID): ''}
+                                                fillOpacity={this.state.opacity[key]}
                                                 />
                                         }
                                         if (mapper['chartType'] === DATA_VIEW_TYPE['SCATTER']) {
@@ -145,7 +178,7 @@ class GraphPlot extends Component {
                                                 legendType="circle"
                                                 // stroke="none"
                                                 isAnimationActive={false}
-                                                
+                                                fillOpacity={this.state.opacity[key]}
                                                 />
                                         }
                                         if (mapper['chartType'] === DATA_VIEW_TYPE['AREA']) {
@@ -155,7 +188,8 @@ class GraphPlot extends Component {
                                                 dataKey={key}
                                                 fill={mapper['color']}
                                                 stroke={mapper['color']}
-                                                isAnimationActive={false}/>
+                                                isAnimationActive={false}
+                                                strokeOpacity={this.state.opacity[key]}/>
                                         }
                                     })
                                 }
