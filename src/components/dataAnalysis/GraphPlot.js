@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {withStyles, Typography, Divider} from '@material-ui/core';
 import {Line, XAxis, YAxis, CartesianGrid, Tooltip,
     Legend, ResponsiveContainer, Brush, ComposedChart,
-    Bar, PieChart, Pie, Cell, Sector, Area} from 'recharts';
+    Bar, PieChart, Pie, Cell, Sector, Area, ReferenceLine} from 'recharts';
 import {METRIC_TYPE, DATA_VIEW_TYPE} from '../../constants/Constant';
 import DataProcessingComponent from './DataProcessComponent';
 import AlertAnalysis from './AlertAnalysis';
@@ -11,6 +11,7 @@ import styles from './DataAnalysisStyle';
 class GraphPlot extends Component {
     state = ({
         activeIndex: 0,
+        selectedLine: null,
         opacity: {
             did1:1,
             did2:1,
@@ -32,7 +33,7 @@ class GraphPlot extends Component {
         const { dataKey } = o;
         const { opacity } = this.state;
         Object.keys(opacity).map(key => {
-            opacity[key] = 0.5
+            opacity[key] = 0.2
         })
         this.setState({
             opacity: { ...opacity, [dataKey]: 1 },
@@ -40,7 +41,6 @@ class GraphPlot extends Component {
     }
       
     handleLegendMouseLeave = (o) =>{
-        const { dataKey } = o;
         const { opacity } = this.state;
         Object.keys(opacity).map(key => {
             opacity[key] = 1
@@ -52,10 +52,18 @@ class GraphPlot extends Component {
         });
     }
 
+    selectLine = (event) => {
+        let selectedLine = this.state.selectedLine === event.dataKey ? null : event.dataKey.trim();
+        this.setState({
+            selectedLine,
+        });
+    }
+    
     render() {
         const {classes, metrics, graphData, nameMapper,
             stateData, handleSamplingChange, isDashboard,
-            handleBarClick, handleClose, isCustomModal} = this.props;
+            handleBarClick, handleClose, isCustomModal,
+            referenceMapper} = this.props;
         const renderActiveShape = (props) => {
         /**
          * This function will create an arc on mouse hover for pie chanrt 
@@ -103,6 +111,7 @@ class GraphPlot extends Component {
                 </g>
             );
         };
+
         return (
         /**
          * Loop through metrics dimentions, in order to get all the graphs drawn.
@@ -141,8 +150,10 @@ class GraphPlot extends Component {
                                 <CartesianGrid strokeDasharray="3 3"/>
                                 <Tooltip/>
                                 {/* <Tooltip content={<CustomTooltip/>}/> */}
-                                <Legend onMouseEnter={this.handleLegendMouseEnter}
-                                    onMouseLeave={this.handleLegendMouseLeave}/>
+                                <Legend onClick={isCustomModal ? this.selectLine : ''}
+                                    onMouseEnter={!isCustomModal ? this.handleLegendMouseEnter: ''}
+                                    onMouseLeave={!isCustomModal ? this.handleLegendMouseLeave: ''}
+                                    />
                                 {/* <Brush dataKey='name' height={30} stroke="#8884d8"/> */}
                                 {nameMapper &&
                                     Object.keys(nameMapper[metric.metricID]).map(key => {
@@ -150,7 +161,8 @@ class GraphPlot extends Component {
                                         if(mapper['chartType'] === DATA_VIEW_TYPE['LINE']) {
                                             return(<Line name={mapper['name']} key={key} type="monotone"
                                                 // strokeWidth={2}
-                                                dataKey={key}
+                                                // dataKey={key}
+                                                dataKey={this.state.selectedLine === null || this.state.selectedLine === key ? key : `${key} `}
                                                 dot={false}
                                                 activeDot={{onClick: () => !isCustomModal? handleBarClick(metric.metricID): ''}}
                                                 isAnimationActive={false}
@@ -160,7 +172,9 @@ class GraphPlot extends Component {
                                                 />)
                                         }
                                         if (mapper['chartType'] === DATA_VIEW_TYPE['BAR']) {
-                                            return <Bar name={mapper['name']} key={key} dataKey={key}
+                                            return <Bar name={mapper['name']} key={key}
+                                                dataKey={this.state.selectedLine === null || this.state.selectedLine === key ? key : `${key} `}
+                                                // dataKey={key}
                                                 fill={mapper['color']} isAnimationActive={false}
                                                 // onClick={e => !isCustomModal? handleBarClick(metric.metricID): ''}
                                                 fillOpacity={this.state.opacity[key]}
@@ -169,7 +183,8 @@ class GraphPlot extends Component {
                                         if (mapper['chartType'] === DATA_VIEW_TYPE['SCATTER']) {
                                             return <Line name={mapper['name']}
                                                 key={key}
-                                                dataKey={key}
+                                                dataKey={this.state.selectedLine === null || this.state.selectedLine === key ? key : `${key} `}
+                                                // dataKey={key}
                                                 // activeDot={{onClick: () => !isCustomModal? handleBarClick(metric.metricID): ''}}
                                                 // dot={{stroke: mapper['color'] , onClick: () => !isCustomModal? handleBarClick(metric.metricID): ''}}
                                                 fill={mapper['color']}
@@ -189,8 +204,21 @@ class GraphPlot extends Component {
                                                 fill={mapper['color']}
                                                 stroke={mapper['color']}
                                                 isAnimationActive={false}
-                                                strokeOpacity={this.state.opacity[key]}/>
+                                                // strokeOpacity={this.state.opacity[key]}
+                                                />
                                         }
+                                    })
+                                }
+                                {referenceMapper &&
+                                    Object.keys(referenceMapper[metric.metricID]).map(key => {
+                                        let referenceLine = referenceMapper[metric.metricID][key]
+                                        if(referenceLine)
+                                            return (
+                                                <ReferenceLine y={referenceLine['trendLineY']}
+                                                    stroke={referenceLine['color']}
+                                                    strokeOpacity={0.3}
+                                                    label={{ position: 'insideTopRight',  value: referenceLine['name'], fill: referenceLine['color'], fontSize: 10 }}/>
+                                                )
                                     })
                                 }
                             </ComposedChart>

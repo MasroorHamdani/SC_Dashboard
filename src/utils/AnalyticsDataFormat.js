@@ -25,10 +25,10 @@ export function getFormatedGraphData(passedData, metrics, stateData='', isCustom
  * grouping them will get ride of duplicate values.
  * Finally return the final data back to calling function
  */
-    let graphData = [], nameMapper = {};
+    let graphData = [], nameMapper = {}, referenceMapper={};
     metrics.map(function(row) {
         let metridId = row.metricID;
-        let graphSection = [], mapper={};
+        let graphSection = [], mapper={}, referenceLine={};
         Object.keys(passedData[metridId]).map((key) => {
             row.dimensions.map((dim) => {
                 if(row.metricType !== METRIC_TYPE['RAW_DATA']) {
@@ -94,9 +94,17 @@ export function getFormatedGraphData(passedData, metrics, stateData='', isCustom
                 mapper[dim.id]['name'] = dim.name;
                 mapper[dim.id]['color'] = dim.color;
                 mapper[dim.id]['chartType'] = dim.ctype;
+                referenceLine[dim.id] = {};
+                if(dim.trendline_y)
+                    referenceLine[dim.id] = {
+                        'trendLineY' : dim.trendline_y,
+                        'name': `Max - ${dim.name}`,
+                        'color': dim.color
+                    }
             })
             graphData[metridId] = orderBy(graphSection, 'header.Timestamp', 'desc');
             nameMapper[metridId] = mapper;
+            referenceMapper[metridId] = referenceLine;
         })
         
         if(row.metricType !== METRIC_TYPE['RAW_DATA']) {
@@ -120,7 +128,8 @@ export function getFormatedGraphData(passedData, metrics, stateData='', isCustom
         }
     })
     return {graphData: graphData,
-        nameMapper: nameMapper
+        nameMapper: nameMapper,
+        referenceMapper: referenceMapper
     }
 }
 

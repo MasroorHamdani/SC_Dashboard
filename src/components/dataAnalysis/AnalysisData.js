@@ -80,7 +80,8 @@ class AnalysisData extends Component {
             let dataAnalysis = data,
                 analyticsData = getFormatedGraphData(dataAnalysis, metrics, this.props.stateData, isCustomModal),
                 graphData = analyticsData.graphData,
-                nameMapper = analyticsData.nameMapper;
+                nameMapper = analyticsData.nameMapper,
+                referenceMapper = analyticsData.referenceMapper;
                 
                 if(this.state.barClick && isCustomModal) {
                     tabData = <div className={classes.dispenserGraph}>
@@ -96,14 +97,16 @@ class AnalysisData extends Component {
                             stateData={this.props.stateData}
                             handleSamplingChange={this.props.handleSamplingChange}
                             handleBarClick={this.handleBarClick}
-                            isCustomModal={isCustomModal}/>
+                            isCustomModal={isCustomModal}
+                            referenceMapper={referenceMapper}/>
                     </div>;
                 } else if(!tabData)
                     tabData = <GraphPlot graphData={graphData}
                         nameMapper={nameMapper} metrics={metrics}
                         stateData={this.props.stateData}
                         handleSamplingChange={this.props.handleSamplingChange}
-                        handleBarClick={this.handleBarClick}/>;
+                        handleBarClick={this.handleBarClick}
+                        referenceMapper={referenceMapper}/>;
         } else {
             if(this.state.barClick && isCustomModal) {
                 tabData = <div className={classes.dispenserGraph}>
