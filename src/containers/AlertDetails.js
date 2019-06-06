@@ -8,7 +8,7 @@ import {API_URLS, DATE_TIME_FORMAT, NAMESPACE_MAPPER,
 import {getApiConfig} from '../services/ApiCofig';
 import {projectAlertList} from '../actions/DataAnalysis';
 import {projectSubMenuList} from '../actions/DataAnalysis';
-import {formatDateWithTimeZone, getTodaysStartDateTime} from '../utils/DateFormat';
+import {formatDateTime, getTodaysStartDateTime} from '../utils/DateFormat';
 
 class AlertDetails extends Component {
     constructor(props) {
@@ -116,10 +116,8 @@ class AlertDetails extends Component {
                 this.showFilter = true;
             }
             let params = {
-                'start' : formatDateWithTimeZone(this.state.startDate, DATE_TIME_FORMAT, DATE_TIME_FORMAT,
-                    this.state.timeZone),
-                'end' : formatDateWithTimeZone(this.state.endDate, DATE_TIME_FORMAT, DATE_TIME_FORMAT,
-                    this.state.timeZone)
+                'start' : formatDateTime(this.state.startDate),
+                'end' : formatDateTime(this.state.endDate)
             },
             config = getApiConfig(endPoint, 'GET', '', params);
             this.props.onProjectAlert(config);
