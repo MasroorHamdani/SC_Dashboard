@@ -161,7 +161,7 @@ class AlertAnalysis extends Component {
                                     ({row.data.length > 0 ? `${row.data[0].Data.Type}` : ''})
                                     </Typography>
                                     <Typography variant="caption">
-                                        {formatDateTime(row.header.Timestamp,
+                                        {formatDateTime(row.header.AlertTimestamp,
                                             DATE_TIME_FORMAT,
                                             DESCRIPTIVE_DATE_TIME_FORMAT)}
                                     </Typography>
@@ -180,7 +180,7 @@ class AlertAnalysis extends Component {
                             {row.data.map((dt, index) => {
                                 return<ExpansionPanelDetails key={index}>
                                     <Typography className={classes.content}>
-                                        {formatDateTime(dt.Timestamp, DATE_TIME_FORMAT, HOUR_MIN_FORMAT)}
+                                        {formatDateTime(dt.AlertTimestamp, DATE_TIME_FORMAT, HOUR_MIN_FORMAT)}
                                     </Typography>
                                     <Typography>{dt.Data.Text}</Typography>
                                 </ExpansionPanelDetails>

@@ -108,132 +108,25 @@ class Dashboard extends Component {
    */
     if(this.props.projectMetricList &&
       !isEqual(this.props.projectMetricList, prevProps.projectMetricList)) {
-        console.log(this.props.projectMetricList);
-        let testVariable = [{
-          "reportingService1": [{
-              "alertAnalysisDistribution": {
-                  "column_items": [
-                      "StatusInfo_Status",
-                      "Timestamp"
-                  ],
-                  "metric_data_key": "Timestamp",
-                  "metric_id": "alertAnalysisDistribution",
-                  "metric_info": "This metric shows an analysis of alerts status for the entire facility.",
-                  "metric_name": "Alerts Analysis",
-                  "time_index": "Timestamp",
-                  "metric_type": "categorical",
-                  "data_source_type": "proj_alerts",
-                  "data_source": "UNITED_SQUARE_MALL",
-                  "dimensions": [
-                      {
-                          "color": "#f39c12",
-                          "ctype": "pie",
-                          "dkey": "key",
-                          "name": "Pending Alerts",
-                          "show_sampling_widget": false,
-                          "id": "did1",
-                          "actions": [
-                              {
-                                  "type": "FILTER",
-                                  "criteria": {
-                                      "op": "EQ",
-                                      "is_numeric": false,
-                                      "field": "StatusInfo_Status",
-                                      "operand": "pending"
-                                  }
-                              },
-                              {
-                                  "type": "RESAMPLER",
-                                  "criteria": {
-                                      "agg": "count",
-                                      "window_type": "constant",
-                                      "rule": "Y"
-                                  }
-                              }
-                          ],
-                          "key": "StatusInfo_Status"
-                      },
-                      {
-                          "color": "#e74c6c",
-                          "ctype": "pie",
-                          "dkey": "key",
-                          "name": "Unresolved Alerts",
-                          "show_sampling_widget": false,
-                          "id": "did2",
-                          "actions": [
-                              {
-                                  "type": "FILTER",
-                                  "criteria": {
-                                      "op": "EQ",
-                                      "is_numeric": false,
-                                      "field": "StatusInfo_Status",
-                                      "operand": "not_resolved"
-                                  }
-                              },
-                              {
-                                  "type": "RESAMPLER",
-                                  "criteria": {
-                                      "agg": "count",
-                                      "window_type": "constant",
-                                      "rule": "Y"
-                                  }
-                              }
-                          ],
-                          "key": "StatusInfo_Status"
-                      },
-                      {
-                          "color": "#27ae60",
-                          "ctype": "pie",
-                          "dkey": "key",
-                          "name": "Resolved Alerts",
-                          "show_sampling_widget": false,
-                          "id": "did3",
-                          "actions": [
-                              {
-                                  "type": "FILTER",
-                                  "criteria": {
-                                      "op": "EQ",
-                                      "is_numeric": false,
-                                      "field": "StatusInfo_Status",
-                                      "operand": "resolved"
-                                  }
-                              },
-                              {
-                                  "type": "RESAMPLER",
-                                  "criteria": {
-                                      "agg": "count",
-                                      "window_type": "constant",
-                                      "rule": "Y"
-                                  }
-                              }
-                          ],
-                          "key": "StatusInfo_Status"
-                      }
-                  ]
-              }
-          }]
-      }]
-      //this.props.projectMetricList.map((row) => {
-      if(this.metricsIndex < testVariable.length) {
-        testVariable.map((extRow) => {
-          if (this.innerMetricsIndex < extRow.length) {
-            extRow.map((row) => {
-              let dataToPost = row,
-                endPoint = `${API_URLS['DEVICE_DATA']}/${this.state.PID}/${API_URLS['DEFAULT']}`,
-                params = {
-                  'start' : formatDateTime(this.state.startTime, DATE_TIME_FORMAT, DATE_TIME_FORMAT),
-                  'end': formatDateWithTimeZone(this.state.endTime, DATE_TIME_FORMAT, DATE_TIME_FORMAT, this.state.timeZone),
-                },
-                config = getApiConfig(endPoint, 'POST', dataToPost, params);
-              this.props.onDataAnalysis(config);
-            })
-            this.innerMetricsIndex +=1;
-          }
-          this.metricsIndex += 1;
-          
-        })
-      }
-        
+        if(this.metricsIndex < this.props.projectMetricList.length) {
+          this.props.projectMetricList.map((extRow) => {
+            // if (this.innerMetricsIndex < extRow.length) {
+              Object.keys(extRow).map((key) => {
+                extRow[key].map((row) => {
+                  let dataToPost = {'all_metrics' : Object.values(row)},
+                    endPoint = `${API_URLS['NEW_DEVICE_DATA']}/${this.state.PID}/${API_URLS['DEFAULT']}`,
+                    params = {
+                      'start' : formatDateTime(this.state.startTime, DATE_TIME_FORMAT, DATE_TIME_FORMAT),
+                      'end': formatDateWithTimeZone(this.state.endTime, DATE_TIME_FORMAT, DATE_TIME_FORMAT, this.state.timeZone),
+                    },
+                    config = getApiConfig(endPoint, 'POST', dataToPost, params);
+                  this.props.onDataAnalysis(config);
+                  // this.innerMetricsIndex +=1;
+                })
+              })
+            this.metricsIndex += 1;
+          })
+        }
     }
   /**
    * This part will get the dashboard data per project.
@@ -249,6 +142,7 @@ class Dashboard extends Component {
       !isEqual(this.props.dataAnalysis, prevProps.dataAnalysis) ||
       !isEqual(this.props.projectLocationList, prevProps.projectLocationList)) ||
       !this.state.dashboardData.length > 0)) {
+        console.log(this.props.dataAnalysis, "this.props.dataAnalysis")
         let projData = [], dashboardData = [];
         if(this.props.dashboardData && this.props.dashboardData.length > 0) {
           this.props.dashboardData.map((row) => {

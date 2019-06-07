@@ -371,9 +371,7 @@ class DataAnalysis extends Component {
     const endPoint = `${API_URLS['NEW_DEVICE_DATA']}/${this.state.pid}`,
     //`${API_URLS['DEVICE_DATA']}/${this.state.pid}/${this.state.deviceId}`,
       params = {
-        // 'start'
         'start_date_time' : this.state.start,
-        // 'end': 
         'end_date_time' : this.state.end,
       };
     let headers = {
