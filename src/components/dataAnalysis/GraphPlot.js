@@ -127,7 +127,7 @@ class GraphPlot extends Component {
                         handleSamplingChange={handleSamplingChange}
                         metrics={metric}/> */}
                     <Typography gutterBottom variant="h6">
-                        {metric.metricName}
+                        {metric.metric_name}
                     </Typography>
                     {(metric.metric_type === METRIC_TYPE['TIMESERIES'] && metric.metric_data_key) &&
                         <ResponsiveContainer width='100%' height={400}>

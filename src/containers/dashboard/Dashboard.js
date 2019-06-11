@@ -108,13 +108,14 @@ class Dashboard extends Component {
    */
     if(this.props.projectMetricList &&
       !isEqual(this.props.projectMetricList, prevProps.projectMetricList)) {
+        this.metricLength = this.props.projectMetricList.length;
         if(this.metricsIndex < this.props.projectMetricList.length) {
           this.props.projectMetricList.map((extRow) => {
             // if (this.innerMetricsIndex < extRow.length) {
               Object.keys(extRow).map((key) => {
                 extRow[key].map((row) => {
                   let dataToPost = {'all_metrics' : Object.values(row)},
-                    endPoint = `${API_URLS['NEW_DEVICE_DATA']}/${this.state.PID}/${API_URLS['DEFAULT']}`,
+                    endPoint = `${API_URLS['NEW_DEVICE_DATA']}/${this.state.PID}`,
                     params = {
                       'start' : formatDateTime(this.state.startTime, DATE_TIME_FORMAT, DATE_TIME_FORMAT),
                       'end': formatDateWithTimeZone(this.state.endTime, DATE_TIME_FORMAT, DATE_TIME_FORMAT, this.state.timeZone),
@@ -142,7 +143,6 @@ class Dashboard extends Component {
       !isEqual(this.props.dataAnalysis, prevProps.dataAnalysis) ||
       !isEqual(this.props.projectLocationList, prevProps.projectLocationList)) ||
       !this.state.dashboardData.length > 0)) {
-        console.log(this.props.dataAnalysis, "this.props.dataAnalysis")
         let projData = [], dashboardData = [];
         if(this.props.dashboardData && this.props.dashboardData.length > 0) {
           this.props.dashboardData.map((row) => {
@@ -151,12 +151,15 @@ class Dashboard extends Component {
           });
         }
         if(this.props.dataAnalysis &&
-          !isEqual(this.props.dataAnalysis, prevProps.dataAnalysis)) {
+          !isEqual(this.props.dataAnalysis, prevProps.dataAnalysis)
+          || !this.state.dashboardData.length > 0
+          && (this.metricsIndex === this.metricLength)
+          ) { //condition to make entry only once
             let projObj = {}, metricsData={};
-            const deviceResponse = this.props.dataAnalysis.data.data;
-            if(this.props.dataAnalysis.data.status === "success") {
+            const deviceResponse = this.props.dataAnalysis ? this.props.dataAnalysis.data.data : '';
+            if(this.props.dataAnalysis && this.props.dataAnalysis.data.status === "success") {
               this.getInstallationLocation();
-              metricsData = getVector(this.props.dataAnalysis.data.data.allMetrics, 'DASHBOARD');
+              metricsData = getVector(this.props.dataAnalysis.data.data.all_metrics, 'DASHBOARD');
               projObj['PID'] = deviceResponse.pid;
               projData.map((row) => {
                 if(row.PID === deviceResponse.pid) {
@@ -164,7 +167,7 @@ class Dashboard extends Component {
                   projObj['Site_Addr'] = row.Site_Addr;
                   projObj['dataAnalysis'] = deviceResponse;
                   projObj['metrics'] = metricsData.dataMetrics;
-                  projObj['allMetrics'] = deviceResponse.allMetrics;
+                  projObj['allMetrics'] = deviceResponse.all_metrics;
                 }
               })
             } else {
@@ -195,9 +198,8 @@ class Dashboard extends Component {
     return (
       <div className={classes.root}>
         <main className={classes.content}>
-        {this.state.loading ? (
-        <LinearProgress className={classes.buttonProgress}/>
-        )
+        {this.state.loading ?
+          (<LinearProgress className={classes.buttonProgress}/>)
         : (this.state.dashboardData &&
           <div className={classes.gridRoot}>
             <GridList cellHeight={180} className={classes.gridList}>

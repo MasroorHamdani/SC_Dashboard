@@ -57,7 +57,7 @@ export function getFormatedGraphData(passedData, metrics, stateData='', isCustom
                         }
                     })
                 } else if(stateData.projectLocationList) {
-                    const data = groupBy(passedData[metridId][dim.id].data.Items,'ID');
+                    const data = groupBy(passedData[metridId][dim.id].data,'ID');
                     /**
                      * This part is specifically for alerts data.
                      * Mapping the location list name with locations ids
