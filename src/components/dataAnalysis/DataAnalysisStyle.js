@@ -31,6 +31,12 @@ const styles = theme => ({
         flexShrink: 0,
         textAlign: 'left'
     },
+    dashboardHeading: {
+        // fontSize: theme.typography.pxToRem(15),
+        flexBasis: '79%',
+        flexShrink: 0,
+        textAlign: 'left'
+    },
     pending: {
         color: '#fff',
         height: '25px',

@@ -153,7 +153,7 @@ class AlertAnalysis extends Component {
                         return (<ExpansionPanel key={index}>
                             {row.header &&
                                 <ExpansionPanelSummary className={classes.expansionRoot} expandIcon={<ExpandMoreIcon />}>
-                                <div className={classes.heading}>
+                                <div className={isDashboard? classes.dashboardHeading : classes.heading}>
                                     <Typography component="h6">{row.header.StatusInfo.Reason}
                                     {row.header.name ?
                                         ` - ${row.header.name} (${row.header.locn})`
