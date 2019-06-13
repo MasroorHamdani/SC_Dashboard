@@ -1,9 +1,12 @@
-import { PROJECT_ANALYSIS_DATA } from '../constants/ActionTypes';
+import _ from "lodash";
+
+import { PROJECT_ANALYSIS_DATA, PROJECT_ANALYSIS_INITIALISE} from '../constants/ActionTypes';
+
 /* Reducer for Data analysis page's Actual analytics data for the device selected */
 const dataAnalysis = (state = [], action) => {
     switch(action.type) {
         case PROJECT_ANALYSIS_DATA:
-            if(state.data){
+            if(state.data) {
                 let stateMetricValue = state.data.data.data.metrics,
                     newMetricValue = action.data.data.data.metrics,
                     allMetricsValue = state.data.data.data.all_metrics.concat(action.data.data.data.all_metrics);
@@ -20,7 +23,6 @@ const dataAnalysis = (state = [], action) => {
                             }
                         }
                     }
-                    //[...state.dataAnalysis ? {...state.dataAnalysis} : '', ...action.data.data.data.metrics]//action.data//data : {...state.dataAnalysis? {...state.dataAnalysis.data} : '', ...action.data} //
                 };
             }
             else {
@@ -29,6 +31,8 @@ const dataAnalysis = (state = [], action) => {
                     data: action.data
                 }
             }
+        case PROJECT_ANALYSIS_INITIALISE:
+            return action.data
         default:
             return state
     }

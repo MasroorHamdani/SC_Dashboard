@@ -341,7 +341,7 @@ class DataAnalysis extends Component {
       "all_metrics": []
     };
   
-    if(metrics && metrics.metric.length > 0 &&
+    if(metrics && metrics.metric && metrics.metric.length > 0 &&
         metrics.allMetrics.length > 0 &&
         metrics.metric[0].type === this.state.deviceKey) {
       dataToPost = {

@@ -1,7 +1,8 @@
 import ApiService from '../services/ApiService';
 import {DATA_ANALYSIS_PROJECT_LIST_SUB_MENU, DATA_ANALYSIS_INSTALLATION_LIST,
   PROJECT_ANALYSIS_DATA, PROJECT_ALERT_LIST, DISPENSER_DATA,
-  PROJECT_METRIC_LIST, CLEAR_REDUCER, MODAL_PROJECT_ANALYSIS_DATA} from '../constants/ActionTypes';
+  PROJECT_METRIC_LIST, CLEAR_REDUCER, MODAL_PROJECT_ANALYSIS_DATA,
+  PROJECT_ANALYSIS_INITIALISE} from '../constants/ActionTypes';
 
 /**
  * Dispatched function to call the API service to get
@@ -153,5 +154,12 @@ function projectMetricReceived(data) {
   return {
     type: PROJECT_METRIC_LIST,
     data
+  }
+}
+
+export function InitialiseState() {
+  return {
+    type: PROJECT_ANALYSIS_INITIALISE,
+    data: []
   }
 }

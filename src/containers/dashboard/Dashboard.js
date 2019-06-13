@@ -9,7 +9,7 @@ import { API_URLS, NAMESPACE, DASHBOARD_METRIC,
   DATE_TIME_FORMAT} from "../../constants/Constant";
 import { getApiConfig } from '../../services/ApiCofig';
 import {projectAnalysisData, projectSubMenuList,
-  projectDataMetricList} from '../../actions/DataAnalysis';
+  projectDataMetricList, InitialiseState} from '../../actions/DataAnalysis';
 import {getVector} from '../../utils/AnalyticsDataFormat';
 import {formatDateWithTimeZone, formatDateTime, getTodaysStartDateTime} from '../../utils/DateFormat';
 
@@ -19,12 +19,12 @@ class Dashboard extends Component {
     this.state = {
       data : [],
       dashboardData : [],
-      loading: true,
+      // loading: true,
       endTime: new Date(),
       startTime: getTodaysStartDateTime(),
     }
     this.metricsIndex = 0;
-    this.innerMetricsIndex = 0;
+    this.metricLength = 0;
   }
 
   getProjectData = () => {
@@ -49,6 +49,10 @@ class Dashboard extends Component {
       //   config = getApiConfig(endPoint, 'POST', dataToPost, params);
       // this.props.onDataAnalysis(config);
     })
+  }
+
+  componentWillUnmount() {
+    this.props.onInitialState();
   }
 
   componentDidMount() {
@@ -95,9 +99,12 @@ class Dashboard extends Component {
    */
     if(this.props.projectSelected &&
       !isEqual(this.props.projectSelected, prevProps.projectSelected)) {
+        this.metricsIndex = 0;
         this.setState({
           PID: this.props.projectSelected.PID,
-          timeZone: this.props.projectSelected.Region}, function() {
+          timeZone: this.props.projectSelected.Region,
+          dashboardData: []
+        }, function() {
           this.getProjectData();
         });
     }
@@ -107,22 +114,23 @@ class Dashboard extends Component {
    * TO get the actaul data per metrics and shown to end user on Home screen.
    */
     if(this.props.projectMetricList &&
-      !isEqual(this.props.projectMetricList, prevProps.projectMetricList)) {
-        this.metricLength = this.props.projectMetricList.length;
-        if(this.metricsIndex < this.props.projectMetricList.length) {
+      !isEqual(this.props.projectMetricList, prevProps.projectMetricList)
+      && this.metricsIndex === 0) {
+        this.metricLength = this.props.projectMetricList ? this.props.projectMetricList.length : 0;
+        if(this.metricsIndex < this.metricLength) {
           this.props.projectMetricList.map((extRow) => {
-            // if (this.innerMetricsIndex < extRow.length) {
               Object.keys(extRow).map((key) => {
                 extRow[key].map((row) => {
-                  let dataToPost = {'all_metrics' : Object.values(row)},
-                    endPoint = `${API_URLS['NEW_DEVICE_DATA']}/${this.state.PID}`,
-                    params = {
-                      'start' : formatDateTime(this.state.startTime, DATE_TIME_FORMAT, DATE_TIME_FORMAT),
-                      'end': formatDateWithTimeZone(this.state.endTime, DATE_TIME_FORMAT, DATE_TIME_FORMAT, this.state.timeZone),
-                    },
-                    config = getApiConfig(endPoint, 'POST', dataToPost, params);
-                  this.props.onDataAnalysis(config);
-                  // this.innerMetricsIndex +=1;
+                  if(Object.values(row)[0].data_source === this.state.PID) {
+                    let dataToPost = {'all_metrics' : Object.values(row)},
+                      endPoint = `${API_URLS['NEW_DEVICE_DATA']}/${this.state.PID}`,
+                      params = {
+                        'start' : formatDateTime(this.state.startTime, DATE_TIME_FORMAT, DATE_TIME_FORMAT),
+                        'end': formatDateWithTimeZone(this.state.endTime, DATE_TIME_FORMAT, DATE_TIME_FORMAT, this.state.timeZone),
+                      },
+                      config = getApiConfig(endPoint, 'POST', dataToPost, params);
+                    this.props.onDataAnalysis(config);
+                  }
                 })
               })
             this.metricsIndex += 1;
@@ -141,8 +149,7 @@ class Dashboard extends Component {
     if ((this.props.dashboardData || this.props.dataAnalysis || this.props.projectLocationList) &&
       ((!isEqual(this.props.dashboardData, prevProps.dashboardData) ||
       !isEqual(this.props.dataAnalysis, prevProps.dataAnalysis) ||
-      !isEqual(this.props.projectLocationList, prevProps.projectLocationList)) ||
-      !this.state.dashboardData.length > 0)) {
+      !isEqual(this.props.projectLocationList, prevProps.projectLocationList)))) {
         let projData = [], dashboardData = [];
         if(this.props.dashboardData && this.props.dashboardData.length > 0) {
           this.props.dashboardData.map((row) => {
@@ -152,9 +159,7 @@ class Dashboard extends Component {
         }
         if(this.props.dataAnalysis &&
           !isEqual(this.props.dataAnalysis, prevProps.dataAnalysis)
-          || !this.state.dashboardData.length > 0
-          && (this.metricsIndex === this.metricLength)
-          ) { //condition to make entry only once
+          || !this.state.dashboardData.length > 0) {
             let projObj = {}, metricsData={};
             const deviceResponse = this.props.dataAnalysis ? this.props.dataAnalysis.data.data : '';
             if(this.props.dataAnalysis && this.props.dataAnalysis.data.status === "success") {
@@ -205,9 +210,8 @@ class Dashboard extends Component {
             <GridList cellHeight={180} className={classes.gridList}>
               <ProjectDataComponent stateData={this.state}/>
             </GridList>
-        </div>
-        )
-        }
+          </div>
+        )}
         </main>
       </div>
     );
@@ -234,6 +238,9 @@ function mapDispatchToProps(dispatch) {
     },
     onDataMetricList: (config) => {
       dispatch(projectDataMetricList(config))
+    },
+    onInitialState: () => {
+      dispatch(InitialiseState())
     }
   }
 }
