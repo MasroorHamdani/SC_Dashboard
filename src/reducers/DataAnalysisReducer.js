@@ -1,5 +1,3 @@
-import _ from "lodash";
-
 import { PROJECT_ANALYSIS_DATA, PROJECT_ANALYSIS_INITIALISE} from '../constants/ActionTypes';
 
 /* Reducer for Data analysis page's Actual analytics data for the device selected */

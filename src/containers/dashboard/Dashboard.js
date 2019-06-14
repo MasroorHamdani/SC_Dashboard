@@ -9,7 +9,8 @@ import { API_URLS, NAMESPACE, DASHBOARD_METRIC,
   DATE_TIME_FORMAT} from "../../constants/Constant";
 import { getApiConfig } from '../../services/ApiCofig';
 import {projectAnalysisData, projectSubMenuList,
-  projectDataMetricList, InitialiseState} from '../../actions/DataAnalysis';
+  projectDataMetricList, InitialiseDataState,
+  InitialiseMetricState} from '../../actions/DataAnalysis';
 import {getVector} from '../../utils/AnalyticsDataFormat';
 import {formatDateWithTimeZone, formatDateTime, getTodaysStartDateTime} from '../../utils/DateFormat';
 
@@ -25,6 +26,7 @@ class Dashboard extends Component {
     }
     this.metricsIndex = 0;
     this.metricLength = 0;
+    this.metricsIndexReceived = 0;
   }
 
   getProjectData = () => {
@@ -100,6 +102,8 @@ class Dashboard extends Component {
     if(this.props.projectSelected &&
       !isEqual(this.props.projectSelected, prevProps.projectSelected)) {
         this.metricsIndex = 0;
+        this.metricsIndexReceived = 0;
+        this.props.onInitialState();
         this.setState({
           PID: this.props.projectSelected.PID,
           timeZone: this.props.projectSelected.Region,
@@ -190,6 +194,12 @@ class Dashboard extends Component {
               dashboardData: dashboardData,
               loading: false
             });
+            // if(this.metricsIndexReceived === this.metricLength) {
+            //   this.setState({
+            //     loading: false
+            //   })
+            // }
+            // this.metricsIndexReceived =+1;
         }
         if(this.props.projectLocationList &&
           !isEqual(this.props.projectLocationList, prevProps.projectLocationList)) {
@@ -203,9 +213,10 @@ class Dashboard extends Component {
     return (
       <div className={classes.root}>
         <main className={classes.content}>
-        {this.state.loading ?
+        {this.state.loading &&
           (<LinearProgress className={classes.buttonProgress}/>)
-        : (this.state.dashboardData &&
+        }
+        {(this.state.dashboardData &&
           <div className={classes.gridRoot}>
             <GridList cellHeight={180} className={classes.gridList}>
               <ProjectDataComponent stateData={this.state}/>
@@ -231,7 +242,7 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return {
     onDataAnalysis: (config) => {
-        dispatch(projectAnalysisData(config))
+      dispatch(projectAnalysisData(config))
     },
     onDataAnalysisMenu: (config) => {
       dispatch(projectSubMenuList(config))
@@ -240,7 +251,8 @@ function mapDispatchToProps(dispatch) {
       dispatch(projectDataMetricList(config))
     },
     onInitialState: () => {
-      dispatch(InitialiseState())
+      dispatch(InitialiseDataState())
+      dispatch(InitialiseMetricState())
     }
   }
 }
