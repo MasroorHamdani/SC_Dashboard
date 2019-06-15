@@ -3,7 +3,8 @@ import {withStyles, Typography, Divider} from '@material-ui/core';
 import {Line, XAxis, YAxis, CartesianGrid, Tooltip,
     Legend, ResponsiveContainer, Brush, ComposedChart,
     Bar, PieChart, Pie, Cell, Sector, Area, ReferenceLine} from 'recharts';
-import {METRIC_TYPE, DATA_VIEW_TYPE} from '../../constants/Constant';
+import EnhancedTable from '../grid/Grid';
+import {METRIC_TYPE, DATA_VIEW_TYPE, SORTING} from '../../constants/Constant';
 import DataProcessingComponent from './DataProcessComponent';
 import AlertAnalysis from './AlertAnalysis';
 import styles from './DataAnalysisStyle';
@@ -17,7 +18,12 @@ class GraphPlot extends Component {
             did2:1,
             did3:1,
             did4:1
-        }
+        },
+        order: SORTING['DECENDING'],
+        orderBy: 'name',
+        selected: [],
+        page: 0,
+        rowsPerPage: 5
     });
 
     onPieEnter = (data, index) => {
@@ -310,7 +316,14 @@ class GraphPlot extends Component {
                     
                     }
                     {(metric.metricType === METRIC_TYPE['TABLE_DATA'])&&
-                        <div>table data</div>
+                        <div onClick={e => !isCustomModal? handleBarClick(metric.metricID): ''}>
+                            <EnhancedTable data={graphData[metric.metricID]} rows={nameMapper[metric.metricID]}
+                            order={this.state.order} orderBy={this.state.orderBy}
+                            rowsPerPage={this.state.rowsPerPage} page={this.state.page}
+                            selected={this.state.selected}
+                            redirectID="v_sessionId"
+                            allowDelete={false} allowEdit={false}/>
+                        </div>
                     }
                 </div>
             })

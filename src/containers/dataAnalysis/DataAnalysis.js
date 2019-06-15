@@ -505,20 +505,22 @@ class DataAnalysis extends Component {
             allMetrics: this.props.dataAnalysis.data.data.allMetrics,
             dataAnalysis: this.props.dataAnalysis});
           let referData = {};
-          Object.keys(metricsData.metric).map((key) => {
-            let value = {}
-            metricsData.metric[key].map((dt) => {
-              Object.keys(dt).map((d) => {
-                let val = {
-                  'func' : dt[d].statistic,
-                  'sampling': dt[d].sampling,
-                  'unit': dt[d].unit
-                }
-                value[d] = val;
+          if(metricsData.metric) {
+            Object.keys(metricsData.metric).map((key) => {
+              let value = {}
+              metricsData.metric[key].map((dt) => {
+                Object.keys(dt).map((d) => {
+                  let val = {
+                    'func' : dt[d].statistic,
+                    'sampling': dt[d].sampling,
+                    'unit': dt[d].unit
+                  }
+                  value[d] = val;
+                })
               })
+              referData[key] = value;
             })
-            referData[key] = value;
-          })
+          }
           this.setState({[this.state.deviceKey]: referData,
             loading: false,
             rangeError: '',

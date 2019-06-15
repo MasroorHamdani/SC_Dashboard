@@ -256,7 +256,7 @@ export const METRIC_TYPE = {
     'TIMESERIES' : 'timeseries',
     'CATEGORICAL' : 'categorical',
     'RAW_DATA': 'raw_data',
-    'TABLE_DATA': 'table_data'
+    'TABLE_DATA': 'table_ver1'
 }
 
 export const DATA_VIEW_TYPE = {
