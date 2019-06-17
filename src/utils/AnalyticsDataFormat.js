@@ -37,6 +37,7 @@ export function getFormatedGraphData(passedData, metrics, stateData='', isCustom
                         let temp = {};
                         temp['id'] = col.k;
                         temp['label'] = col.disp;
+                        temp['toolTip'] = col.toolTip;
                         inputFormat = col.sourceFormat? col.sourceFormat:  inputFormat;
                         outputFormat = col.toFormat ? col.toFormat: outputFormat;
                         if (col.type === 'timestamp'){

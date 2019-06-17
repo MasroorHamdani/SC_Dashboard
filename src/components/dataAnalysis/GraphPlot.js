@@ -65,6 +65,14 @@ class GraphPlot extends Component {
         });
     }
     
+    handleChange = (name, value) => {
+    /**
+     * Generic function to set the state in case of any change in any of the fields
+     */
+        this.setState({
+            [name] : value
+        });
+    }
     render() {
         const {classes, metrics, graphData, nameMapper,
             stateData, handleSamplingChange, isDashboard,
@@ -317,11 +325,14 @@ class GraphPlot extends Component {
                     }
                     {(metric.metricType === METRIC_TYPE['TABLE_DATA'])&&
                         <div onClick={e => !isCustomModal? handleBarClick(metric.metricID): ''}>
-                            <EnhancedTable data={graphData[metric.metricID]} rows={nameMapper[metric.metricID]}
+                            <EnhancedTable data={graphData[metric.metricID]}
+                            rows={nameMapper[metric.metricID]}
+                            searchList={nameMapper[metric.metricID]}
                             order={this.state.order} orderBy={this.state.orderBy}
                             rowsPerPage={this.state.rowsPerPage} page={this.state.page}
                             selected={this.state.selected}
                             redirectID="v_sessionId"
+                            handleChange={this.handleChange}
                             allowDelete={false} allowEdit={false}/>
                         </div>
                     }
