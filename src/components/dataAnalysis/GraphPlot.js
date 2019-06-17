@@ -148,11 +148,20 @@ class GraphPlot extends Component {
                             <ComposedChart className={classes.lineChart} data={graphData[metric.metricID]}
                                 margin={{top: 5, right: 30, left: 20, bottom: 5}}
                                 onClick={e => !isCustomModal? handleBarClick(metric.metricID): ''}>
-                                <XAxis dataKey="name" 
-                                    minTickGap={20}
-                                    // type="number"
-                                    label={{ value: 'Time of day', position: 'insideBottomRight', offset: -3}}
+                                {isCustomModal ?
+                                    <XAxis dataKey="name" 
+                                        minTickGap={20}
+                                        height={40}
+                                        // type="number"
+                                        label={{ value: 'Time of day', position: 'insideBottomRight', offset: 2}}//-3
                                     />
+                                :
+                                    <XAxis dataKey="name" 
+                                        minTickGap={20}
+                                        // type="number"
+                                        label={{ value: 'Time of day', position: 'insideBottomRight', offset: -3}}
+                                    />
+                                }
                                 {metric.dimensions[0].type === 'derivedDim' ?
                                     <YAxis type="category" width={120}
                                     />
@@ -168,7 +177,9 @@ class GraphPlot extends Component {
                                     onMouseEnter={!isCustomModal ? this.handleLegendMouseEnter: ''}
                                     onMouseLeave={!isCustomModal ? this.handleLegendMouseLeave: ''}
                                     />
-                                {/* <Brush dataKey='name' height={30} stroke="#8884d8"/> */}
+                                {isCustomModal &&
+                                    <Brush dataKey='name' height={30} stroke="#8884d8"/>
+                                }
                                 {nameMapper &&
                                     Object.keys(nameMapper[metric.metricID]).map(key => {
                                         let mapper = nameMapper[metric.metricID][key];
