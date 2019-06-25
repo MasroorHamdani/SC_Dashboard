@@ -38,7 +38,7 @@ const styles = theme => ({
       flexGrow: 1,
     },
     logo: {
-      width: '20%'
+      maxWidth: '20%'
     },
     beta: {
       // width: '5%',
