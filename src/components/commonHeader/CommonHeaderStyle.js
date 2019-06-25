@@ -9,8 +9,9 @@ const styles = theme => ({
       background: `linear-gradient(0.25turn, #fff, ${theme.palette.primary.light}, ${theme.palette.primary.main})`,
     },
     logo: {
-      width: '20%'
-    }
+      maxWidth: '20%',
+      maxHeight: '43px'
+    },
   });
 
   export default styles;
