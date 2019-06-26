@@ -520,31 +520,33 @@ class DataAnalysis extends Component {
           dataAnalysis: this.props.dataAnalysis
         });
         let referData = {};
-        Object.keys(metricsData.metric).map((key) => {
-          let value = {}
-          metricsData.metric[key].map((dt) => {
-            Object.keys(dt).map((d) => {
-              let val=[];
-              dt[d].actions.map((action) => {
-                val.push(action);
+        if(metricsData.metric) {
+          Object.keys(metricsData.metric).map((key) => {
+            let value = {}
+            metricsData.metric[key].map((dt) => {
+              Object.keys(dt).map((d) => {
+                let val=[];
+                dt[d].actions.map((action) => {
+                  val.push(action);
+                })
+                value[d] = val;
               })
-              value[d] = val;
             })
+            referData[key] = value;
           })
-          referData[key] = value;
-        })
+        }
         this.setState({[this.state.deviceKey]: referData,
           loading: false,
           rangeError: ''})
-        } else if(isEqual(this.props.dataAnalysis.data.status, 'nodata')) {
-          this.setState({loading: false, dataAnalysis: 'No Data Found'})
-          
-        } else if(isEqual(this.props.dataAnalysis.data.status, 'failed')) {
-          this.setState({loading: false, dataAnalysis: this.props.dataAnalysis.data.data.message})
-        }
-        else {
-          this.setState({loading: false})
-        }
+      } else if(isEqual(this.props.dataAnalysis.data.status, 'nodata')) {
+        this.setState({loading: false, dataAnalysis: 'No Data Found'})
+        
+      } else if(isEqual(this.props.dataAnalysis.data.status, 'failed')) {
+        this.setState({loading: false, dataAnalysis: this.props.dataAnalysis.data.data.message})
+      }
+      else {
+        this.setState({loading: false})
+      }
   }
 
   /**
@@ -557,7 +559,9 @@ class DataAnalysis extends Component {
       (!this.state.installationList || Object.keys(this.state.installationList).length === 0))) {
         let installationList = {}, i = 1;
         // let formattedData = groupBy(this.props.installationList, 'Type');
-        this.props.installationList.map((tab) => {
+        let sorted_list = sortBy(this.props.installationList,'Display')
+        // this.props.installationList.map((tab) => {
+        sorted_list.map((tab)=> {
           let list = {
             'key': tab.Type,
             'text': tab.Display,
@@ -604,7 +608,7 @@ class DataAnalysis extends Component {
             installationList[tab.Type] = list
           }
         })
-        this.setState({installationList: sortBy(installationList,'index'), loading: false,})//sortBy(installationList,'index')
+        this.setState({installationList: sortBy(installationList,'index'), loading: false,})
     }
     if (this.props.modalDataAnalysis &&
       !isEqual(this.props.modalDataAnalysis, prevProps.modalDataAnalysis)) {

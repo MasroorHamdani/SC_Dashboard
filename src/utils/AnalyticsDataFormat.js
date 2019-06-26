@@ -31,8 +31,34 @@ export function getFormatedGraphData(passedData, metrics, stateData='', isCustom
         let graphSection = [], mapper={}, referenceLine={};
         Object.keys(passedData[metridId]).map((key) => {
             row.dimensions.map((dim) => {
-                //metricType
-                if(row.metric_type !== METRIC_TYPE['RAW_DATA']) {
+                if(row.metric_type === METRIC_TYPE['TABLE_DATA']) {
+                    let tableMapper = [], inputFormat, outputFormat;
+                    row.dimensions[0].columns.map((col) => {
+                        let temp = {};
+                        temp['id'] = col.k;
+                        temp['label'] = col.disp;
+                        temp['toolTip'] = col.toolTip;
+                        inputFormat = col.sourceFormat? col.sourceFormat:  inputFormat;
+                        outputFormat = col.toFormat ? col.toFormat: outputFormat;
+                        if (col.type === 'timestamp'){
+                            temp['type'] = 'timestamp';
+                            temp['inputFormat'] = inputFormat;
+                            temp['outputFormat'] = outputFormat;
+                        }
+                        tableMapper.push(temp);
+                    })
+                    nameMapper[metridId] = tableMapper;
+                    passedData[metridId][dim.id].data.data.map((vec) => {
+                        tableMapper.map((tableMap) => {
+                            if(tableMap.type === 'timestamp') {
+                                vec[tableMap.id] = moment(vec[tableMap.id], tableMap.outputFormat, true).isValid() ? vec[tableMap.id] :
+                                    formatDateTime(vec[tableMap.id], tableMap.inputFormat, tableMap.outputFormat)
+                            }
+                        })
+                        graphSection.push(vec)
+                    })
+                    graphData[metridId] = graphSection;
+                } else if(row.metric_type !== METRIC_TYPE['RAW_DATA']) {
                     passedData[metridId][dim.id].data.map((vec) => {
                         if(row.metric_type === METRIC_TYPE['TIMESERIES']) {
                             let graphElement = {};
@@ -91,24 +117,29 @@ export function getFormatedGraphData(passedData, metrics, stateData='', isCustom
                         })
                     }
                 }
-                mapper[dim.id] = {};
-                mapper[dim.id]['name'] = dim.name;
-                mapper[dim.id]['color'] = dim.color;
-                mapper[dim.id]['chartType'] = dim.ctype;
-                referenceLine[dim.id] = {};
-                if(dim.trendline_y)
-                    referenceLine[dim.id] = {
-                        'trendLineY' : dim.trendline_y,
-                        'name': `Max - ${dim.name}`,
-                        'color': dim.color
-                    }
+                if(row.metricType !== METRIC_TYPE['TABLE_DATA']) {
+                    mapper[dim.id] = {};
+                    mapper[dim.id]['name'] = dim.name;
+                    mapper[dim.id]['color'] = dim.color;
+                    mapper[dim.id]['chartType'] = dim.ctype;
+                    referenceLine[dim.id] = {};
+                    if(dim.trendline_y)
+                        referenceLine[dim.id] = {
+                            'trendLineY' : dim.trendline_y,
+                            'name': `Max - ${dim.name}`,
+                            'color': dim.color
+                        }
+                }
             })
-            graphData[metridId] = orderBy(graphSection, 'header.Timestamp', 'desc');
-            nameMapper[metridId] = mapper;
-            referenceMapper[metridId] = referenceLine;
+            if(row.metricType !== METRIC_TYPE['TABLE_DATA']) {
+                graphData[metridId] = orderBy(graphSection, 'header.Timestamp', 'desc');
+                nameMapper[metridId] = mapper;
+                referenceMapper[metridId] = referenceLine;
+            }
+            
         })
         
-        if(row.metricType !== METRIC_TYPE['RAW_DATA']) {
+        if(row.metricType !== METRIC_TYPE['RAW_DATA'] && row.metricType !== METRIC_TYPE['TABLE_DATA']) {
             let combinedValues = groupBy(graphData[metridId], 'name');
             let testData = [];
             Object.keys(combinedValues).map((key) => {

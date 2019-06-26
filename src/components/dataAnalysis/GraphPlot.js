@@ -3,7 +3,8 @@ import {withStyles, Typography, Divider} from '@material-ui/core';
 import {Line, XAxis, YAxis, CartesianGrid, Tooltip,
     Legend, ResponsiveContainer, Brush, ComposedChart,
     Bar, PieChart, Pie, Cell, Sector, Area, ReferenceLine} from 'recharts';
-import {METRIC_TYPE, DATA_VIEW_TYPE} from '../../constants/Constant';
+import EnhancedTable from '../grid/Grid';
+import {METRIC_TYPE, DATA_VIEW_TYPE, SORTING} from '../../constants/Constant';
 import DataProcessingComponent from './DataProcessComponent';
 import AlertAnalysis from './AlertAnalysis';
 import styles from './DataAnalysisStyle';
@@ -17,7 +18,12 @@ class GraphPlot extends Component {
             did2:1,
             did3:1,
             did4:1
-        }
+        },
+        order: SORTING['DECENDING'],
+        orderBy: 'name',
+        selected: [],
+        page: 0,
+        rowsPerPage: 5
     });
 
     onPieEnter = (data, index) => {
@@ -59,6 +65,14 @@ class GraphPlot extends Component {
         });
     }
     
+    handleChange = (name, value) => {
+    /**
+     * Generic function to set the state in case of any change in any of the fields
+     */
+        this.setState({
+            [name] : value
+        });
+    }
     render() {
         const {classes, metrics, graphData, nameMapper,
             stateData, handleSamplingChange, isDashboard,
@@ -133,12 +147,21 @@ class GraphPlot extends Component {
                         <ResponsiveContainer width='100%' height={400}>
                             <ComposedChart className={classes.lineChart} data={graphData[metric.metric_id]}
                                 margin={{top: 5, right: 30, left: 20, bottom: 5}}
-                                onClick={e => !isCustomModal? handleBarClick(metric.metric_id): ''}>
-                                <XAxis dataKey="name" 
-                                    minTickGap={20}
-                                    // type="number"
-                                    label={{ value: 'Time of day', position: 'insideBottomRight', offset: -3}}
+                                onClick={e => !isCustomModal? handleBarClick(metric.metricID): ''}>
+                                {isCustomModal ?
+                                    <XAxis dataKey="name" 
+                                        minTickGap={20}
+                                        height={40}
+                                        // type="number"
+                                        label={{ value: 'Time of day', position: 'insideBottomRight', offset: 2}}//-3
                                     />
+                                :
+                                    <XAxis dataKey="name" 
+                                        minTickGap={20}
+                                        // type="number"
+                                        label={{ value: 'Time of day', position: 'insideBottomRight', offset: -3}}
+                                    />
+                                }
                                 {metric.dimensions[0].type === 'derivedDim' ?
                                     <YAxis type="category" width={120}
                                     />
@@ -154,7 +177,9 @@ class GraphPlot extends Component {
                                     onMouseEnter={!isCustomModal ? this.handleLegendMouseEnter: ''}
                                     onMouseLeave={!isCustomModal ? this.handleLegendMouseLeave: ''}
                                     />
-                                {/* <Brush dataKey='name' height={30} stroke="#8884d8"/> */}
+                                {isCustomModal &&
+                                    <Brush dataKey='name' height={30} stroke="#8884d8"/>
+                                }
                                 {nameMapper &&
                                     Object.keys(nameMapper[metric.metric_id]).map(key => {
                                         let mapper = nameMapper[metric.metric_id][key];
@@ -310,7 +335,17 @@ class GraphPlot extends Component {
                     
                     }
                     {(metric.metric_type === METRIC_TYPE['TABLE_DATA'])&&
-                        <div>table data</div>
+                        <div onClick={e => !isCustomModal? handleBarClick(metric.metric_id): ''}>
+                            <EnhancedTable data={graphData[metric.metric_id]}
+                            rows={nameMapper[metric.metric_id]}
+                            searchList={nameMapper[metric.metric_id]}
+                            order={this.state.order} orderBy={this.state.orderBy}
+                            rowsPerPage={this.state.rowsPerPage} page={this.state.page}
+                            selected={this.state.selected}
+                            redirectID="v_sessionId"
+                            handleChange={this.handleChange}
+                            allowDelete={false} allowEdit={false}/>
+                        </div>
                     }
                 </div>
             })

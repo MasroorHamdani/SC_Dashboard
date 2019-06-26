@@ -230,6 +230,7 @@ class Dashboard extends Component {
 }
 
 function mapStateToProps(state) {
+  console.log(state.DataAnalysisReducer.data, "********")
   return {
       dashboardData : state.DashboardReducer.data,
       dataAnalysis : state.DataAnalysisReducer.data,
