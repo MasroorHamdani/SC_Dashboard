@@ -546,7 +546,9 @@ class DataAnalysis extends Component {
       (!this.state.installationList || Object.keys(this.state.installationList).length === 0))) {
         let installationList = {}, i = 1;
         // let formattedData = groupBy(this.props.installationList, 'Type');
-        this.props.installationList.map((tab) => {
+        let sorted_list = sortBy(this.props.installationList,'Display')
+        // this.props.installationList.map((tab) => {
+        sorted_list.map((tab)=> {
           let list = {
             'key': tab.Type,
             'text': tab.Display,
@@ -593,7 +595,7 @@ class DataAnalysis extends Component {
             installationList[tab.Type] = list
           }
         })
-        this.setState({installationList: sortBy(installationList,'index'), loading: false,})//sortBy(installationList,'index')
+        this.setState({installationList: sortBy(installationList,'index'), loading: false,})
     }
     if (this.props.modalDataAnalysis &&
       !isEqual(this.props.modalDataAnalysis, prevProps.modalDataAnalysis)) {
