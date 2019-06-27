@@ -129,8 +129,8 @@ class Dashboard extends Component {
                     let dataToPost = {'all_metrics' : Object.values(row)},
                       endPoint = `${API_URLS['NEW_DEVICE_DATA']}/${this.state.PID}`,
                       params = {
-                        'start' : formatDateTime(this.state.startTime, DATE_TIME_FORMAT, DATE_TIME_FORMAT),
-                        'end': formatDateWithTimeZone(this.state.endTime, DATE_TIME_FORMAT, DATE_TIME_FORMAT, this.state.timeZone),
+                        'start_date_time' : formatDateTime(this.state.startTime, DATE_TIME_FORMAT, DATE_TIME_FORMAT),
+                        'end_date_time': formatDateWithTimeZone(this.state.endTime, DATE_TIME_FORMAT, DATE_TIME_FORMAT, this.state.timeZone),
                       },
                       config = getApiConfig(endPoint, 'POST', dataToPost, params);
                     this.props.onDataAnalysis(config);
@@ -230,7 +230,6 @@ class Dashboard extends Component {
 }
 
 function mapStateToProps(state) {
-  console.log(state.DataAnalysisReducer.data, "********")
   return {
       dashboardData : state.DashboardReducer.data,
       dataAnalysis : state.DataAnalysisReducer.data,

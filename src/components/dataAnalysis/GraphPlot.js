@@ -3,6 +3,7 @@ import {withStyles, Typography, Divider} from '@material-ui/core';
 import {Line, XAxis, YAxis, CartesianGrid, Tooltip,
     Legend, ResponsiveContainer, Brush, ComposedChart,
     Bar, PieChart, Pie, Cell, Sector, Area, ReferenceLine} from 'recharts';
+import {isEmpty} from 'lodash';
 import EnhancedTable from '../grid/Grid';
 import {METRIC_TYPE, DATA_VIEW_TYPE, SORTING} from '../../constants/Constant';
 import DataProcessingComponent from './DataProcessComponent';
@@ -132,222 +133,223 @@ class GraphPlot extends Component {
          * Check for the type of the graph and as per conditions decide what to show.
          */
             metrics.map((metric, index) => {
-            return <div key={index}
-                className={isDashboard && metric['metric_type'] === "raw_data"? classes.alertBox :
-                isDashboard && metric['metric_type'] === "categorical" ? classes.dashboardPie : 
-                isCustomModal ? classes.customModal : classes.otherData} >
-                <Divider className={classes.seperator}/>
-                    {/* <DataProcessingComponent stateData={stateData}
-                        handleSamplingChange={handleSamplingChange}
-                        metrics={metric}/> */}
-                    <Typography gutterBottom variant="h6">
-                        {metric.metric_name}
-                    </Typography>
-                    {(metric.metric_type === METRIC_TYPE['TIMESERIES'] && metric.metric_data_key) &&
-                        <ResponsiveContainer width='100%' height={400}>
-                            <ComposedChart className={classes.lineChart} data={graphData[metric.metric_id]}
-                                margin={{top: 5, right: 30, left: 20, bottom: 5}}
-                                onClick={e => !isCustomModal? handleBarClick(metric.metricID): ''}>
-                                {isCustomModal ?
-                                    <XAxis dataKey="name" 
-                                        minTickGap={20}
-                                        height={40}
-                                        // type="number"
-                                        label={{ value: 'Time of day', position: 'insideBottomRight', offset: 2}}//-3
-                                    />
-                                :
-                                    <XAxis dataKey="name" 
-                                        minTickGap={20}
-                                        // type="number"
-                                        label={{ value: 'Time of day', position: 'insideBottomRight', offset: -3}}
-                                    />
-                                }
-                                {metric.dimensions[0].type === 'derivedDim' ?
-                                    <YAxis type="category" width={120}
-                                    />
-                                :
-                                    <YAxis
-                                    // label={{ value: 'Concentration (ppm)', angle: -90, position: 'insideLeft'}}//insideBottomLeft
-                                    />
-                                }
-                                <CartesianGrid strokeDasharray="3 3"/>
-                                <Tooltip/>
-                                {/* <Tooltip content={<CustomTooltip/>}/> */}
-                                <Legend onClick={isCustomModal ? this.selectLine : ''}
-                                    onMouseEnter={!isCustomModal ? this.handleLegendMouseEnter: ''}
-                                    onMouseLeave={!isCustomModal ? this.handleLegendMouseLeave: ''}
-                                    />
-                                {isCustomModal &&
-                                    <Brush dataKey='name' height={30} stroke="#8884d8"/>
-                                }
-                                {nameMapper &&
-                                    Object.keys(nameMapper[metric.metric_id]).map(key => {
-                                        let mapper = nameMapper[metric.metric_id][key];
-                                        if(mapper['chartType'] === DATA_VIEW_TYPE['LINE']) {
-                                            return(<Line name={mapper['name']} key={key} type="monotone"
-                                                // strokeWidth={2}
-                                                // dataKey={key}
-                                                dataKey={this.state.selectedLine === null || this.state.selectedLine === key ? key : `${key} `}
-                                                dot={false}
-                                                activeDot={{onClick: () => !isCustomModal? handleBarClick(metric.metricID): ''}}
-                                                isAnimationActive={false}
-                                                stroke={mapper['color']}
-                                                // onClick={e => !isCustomModal? handleBarClick(metric.metricID): ''}
-                                                strokeOpacity={this.state.opacity[key]}
-                                                />)
-                                        }
-                                        if (mapper['chartType'] === DATA_VIEW_TYPE['BAR']) {
-                                            return <Bar name={mapper['name']} key={key}
-                                                dataKey={this.state.selectedLine === null || this.state.selectedLine === key ? key : `${key} `}
-                                                // dataKey={key}
-                                                fill={mapper['color']} isAnimationActive={false}
-                                                // onClick={e => !isCustomModal? handleBarClick(metric.metricID): ''}
-                                                fillOpacity={this.state.opacity[key]}
-                                                />
-                                        }
-                                        if (mapper['chartType'] === DATA_VIEW_TYPE['SCATTER']) {
-                                            return <Line name={mapper['name']}
-                                                key={key}
-                                                dataKey={this.state.selectedLine === null || this.state.selectedLine === key ? key : `${key} `}
-                                                // dataKey={key}
-                                                // activeDot={{onClick: () => !isCustomModal? handleBarClick(metric.metricID): ''}}
-                                                // dot={{stroke: mapper['color'] , onClick: () => !isCustomModal? handleBarClick(metric.metricID): ''}}
-                                                fill={mapper['color']}
-                                                stroke={mapper['color']}
-                                                strokeWidth={0}
-                                                legendType="circle"
-                                                // stroke="none"
-                                                isAnimationActive={false}
-                                                fillOpacity={this.state.opacity[key]}
-                                                />
-                                        }
-                                        if (mapper['chartType'] === DATA_VIEW_TYPE['AREA']) {
-                                            return <Area type='monotone'
-                                                name={mapper['name']}
-                                                key={key}
-                                                dataKey={key}
-                                                fill={mapper['color']}
-                                                stroke={mapper['color']}
-                                                isAnimationActive={false}
-                                                // strokeOpacity={this.state.opacity[key]}
-                                                />
-                                        }
-                                    })
-                                }
-                                {referenceMapper &&
-                                    Object.keys(referenceMapper[metric.metricID]).map(key => {
-                                        let referenceLine = referenceMapper[metric.metricID][key]
-                                        if(referenceLine)
-                                            return (
-                                                <ReferenceLine y={referenceLine['trendLineY']}
-                                                    stroke={referenceLine['color']}
-                                                    strokeOpacity={0.3}
-                                                    label={{ position: 'insideTopRight',  value: referenceLine['name'], fill: referenceLine['color'], fontSize: 10 }}/>
+                if(graphData[metric.metric_id] && !isEmpty(graphData[metric.metric_id]))
+                return <div key={index}
+                    className={isDashboard && metric['metric_type'] === "raw_data"? classes.alertBox :
+                    isDashboard && metric['metric_type'] === "categorical" ? classes.dashboardPie : 
+                    isCustomModal ? classes.customModal : classes.otherData} >
+                    <Divider className={classes.seperator}/>
+                        {/* <DataProcessingComponent stateData={stateData}
+                            handleSamplingChange={handleSamplingChange}
+                            metrics={metric}/> */}
+                        <Typography gutterBottom variant="h6">
+                            {metric.metric_name}
+                        </Typography>
+                        {(metric.metric_type === METRIC_TYPE['TIMESERIES'] && metric.metric_data_key) &&
+                            <ResponsiveContainer width='100%' height={400}>
+                                <ComposedChart className={classes.lineChart} data={graphData[metric.metric_id]}
+                                    margin={{top: 5, right: 30, left: 20, bottom: 5}}
+                                    onClick={e => !isCustomModal? handleBarClick(metric.metricID): ''}>
+                                    {isCustomModal ?
+                                        <XAxis dataKey="name" 
+                                            minTickGap={20}
+                                            height={40}
+                                            // type="number"
+                                            label={{ value: 'Time of day', position: 'insideBottomRight', offset: 2}}//-3
+                                        />
+                                    :
+                                        <XAxis dataKey="name" 
+                                            minTickGap={20}
+                                            // type="number"
+                                            label={{ value: 'Time of day', position: 'insideBottomRight', offset: -3}}
+                                        />
+                                    }
+                                    {metric.dimensions[0].type === 'derivedDim' ?
+                                        <YAxis type="category" width={120}
+                                        />
+                                    :
+                                        <YAxis
+                                        // label={{ value: 'Concentration (ppm)', angle: -90, position: 'insideLeft'}}//insideBottomLeft
+                                        />
+                                    }
+                                    <CartesianGrid strokeDasharray="3 3"/>
+                                    <Tooltip/>
+                                    {/* <Tooltip content={<CustomTooltip/>}/> */}
+                                    <Legend onClick={isCustomModal ? this.selectLine : ''}
+                                        onMouseEnter={!isCustomModal ? this.handleLegendMouseEnter: ''}
+                                        onMouseLeave={!isCustomModal ? this.handleLegendMouseLeave: ''}
+                                        />
+                                    {isCustomModal &&
+                                        <Brush dataKey='name' height={30} stroke="#8884d8"/>
+                                    }
+                                    {nameMapper &&
+                                        Object.keys(nameMapper[metric.metric_id]).map(key => {
+                                            let mapper = nameMapper[metric.metric_id][key];
+                                            if(mapper['chartType'] === DATA_VIEW_TYPE['LINE']) {
+                                                return(<Line name={mapper['name']} key={key} type="monotone"
+                                                    // strokeWidth={2}
+                                                    // dataKey={key}
+                                                    dataKey={this.state.selectedLine === null || this.state.selectedLine === key ? key : `${key} `}
+                                                    dot={false}
+                                                    activeDot={{onClick: () => !isCustomModal? handleBarClick(metric.metricID): ''}}
+                                                    isAnimationActive={false}
+                                                    stroke={mapper['color']}
+                                                    // onClick={e => !isCustomModal? handleBarClick(metric.metricID): ''}
+                                                    strokeOpacity={this.state.opacity[key]}
+                                                    />)
+                                            }
+                                            if (mapper['chartType'] === DATA_VIEW_TYPE['BAR']) {
+                                                return <Bar name={mapper['name']} key={key}
+                                                    dataKey={this.state.selectedLine === null || this.state.selectedLine === key ? key : `${key} `}
+                                                    // dataKey={key}
+                                                    fill={mapper['color']} isAnimationActive={false}
+                                                    // onClick={e => !isCustomModal? handleBarClick(metric.metricID): ''}
+                                                    fillOpacity={this.state.opacity[key]}
+                                                    />
+                                            }
+                                            if (mapper['chartType'] === DATA_VIEW_TYPE['SCATTER']) {
+                                                return <Line name={mapper['name']}
+                                                    key={key}
+                                                    dataKey={this.state.selectedLine === null || this.state.selectedLine === key ? key : `${key} `}
+                                                    // dataKey={key}
+                                                    // activeDot={{onClick: () => !isCustomModal? handleBarClick(metric.metricID): ''}}
+                                                    // dot={{stroke: mapper['color'] , onClick: () => !isCustomModal? handleBarClick(metric.metricID): ''}}
+                                                    fill={mapper['color']}
+                                                    stroke={mapper['color']}
+                                                    strokeWidth={0}
+                                                    legendType="circle"
+                                                    // stroke="none"
+                                                    isAnimationActive={false}
+                                                    fillOpacity={this.state.opacity[key]}
+                                                    />
+                                            }
+                                            if (mapper['chartType'] === DATA_VIEW_TYPE['AREA']) {
+                                                return <Area type='monotone'
+                                                    name={mapper['name']}
+                                                    key={key}
+                                                    dataKey={key}
+                                                    fill={mapper['color']}
+                                                    stroke={mapper['color']}
+                                                    isAnimationActive={false}
+                                                    // strokeOpacity={this.state.opacity[key]}
+                                                    />
+                                            }
+                                        })
+                                    }
+                                    {referenceMapper &&
+                                        Object.keys(referenceMapper[metric.metricID]).map(key => {
+                                            let referenceLine = referenceMapper[metric.metricID][key]
+                                            if(referenceLine)
+                                                return (
+                                                    <ReferenceLine y={referenceLine['trendLineY']}
+                                                        stroke={referenceLine['color']}
+                                                        strokeOpacity={0.3}
+                                                        label={{ position: 'insideTopRight',  value: referenceLine['name'], fill: referenceLine['color'], fontSize: 10 }}/>
+                                                    )
+                                        })
+                                    }
+                                </ComposedChart>
+                            </ResponsiveContainer>
+                        }
+                        {(metric.metric_type === METRIC_TYPE['CATEGORICAL']) ?
+                            <ResponsiveContainer
+                            width='100%' 
+                            height={400}>
+                                {metric.dimensions[0].ctype === DATA_VIEW_TYPE['PIE'] ?
+                                    <PieChart>
+                                        <Pie
+                                            dataKey="value"
+                                            activeIndex={this.state.activeIndex}
+                                            activeShape={renderActiveShape}
+                                            isAnimationActive={true}
+                                            data={graphData[metric.metric_id]} 
+                                            labelLine={false}
+                                            outerRadius={isDashboard ? 80 : 120} 
+                                            fill="#8884d8"
+                                            innerRadius={isDashboard ? 60: 100}
+                                            onMouseEnter={this.onPieEnter}>
+                                            {
+                                                graphData[metric.metric_id].map((entry, index) =>
+                                                    <Cell fill={entry.color} key={index}/>
                                                 )
-                                    })
+                                            }
+                                        </Pie>
+                                        <Legend/>
+                                    </PieChart>
+                                : metric.dimensions[0].ctype === DATA_VIEW_TYPE['VERTICAL'] ?
+                                    <ResponsiveContainer width='100%' height={400}>
+                                        <ComposedChart layout="vertical" className={classes.lineChart}
+                                            data={graphData[metric.metric_id]}
+                                            margin={{top: 5, right: 30, left: 20, bottom: 5}}>
+                                            <YAxis dataKey="name" minTickGap={20} type="category"
+                                                label={{ value: 'Dispenser', angle: -90, position: 'insideLeft'}}/>
+                                            <XAxis type="number" 
+                                                label={{ value: 'Value', position: 'insideBottomRight', offset: 0}}/>
+                                            <CartesianGrid strokeDasharray="3 3"/>
+                                            <Tooltip/>
+                                            <Legend />
+                                            {nameMapper &&
+                                                Object.keys(nameMapper[metric.metric_id]).map(key => {
+                                                    let mapper = nameMapper[metric.metric_id][key];
+                                                    return <Bar name={mapper['name']} barSize={60} key={key}
+                                                        dataKey={key} isAnimationActive={false}>
+                                                        {
+                                                            graphData[metric.metric_id].map((entry, index) => {
+                                                                let color;
+                                                                if(entry[key] >= 80)
+                                                                    color = '#1b5e20';
+                                                                else if(entry[key] <= 40)
+                                                                    color = '#dd2c00';
+                                                                else if(entry[key] < 80 && entry[key] > 40)
+                                                                    color = '#ffeb3b';
+                                                                return <Cell key={index} fill={color}
+                                                                    // onClick={e => handleBarClick(entry[key])}
+                                                                />;
+                                                            })
+                                                        }
+                                                    </Bar>
+                                                })
+                                            }
+                                        </ComposedChart>
+                                    </ResponsiveContainer>
+                                : (metric.dimensions[0].ctype === DATA_VIEW_TYPE['TILE'] ?
+                                        <div className={classes.tile}
+                                            style={{backgroundColor:graphData[metric.metric_id][0].color}}>
+                                            <Typography gutterBottom variant="h6">
+                                                {graphData[metric.metric_id][0].name}
+                                            </Typography>
+                                            <Typography gutterBottom variant="h6">
+                                                {graphData[metric.metric_id][0].value}
+                                            </Typography>
+                                        </div>
+                                    :
+                                        <div>Can't find appropriate Pattern!</div>
+                                    )
                                 }
-                            </ComposedChart>
-                        </ResponsiveContainer>
-                    }
-                    {(metric.metric_type === METRIC_TYPE['CATEGORICAL']) ?
-                        <ResponsiveContainer
-                        width='100%' 
-                        height={400}>
-                            {metric.dimensions[0].ctype === DATA_VIEW_TYPE['PIE'] ?
-                                <PieChart>
-                                    <Pie
-                                        dataKey="value"
-                                        activeIndex={this.state.activeIndex}
-                                        activeShape={renderActiveShape}
-                                        isAnimationActive={true}
-                                        data={graphData[metric.metric_id]} 
-                                        labelLine={false}
-                                        outerRadius={isDashboard ? 80 : 120} 
-                                        fill="#8884d8"
-                                        innerRadius={isDashboard ? 60: 100}
-                                        onMouseEnter={this.onPieEnter}>
-                                        {
-                                            graphData[metric.metric_id].map((entry, index) =>
-                                                <Cell fill={entry.color} key={index}/>
-                                            )
-                                        }
-                                    </Pie>
-                                    <Legend/>
-                                </PieChart>
-                            : metric.dimensions[0].ctype === DATA_VIEW_TYPE['VERTICAL'] ?
-                                <ResponsiveContainer width='100%' height={400}>
-                                    <ComposedChart layout="vertical" className={classes.lineChart}
-                                        data={graphData[metric.metric_id]}
-                                        margin={{top: 5, right: 30, left: 20, bottom: 5}}>
-                                        <YAxis dataKey="name" minTickGap={20} type="category"
-                                            label={{ value: 'Dispenser', angle: -90, position: 'insideLeft'}}/>
-                                        <XAxis type="number" 
-                                            label={{ value: 'Value', position: 'insideBottomRight', offset: 0}}/>
-                                        <CartesianGrid strokeDasharray="3 3"/>
-                                        <Tooltip/>
-                                        <Legend />
-                                        {nameMapper &&
-                                            Object.keys(nameMapper[metric.metric_id]).map(key => {
-                                                let mapper = nameMapper[metric.metric_id][key];
-                                                return <Bar name={mapper['name']} barSize={60} key={key}
-                                                    dataKey={key} isAnimationActive={false}>
-                                                    {
-                                                        graphData[metric.metric_id].map((entry, index) => {
-                                                            let color;
-                                                            if(entry[key] >= 80)
-                                                                color = '#1b5e20';
-                                                            else if(entry[key] <= 40)
-                                                                color = '#dd2c00';
-                                                            else if(entry[key] < 80 && entry[key] > 40)
-                                                                color = '#ffeb3b';
-                                                            return <Cell key={index} fill={color}
-                                                                // onClick={e => handleBarClick(entry[key])}
-                                                            />;
-                                                        })
-                                                    }
-                                                </Bar>
-                                            })
-                                        }
-                                    </ComposedChart>
-                                </ResponsiveContainer>
-                            : (metric.dimensions[0].ctype === DATA_VIEW_TYPE['TILE'] ?
-                                    <div className={classes.tile}
-                                        style={{backgroundColor:graphData[metric.metric_id][0].color}}>
-                                        <Typography gutterBottom variant="h6">
-                                            {graphData[metric.metric_id][0].name}
-                                        </Typography>
-                                        <Typography gutterBottom variant="h6">
-                                            {graphData[metric.metric_id][0].value}
-                                        </Typography>
-                                    </div>
-                                :
-                                    <div>Can't find appropriate Pattern!</div>
-                                )
-                            }
-                        </ResponsiveContainer>
-                    :
-                    (metric.metric_type === METRIC_TYPE['RAW_DATA'] &&
-                        <AlertAnalysis stateData={graphData[metric.metric_id]}
-                            isDashboard={isDashboard}/>
-                    // :
-                    //     <div>Can't find appropriate Pattern</div>
-                    )
-                    
-                    }
-                    {(metric.metric_type === METRIC_TYPE['TABLE_DATA'])&&
-                        <div onClick={e => !isCustomModal? handleBarClick(metric.metric_id): ''}>
-                            <EnhancedTable data={graphData[metric.metric_id]}
-                            rows={nameMapper[metric.metric_id]}
-                            searchList={nameMapper[metric.metric_id]}
-                            order={this.state.order} orderBy={this.state.orderBy}
-                            rowsPerPage={this.state.rowsPerPage} page={this.state.page}
-                            selected={this.state.selected}
-                            redirectID="v_sessionId"
-                            handleChange={this.handleChange}
-                            allowDelete={false} allowEdit={false}/>
-                        </div>
-                    }
-                </div>
+                            </ResponsiveContainer>
+                        :
+                        (metric.metric_type === METRIC_TYPE['RAW_DATA'] &&
+                            <AlertAnalysis stateData={graphData[metric.metric_id]}
+                                isDashboard={isDashboard}/>
+                        // :
+                        //     <div>Can't find appropriate Pattern</div>
+                        )
+                        
+                        }
+                        {(metric.metric_type === METRIC_TYPE['TABLE_DATA'])&&
+                            <div onClick={e => !isCustomModal? handleBarClick(metric.metric_id): ''}>
+                                <EnhancedTable data={graphData[metric.metric_id]}
+                                rows={nameMapper[metric.metric_id]}
+                                searchList={nameMapper[metric.metric_id]}
+                                order={this.state.order} orderBy={this.state.orderBy}
+                                rowsPerPage={this.state.rowsPerPage} page={this.state.page}
+                                selected={this.state.selected}
+                                redirectID="v_sessionId"
+                                handleChange={this.handleChange}
+                                allowDelete={false} allowEdit={false}/>
+                            </div>
+                        }
+                    </div>
             })
         )
     }
