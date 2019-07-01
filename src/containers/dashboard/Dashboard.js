@@ -6,7 +6,7 @@ import {isEqual} from "lodash";
 import styles from './DashboardStyle'
 import ProjectDataComponent from "../../components/projectData/ProjectData";
 import { API_URLS, NAMESPACE, DASHBOARD_METRIC,
-  DATE_TIME_FORMAT} from "../../constants/Constant";
+  DATE_TIME_FORMAT, PROJECT_ACTIONS} from "../../constants/Constant";
 import { getApiConfig } from '../../services/ApiCofig';
 import {projectAnalysisData, projectSubMenuList,
   projectDataMetricList, InitialiseDataState,
@@ -37,7 +37,7 @@ class Dashboard extends Component {
     this.setState({loading: true}, function() {
       let getEndPoint = `${API_URLS['NEW_DEVICE_DATA']}/${this.state.PID}`,
         params = {
-          action: 'PROJECT_HOMEPAGE'
+          action: PROJECT_ACTIONS['HOMEPAGE']
         },
         getconfig = getApiConfig(getEndPoint, 'GET', '', params);
         this.props.onDataMetricList(getconfig);

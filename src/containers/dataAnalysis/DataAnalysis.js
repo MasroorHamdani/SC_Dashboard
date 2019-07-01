@@ -7,13 +7,16 @@ import moment from 'moment-timezone';
 import DataAnalysisComponent from '../../components/dataAnalysis/DataAnalysis';
 import {getApiConfig} from '../../services/ApiCofig';
 import {API_URLS, NAMESPACE_MAPPER, DATA_OPERATIONS,
-  OPERATION_TYPE, RANGE_ERROR} from '../../constants/Constant';
+  OPERATION_TYPE, RANGE_ERROR, DATE_TIME_FORMAT, PROJECT_ACTIONS} from '../../constants/Constant';
 import {projectSubMenuList, projectInstallationList,
-  projectAnalysisData, clearDataAnalysis, modalProjectAnalysisData} from '../../actions/DataAnalysis';
+  projectAnalysisData, clearDataAnalysis,
+  modalProjectAnalysisData, projectDataMetricList,
+  InitialiseDataState, InitialiseMetricState} from '../../actions/DataAnalysis';
 import styles from './DataAvalysisStyle';
 import RadioButtonComponent from '../../components/dataAnalysis/RadioButtonController';
 import {getStartEndTime, getVector} from '../../utils/AnalyticsDataFormat';
-import {getXHourOldDateTime, getTodaysStartDateTime} from '../../utils/DateFormat';
+import {getXHourOldDateTime, getTodaysStartDateTime,
+  formatDateTime, formatDateWithTimeZone} from '../../utils/DateFormat';
 
 
 /***
@@ -43,6 +46,9 @@ class DataAnalysis extends Component {
       modalEndDate: new Date(),
     };
     this.menuIndex = 0;
+    this.metricsIndex = 0;
+    this.metricLength = 0;
+    this.metricsIndexReceived = 0;
   }
 
   handleDatePicker = (type) => {
@@ -264,7 +270,8 @@ class DataAnalysis extends Component {
       modalSelectedIndex: formatedDate.selectedIndex ? formatedDate.selectedIndex : this.state.modalSelectedIndex
     }, function() {
       if (type === 'default')
-        this.getNewAnalyticsData();
+        // this.getNewAnalyticsData();
+        this.getCompleteMetrics();
       else if (type === 'modal')
         this.getModalAnalyticsData();
     })
@@ -295,32 +302,54 @@ class DataAnalysis extends Component {
     this.setState({
       loading: true,
     })
-    let metrics = this.getMetric(),
-      dataToPost = {
-        "req_type" : OPERATION_TYPE['DEFAULT'],
-        "type": 'AQ',//this.state.deviceKey,
-        "sub_type": 'AQ_V0', //this.state.subType,
-        "all_metrics": []
-      };
-    if(metrics && metrics.metric.length > 0 &&
-      metrics.allMetrics.length > 0 &&
-      metrics.metric[0].type === this.state.deviceKey) {
-        let metricIndex = metrics.allMetrics.findIndex(p => p.metric_id == this.state.selectedMetric);
-        dataToPost.all_metrics.push(metrics.allMetrics[metricIndex]);
-    }
-    // const endPoint = `${API_URLS['DEVICE_DATA']}/${this.state.pid}/${this.state.deviceId}`,
-    const endPoint = `${API_URLS['NEW_DEVICE_DATA']}/${this.state.pid}`,
-      params = {
-        'start_date_time' : this.state.modalStart,
-        'end_date_time' : this.state.modalEnd,
-      };
-    let headers = {
-      'x-sc-session-token': this.state.sessionHeader ? this.state.sessionHeader : ''
-    },
-    config = getApiConfig(endPoint, 'POST', dataToPost, params, headers);
-    this.props.onModalDataAnalysis(config, endPoint);
+    // let metrics = this.getMetric(),
+    //   dataToPost = {
+    //     "req_type" : OPERATION_TYPE['DEFAULT'],
+    //     "type": 'AQ',//this.state.deviceKey,
+    //     "sub_type": 'AQ_V0', //this.state.subType,
+    //     "all_metrics": []
+    //   };
+    // if(metrics && metrics.metric.length > 0 &&
+    //   metrics.allMetrics.length > 0 &&
+    //   metrics.metric[0].type === this.state.deviceKey) {
+    //     let metricIndex = metrics.allMetrics.findIndex(p => p.metric_id == this.state.selectedMetric);
+    //     dataToPost.all_metrics.push(metrics.allMetrics[metricIndex]);
+    // }
+    // // const endPoint = `${API_URLS['DEVICE_DATA']}/${this.state.pid}/${this.state.deviceId}`,
+    // const endPoint = `${API_URLS['NEW_DEVICE_DATA']}/${this.state.pid}`,
+    //   params = {
+    //     'start_date_time' : this.state.modalStart,
+    //     'end_date_time' : this.state.modalEnd,
+    //   };
+    console.log(this.state.projectMetricList);
+    console.log(this.state.deviceKey);
+    // let dataToPost = {'all_metrics' : Object.values(row)},
+    //   endPoint = `${API_URLS['NEW_DEVICE_DATA']}/${this.state.pid}`,
+    //   params = {
+    //     'start_date_time' : formatDateTime(this.state.start, DATE_TIME_FORMAT, DATE_TIME_FORMAT),
+    //     'end_date_time': formatDateWithTimeZone(this.state.end, DATE_TIME_FORMAT, DATE_TIME_FORMAT, this.state.timeZone),
+    //   },
+    //   headers = {
+    //   'x-sc-session-token': this.state.sessionHeader ? this.state.sessionHeader : ''
+    // },
+    // config = getApiConfig(endPoint, 'POST', dataToPost, params, headers);
+    // this.props.onModalDataAnalysis(config, endPoint);
   }
 
+  getCompleteMetrics = () => {
+  /**
+   * This Function will call the API which will get the list of
+   * all the metrics part for this device
+   */
+    this.setState({loading: true}, function() {
+      let getEndPoint = `${API_URLS['NEW_DEVICE_DATA']}/${this.state.pid}`,
+        params = {
+          action: PROJECT_ACTIONS['HOMEPAGE'] //Change to Device level Action name
+        },
+        getconfig = getApiConfig(getEndPoint, 'GET', '', params);
+        this.props.onDataMetricList(getconfig);
+      });
+  }
   getNewAnalyticsData = () => {
   /**
    * This function is called internally for API call.
@@ -408,6 +437,10 @@ class DataAnalysis extends Component {
     }
   }
 
+  componentWillUnmount() {
+    this.props.onInitialState();
+  }
+
   componentDidCatch(error, errorInfo) {
     // Catch errors in any components below and re-render with error message
     if(error.toString().includes('RangeError: Invalid interval')) {
@@ -460,6 +493,9 @@ class DataAnalysis extends Component {
    */
   if(this.props.projectSelected &&
     !isEqual(this.props.projectSelected, prevProps.projectSelected)) {
+      this.metricsIndex = 0;
+      this.metricsIndexReceived = 0;
+      this.props.onInitialState();
       this.setState({
         pid: this.props.projectSelected.PID,
         timeZone: this.props.projectSelected.Region,
@@ -630,6 +666,32 @@ class DataAnalysis extends Component {
           this.setState({loading: false})
         }
       }
+    
+      if(this.props.projectMetricList &&
+        !isEqual(this.props.projectMetricList, prevProps.projectMetricList)
+        && this.metricsIndex === 0) {
+          this.metricLength = this.props.projectMetricList ? this.props.projectMetricList.length : 0;
+          this.setState({projectMetricList: this.props.projectMetricList});
+          if(this.metricsIndex < this.metricLength) {
+            this.props.projectMetricList.map((extRow) => {
+                Object.keys(extRow).map((key) => {
+                  extRow[key].map((row) => {
+                    if(Object.values(row)[0].data_source === this.state.pid) {
+                      let dataToPost = {'all_metrics' : Object.values(row)},
+                        endPoint = `${API_URLS['NEW_DEVICE_DATA']}/${this.state.pid}`,
+                        params = {
+                          'start_date_time' : formatDateTime(this.state.start, DATE_TIME_FORMAT, DATE_TIME_FORMAT),
+                          'end_date_time': formatDateWithTimeZone(this.state.end, DATE_TIME_FORMAT, DATE_TIME_FORMAT, this.state.timeZone),
+                        },
+                        config = getApiConfig(endPoint, 'POST', dataToPost, params);
+                      this.props.onDataAnalysis(config);
+                    }
+                  })
+                })
+              this.metricsIndex += 1;
+            })
+          }
+      }
   }
 
   render () {
@@ -676,7 +738,8 @@ function mapStateToProps(state) {
       installationList : state.DataAnalysisInstallationListReducer.data,
       dataAnalysis : state.DataAnalysisReducer.data,
       projectSelected : state.projectSelectReducer.data,
-      modalDataAnalysis : state.ModalDataAnalysisReducer.data
+      modalDataAnalysis : state.ModalDataAnalysisReducer.data,
+      projectMetricList: state.ProjectMetricListReducer.data
   }
 }
 
@@ -699,7 +762,15 @@ function mapDispatchToProps(dispatch) {
     },
     onReducerClear: () => {
       dispatch(clearDataAnalysis())
+    },
+    onDataMetricList: (config) => {
+      dispatch(projectDataMetricList(config))
+    },
+    onInitialState: () => {
+      dispatch(InitialiseDataState())
+      dispatch(InitialiseMetricState())
     }
+
   }
 }
 

@@ -90,7 +90,6 @@ class AnalysisData extends Component {
                 graphData = analyticsData.graphData,
                 nameMapper = analyticsData.nameMapper,
                 referenceMapper = analyticsData.referenceMapper;
-                
                 if(this.state.barClick && isCustomModal) {
                     tabData = <div className={classes.dispenserGraph}>
                         <DateRowComponent handleDatePicker={this.props.handleDatePicker}

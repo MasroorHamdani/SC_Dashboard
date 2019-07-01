@@ -325,3 +325,7 @@ export const THEME = {
     light: '#8db788',
     main: '#68a554'
 }
+
+export const PROJECT_ACTIONS = {
+    HOMEPAGE : "PROJECT_HOMEPAGE"
+    }

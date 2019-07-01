@@ -27,7 +27,7 @@ export function getFormatedGraphData(passedData, metrics, stateData='', isCustom
  */
     let graphData = [], nameMapper = {}, referenceMapper={};
     metrics.map(function(row) {
-        let metridId = row.metric_id;//metricID;
+        let metridId = row.metric_id;
         let graphSection = [], mapper={}, referenceLine={};
         Object.keys(passedData[metridId]).map((key) => {
             row.dimensions.map((dim) => {
