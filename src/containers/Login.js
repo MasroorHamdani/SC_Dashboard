@@ -201,9 +201,9 @@ class Login extends React.Component {
         localStorage.setItem('idToken', responseData['AuthenticationResult']['IdToken']);
         localStorage.setItem('refreshToken', responseData['AuthenticationResult']['RefreshToken']);
         let idTokenDecoded = JWTDecode(responseData['AuthenticationResult']['IdToken']),
-          userData = this.getTokenData(idTokenDecoded, "Firstname");
+          userData = this.getTokenData(idTokenDecoded, "Fn");
         if (userData)
-          localStorage.setItem('userName', userData['SUB2']);
+          localStorage.setItem('userName', userData['Fn']);
         if (this.state.loading) {
           this.setState({
             loading: false,

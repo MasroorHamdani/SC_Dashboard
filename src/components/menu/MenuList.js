@@ -44,5 +44,12 @@ return ([
       url: partnerId ? `/${partnerId}/alert/project/${pid}` : `/alert/project/${pid}`,
       icon: "NotificationImportantIcon",
       toolTip: "Alert Data"
-    }])
+    },
+    {
+      name: "Add Project",
+      url: partnerId ? `/${partnerId}/new` : `/new`,
+      icon: "CreateIcon",
+      toolTip: "Add Project"
+    }
+  ])
 }

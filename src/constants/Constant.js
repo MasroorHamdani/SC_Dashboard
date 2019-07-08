@@ -1,6 +1,7 @@
 
 export const API_END_POINT = process.env.REACT_APP_API_END_POINT
 //"https://4l6qi5oh0h.execute-api.ap-southeast-1.amazonaws.com/prod";
+export const ADMIN = "http://127.0.0.1:5000"
 
 export const S3_REPORTS_END_POINT = process.env.REACT_APP_S3_REPORTS_END_POINT
 //"https://80y6zxl35d.execute-api.ap-southeast-1.amazonaws.com/beta/reports";
@@ -28,7 +29,8 @@ export const API_URLS = {
     'REPORTING_SERVICE': '/services/reporting',
     'REPORTING_LIST': '/reports',
     'PARTNER': '/unauth/partners/',
-    'THEME': '/theme'
+    'THEME': '/theme',
+    'ADMIN': '/admin/project'
 };
 
 export const DASHBOARD_METRIC = {
@@ -314,3 +316,10 @@ export const THEME = {
     light: '#8db788',
     main: '#68a554'
 }
+
+export const PROJECT_CREATION = {
+    GENERAL: 'general',
+    LOCATION: 'location'
+}
+
+export const LOCATION_LIMIT = 5

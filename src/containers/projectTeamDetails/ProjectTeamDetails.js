@@ -79,11 +79,12 @@ class ProjectInstallationDetails extends Component {
      * and finally calling the POST api.
      * Or showing up error to user to fill all required fields.
      */
-        let startTime = formatDateTime(this.state.userLocation.ShiftStart, "hh:mm a", "HHmm"),
-            endTime = formatDateTime(this.state.userLocation.ShiftEnd, "hh:mm a", "HHmm");
+        
         if(this.state.userLocation.Tags && this.state.userLocation.ShiftStart &&
             this.state.userLocation.ShiftEnd && this.state.userLocation.Level &&
             this.state.userLocation.InsID) {
+            let startTime = formatDateTime(this.state.userLocation.ShiftStart, "hh:mm a", "HHmm"),
+            endTime = formatDateTime(this.state.userLocation.ShiftEnd, "hh:mm a", "HHmm");
             this.setState({
                 userLocation: {
                     ...this.state.userLocation,

@@ -1,5 +1,8 @@
 import React from "react";
 import { Route, Switch, Redirect, withRouter} from "react-router-dom";
+// import { connect } from "react-redux";
+// import {isEqual} from "lodash";
+
 import Dashboard from "./containers/dashboard/Dashboard";
 import Login from "./containers/Login";
 import Header from "./components/header/Header";
@@ -25,6 +28,8 @@ import ReportView from "./containers/ReportView";
 import Health from "./containers/Health";
 import HealthStatus from "./containers/HealthStatus";
 import PageLoader from "./components/pageLoader/PageLoader";
+import ProjectCreate from "./containers/projectCreate/ProjectCreate";
+// import {projectSelect}  from './actions/MenuAction';
 
 import axios from 'axios';
 import {API_END_POINT, API_URLS} from "./constants/Constant";
@@ -36,6 +41,17 @@ class App extends React.Component {
         holdComponents: true
       }
     }
+    // componentDidUpdate(prevProps, prevState) {
+    //   /**
+    //    * Save the changed project id in local storage as well, being used while refreshing the page.
+    //    */
+    //     if(this.props.projectSelected &&
+    //       !isEqual(this.props.projectSelected, prevProps.projectSelected)) {
+    //         console.log(this.props.projectSelected);
+    //         this.setState({role: this.props.projectSelected.Role});
+    //         // localStorage.setItem('projectSelected', JSON.stringify(this.props.projectSelected))
+    //     }
+    // }
     componentWillMount() {
       localStorage.setItem('previousPath', window.location.pathname);
       const self = this;
@@ -110,6 +126,7 @@ class App extends React.Component {
                     <Header {...this.props}  params={this.props.match.params}/>
                     <Menu {...this.props}/>
                     <Switch>
+                      <Route path="/:partnerid?/new" component={ProjectCreate} />
                       <Route path="/:partnerid?/profile/:userid?" component={UserProfile} />
                       <Route path="/:partnerid?/alert/project/:pid?" component={AlertDetails} />
                       <Route path="/:partnerid?/dispenser/project/:pid?" component={DispenserDetails} />
@@ -121,6 +138,7 @@ class App extends React.Component {
                       <Route path="/:partnerid?/project/:pid/installations/:insid?" component={ProjectInstallationDetails} />
                       <Route path="/:partnerid?/project/:pid/team/:uid?" component={ProjectTeamDetails} />
                       <Route path="/:partnerid?/project/:pid?" component={ProjectDetails} />
+                      
                       <Route path="/:partnerid?/logout" component={Logout} />
                       <Route exact path="/:partnerid?/" component={Dashboard} />
                       <Redirect from="/:partnerid?/login" to="/:partnerid?/"/>
@@ -133,5 +151,20 @@ class App extends React.Component {
           </MuiThemeProvider>
         )
     }
-  }
+}
+// function mapStateToProps(state) {
+//   return {
+//       projectSelected : state.projectSelectReducer.data,
+//   }
+// }
+
+// function mapDispatchToProps(dispatch) {
+//   //will dispatch the async action
+//   return {
+//     onProjectSelect: (value) => {
+//       dispatch(projectSelect(value))
+//     },
+//   }
+// }
 export default withRouter(App)
+// export default (connect(mapStateToProps, mapDispatchToProps))(withRouter(App));
