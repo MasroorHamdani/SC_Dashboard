@@ -106,8 +106,7 @@ class ProjectLocationInfo extends Component {
                         xs={24} sm={12}>
                         <Typography
                             variant="contained"
-                            color="secondary"
-                            >
+                            color="secondary">
                             {data.errorMessage}
                         </Typography>
                     </Grid>
@@ -124,8 +123,7 @@ class ProjectLocationInfo extends Component {
                         justify='flex-end'>
                         <IconButton>
                             <AddCircleOutlineIcon 
-                                onClick={event => handleModalState('location')}
-                            />
+                                onClick={event => handleModalState('location')}/>
                         </IconButton>
                     </Grid>
                 </Grid>
