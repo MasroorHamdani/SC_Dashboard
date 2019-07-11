@@ -58,6 +58,9 @@ class DataAnalysis extends Component {
    * As the selected date is custom it will call the function with custom keyword passed as one
    * of teh param along with staet and end time
    */
+    this.metricsIndex = 0;
+    this.metricsIndexReceived = 0;
+    this.props.onInitialState();
     let start = moment(this.state.startDate),
     end = moment(this.state.endDate),
     newEndDate, newModalEndDate;
@@ -148,6 +151,9 @@ class DataAnalysis extends Component {
    * the value is sent to next function to calculate the start and end date time.
    * And the index is saved in state to highlight the selected list item.
    */
+    this.metricsIndex = 0;
+    this.metricsIndexReceived = 0;
+    this.props.onInitialState();
     if (type === 'default') {
       this.setState({
         selectedIndex: index,
@@ -163,7 +169,6 @@ class DataAnalysis extends Component {
           this.handleDateChange(value, type)
       })
     }
-    
   }
 
   handleChange = (event, pid, insid) => {
@@ -202,6 +207,9 @@ class DataAnalysis extends Component {
    * It will make further calls to setup state values.
    */
     // Object.keys(this.state.installationList).map((key) => {
+    this.metricsIndex = 0;
+    this.metricsIndexReceived = 0;
+    this.props.onInitialState();
     this.state.installationList.map((row) => {
       if(row.key === tab) {
         this.setStateValue(tab, row.type,
@@ -238,6 +246,9 @@ class DataAnalysis extends Component {
   }
 
   refreshData = () => {
+    this.metricsIndex = 0;
+    this.metricsIndexReceived = 0;
+    this.props.onInitialState();
     this.setState({
       startDate: getTodaysStartDateTime(),
       endDate : new Date(),
@@ -302,6 +313,7 @@ class DataAnalysis extends Component {
     this.setState({
       loading: true,
     })
+    let dataToPost = {};
     // let metrics = this.getMetric(),
     //   dataToPost = {
     //     "req_type" : OPERATION_TYPE['DEFAULT'],
@@ -321,8 +333,26 @@ class DataAnalysis extends Component {
     //     'start_date_time' : this.state.modalStart,
     //     'end_date_time' : this.state.modalEnd,
     //   };
-    console.log(this.state.projectMetricList);
-    console.log(this.state.deviceKey);
+    if(this.state.projectMetricList && this.state.projectMetricList.length > 0) {
+      this.state.projectMetricList.map(row => {
+        Object.keys(row).map(key => {
+          row[key].map(r=> {
+            if(r[this.state.selectedMetric])
+            dataToPost['all_metrics'] = [r[this.state.selectedMetric]];
+          })
+        })
+      })
+      let endPoint = `${API_URLS['NEW_DEVICE_DATA']}/${this.state.pid}`,
+        params = {
+          'start_date_time' : this.state.modalStart,//formatDateTime(this.state.start, DATE_TIME_FORMAT, DATE_TIME_FORMAT),
+          'end_date_time': this.state.modalEnd,//formatDateWithTimeZone(this.state.end, DATE_TIME_FORMAT, DATE_TIME_FORMAT, this.state.timeZone),
+        },
+        headers = {
+            'x-sc-session-token': this.state.sessionHeader ? this.state.sessionHeader : ''
+        },
+        config = getApiConfig(endPoint, 'POST', dataToPost, params, headers);
+      this.props.onModalDataAnalysis(config);
+    }
     // let dataToPost = {'all_metrics' : Object.values(row)},
     //   endPoint = `${API_URLS['NEW_DEVICE_DATA']}/${this.state.pid}`,
     //   params = {
@@ -344,7 +374,7 @@ class DataAnalysis extends Component {
     this.setState({loading: true}, function() {
       let getEndPoint = `${API_URLS['NEW_DEVICE_DATA']}/${this.state.pid}`,
         params = {
-          action: PROJECT_ACTIONS['HOMEPAGE'] //Change to Device level Action name
+          action: `${PROJECT_ACTIONS['INSTALLATIONPAGE']}_${this.state.deviceId}` //Change to Device level Action name
         },
         getconfig = getApiConfig(getEndPoint, 'GET', '', params);
         this.props.onDataMetricList(getconfig);
@@ -608,9 +638,9 @@ class DataAnalysis extends Component {
             'pid': tab.PID
           }
           if(list.key === 'FD') {
-            list['index'] = 0;
-          } else if(list.key === 'PPLCTR' || list.key === 'PC') {
             list['index'] = 1;
+          } else if(list.key === 'PPLCTR' || list.key === 'PC') {
+            list['index'] = 0;
           } else if(list.key === 'ODRDTR' || list.key === 'AQ') {
             list['index'] = 2;
           } else if(list.key === 'WD') {
@@ -665,33 +695,34 @@ class DataAnalysis extends Component {
         else {
           this.setState({loading: false})
         }
-      }
+    }
     
-      if(this.props.projectMetricList &&
-        !isEqual(this.props.projectMetricList, prevProps.projectMetricList)
-        && this.metricsIndex === 0) {
-          this.metricLength = this.props.projectMetricList ? this.props.projectMetricList.length : 0;
-          this.setState({projectMetricList: this.props.projectMetricList});
-          if(this.metricsIndex < this.metricLength) {
-            this.props.projectMetricList.map((extRow) => {
-                Object.keys(extRow).map((key) => {
-                  extRow[key].map((row) => {
-                    if(Object.values(row)[0].data_source === this.state.pid) {
-                      let dataToPost = {'all_metrics' : Object.values(row)},
-                        endPoint = `${API_URLS['NEW_DEVICE_DATA']}/${this.state.pid}`,
-                        params = {
-                          'start_date_time' : formatDateTime(this.state.start, DATE_TIME_FORMAT, DATE_TIME_FORMAT),
-                          'end_date_time': formatDateWithTimeZone(this.state.end, DATE_TIME_FORMAT, DATE_TIME_FORMAT, this.state.timeZone),
-                        },
-                        config = getApiConfig(endPoint, 'POST', dataToPost, params);
-                      this.props.onDataAnalysis(config);
-                    }
-                  })
+    if(this.props.projectMetricList 
+      &&
+      !isEqual(this.props.projectMetricList, prevProps.projectMetricList)
+      && this.metricsIndex === 0) {
+        this.metricLength = this.props.projectMetricList ? this.props.projectMetricList.length : 0;
+        this.setState({projectMetricList: this.props.projectMetricList});
+        if(this.metricsIndex < this.metricLength) {
+          this.props.projectMetricList.map((extRow) => {
+              Object.keys(extRow).map((key) => {
+                extRow[key].map((row) => {
+                  if(Object.values(row)[0].data_source === this.state.deviceId) {
+                    let dataToPost = {'all_metrics' : Object.values(row)},
+                      endPoint = `${API_URLS['NEW_DEVICE_DATA']}/${this.state.pid}`,
+                      params = {
+                        'start_date_time' : this.state.start,//formatDateTime(this.state.start, DATE_TIME_FORMAT, DATE_TIME_FORMAT),
+                        'end_date_time': this.state.end,//formatDateWithTimeZone(this.state.end, DATE_TIME_FORMAT, DATE_TIME_FORMAT, this.state.timeZone),
+                      },
+                      config = getApiConfig(endPoint, 'POST', dataToPost, params);
+                    this.props.onDataAnalysis(config);
+                  }
                 })
-              this.metricsIndex += 1;
-            })
-          }
-      }
+              })
+            this.metricsIndex += 1;
+          })
+        }
+    }
   }
 
   render () {

@@ -149,7 +149,7 @@ class GraphPlot extends Component {
                             <ResponsiveContainer width='100%' height={400}>
                                 <ComposedChart className={classes.lineChart} data={graphData[metric.metric_id]}
                                     margin={{top: 5, right: 30, left: 20, bottom: 5}}
-                                    onClick={e => !isCustomModal? handleBarClick(metric.metricID): ''}>
+                                    onClick={e => !isCustomModal? handleBarClick(metric.metric_id): ''}>
                                     {isCustomModal ?
                                         <XAxis dataKey="name" 
                                             minTickGap={20}
@@ -191,10 +191,10 @@ class GraphPlot extends Component {
                                                     // dataKey={key}
                                                     dataKey={this.state.selectedLine === null || this.state.selectedLine === key ? key : `${key} `}
                                                     dot={false}
-                                                    activeDot={{onClick: () => !isCustomModal? handleBarClick(metric.metricID): ''}}
+                                                    activeDot={{onClick: () => !isCustomModal? handleBarClick(metric.metric_id): ''}}
                                                     isAnimationActive={false}
                                                     stroke={mapper['color']}
-                                                    // onClick={e => !isCustomModal? handleBarClick(metric.metricID): ''}
+                                                    // onClick={e => !isCustomModal? handleBarClick(metric.metric_id): ''}
                                                     strokeOpacity={this.state.opacity[key]}
                                                     />)
                                             }
@@ -203,7 +203,7 @@ class GraphPlot extends Component {
                                                     dataKey={this.state.selectedLine === null || this.state.selectedLine === key ? key : `${key} `}
                                                     // dataKey={key}
                                                     fill={mapper['color']} isAnimationActive={false}
-                                                    // onClick={e => !isCustomModal? handleBarClick(metric.metricID): ''}
+                                                    // onClick={e => !isCustomModal? handleBarClick(metric.metric_id): ''}
                                                     fillOpacity={this.state.opacity[key]}
                                                     />
                                             }
@@ -212,8 +212,8 @@ class GraphPlot extends Component {
                                                     key={key}
                                                     dataKey={this.state.selectedLine === null || this.state.selectedLine === key ? key : `${key} `}
                                                     // dataKey={key}
-                                                    // activeDot={{onClick: () => !isCustomModal? handleBarClick(metric.metricID): ''}}
-                                                    // dot={{stroke: mapper['color'] , onClick: () => !isCustomModal? handleBarClick(metric.metricID): ''}}
+                                                    // activeDot={{onClick: () => !isCustomModal? handleBarClick(metric.metric_id): ''}}
+                                                    // dot={{stroke: mapper['color'] , onClick: () => !isCustomModal? handleBarClick(metric.metric_id): ''}}
                                                     fill={mapper['color']}
                                                     stroke={mapper['color']}
                                                     strokeWidth={0}
@@ -237,8 +237,8 @@ class GraphPlot extends Component {
                                         })
                                     }
                                     {referenceMapper &&
-                                        Object.keys(referenceMapper[metric.metricID]).map(key => {
-                                            let referenceLine = referenceMapper[metric.metricID][key]
+                                        Object.keys(referenceMapper[metric.metric_id]).map(key => {
+                                            let referenceLine = referenceMapper[metric.metric_id][key]
                                             if(referenceLine)
                                                 return (
                                                     <ReferenceLine y={referenceLine['trendLineY']}
