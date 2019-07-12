@@ -638,9 +638,9 @@ class DataAnalysis extends Component {
             'pid': tab.PID
           }
           if(list.key === 'FD') {
-            list['index'] = 1;
-          } else if(list.key === 'PPLCTR' || list.key === 'PC') {
             list['index'] = 0;
+          } else if(list.key === 'PPLCTR' || list.key === 'PC') {
+            list['index'] = 1;
           } else if(list.key === 'ODRDTR' || list.key === 'AQ') {
             list['index'] = 2;
           } else if(list.key === 'WD') {
