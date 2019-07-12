@@ -98,7 +98,7 @@ class ProjectCreate extends Component {
         //Call aPI to save data
         if(this.state.general.site && this.state.general.site_addr &&
             this.state.general.Email && this.state.general.Region) {
-            let endPoint = `${API_URLS['ADMIN']}`,
+            let endPoint = this.state.pid ? `${API_URLS['ADMIN']}/${this.state.pid}` : `${API_URLS['ADMIN']}`,
                 EmailArray = this.state.general.Email.split(','),
                 dataToPost = {};
             dataToPost['site'] = this.state.general.site;
@@ -113,6 +113,9 @@ class ProjectCreate extends Component {
         }
     }
 
+    editLocation = (insID, dt) => {
+        console.log(insID, dt)
+    }
     handleModalState = (panel='') => {
     /**
      * Handle the modal open and close state.
@@ -169,7 +172,8 @@ class ProjectCreate extends Component {
                     name: "",
                     offdays: "",
                     ShiftStart: "",
-                    ShiftEnd: ""
+                    ShiftEnd: "",
+                    Mute: false
                 },})
             });
             this.handleModalState('location');
@@ -225,7 +229,8 @@ class ProjectCreate extends Component {
                         onClick={this.handleClick}
                         onAddtion={this.onAddtion}
                         onAreaAddtion={this.onAreaAddtion}
-                        handleModalState={this.handleModalState}/>
+                        handleModalState={this.handleModalState}
+                        editLocation={this.editLocation}/>
                 </main>
           </div>
         )

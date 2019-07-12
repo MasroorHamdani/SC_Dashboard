@@ -18,7 +18,7 @@ class ProjectCreation extends Component {
     // }
     render() {
       const {classes, onChange, data, onClick, onAddtion,
-        handleModalState, onAreaAddtion} = this.props;
+        handleModalState, onAreaAddtion, editLocation} = this.props;
       return (
         <div>
           <Typography variant="h6">
@@ -40,7 +40,7 @@ class ProjectCreation extends Component {
               <ExpansionPanelDetails>
                 <ProjectLocationInfo onChange={onChange}
                   data={data} onClick={onClick} onAddtion={onAddtion}
-                  handleModalState={handleModalState}/>
+                  handleModalState={handleModalState} editLocation={editLocation}/>
               </ExpansionPanelDetails>
             </ExpansionPanel>
             <ExpansionPanel expanded={data.expanded === 'area'}>

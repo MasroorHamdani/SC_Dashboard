@@ -23,7 +23,7 @@ class ProjectLocationInfo extends Component {
 
     render() {
         const {classes, data, onChange, onClick,
-            onAddtion, handleModalState} = this.props;
+            onAddtion, handleModalState, editLocation} = this.props;
         let returnData = <div>
             <Grid container spacing={24}>
                 <Grid item xs={12} sm={6}>
@@ -137,7 +137,7 @@ class ProjectLocationInfo extends Component {
                                 action={
                                 <IconButton className={classes.iconButton}>
                                     <EditIcon 
-                                    // onClick={event => this.editLocation(dt.InsID, dt.name)}
+                                    onClick={event => editLocation(i, dt)}
                                     />
                                     {/* <ClearIcon onClick={event => this.removeLocation(dt.InsID, dt.name)}/> */}
                                 </IconButton>
