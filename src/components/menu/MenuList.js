@@ -47,7 +47,7 @@ return ([
     },
     {
       name: "Add Project",
-      url: partnerId ? `/${partnerId}/new` : `/new`,
+      url: partnerId ? `/${partnerId}/newproject` : `/newproject`,
       icon: "CreateIcon",
       toolTip: "Add Project"
     }

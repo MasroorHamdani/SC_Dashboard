@@ -126,7 +126,7 @@ class App extends React.Component {
                     <Header {...this.props}  params={this.props.match.params}/>
                     <Menu {...this.props}/>
                     <Switch>
-                      <Route path="/:partnerid?/new" component={ProjectCreate} />
+                      <Route path="/:partnerid?/newproject" component={ProjectCreate} />
                       <Route path="/:partnerid?/profile/:userid?" component={UserProfile} />
                       <Route path="/:partnerid?/alert/project/:pid?" component={AlertDetails} />
                       <Route path="/:partnerid?/dispenser/project/:pid?" component={DispenserDetails} />

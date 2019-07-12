@@ -65,20 +65,22 @@ class ProjectCreate extends Component {
     /**
      * Post API call to save the data for a user profile.
      */
-        this.setState({panel: panel})
-        if(panel === 'location' && !isDraft) {
-            this.getProjectData();
-        } else if(panel === 'area' && !isDraft) {
-            this.getProjectLocationData();
-        } else if (panel === 'general' && isDraft) {
-            this.getProjectData()
-        } else if (panel === 'location' && isDraft) {
-            this.getProjectLocationData();
-        } else
-            this.setState({
-                expanded:panel,
-                generalErrorMessage: ''
-            })
+        this.setState({panel: panel}, function() {
+            if(panel === 'location' && !isDraft) {
+                this.getProjectData();
+            } else if(panel === 'area' && !isDraft) {
+                this.getProjectLocationData();
+            } else if (panel === 'general' && isDraft) {
+                this.getProjectData()
+            } else if (panel === 'location' && isDraft) {
+                this.getProjectLocationData();
+            } else {
+                this.setState({
+                    expanded:panel,
+                    generalErrorMessage: ''
+                })
+            }
+        })
     }
 
     getProjectLocationData = () => {
@@ -98,16 +100,20 @@ class ProjectCreate extends Component {
         //Call aPI to save data
         if(this.state.general.site && this.state.general.site_addr &&
             this.state.general.Email && this.state.general.Region) {
-            let endPoint = this.state.pid ? `${API_URLS['ADMIN']}/${this.state.pid}` : `${API_URLS['ADMIN']}`,
-                EmailArray = this.state.general.Email.split(','),
-                dataToPost = {};
-            dataToPost['site'] = this.state.general.site;
-            dataToPost['site_addr'] = this.state.general.site_addr;
-            dataToPost['Region'] = this.state.general.Region;
-            dataToPost['type'] = PROJECT_CREATION['GENERAL'];
-            dataToPost['HealthUpdates'] = {'Email': EmailArray};
-            let config = getApiConfig(endPoint, 'POST', dataToPost);
-            this.props.onProjectCreation(config, 'POST');
+            if(!isEqual(this.state.generalProject, this.state.general)) {
+                let endPoint = this.state.pid ? `${API_URLS['ADMIN']}/${this.state.pid}` : `${API_URLS['ADMIN']}`,
+                    EmailArray = this.state.general.Email.split(','),
+                    dataToPost = {};
+                dataToPost['site'] = this.state.general.site;
+                dataToPost['site_addr'] = this.state.general.site_addr;
+                dataToPost['Region'] = this.state.general.Region;
+                dataToPost['type'] = PROJECT_CREATION['GENERAL'];
+                dataToPost['HealthUpdates'] = {'Email': EmailArray};
+                let config = getApiConfig(endPoint, 'POST', dataToPost);
+                this.props.onProjectCreation(config, 'POST');
+            } else {
+                this.setState({expanded: this.state.panel})
+            }
         } else {
             this.setState({generalErrorMessage : "Please enter all valid details"})
         }
@@ -210,7 +216,8 @@ class ProjectCreate extends Component {
                 if(this.props.projectData['pid'])
                     this.setState({
                         pid : this.props.projectData['pid'],
-                        expanded: this.state.panel
+                        expanded: this.state.panel,
+                        generalProject: this.state.general
                 })
                 else {
                     console.log(this.props.projectData)
