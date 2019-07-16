@@ -27,7 +27,7 @@ class ProjectCreate extends Component {
             location: {
                 locn: "",
                 name: "",
-                offdays: "",
+                offday: "",
                 ShiftStart: "",
                 ShiftEnd: "",
                 Mute: false
@@ -38,6 +38,8 @@ class ProjectCreate extends Component {
             },
             locations: [],
             allLocations: [],
+            tempLocation: [],
+            editLocation: [],
             areas: [],
             allAreas: [],
             open: false,
@@ -92,7 +94,7 @@ class ProjectCreate extends Component {
         dataToPost['pid'] = this.state.pid; //value returned from previous api call - project id
         let config = getApiConfig(endPoint, 'POST', dataToPost);
         this.props.onProjectCreation(config, 'POST');
-        this.setState({allLocations: []});
+        // this.setState({allLocations: []});
         return true
     }
 
@@ -119,8 +121,14 @@ class ProjectCreate extends Component {
         }
     }
 
-    editLocation = (insID, dt) => {
-        console.log(insID, dt)
+    editLocation = (id, dt) => {
+        let location = this.state.locations[id];
+        location['offdays'] = location['offdays'].join();
+        this.setState(
+            {location: location,
+            tempEdit: location}
+        )
+        this.handleModalState('location')
     }
     handleModalState = (panel='') => {
     /**
@@ -128,7 +136,7 @@ class ProjectCreate extends Component {
      * Modal shown to add a new allocation.
      */
         if(panel === 'location') {
-            if(this.state.locations.length < LOCATION_LIMIT)
+            if(this.state.allLocations.length < LOCATION_LIMIT)
                 this.setState({
                     errorMessage: '',
                     open: !this.state.open
@@ -150,38 +158,65 @@ class ProjectCreate extends Component {
 
     onAddtion = () => {
         if (this.state.location.name && this.state.location.locn &&
-            this.state.location.offdays, this.state.location.ShiftEnd &&
+            this.state.location.offday && this.state.location.ShiftEnd &&
             this.state.location.ShiftStart) {
-            let dataToPost = {}, temp = {};
-            dataToPost['name'] = this.state.location.name;
-            dataToPost['locn'] = this.state.location.locn;
-            dataToPost['Mute'] = this.state.location.Mute;
-            let offDays = this.state.location.offdays.split(',')
-            dataToPost['offdays'] = offDays;
-            dataToPost['offtimes'] = [{
-                'End': formatDateTime(this.state.location.ShiftEnd, "hh:mm a", "HHmm"),
-                'Start': formatDateTime(this.state.location.ShiftStart, "hh:mm a", "HHmm")
-            }]
-            temp =  _.cloneDeep(dataToPost);
-            temp['ShiftEnd'] = this.state.location.ShiftEnd;
-            temp['ShiftStart'] = this.state.location.ShiftStart
-            this.setState({
-                locations: [
-                    ...this.state.locations.concat(temp)
-                ],
-                allLocations: [
-                    ...this.state.allLocations.concat(dataToPost)
-                ],
-            }, function() {
-                this.setState({location: {
-                    locn: "",
-                    name: "",
-                    offdays: "",
-                    ShiftStart: "",
-                    ShiftEnd: "",
-                    Mute: false
-                },})
-            });
+                let dataToPost = {}, temp = {};
+                dataToPost['name'] = this.state.location.name;
+                dataToPost['locn'] = this.state.location.locn;
+                dataToPost['Mute'] = this.state.location.Mute;
+                let offDays = this.state.location.offday.split(',')
+                dataToPost['offdays'] = offDays;
+                dataToPost['offtimes'] = [{
+                    'End': formatDateTime(this.state.location.ShiftEnd, "hh:mm a", "HHmm"),
+                    'Start': formatDateTime(this.state.location.ShiftStart, "hh:mm a", "HHmm")
+                }]
+                temp =  _.cloneDeep(dataToPost);
+                temp['ShiftEnd'] = this.state.location.ShiftEnd;
+                temp['ShiftStart'] = this.state.location.ShiftStart;
+                temp['offday'] = this.state.location.offday
+
+                if(this.state.location.InsID) {
+                    let index = this.state.locations.indexOf(this.state.location);
+                    this.state.locations.splice(index, 1);
+                    this.setState({
+                        editLocation: [
+                            ...this.state.editLocation.concat(dataToPost)
+                        ],
+                        locations: [
+                            ...this.state.locations.concat(this.state.location)
+                        ]
+                    }, function() {
+                        this.setState({location: {
+                            locn: "",
+                            name: "",
+                            offday: "",
+                            ShiftStart: "",
+                            ShiftEnd: "",
+                            Mute: false
+                        },})
+                    });
+                } else {
+                this.setState({
+                    locations: [
+                        ...this.state.locations.concat(temp)
+                    ],
+                    tempLocation: [
+                        ...this.state.tempLocation.concat(temp)
+                    ],
+                    allLocations: [
+                        ...this.state.allLocations.concat(dataToPost)
+                    ],
+                }, function() {
+                    this.setState({location: {
+                        locn: "",
+                        name: "",
+                        offday: "",
+                        ShiftStart: "",
+                        ShiftEnd: "",
+                        Mute: false
+                    },})
+                });
+            }
             this.handleModalState('location');
         } else {
             this.setState({errorMessage : "Please enter all valid details"})
@@ -213,15 +248,32 @@ class ProjectCreate extends Component {
     componentDidUpdate(prevProps, prevState) {
         if(this.props.projectData && 
             !isEqual(this.props.projectData, prevProps.projectData)) {
-                if(this.props.projectData['pid'])
+                if(this.props.projectData['pid'] && !this.props.projectData['location'])
                     this.setState({
                         pid : this.props.projectData['pid'],
                         expanded: this.state.panel,
                         generalProject: this.state.general
                 })
                 else {
-                    console.log(this.props.projectData)
-                    this.setState({expanded: this.state.panel})
+                    this.state.tempLocation.map((row) => {
+                        let index = this.state.locations.indexOf(row);
+                        this.state.locations.splice(index, 1);
+                    })
+
+                    let loc = this.props.projectData['location'];
+                    loc.map((row) => {
+                        row['ShiftEnd'] = formatDateTime(row['offtimes'][0]['End'], "HHmm", "HH:mm")
+                        row['ShiftStart'] = formatDateTime(row['offtimes'][0]['Start'], "HHmm", "HH:mm")
+                    })
+                    this.setState({
+                        expanded: this.state.panel,
+                        limitErrorMessage: '',
+                        allLocations: [],
+                        tempLocation: [],
+                        locations: [
+                            ...this.state.locations.concat(loc)
+                        ],
+                    })
                 }
         }
     }

@@ -50,11 +50,11 @@ class ProjectLocationInfo extends Component {
                 <Grid item xs={12} sm={6}>
                     <TextField
                         required
-                        id="offdays"
-                        name="offdays"
+                        id="offday"
+                        name="offday"
                         label="Off Days, seperated by ,"
                         fullWidth
-                        value={data.location.offdays}
+                        value={data.location.offday}
                         onChange={e=>onChange(e, 'location')}/>
                 </Grid>
                 <Grid item xs={12} sm={6}>

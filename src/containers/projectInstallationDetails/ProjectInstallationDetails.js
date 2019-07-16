@@ -57,8 +57,8 @@ class ProjectInstallationDetails extends Component {
                 this.setState({pid: this.props.projectSelected.PID},
                 function() {
                     let arr = this.props.match.url.split('/');
-                    arr[3] = this.props.projectSelected.PID;
-                    let url = arr.slice(0,4).join('/');
+                    arr[2] = this.props.projectSelected.PID;
+                    let url = arr.slice(0,3).join('/');
                     this.props.history.push(url);
                 });
         }
