@@ -125,7 +125,7 @@ class Dashboard extends Component {
           this.props.projectMetricList.map((extRow) => {
               Object.keys(extRow).map((key) => {
                 extRow[key].map((row) => {
-                  if(Object.values(row)[0].data_source === this.state.PID) {
+                  // if(Object.values(row)[0].data_source === this.state.PID) {
                     let dataToPost = {'all_metrics' : Object.values(row)},
                       endPoint = `${API_URLS['NEW_DEVICE_DATA']}/${this.state.PID}`,
                       params = {
@@ -134,7 +134,7 @@ class Dashboard extends Component {
                       },
                       config = getApiConfig(endPoint, 'POST', dataToPost, params);
                     this.props.onDataAnalysis(config);
-                  }
+                  // }
                 })
               })
             this.metricsIndex += 1;
