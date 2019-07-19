@@ -5,7 +5,7 @@ import _, {isEqual} from 'lodash';
 
 import ProjectCreation from '../../components/ProjectCreation/ProjectCreation';
 import {PROJECT_CREATION, LOCATION_LIMIT, API_URLS} from '../../constants/Constant';
-import {projectCreation} from  '../../actions/AdminAction';
+import {projectCreation, projectUpdate} from  '../../actions/AdminAction';
 
 import {formatDateTime} from '../../utils/DateFormat';
 import {getApiConfig} from '../../services/ApiCofig';
@@ -87,14 +87,25 @@ class ProjectCreate extends Component {
 
     getProjectLocationData = () => {
         // Call api to save data
-        let endPoint = `${API_URLS['ADMIN']}`,
-        dataToPost = {};
-        dataToPost['location'] = this.state.allLocations;
-        dataToPost['type'] = PROJECT_CREATION['LOCATION'];
-        dataToPost['pid'] = this.state.pid; //value returned from previous api call - project id
-        let config = getApiConfig(endPoint, 'POST', dataToPost);
-        this.props.onProjectCreation(config, 'POST');
-        // this.setState({allLocations: []});
+        if(!_.isEmpty(this.state.allLocations)) {
+            let endPoint = `${API_URLS['ADMIN']}`,
+            dataToPost = {};
+            dataToPost['location'] = this.state.allLocations;
+            dataToPost['type'] = PROJECT_CREATION['LOCATION'];
+            dataToPost['pid'] = this.state.pid; //value returned from previous api call - project id
+            let config = getApiConfig(endPoint, 'POST', dataToPost);
+            this.props.onProjectCreation(config, 'POST');
+        }
+        if(!_.isEmpty(this.state.editLocation)) {
+            let endPoint = `${API_URLS['ADMIN']}/${this.state.pid}`,
+                dataToPost = {};
+            this.state.editLocation.map((row) => {
+                dataToPost = row;
+                dataToPost['type'] = PROJECT_CREATION['LOCATION'];
+                let config = getApiConfig(endPoint, 'POST', dataToPost);
+                this.props.onProjectUpdate(config, 'POST');
+            })
+        }
         return true
     }
 
@@ -123,7 +134,8 @@ class ProjectCreate extends Component {
 
     editLocation = (id, dt) => {
         let location = this.state.locations[id];
-        location['offdays'] = location['offdays'].join();
+        location['offday'] = location['offdays'].join();
+        location['isEdit'] = true
         this.setState(
             {location: location,
             tempEdit: location}
@@ -155,12 +167,24 @@ class ProjectCreate extends Component {
             }
         }
     };
+    difference = (object, base) =>{
+        function changes(object, base) {
+            return _.transform(object, function(result, value, key) {
+                if (!_.isEqual(value, base[key])) {
+                    result[key] = (_.isObject(value) && _.isObject(base[key])) ? changes(value, base[key]) : value;
+                }
+            });
+        }
+        return changes(object, base)
+    }
+    
 
     onAddtion = () => {
         if (this.state.location.name && this.state.location.locn &&
             this.state.location.offday && this.state.location.ShiftEnd &&
             this.state.location.ShiftStart) {
                 let dataToPost = {}, temp = {};
+                // console.log(this.state.location);
                 dataToPost['name'] = this.state.location.name;
                 dataToPost['locn'] = this.state.location.locn;
                 dataToPost['Mute'] = this.state.location.Mute;
@@ -170,32 +194,95 @@ class ProjectCreate extends Component {
                     'End': formatDateTime(this.state.location.ShiftEnd, "hh:mm a", "HHmm"),
                     'Start': formatDateTime(this.state.location.ShiftStart, "hh:mm a", "HHmm")
                 }]
+                // if(this.state.location.InsID)
+                // dataToPost['insid'] = this.state.location.InsID ? this.state.location.InsID : '';
                 temp =  _.cloneDeep(dataToPost);
                 temp['ShiftEnd'] = this.state.location.ShiftEnd;
                 temp['ShiftStart'] = this.state.location.ShiftStart;
                 temp['offday'] = this.state.location.offday
-
-                if(this.state.location.InsID) {
-                    let index = this.state.locations.indexOf(this.state.location);
+                // let index = this.state.locations.indexOf(this.state.tempEdit);
+                let index = _.findIndex(this.state.locations, this.state.tempEdit);
+                
+                if(index >= 0)
                     this.state.locations.splice(index, 1);
+                
+
+                if(this.state.location.insid) {
+                    dataToPost['insid'] = this.state.location.insid;
+                    temp['insid'] = dataToPost['insid'];
+                    let allLocTemp = this.state.tempEdit;
+                    delete allLocTemp['ShiftEnd'];
+                    delete allLocTemp['ShiftStart'];
+                    delete allLocTemp['offday'];
+                    delete allLocTemp['isEdit'];
+                    console.log(this.state.tempEdit)
+                    console.log(this.state.editLocation)
+                    // let index = this.state.editLocation.indexOf(this.state.tempEdit);
+                    let index = _.findIndex(this.state.editLocation, allLocTemp);
+                    if(index >= 0)
+                        this.state.editLocation.splice(index, 1);
                     this.setState({
                         editLocation: [
                             ...this.state.editLocation.concat(dataToPost)
                         ],
                         locations: [
-                            ...this.state.locations.concat(this.state.location)
-                        ]
-                    }, function() {
-                        this.setState({location: {
+                            ...this.state.locations.concat(temp)
+                        ],
+                        location: {
                             locn: "",
                             name: "",
                             offday: "",
                             ShiftStart: "",
                             ShiftEnd: "",
                             Mute: false
-                        },})
+                        },
+                        tempEdit: {}
+                    }, function() {
+                        console.log(this.state.locations)
                     });
-                } else {
+                    
+                } else if(this.state.location.isEdit) {
+                    let allLocTemp = this.state.tempEdit;
+                    delete allLocTemp['ShiftEnd'];
+                    delete allLocTemp['ShiftStart'];
+                    delete allLocTemp['offday'];
+                    delete allLocTemp['isEdit'];
+
+                    let tempIndex = _.findIndex(this.state.allLocations, allLocTemp);
+                    // console.log(this.state.allLocations.indexOf(allLocTemp))
+                    // console.log(this.state.allLocations[0], allLocTemp)
+                    // console.log(_.findIndex(this.state.allLocations, allLocTemp));
+                    // console.log(this.difference(this.state.allLocations[0], allLocTemp))
+                    if(tempIndex >= 0)
+                        this.state.allLocations.splice(tempIndex, 1);
+                    
+                    let index = _.findIndex(this.state.tempLocation, allLocTemp);
+                    if(index >= 0)
+                        this.state.tempLocation.splice(index, 1);
+                    this.setState({
+                        locations: [
+                            ...this.state.locations.concat(temp)
+                        ],
+                        allLocations: [
+                            ...this.state.allLocations.concat(dataToPost)
+                        ],
+                        tempLocation: [
+                            ...this.state.tempLocation.concat(temp)
+                        ],
+                        location: {
+                            locn: "",
+                            name: "",
+                            offday: "",
+                            ShiftStart: "",
+                            ShiftEnd: "",
+                            Mute: false
+                        },
+                        tempEdit: {}
+                    }, function() {
+                        console.log(this.state.allLocations);
+                    });
+                }
+                else {
                 this.setState({
                     locations: [
                         ...this.state.locations.concat(temp)
@@ -206,15 +293,14 @@ class ProjectCreate extends Component {
                     allLocations: [
                         ...this.state.allLocations.concat(dataToPost)
                     ],
-                }, function() {
-                    this.setState({location: {
+                    location: {
                         locn: "",
                         name: "",
                         offday: "",
                         ShiftStart: "",
                         ShiftEnd: "",
                         Mute: false
-                    },})
+                    }
                 });
             }
             this.handleModalState('location');
@@ -248,22 +334,25 @@ class ProjectCreate extends Component {
     componentDidUpdate(prevProps, prevState) {
         if(this.props.projectData && 
             !isEqual(this.props.projectData, prevProps.projectData)) {
-                if(this.props.projectData['pid'] && !this.props.projectData['location'])
+                if(this.props.projectData['PID'] && !this.props.projectData['location'])
                     this.setState({
-                        pid : this.props.projectData['pid'],
+                        pid : this.props.projectData['PID'],
                         expanded: this.state.panel,
                         generalProject: this.state.general
                 })
                 else {
                     this.state.tempLocation.map((row) => {
-                        let index = this.state.locations.indexOf(row);
-                        this.state.locations.splice(index, 1);
+                        // let index = this.state.locations.indexOf(row);
+                        let index = _.findIndex(this.state.locations, row)
+                        if(index >= 0)
+                            this.state.locations.splice(index, 1);
                     })
 
                     let loc = this.props.projectData['location'];
                     loc.map((row) => {
                         row['ShiftEnd'] = formatDateTime(row['offtimes'][0]['End'], "HHmm", "HH:mm")
                         row['ShiftStart'] = formatDateTime(row['offtimes'][0]['Start'], "HHmm", "HH:mm")
+                        row['insid'] = row['InsID']
                     })
                     this.setState({
                         expanded: this.state.panel,
@@ -275,6 +364,14 @@ class ProjectCreate extends Component {
                         ],
                     })
                 }
+        }
+
+        if(this.props.projectUpdate && 
+            !isEqual(this.props.projectUpdate, prevProps.projectUpdate)) {
+                this.setState({
+                    editLocation: []
+                })
+                console.log(projectUpdate);
         }
     }
 
@@ -299,6 +396,7 @@ class ProjectCreate extends Component {
 function mapStateToProps(state) {
     return {
         projectData : state.AdminReducer.data,
+        projectUpdate: state.AdminProjectUpdateReducer.data
     }
 }
 
@@ -307,6 +405,9 @@ function mapDispatchToProps(dispatch) {
         onProjectCreation: (config) => {
             dispatch(projectCreation(config))
         },
+        onProjectUpdate: (config) => {
+            dispatch(projectUpdate(config))
+        }
     }
 }
 

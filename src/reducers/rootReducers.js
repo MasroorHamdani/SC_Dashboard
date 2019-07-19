@@ -25,6 +25,7 @@ import ReportsListReducer from './ReportsListReducer';
 import ModalDataAnalysisReducer from './ModalDataAnalysisReducer';
 import PartnerThemeReducer from './PartnerThemeReducer';
 import AdminReducer from './AdminReducer';
+import AdminProjectUpdateReducer from './AdminProjectUpdateReducer';
 
 const reducers = {
     LoginReducer,
@@ -51,7 +52,8 @@ const reducers = {
     ReportsListReducer,
     ModalDataAnalysisReducer,
     PartnerThemeReducer,
-    AdminReducer
+    AdminReducer,
+    AdminProjectUpdateReducer
 }
 
 // combines all the reducers which will be passed in Redux Store
