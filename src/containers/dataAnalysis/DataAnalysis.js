@@ -335,10 +335,10 @@ class DataAnalysis extends Component {
     //   };
     if(this.state.projectMetricList && this.state.projectMetricList.length > 0) {
       this.state.projectMetricList.map(row => {
-        Object.keys(row).map(key => {
-          row[key].map(r=> {
-            if(r[this.state.selectedMetric])
-            dataToPost['all_metrics'] = [r[this.state.selectedMetric]];
+        Object.values(row).map(rowValue => {
+          rowValue.map(r=> {
+            if(Object.values(r)[0].metric_id === this.state.selectedMetric)
+              dataToPost['all_metrics'] = Object.values(r);
           })
         })
       })
@@ -706,9 +706,13 @@ class DataAnalysis extends Component {
         if(this.metricsIndex < this.metricLength) {
           this.props.projectMetricList.map((extRow) => {
               Object.keys(extRow).map((key) => {
+                let agg_query = []
                 extRow[key].map((row) => {
-                  if(Object.values(row)[0].data_source === this.state.deviceId) {
-                    let dataToPost = {'all_metrics' : Object.values(row)},
+                  agg_query.push(Object.values(row)[0])
+                });
+                // extRow[key].map((row) => {
+                  // if(Object.values(row)[0].data_source === this.state.deviceId) {
+                    let dataToPost = {'all_metrics' : agg_query}, //Object.values(row)
                       endPoint = `${API_URLS['NEW_DEVICE_DATA']}/${this.state.pid}`,
                       params = {
                         'start_date_time' : this.state.start,//formatDateTime(this.state.start, DATE_TIME_FORMAT, DATE_TIME_FORMAT),
@@ -716,8 +720,8 @@ class DataAnalysis extends Component {
                       },
                       config = getApiConfig(endPoint, 'POST', dataToPost, params);
                     this.props.onDataAnalysis(config);
-                  }
-                })
+                  // }
+                // })
               })
             this.metricsIndex += 1;
           })

@@ -124,9 +124,12 @@ class Dashboard extends Component {
         if(this.metricsIndex < this.metricLength) {
           this.props.projectMetricList.map((extRow) => {
               Object.keys(extRow).map((key) => {
+                let agg_query = []
                 extRow[key].map((row) => {
+                  agg_query.push(Object.values(row)[0])
+                });
                   // if(Object.values(row)[0].data_source === this.state.PID) {
-                    let dataToPost = {'all_metrics' : Object.values(row)},
+                    let dataToPost = {'all_metrics' : agg_query},
                       endPoint = `${API_URLS['NEW_DEVICE_DATA']}/${this.state.PID}`,
                       params = {
                         'start_date_time' : formatDateTime(this.state.startTime, DATE_TIME_FORMAT, DATE_TIME_FORMAT),
@@ -135,7 +138,6 @@ class Dashboard extends Component {
                       config = getApiConfig(endPoint, 'POST', dataToPost, params);
                     this.props.onDataAnalysis(config);
                   // }
-                })
               })
             this.metricsIndex += 1;
           })
