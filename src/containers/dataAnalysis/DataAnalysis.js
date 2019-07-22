@@ -2,12 +2,12 @@ import React, { Component } from 'react';
 import {connect} from 'react-redux';
 import {isEqual} from 'lodash';
 import {withStyles, LinearProgress} from '@material-ui/core';
-import _, {groupBy, sortBy} from 'lodash';
+import _, {sortBy} from 'lodash';
 import moment from 'moment-timezone';
 import DataAnalysisComponent from '../../components/dataAnalysis/DataAnalysis';
 import {getApiConfig} from '../../services/ApiCofig';
-import {API_URLS, NAMESPACE_MAPPER, DATA_OPERATIONS,
-  OPERATION_TYPE, RANGE_ERROR, DATE_TIME_FORMAT, PROJECT_ACTIONS} from '../../constants/Constant';
+import {API_URLS, NAMESPACE_MAPPER, RANGE_ERROR,
+  PROJECT_ACTIONS} from '../../constants/Constant';
 import {projectSubMenuList, projectInstallationList,
   projectAnalysisData, clearDataAnalysis,
   modalProjectAnalysisData, projectDataMetricList,
@@ -15,8 +15,7 @@ import {projectSubMenuList, projectInstallationList,
 import styles from './DataAvalysisStyle';
 import RadioButtonComponent from '../../components/dataAnalysis/RadioButtonController';
 import {getStartEndTime, getVector} from '../../utils/AnalyticsDataFormat';
-import {getXHourOldDateTime, getTodaysStartDateTime,
-  formatDateTime, formatDateWithTimeZone} from '../../utils/DateFormat';
+import {getXHourOldDateTime, getTodaysStartDateTime} from '../../utils/DateFormat';
 
 
 /***
@@ -213,7 +212,7 @@ class DataAnalysis extends Component {
     this.state.installationList.map((row) => {
       if(row.key === tab) {
         this.setStateValue(tab, row.type,
-          row.devid, row.subType, row.pid) //this.state.installationList[key]
+          row.devid, row.subType, row.pid)
       }
     })
   };
@@ -281,27 +280,13 @@ class DataAnalysis extends Component {
       modalSelectedIndex: formatedDate.selectedIndex ? formatedDate.selectedIndex : this.state.modalSelectedIndex
     }, function() {
       if (type === 'default')
-        // this.getNewAnalyticsData();
         this.getCompleteMetrics();
       else if (type === 'modal')
         this.getModalAnalyticsData();
     })
   }
 
-  getMetric = () => {
-    /**
-     * This function will be called internally,
-     * this function will check the existance of metrics for selected tab.
-     * If found, that will be returned else empty data will be sent out.
-     */
-    let metrics = [], allMetrics = [];
-    if(this.state.metrics) {
-      metrics = this.state.metrics.vector;
-      allMetrics = this.state.allMetrics;
-    }
-    return {'metric' : metrics,
-            'allMetrics': allMetrics}
-  }
+
   getModalAnalyticsDataWithMetricId = (metricId) => {
     this.setState({selectedMetric: metricId},
       function() {
@@ -314,25 +299,7 @@ class DataAnalysis extends Component {
       loading: true,
     })
     let dataToPost = {};
-    // let metrics = this.getMetric(),
-    //   dataToPost = {
-    //     "req_type" : OPERATION_TYPE['DEFAULT'],
-    //     "type": 'AQ',//this.state.deviceKey,
-    //     "sub_type": 'AQ_V0', //this.state.subType,
-    //     "all_metrics": []
-    //   };
-    // if(metrics && metrics.metric.length > 0 &&
-    //   metrics.allMetrics.length > 0 &&
-    //   metrics.metric[0].type === this.state.deviceKey) {
-    //     let metricIndex = metrics.allMetrics.findIndex(p => p.metric_id == this.state.selectedMetric);
-    //     dataToPost.all_metrics.push(metrics.allMetrics[metricIndex]);
-    // }
-    // // const endPoint = `${API_URLS['DEVICE_DATA']}/${this.state.pid}/${this.state.deviceId}`,
-    // const endPoint = `${API_URLS['NEW_DEVICE_DATA']}/${this.state.pid}`,
-    //   params = {
-    //     'start_date_time' : this.state.modalStart,
-    //     'end_date_time' : this.state.modalEnd,
-    //   };
+
     if(this.state.projectMetricList && this.state.projectMetricList.length > 0) {
       this.state.projectMetricList.map(row => {
         Object.values(row).map(rowValue => {
@@ -353,17 +320,6 @@ class DataAnalysis extends Component {
         config = getApiConfig(endPoint, 'POST', dataToPost, params, headers);
       this.props.onModalDataAnalysis(config);
     }
-    // let dataToPost = {'all_metrics' : Object.values(row)},
-    //   endPoint = `${API_URLS['NEW_DEVICE_DATA']}/${this.state.pid}`,
-    //   params = {
-    //     'start_date_time' : formatDateTime(this.state.start, DATE_TIME_FORMAT, DATE_TIME_FORMAT),
-    //     'end_date_time': formatDateWithTimeZone(this.state.end, DATE_TIME_FORMAT, DATE_TIME_FORMAT, this.state.timeZone),
-    //   },
-    //   headers = {
-    //   'x-sc-session-token': this.state.sessionHeader ? this.state.sessionHeader : ''
-    // },
-    // config = getApiConfig(endPoint, 'POST', dataToPost, params, headers);
-    // this.props.onModalDataAnalysis(config, endPoint);
   }
 
   getCompleteMetrics = () => {
@@ -380,65 +336,6 @@ class DataAnalysis extends Component {
         this.props.onDataMetricList(getconfig);
       });
   }
-  getNewAnalyticsData = () => {
-  /**
-   * This function is called internally for API call.
-   * This API will set the basic data to Post,
-   * next it will call an internal function to get the existing metric value for selected tab if any.
-   * In case metric is present, it will do the changes in data to post,
-   * else default value for the data to post will be passed to API.
-   * The Data will be passed bu reducer 'DataAnalysisReducer'
-   */
-    this.setState({
-      loading: true,
-    })
-    let metrics = this.getMetric(),
-    dataToPost = {
-      "req_type" : OPERATION_TYPE['DEFAULT'],
-      "type": 'AQ',//this.state.deviceKey,
-      "sub_type": 'AQ_V0', //this.state.subType,
-      "all_metrics": []
-    };
-  
-    if(metrics && metrics.metric && metrics.metric.length > 0 &&
-        metrics.allMetrics.length > 0 &&
-        metrics.metric[0].type === this.state.deviceKey) {
-      dataToPost = {
-        "req_type" : OPERATION_TYPE['ON_DEMAND'],
-        "type": 'AQ',//this.state.deviceKey,
-        "sub_type": 'AQ_V0',//this.state.subType,
-        "all_metrics": metrics.allMetrics
-      };
-      dataToPost.all_metrics.map((rows) => {
-        rows.dimensions.map((row) => {
-          row.actions.map((dt) => {
-            let rowData = this.state[this.state.deviceKey][rows.metric_id][row.id]
-            if(dt.type === DATA_OPERATIONS['RESAMPLER']) {
-              rowData.map((val) => {
-                if(val.type === dt.type) {
-                  dt.criteria.agg = val.criteria.statistic? val.criteria.statistic: dt.criteria.agg;
-                  dt.criteria.rule = this.state.indexValue;
-                  //val.criteria.sampling && val.criteria.unit ?
-                    //val.criteria.sampling + val.criteria.unit : dt.criteria.rule;
-                }
-              })
-            }
-          })
-        })
-      })
-    }
-    const endPoint = `${API_URLS['NEW_DEVICE_DATA']}/${this.state.pid}`,
-    //`${API_URLS['DEVICE_DATA']}/${this.state.pid}/${this.state.deviceId}`,
-      params = {
-        'start_date_time' : this.state.start,
-        'end_date_time' : this.state.end,
-      };
-    let headers = {
-      'x-sc-session-token': this.state.sessionHeader ? this.state.sessionHeader : ''
-    },
-    config = getApiConfig(endPoint, 'POST', dataToPost, params, headers);
-    this.props.onDataAnalysis(config, endPoint);
-  }
 
   handleSamplingChange = (event, mainPath='', path='', action) => {
   /**
@@ -453,7 +350,7 @@ class DataAnalysis extends Component {
    */
     const {name, value} = event.target;
     if(mainPath === 'update') {
-      this.getNewAnalyticsData();
+      this.getCompleteMetrics();
     } else {
       let data = this.state[this.state.deviceKey][mainPath][path]
       data.map((row) => {
@@ -624,9 +521,7 @@ class DataAnalysis extends Component {
       (!isEqual(this.props.installationList, prevProps.installationList) ||
       (!this.state.installationList || Object.keys(this.state.installationList).length === 0))) {
         let installationList = {}, i = 1;
-        // let formattedData = groupBy(this.props.installationList, 'Type');
         let sorted_list = sortBy(this.props.installationList,'Display')
-        // this.props.installationList.map((tab) => {
         sorted_list.map((tab)=> {
           let list = {
             'key': tab.Type,
@@ -648,29 +543,11 @@ class DataAnalysis extends Component {
           } else {
             list['index'] = 4;
           }
-          // This section was clubing the Dispenser type devices into one and show one entry on UI rather then multiple
-          // if((tab.Type === 'PT' || tab.Type === 'SS' || tab.Type === 'TR') && !installationList[tab.Type]) {
-          // // This part is for stacking only the Dispenser data
-          //   installationList[tab.Type] = {};
-          //   installationList[tab.Type]['key'] = tab.Type;
-          //   installationList[tab.Type]['text'] = formattedData[tab.Type][0]['Display'];
-          //   installationList[tab.Type]['subType'] = formattedData[tab.Type][0]['SubType'];
-          //   installationList[tab.Type]['pid'] = formattedData[tab.Type][0]['PID'];
-          //   installationList[tab.Type]['devid'] = formattedData[tab.Type][0]['Devid'];
-          //   installationList[tab.Type]['type'] = formattedData[tab.Type][0]['Type'];
-          //   installationList[tab.Type]['data'] = formattedData[tab.Type];
-          // }
-          // else if((tab.Type === 'PT' || tab.Type === 'SS' || tab.Type === 'TR') && installationList[tab.Type]) {
-          //   return;
-          // }
-          // else if(installationList[tab.Type]
-            // (tab.Type !== 'PT' || tab.Type!== 'SS' || tab.Type !== 'TR')) {
           if(installationList[tab.Type]) {
             installationList[`${tab.Type}-${i}`] = list;
             installationList[`${tab.Type}-${i}`]['key'] = `${installationList[`${tab.Type}-${i}`]['key']}-${i}`;
             i = i + 1;
           } else{
-          //if(tab.Type !== 'PT' && tab.Type !== 'SS' && tab.Type !== 'TR') {
             installationList[tab.Type] = list
           }
         })
@@ -710,9 +587,7 @@ class DataAnalysis extends Component {
                 extRow[key].map((row) => {
                   agg_query.push(Object.values(row)[0])
                 });
-                // extRow[key].map((row) => {
-                  // if(Object.values(row)[0].data_source === this.state.deviceId) {
-                    let dataToPost = {'all_metrics' : agg_query}, //Object.values(row)
+                    let dataToPost = {'all_metrics' : agg_query},
                       endPoint = `${API_URLS['NEW_DEVICE_DATA']}/${this.state.pid}`,
                       params = {
                         'start_date_time' : this.state.start,//formatDateTime(this.state.start, DATE_TIME_FORMAT, DATE_TIME_FORMAT),
@@ -720,8 +595,6 @@ class DataAnalysis extends Component {
                       },
                       config = getApiConfig(endPoint, 'POST', dataToPost, params);
                     this.props.onDataAnalysis(config);
-                  // }
-                // })
               })
             this.metricsIndex += 1;
           })
