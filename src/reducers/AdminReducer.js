@@ -1,4 +1,4 @@
-import { ADMIN_PROJECT_CREATE, ADMIN_PROJECT_LOCATION_CREATE} from '../constants/ActionTypes';
+import { ADMIN_PROJECT_CREATE, ADMIN_PROJECT_LOCATION_CREATE, ADMIN_PROJECT_LIST} from '../constants/ActionTypes';
 /* Reducer for Project Creation */
 const projectAddition = (state = [], action) => {
     switch(action.type) {
@@ -8,6 +8,11 @@ const projectAddition = (state = [], action) => {
                 data: action.data
             };
         case ADMIN_PROJECT_LOCATION_CREATE:
+            return{
+                ...state,
+                data: action.data
+            };
+        case ADMIN_PROJECT_LIST:
             return{
                 ...state,
                 data: action.data

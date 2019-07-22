@@ -29,6 +29,7 @@ import Health from "./containers/Health";
 import HealthStatus from "./containers/HealthStatus";
 import PageLoader from "./components/pageLoader/PageLoader";
 import ProjectCreate from "./containers/projectCreate/ProjectCreate";
+import ProjectList from "./containers/projectList/ProjectList";
 // import {projectSelect}  from './actions/MenuAction';
 
 import axios from 'axios';
@@ -127,6 +128,7 @@ class App extends React.Component {
                     <Menu {...this.props}/>
                     <Switch>
                       <Route path="/:partnerid?/newproject" component={ProjectCreate} />
+                      <Route path="/:partnerid?/listproject" component={ProjectList} />
                       <Route path="/:partnerid?/profile/:userid?" component={UserProfile} />
                       <Route path="/:partnerid?/alert/project/:pid?" component={AlertDetails} />
                       <Route path="/:partnerid?/dispenser/project/:pid?" component={DispenserDetails} />

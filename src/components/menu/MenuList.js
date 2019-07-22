@@ -46,6 +46,12 @@ return ([
       toolTip: "Alert Data"
     },
     {
+      name: "List Project",
+      url: partnerId ? `/${partnerId}/listproject` : `/listproject`,
+      icon: "ListIcon",
+      toolTip: "List Project"
+    },
+    {
       name: "Add Project",
       url: partnerId ? `/${partnerId}/newproject` : `/newproject`,
       icon: "CreateIcon",

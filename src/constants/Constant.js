@@ -323,3 +323,8 @@ export const PROJECT_CREATION = {
 }
 
 export const LOCATION_LIMIT = 5
+
+export const PROJECT_STATUS = {
+    'PENDING': 'pending',
+    'ACTIVE': 'active',
+}
