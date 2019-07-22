@@ -3,7 +3,7 @@ import {withStyles, Typography,  RadioGroup, FormControlLabel,
     Radio, FormControl, ListItem, FormLabel} from '@material-ui/core';
 
 import {PROJECT_STATUS, SORTING} from '../../constants/Constant';
-// import EnhancedTable from '../grid/Grid';
+import EnhancedTable from '../../components/grid/Grid';
 
 import styles from './ProjectListStyle';
 
@@ -12,7 +12,7 @@ class TabData extends Component {
         super(props)
         this.state = {
             order: SORTING['DECENDING'],
-            orderBy: 'name',
+            orderBy: 'site',
             selected: [],
             page: 0,
             rowsPerPage: 5
@@ -50,23 +50,18 @@ class TabData extends Component {
         const {classes, stateData, handleChange} = this.props;
         let tabData, rows, searchList;
         if(stateData.projectList && stateData.tabValue === PROJECT_STATUS['PENDING']) {
-            // rows = [{ id: 'Firstname', numeric: 'left', disablePadding: false, label: 'Firstname' },
-            //         { id: 'Lastname', numeric: 'left', disablePadding: false, label: 'LastName' },
-            //         { id: 'Role', numeric: 'left', disablePadding: false, label: 'Role' },
-            //         { id: 'Status', numeric: 'left', disablePadding: false, label: 'Status' },
-            //         { id: 'Association', numeric: 'left', disablePadding: false, label: 'Association'}
-            //     ];
-            // searchList = [{ id: 'Firstname', label: 'Firstname' },
-            //         { id: 'Lastname', label: 'LastName' },
-            //         { id: 'Role', label: 'Role' },
-            //         { id: 'Status', label: 'Status' },
-            //     ]
+            rows = [{ id: 'site', numeric: 'left', disablePadding: false, label: 'Site' },
+                    { id: 'site_addr', numeric: 'left', disablePadding: false, label: 'Site Location' },
+                ];
+            searchList = [{ id: 'site', label: 'Site' },
+                    { id: 'site_addr', label: 'Site Location' },
+                ]
             tabData = <Typography component="div">
-                <FormControl component="fieldset" className={classes.formControl}>
+                {/* <FormControl component="fieldset" className={classes.formControl}>
                     <FormLabel component="legend">Pending Projects</FormLabel>
                     <RadioGroup
-                        aria-label="Gender"
-                        name="gender1"
+                        aria-label="Project"
+                        name="projectList"
                         className={classes.group}
                         value={stateData.selectedPid}
                         onChange={handleChange}>
@@ -77,28 +72,33 @@ class TabData extends Component {
 
                         })}
                     </RadioGroup>
-                </FormControl>
-            {/* <EnhancedTable data={stateData.teamInfo} rows={rows}
+                </FormControl> */}
+            <EnhancedTable data={stateData.projectList} rows={rows}
                 order={this.state.order} orderBy={this.state.orderBy}
                 rowsPerPage={this.state.rowsPerPage} page={this.state.page}
-                selected={this.state.selected} category={category}
+                selected={this.state.selected} category={stateData.tabValue}
                 searchList={searchList}
-                handleChange={this.handleChange} handleClick={handleClick} redirectID="UID"
-                allowDelete={false} allowEdit={true}/> */}
+                handleChange={this.handleChange}
+                // handleClick={handleClick}
+                redirectID="PID"
+                allowDelete={false} allowEdit={false}/>
             </Typography>
         } else if (stateData.projectList && stateData.tabValue === PROJECT_STATUS['ACTIVE']) {
-            // rows = [{ id: 'name', numeric: 'left', disablePadding: false, label: 'Name' },
-            //         { id: 'locn', numeric: 'left', disablePadding: false, label: 'Location' }];
-            // searchList = [{ id: 'name', label: 'Name' },
-            //         { id: 'locn', label: 'Location' }];
+            rows = [{ id: 'site', numeric: 'left', disablePadding: false, label: 'Site' },
+                    { id: 'site_addr', numeric: 'left', disablePadding: false, label: 'Site Location' },
+                ];
+            searchList = [{ id: 'site', label: 'Site' },
+                    { id: 'site_addr', label: 'Site Location' },
+                ]
             tabData = <Typography component="div">
-            {/* <EnhancedTable data={data} rows={rows}
+            <EnhancedTable data={stateData.projectList} rows={rows}
                 order={this.state.order} orderBy={this.state.orderBy}
                 rowsPerPage={this.state.rowsPerPage} page={this.state.page}
-                selected={this.state.selected} category={category}
+                selected={this.state.selected} category={stateData.tabValue}
                 searchList={searchList}
-                handleChange={this.handleChange} handleClick={handleClick} redirectID="insid"/> */}
-                Active project list
+                handleChange={this.handleChange}
+                // handleClick={handleClick}
+                redirectID="PID"/>
             </Typography>
         }
         return (

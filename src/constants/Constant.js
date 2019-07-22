@@ -72,7 +72,8 @@ export const REACT_URLS = {
     'USER_PROFILE': (partnerId) => partnerId ? `/${partnerId}/profile` :'/profile',
     'ALERT': (partnerId) => partnerId ? `/${partnerId}/alert/project` : '/alert/project',
     'DISPENSER': (partnerId) => partnerId ? `/${partnerId}/dispenser/project` : '/dispenser/project',
-    'HEALTH_STATUS': (partnerId) => partnerId ? `/${partnerId}/health/project` : '/health/project'
+    'HEALTH_STATUS': (partnerId) => partnerId ? `/${partnerId}/health/project` : '/health/project',
+    'PROJECT_LIST': (partnerId) => partnerId ? `/${partnerId}/listproject` :'/listproject',
 }
 // "ALERT': (partnerId) => partnerId ? `${partnerId}/project/${pid}`: `/project/${pid}`
 

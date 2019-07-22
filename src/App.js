@@ -42,17 +42,7 @@ class App extends React.Component {
         holdComponents: true
       }
     }
-    // componentDidUpdate(prevProps, prevState) {
-    //   /**
-    //    * Save the changed project id in local storage as well, being used while refreshing the page.
-    //    */
-    //     if(this.props.projectSelected &&
-    //       !isEqual(this.props.projectSelected, prevProps.projectSelected)) {
-    //         console.log(this.props.projectSelected);
-    //         this.setState({role: this.props.projectSelected.Role});
-    //         // localStorage.setItem('projectSelected', JSON.stringify(this.props.projectSelected))
-    //     }
-    // }
+
     componentWillMount() {
       localStorage.setItem('previousPath', window.location.pathname);
       const self = this;

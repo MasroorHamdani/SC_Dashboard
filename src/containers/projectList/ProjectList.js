@@ -1,11 +1,11 @@
 import React, {Component} from "react";
-import {withStyles,
+import {withStyles, LinearProgress,
     Paper, AppBar, Tabs, Tab} from '@material-ui/core';
 import { connect } from "react-redux";
 import _, {isEqual} from 'lodash';
 
 import TabData from './TabData';
-import {API_URLS} from '../../constants/Constant';
+import {API_URLS, REACT_URLS} from '../../constants/Constant';
 import {getApiConfig} from '../../services/ApiCofig';
 import {projectList} from  '../../actions/AdminAction';
 
@@ -21,20 +21,24 @@ class ProjectList extends Component {
         }
     }
     componentDidMount() {
+        let param = {
+            status:'pending'
+        };
+        this.getProjectList(param)
+    }
+
+    getProjectList = (param) => {
         let endPoint = `${API_URLS['ADMIN']}`,
-            config = getApiConfig(endPoint, 'GET');
+            params = param,
+            config = getApiConfig(endPoint, 'GET', '', params);
         this.props.onProjectList(config);
     }
 
     componentDidUpdate(prevProps, prevState) {
         if(this.props.projectList && 
         !isEqual(this.props.projectList, prevProps.projectList)) {
-            console.log(this.props.projectList)
-            // let projList = []
-            // this.props.projectList.map((row) => {
-            //     projList['id'] = row['PID']
-            // })
-            this.setState({projectList: this.props.projectList})
+            this.setState({projectList: this.props.projectList,
+                loading: false})
         }
     }
 
@@ -43,11 +47,17 @@ class ProjectList extends Component {
             // loading: true,
             selectedPid : event.target.value
         })
+        this.props.history.push(`${REACT_URLS.PROJECT_LIST}/${this.state.selectedPid}`);
     }
     handleTabChange = (event, value) => {
         this.setState({
-            // loading: true,
+            loading: true,
             tabValue : value
+        }, function(){
+            let param = {
+                status: value
+            };
+            this.getProjectList(param)
         })
     }
     render() {
@@ -55,6 +65,9 @@ class ProjectList extends Component {
         return (
             <div className={classes.root}>
                 <main className={classes.content}>
+                {this.state.loading &&
+                    <LinearProgress className={classes.buttonProgress}/>
+                }
                     <Paper style={{ padding: 8 * 3 }}>
                         <AppBar position="static" color="default">
                             <Tabs

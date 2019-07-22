@@ -41,6 +41,13 @@ const styles = theme => ({
         overflow: 'auto',
         position: 'relative',
         maxHeight: 'auto',
+    },
+    //Progress Bar
+    buttonProgress: {
+        width: '100%',
+        position: 'absolute',
+        right: '0%',
+        top: '64px',
     }
 });
 
