@@ -1,9 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
+import _ from 'lodash';
 import {Table, TableBody, TableCell, TablePagination,
   TableRow, TableFooter, Paper, TextField, Select, MenuItem,
-  List, ListItem} from '@material-ui/core';
+  List, ListItem, Switch} from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EnhancedTableHead from './GridHeader';
@@ -231,11 +232,26 @@ class EnhancedTable extends React.Component {
                                 {Array.isArray(n[id]) ?
                                   <List dense={true}>
                                     {n[id].map((value, index) => {
-                                      return <ListItem key={index} className={classes.denseList}>
-                                        {value}
-                                      </ListItem>
+                                      let valType = Object.prototype.toString.call(value).slice(8, -1);
+                                      if(valType === 'String' || valType === 'Array') {
+                                        return <ListItem key={index} className={classes.denseList}>
+                                          {value}
+                                        </ListItem>
+                                      } else {
+                                        return <div>
+                                          {Object.keys(value).map((key) => {
+                                            return <div> {key}: {value[key]}</div>
+                                          })}
+                                        </div>
+                                      }
                                     })}
                                   </List>
+                                : _.isBoolean(n[id]) ?
+                                  <Switch
+                                  disabled
+                                  checked={n[id]}
+                                  value="Mute"
+                                />
                                 :
                                   <span>{n[id]}</span>
                                 }

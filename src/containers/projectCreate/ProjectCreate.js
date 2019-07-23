@@ -43,7 +43,8 @@ class ProjectCreate extends Component {
             areas: [],
             allAreas: [],
             open: false,
-            openArea: false
+            openArea: false,
+            showFooter: true
         }
     }
 

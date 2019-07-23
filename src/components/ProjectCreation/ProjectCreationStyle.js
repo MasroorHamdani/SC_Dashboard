@@ -67,7 +67,10 @@ const styles = theme => ({
         position: 'absolute',
         right: '0%',
         top: '64px'
-      }
+    },
+    divider: {
+        margin: '25px'
+    }
 });
 
 export default styles;

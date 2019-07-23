@@ -4,7 +4,7 @@ import {withStyles, LinearProgress,
 import { connect } from "react-redux";
 import _, {isEqual} from 'lodash';
 
-import TabData from './TabData';
+import TabData from '../../components/ProjectCreation/TabData';
 import {API_URLS, REACT_URLS} from '../../constants/Constant';
 import {getApiConfig} from '../../services/ApiCofig';
 import {projectList} from  '../../actions/AdminAction';
@@ -16,8 +16,10 @@ class ProjectList extends Component {
         super(props);
         this.state = {
             projectList: [],
+            loading: true,
             selectedPid: '',
-            tabValue: 'pending'
+            tabValue: 'pending',
+            parentId: props.match.params.partnerid
         }
     }
     componentDidMount() {
@@ -42,12 +44,13 @@ class ProjectList extends Component {
         }
     }
 
-    handleChange = (event) => {
+    handleChange = (event, value) => {
         this.setState({
-            // loading: true,
-            selectedPid : event.target.value
+            selectedPid : value
+        }, function() {
+            this.props.history.push(`${REACT_URLS.PROJECT_LIST(this.state.parentId)}/${this.state.selectedPid}`);
         })
-        this.props.history.push(`${REACT_URLS.PROJECT_LIST}/${this.state.selectedPid}`);
+        
     }
     handleTabChange = (event, value) => {
         this.setState({
@@ -65,9 +68,9 @@ class ProjectList extends Component {
         return (
             <div className={classes.root}>
                 <main className={classes.content}>
-                {this.state.loading &&
-                    <LinearProgress className={classes.buttonProgress}/>
-                }
+                    {this.state.loading &&
+                        <LinearProgress className={classes.buttonProgress}/>
+                    }
                     <Paper style={{ padding: 8 * 3 }}>
                         <AppBar position="static" color="default">
                             <Tabs
@@ -104,9 +107,6 @@ function mapDispatchToProps(dispatch) {
         onProjectList: (config) => {
             dispatch(projectList(config))
         },
-        // onProjectUpdate: (config) => {
-        //     dispatch(projectUpdate(config))
-        // }
     }
 }
 

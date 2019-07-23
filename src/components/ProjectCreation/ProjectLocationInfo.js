@@ -7,7 +7,9 @@ import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import EditIcon from '@material-ui/icons/Edit';
 
 import CustomModal from '../../components/modal/Modal';
+import EnhancedTable from '../../components/grid/Grid';
 
+import {SORTING} from '../../constants/Constant';
 import {formatDateTime} from '../../utils/DateFormat';
 import {capitalizeFirstLetter} from '../../utils/FormatStrings';
 
@@ -17,14 +19,28 @@ class ProjectLocationInfo extends Component {
     constructor(props) {
       super(props)
       this.state = {
-        // expanded: 'project'
+        order: SORTING['DECENDING'],
+        orderBy: 'name',
+        selected: [],
+        page: 0,
+        rowsPerPage: 5
       }
     }
 
+    handleChange = (name, value) => {
+    /**
+     * Generic function to set the state in case of any change in any of the fields
+     */
+        this.setState({
+            [name] : value
+        });
+    }
+    
     render() {
         const {classes, data, onChange, onClick,
             onAddtion, handleModalState, editLocation} = this.props;
         let returnData = <div>
+            {data.showFooter &&
             <Grid container spacing={24}>
                 <Grid item xs={12} sm={6}>
                     <TextField
@@ -112,9 +128,29 @@ class ProjectLocationInfo extends Component {
                     </Grid>
                 }
             </Grid>
-        </div>
-        return (
-            <div className={classes.gridRoot}>
+            }
+        </div>;
+        let rows = [{ id: 'name', numeric: 'left', disablePadding: false, label: 'Name' },
+                    { id: 'locn', numeric: 'left', disablePadding: false, label: 'Location' },
+                    { id: 'offdays', numeric: 'left', disablePadding: false, label: 'Off Days' },
+                    { id: 'Mute', numeric: 'left', disablePadding: false, label: 'Mute' },
+                    { id: 'offtimes', numeric: 'left', disablePadding: false, label: 'Off Times' },
+                ],
+            tabData = <Typography component="div">
+                {!data.showFooter &&
+                    <EnhancedTable data={data.locations} rows={rows}
+                        order={this.state.order}
+                        orderBy={this.state.orderBy}
+                        rowsPerPage={this.state.rowsPerPage} page={this.state.page}
+                        selected={this.state.selected}
+                        handleChange={this.handleChange}
+                        category='location'
+                        redirectID="ID"/>
+                }
+                </Typography>
+        return (<div className={classes.gridRoot}>
+            {data.showFooter ?
+            <div>
                 <Grid spacing={24} className={classes.grid}>
                     <Grid item xs={24} sm={12}
                         container
@@ -224,6 +260,10 @@ class ProjectLocationInfo extends Component {
                     open={data.open}
                     showFooter={true}
                 />
+            </div>
+            :
+                <div>{tabData}</div>
+            }
             </div>
         )
     }

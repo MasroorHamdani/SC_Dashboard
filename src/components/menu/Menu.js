@@ -6,10 +6,11 @@ import {Drawer, List, Divider, IconButton, withStyles, Typography} from '@materi
 import classNames from 'classnames';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import {toolbarClicked}  from '../../actions/MenuAction';
-import {secondaryListItems } from '../../containers/ListItems';
 import styles from "./MenuStyle";
 import ListItems from "./ListItems";
 import {mainMenuList} from "./MenuList";
+import {secondaryMenuList} from "./MenuList";
+
 
 class Menu extends Component {
   constructor(props) {
@@ -37,12 +38,15 @@ class Menu extends Component {
      * else set the state first and then get the updated menu
      */
     if(this.state.pid) {
-      this.setState({menu: mainMenuList(this.state.pid, this.state.partnerid)});
+      this.setState({
+        menu: mainMenuList(this.state.pid, this.state.partnerid),
+        secondaryMenu: secondaryMenuList(this.state.pid, this.state.partnerid)
+      });
     } else if(this.props.projectSelected){
       this.setState({
-        pid:this.props.projectSelected.PID,
-        // partnerid:this.props.projectSelected.partnerid,
-        menu:mainMenuList(this.props.projectSelected.PID, this.state.partnerid)//'FARNEK'
+        pid: this.props.projectSelected.PID,
+        menu: mainMenuList(this.props.projectSelected.PID, this.state.partnerid),
+        secondaryMenu: secondaryMenuList(this.state.pid, this.state.partnerid)
       })
     }
   }
@@ -64,9 +68,9 @@ class Menu extends Component {
     if(this.props.projectSelected &&
       !isEqual(this.props.projectSelected, prevProps.projectSelected)) {
         this.setState({
-          pid:this.props.projectSelected.PID,
-          // partnerid:this.props.projectSelected.partnerid,
-          menu:mainMenuList(this.props.projectSelected.PID, this.state.partnerid)
+          pid: this.props.projectSelected.PID,
+          menu: mainMenuList(this.props.projectSelected.PID, this.state.partnerid),
+          secondaryMenu: secondaryMenuList(this.state.pid, this.state.partnerid)
         });
     }
   }
@@ -97,8 +101,12 @@ class Menu extends Component {
           <List>
             <ListItems menuList={this.state.menu} activeRoute={this.activeRoute} menuState={this.state.open}/></List>
           <Divider />
-          {/* <List>{secondaryListItems}</List> */}
-          <Typography className={classes.version}>Version 0.03</Typography>
+          <Typography className={classes.header}>Project Management</Typography>
+          <List>
+            <ListItems menuList={this.state.secondaryMenu} activeRoute={this.activeRoute} menuState={this.state.open}/>
+          </List>
+          <Divider />
+          <Typography className={classes.version}>Version 0.04</Typography>
         </Drawer>
     );
   }

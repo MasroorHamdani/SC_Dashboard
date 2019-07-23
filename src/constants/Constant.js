@@ -74,6 +74,7 @@ export const REACT_URLS = {
     'DISPENSER': (partnerId) => partnerId ? `/${partnerId}/dispenser/project` : '/dispenser/project',
     'HEALTH_STATUS': (partnerId) => partnerId ? `/${partnerId}/health/project` : '/health/project',
     'PROJECT_LIST': (partnerId) => partnerId ? `/${partnerId}/listproject` :'/listproject',
+    // 'PROJECT_LIST': '/listproject'
 }
 // "ALERT': (partnerId) => partnerId ? `${partnerId}/project/${pid}`: `/project/${pid}`
 

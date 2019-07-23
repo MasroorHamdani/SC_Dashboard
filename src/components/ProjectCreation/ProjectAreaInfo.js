@@ -5,7 +5,9 @@ import {withStyles, Grid, TextField, Button,
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import EditIcon from '@material-ui/icons/Edit';
 
+import {SORTING} from '../../constants/Constant';
 import CustomModal from '../../components/modal/Modal';
+import EnhancedTable from '../../components/grid/Grid';
 
 import styles from './ProjectCreationStyle';
 
@@ -13,14 +15,28 @@ class ProjectAreaInfo extends Component {
     constructor(props) {
       super(props)
       this.state = {
-        // expanded: 'project'
+        order: SORTING['DECENDING'],
+        orderBy: 'locn',
+        selected: [],
+        page: 0,
+        rowsPerPage: 5
       }
     }
 
+    handleChange = (name, value) => {
+    /**
+     * Generic function to set the state in case of any change in any of the fields
+     */
+        this.setState({
+            [name] : value
+        });
+    }
+  
     render() {
       const {classes, data, onChange, onClick,
         onAddtion, handleModalState} = this.props;
       let returnData = <div>
+        {data.showFooter &&
           <Grid container spacing={24}>
               <Grid item xs={12} sm={6}>
                 <FormControl className={classes.formControl}>
@@ -62,98 +78,120 @@ class ProjectAreaInfo extends Component {
                   </Grid>
               }
           </Grid>
-      </div>
+        }
+      </div>;
+      let rows = [{ id: 'AreaId', numeric: 'left', disablePadding: false, label: 'AreaId' },
+        { id: 'locn', numeric: 'left', disablePadding: false, label: 'Location' },
+        ],
+      tabData = <Typography component="div">
+        {!data.showFooter &&
+            <EnhancedTable data={data.area} rows={rows}
+                order={this.state.order}
+                orderBy={this.state.orderBy}
+                rowsPerPage={this.state.rowsPerPage} page={this.state.page}
+                selected={this.state.selected}
+                handleChange={this.handleChange}
+                category='area'
+                redirectID="AreaId"/>
+        }
+        </Typography>
       return (
         <div className={classes.gridRoot}>
-          <Grid spacing={24} className={classes.grid}>
-            <Grid item xs={24} sm={12}
-                container
-                alignItems='right'
-                direction='row'
-                justify='flex-end'>
-                <IconButton>
-                    <AddCircleOutlineIcon 
-                        onClick={event => handleModalState('area')}
-                    />
-                </IconButton>
-            </Grid>
-          </Grid>
-          <GridList cellHeight={250} className={classes.gridList}>
-            {data.areas &&
-                data.areas.map((dt, i) => {
-                // Display the Added locations for the project
-                // With Edit and Delete options for the selections.
-                return <Card className={classes.card} key={i}>
-                  <CardHeader
-                    action={
-                    <IconButton className={classes.iconButton}>
-                        <EditIcon 
-                        // onClick={event => this.editLocation(dt.InsID, dt.name)}
+          {data.showFooter ?
+            <div>
+              <Grid spacing={24} className={classes.grid}>
+                <Grid item xs={24} sm={12}
+                    container
+                    alignItems='right'
+                    direction='row'
+                    justify='flex-end'>
+                    <IconButton>
+                        <AddCircleOutlineIcon 
+                            onClick={event => handleModalState('area')}
                         />
-                        {/* <ClearIcon onClick={event => this.removeLocation(dt.InsID, dt.name)}/> */}
                     </IconButton>
-                    }
-                    title={dt.locn}/>
-                  </Card>
-                })
-            }
-          </GridList>
-          {data.limitAreaErrorMessage &&
-            <Grid 
-              item
-              xs={24} sm={12}>
-              <Typography
-                  color="secondary">
-                  {data.limitAreaErrorMessage}
-              </Typography>
-            </Grid>
-          }
-          <Grid container spacing={24}>
-            <Grid item xs={6} sm={3}
-              direction='row'
-              justify='flex-start'>
-              <Button
-                  variant="contained"
-                  color="primary"
-                  className={classes.button}
-                  onClick={e=>onClick('area', true)}
-                  >
-                  Draft
-              </Button>
-            </Grid>
-            <Grid item xs={16} sm={8}
-                container
-                direction='row'
-                justify='flex-end'>
-                <Button
-                    variant="contained"
-                    color="primary"
-                    className={classes.button}
-                    onClick={e=>onClick('location')}>
-                    Previous
-                </Button>
-            </Grid>
-            <Grid item xs={2} sm={1}
-                container
-                direction='row'
-                justify='flex-end'>
-                <Button
-                    variant="contained"
-                    color="primary"
-                    className={classes.button}
-                    onClick={e=>onClick()}>
-                    Submit
-                </Button>
-            </Grid>
-          </Grid>
-          {/* Modal for Associating Location to Areas */}
-          <CustomModal
-              header="Add Area Details"
-              content={returnData}
-              handleClose={event => handleModalState('area')}
-              handleClick={onAddtion}
-              open={data.openArea}
-              showFooter={true}/>
+                </Grid>
+              </Grid>
+              <GridList cellHeight={250} className={classes.gridList}>
+                {data.areas &&
+                    data.areas.map((dt, i) => {
+                    // Display the Added locations for the project
+                    // With Edit and Delete options for the selections.
+                    return <Card className={classes.card} key={i}>
+                      <CardHeader
+                        action={
+                        <IconButton className={classes.iconButton}>
+                            <EditIcon 
+                            // onClick={event => this.editLocation(dt.InsID, dt.name)}
+                            />
+                            {/* <ClearIcon onClick={event => this.removeLocation(dt.InsID, dt.name)}/> */}
+                        </IconButton>
+                        }
+                        title={dt.locn}/>
+                      </Card>
+                    })
+                }
+              </GridList>
+              {data.limitAreaErrorMessage &&
+                <Grid 
+                  item
+                  xs={24} sm={12}>
+                  <Typography
+                      color="secondary">
+                      {data.limitAreaErrorMessage}
+                  </Typography>
+                </Grid>
+              }
+              <Grid container spacing={24}>
+                <Grid item xs={6} sm={3}
+                  direction='row'
+                  justify='flex-start'>
+                  <Button
+                      variant="contained"
+                      color="primary"
+                      className={classes.button}
+                      onClick={e=>onClick('area', true)}
+                      >
+                      Draft
+                  </Button>
+                </Grid>
+                <Grid item xs={16} sm={8}
+                    container
+                    direction='row'
+                    justify='flex-end'>
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        className={classes.button}
+                        onClick={e=>onClick('location')}>
+                        Previous
+                    </Button>
+                </Grid>
+                <Grid item xs={2} sm={1}
+                    container
+                    direction='row'
+                    justify='flex-end'>
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        className={classes.button}
+                        onClick={e=>onClick()}>
+                        Submit
+                    </Button>
+                </Grid>
+              </Grid>
+              {/* Modal for Associating Location to Areas */}
+              <CustomModal
+                  header="Add Area Details"
+                  content={returnData}
+                  handleClose={event => handleModalState('area')}
+                  handleClick={onAddtion}
+                  open={data.openArea}
+                  showFooter={true}/>
+            </div>
+          :
+          <div>{tabData}</div>
+        }
         </div>
       )
   }

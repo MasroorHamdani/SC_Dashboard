@@ -39,7 +39,11 @@ const styles = theme => ({
     ...theme.mixins.toolbar,
   },
   version :{
-    paddingLeft: '80px'
+    paddingLeft: '70px'//'80px'
+  },
+  header: {
+    paddingLeft: '70px',
+    opacity: '0.5'
   }
 });
 

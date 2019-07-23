@@ -62,46 +62,43 @@ class ProjectGeneralInfo extends Component {
                     {data.generalErrorMessage &&
                         <Grid 
                             item
-                            xs={24} sm={12}
-                            // container
-                            // alignItems='center'
-                            // direction='row'
-                            // justify='flex-start'
-                            >
+                            xs={24} sm={12}>
                             <Typography
-                                // variant="contained"
                                 color="secondary">
                                 {data.generalErrorMessage}
                             </Typography>
                         </Grid>
                     }
-                    <Grid item xs={12} sm={6}
-                        direction='row'
-                        justify='flex-end'
-                        >
-                        <Button
-                            variant="contained"
-                            color="primary"
-                            className={classes.button}
-                            onClick={e=>onClick('general', true)}>
-                            Draft
-                        </Button>
-                    </Grid>
-                    <Grid item xs={12} sm={6}
-                        container
-                        alignItems='center'
-                        direction='row'
-                        justify='flex-end'
-                        >
-                        <Button
-                            variant="contained"
-                            color="primary"
-                            className={classes.button}
-                            onClick={e=>onClick('location')}>
-                            Next
-                        </Button>
-                    </Grid>
-                    
+                    {data.showFooter &&
+                        <Grid item xs={12} sm={6}
+                            direction='row'
+                            justify='flex-end'
+                            >
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                className={classes.button}
+                                onClick={e=>onClick('general', true)}>
+                                Draft
+                            </Button>
+                        </Grid>
+                    }
+                    {data.showFooter &&
+                        <Grid item xs={12} sm={6}
+                            container
+                            alignItems='center'
+                            direction='row'
+                            justify='flex-end'
+                            >
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                className={classes.button}
+                                onClick={e=>onClick('location')}>
+                                Next
+                            </Button>
+                        </Grid>
+                    }
                 </Grid>
             </div>
         )

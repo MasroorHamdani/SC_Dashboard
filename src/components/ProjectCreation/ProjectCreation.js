@@ -23,36 +23,36 @@ class ProjectCreation extends Component {
         <div>
           <Typography variant="h6">
             Create New Project
-            </Typography>
-            <ExpansionPanel expanded={data.expanded === 'general'}>
-              <ExpansionPanelSummary id="panel_project">
-                <Typography className={classes.heading}>Project General Details</Typography>
-              </ExpansionPanelSummary>
-              <ExpansionPanelDetails>
-                <ProjectGeneralInfo onChange={onChange}
-                  data={data} onClick={onClick}/>
-              </ExpansionPanelDetails>
-            </ExpansionPanel>
-            <ExpansionPanel expanded={data.expanded === 'location'}>
-              <ExpansionPanelSummary id="panel_location">
-                <Typography className={classes.heading}>Project Location Details</Typography>
-              </ExpansionPanelSummary>
-              <ExpansionPanelDetails>
-                <ProjectLocationInfo onChange={onChange}
-                  data={data} onClick={onClick} onAddtion={onAddtion}
-                  handleModalState={handleModalState} editLocation={editLocation}/>
-              </ExpansionPanelDetails>
-            </ExpansionPanel>
-            <ExpansionPanel expanded={data.expanded === 'area'}>
-              <ExpansionPanelSummary id="panel_area">
-                <Typography className={classes.heading}>Project Area Details</Typography>
-              </ExpansionPanelSummary>
-              <ExpansionPanelDetails>
-              <ProjectAreaInfo onChange={onChange}
-                  data={data} onClick={onClick} onAddtion={onAreaAddtion}
-                  handleModalState={handleModalState}/>
-              </ExpansionPanelDetails>
-            </ExpansionPanel>
+          </Typography>
+          <ExpansionPanel expanded={data.expanded === 'general'}>
+            <ExpansionPanelSummary id="panel_project">
+              <Typography className={classes.heading}>Project General Details</Typography>
+            </ExpansionPanelSummary>
+            <ExpansionPanelDetails>
+              <ProjectGeneralInfo onChange={onChange}
+                data={data} onClick={onClick}/>
+            </ExpansionPanelDetails>
+          </ExpansionPanel>
+          <ExpansionPanel expanded={data.expanded === 'location'}>
+            <ExpansionPanelSummary id="panel_location">
+              <Typography className={classes.heading}>Project Location Details</Typography>
+            </ExpansionPanelSummary>
+            <ExpansionPanelDetails>
+              <ProjectLocationInfo onChange={onChange}
+                data={data} onClick={onClick} onAddtion={onAddtion}
+                handleModalState={handleModalState} editLocation={editLocation}/>
+            </ExpansionPanelDetails>
+          </ExpansionPanel>
+          <ExpansionPanel expanded={data.expanded === 'area'}>
+            <ExpansionPanelSummary id="panel_area">
+              <Typography className={classes.heading}>Project Area Details</Typography>
+            </ExpansionPanelSummary>
+            <ExpansionPanelDetails>
+            <ProjectAreaInfo onChange={onChange}
+                data={data} onClick={onClick} onAddtion={onAreaAddtion}
+                handleModalState={handleModalState}/>
+            </ExpansionPanelDetails>
+          </ExpansionPanel>
         </div>
       )
     }
