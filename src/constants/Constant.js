@@ -329,4 +329,16 @@ export const LOCATION_LIMIT = 5
 export const PROJECT_STATUS = {
     'PENDING': 'pending',
     'ACTIVE': 'active',
+    'REJECT': 'reject'
 }
+
+export const REGION_LIST = [
+    {key: 'Asia/Dubai',
+    display: 'Asia/Dubai'},
+    {key: 'Asia/Singapore',
+    display: 'Asia/Singapore'},
+    {key: 'Asia/Kolkata',
+    display: 'Asia/Kolkata'},
+    {key: 'Europe/Paris',
+    display: 'Europe/Paris'}
+]

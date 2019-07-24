@@ -1,6 +1,8 @@
 import React, {Component} from "react";
 import {withStyles, Grid, TextField, Button,
-    Typography} from '@material-ui/core';
+    Typography, FormControl, InputLabel, Select} from '@material-ui/core';
+import {REGION_LIST} from '../../constants/Constant';
+
 import styles from './ProjectCreationStyle';
 
 class ProjectGeneralInfo extends Component {
@@ -18,6 +20,7 @@ class ProjectGeneralInfo extends Component {
                     <Grid item xs={12} sm={6}>
                         <TextField
                             required
+                            disabled={!data.showFooter ? true: false}
                             id="site"
                             name="site"
                             label="Project Name" //{t('firstname')}
@@ -28,6 +31,7 @@ class ProjectGeneralInfo extends Component {
                     <Grid item xs={12} sm={6}>
                     <TextField
                         required
+                        disabled={!data.showFooter ? true: false}
                         id="site_addr"
                         name="site_addr"
                         label="Site Address"
@@ -38,19 +42,39 @@ class ProjectGeneralInfo extends Component {
                     />
                     </Grid>
                     <Grid item xs={12} sm={6}>
-                    <TextField
-                        required
-                        id="Region"
-                        name="Region"
-                        label="Time Zone/Region"
-                        fullWidth
-                        value={data.general.Region}
-                        onChange={e=>onChange(e, 'general')}
-                    />
+                    {!data.showFooter ?
+                        <TextField
+                            required
+                            disabled={true}
+                            id="Region"
+                            name="Region"
+                            label="Time Zone/Region"
+                            fullWidth
+                            value={data.general.Region}
+                            onChange={e=>onChange(e, 'general')}/>
+                    :
+                        <FormControl className={classes.formControl} fullWidth>
+                            <InputLabel htmlFor="age-native-helper">Time Zone/Region</InputLabel>
+                            <Select native
+                                value={data.general.Region}
+                                onChange={e=>onChange(e, 'general')}
+                                inputProps={{
+                                    name: 'Region',
+                                    id: 'Region',
+                                    }}>
+                            <option value="" />
+                                {REGION_LIST.map(function(region) {
+                                    return <option value={region.key} name={region.key} key={region.key} >
+                                        {region.display}</option>
+                            })}
+                            </Select>
+                        </FormControl>
+                    }
                     </Grid>
                     <Grid item xs={12} sm={6}>
                         <TextField
                             required
+                            disabled={!data.showFooter ? true: false}
                             id="Email"
                             name="Email"
                             label="Email"

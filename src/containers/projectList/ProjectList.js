@@ -83,6 +83,8 @@ class ProjectList extends Component {
                                 value='pending'/>
                             <Tab label='Active'
                                 value='active'/>
+                            <Tab label='Reject'
+                                value='reject'/>
                             </Tabs>
                         </AppBar>
                         {this.state.tabValue &&

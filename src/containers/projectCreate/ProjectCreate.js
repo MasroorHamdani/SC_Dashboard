@@ -40,6 +40,7 @@ class ProjectCreate extends Component {
             allLocations: [],
             tempLocation: [],
             editLocation: [],
+            tempEdit: {},
             areas: [],
             allAreas: [],
             open: false,
@@ -111,7 +112,7 @@ class ProjectCreate extends Component {
     }
 
     getProjectData = () => {
-        //Call aPI to save data
+        //Call API to save data
         if(this.state.general.site && this.state.general.site_addr &&
             this.state.general.Email && this.state.general.Region) {
             if(!isEqual(this.state.generalProject, this.state.general)) {
@@ -133,7 +134,7 @@ class ProjectCreate extends Component {
         }
     }
 
-    editLocation = (id, dt) => {
+    editLocation = (id) => {
         let location = this.state.locations[id];
         location['offday'] = location['offdays'].join();
         location['isEdit'] = true
@@ -203,7 +204,9 @@ class ProjectCreate extends Component {
                 temp['ShiftStart'] = this.state.location.ShiftStart;
                 temp['offday'] = this.state.location.offday
                 // let index = this.state.locations.indexOf(this.state.tempEdit);
-                let index = _.findIndex(this.state.locations, this.state.tempEdit);
+                let index = -1;
+                if (!_.isEmpty(this.state.tempEdit))
+                    index = _.findIndex(this.state.locations, this.state.tempEdit);
                 
                 if(index >= 0)
                     this.state.locations.splice(index, 1);
@@ -344,7 +347,6 @@ class ProjectCreate extends Component {
                 })
                 else {
                     this.state.tempLocation.map((row) => {
-                        // let index = this.state.locations.indexOf(row);
                         let index = _.findIndex(this.state.locations, row)
                         if(index >= 0)
                             this.state.locations.splice(index, 1);

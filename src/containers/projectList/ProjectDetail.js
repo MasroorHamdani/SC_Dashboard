@@ -3,7 +3,7 @@ import {withStyles, LinearProgress} from '@material-ui/core';
 import { connect } from "react-redux";
 import _, {isEqual} from 'lodash';
 
-import {API_URLS} from '../../constants/Constant';
+import {API_URLS, PROJECT_STATUS} from '../../constants/Constant';
 import {projectCreation} from  '../../actions/AdminAction'; 
 import {getApiConfig} from '../../services/ApiCofig';
 import {formatDateTime} from '../../utils/DateFormat';
@@ -33,7 +33,8 @@ class ProjectDetail extends Component {
     componentDidUpdate(prevProps, prevState) {
         if(this.props.projectData && 
             !isEqual(this.props.projectData, prevProps.projectData)) {
-            if(this.props.projectData.status !== 'active') {
+            if(this.props.projectData.status !== PROJECT_STATUS['ACTIVE'] &&
+                this.props.projectData.status !== PROJECT_STATUS['REJECT']) {
                 let projectDetail = this.props.projectData;
                 let email= [];
                 projectDetail.general['ProjectConfig']['HealthUpdates']['Email'].map((row) => {
@@ -57,22 +58,23 @@ class ProjectDetail extends Component {
     }
 
     handleModalState = (type) => {
-        /**
-         * Handle the modal open and close state.
-         * Modal shown to accept/reject a new allocation.
-         */
+    /**
+     * Handle the modal open and close state.
+     * Modal shown to active/reject a new allocation.
+     */
         this.setState({
-            open: !this.state.open
+            open: !this.state.open,
+            type: type
         });
-        if(type === 'accept') {
+        if(type === PROJECT_STATUS['ACTIVE']) {
             this.setState({
                 modalHeader: "Do you want to add the Project",
-                showModalFooter : true
+                showModalFooter : true,
             })
-        } else if(type === 'reject') {
+        } else if(type === PROJECT_STATUS['REJECT']) {
             this.setState({
                 modalHeader: "Project Request Discarded",
-                showModalFooter : false
+                showModalFooter : true,
             })
         }
     }
@@ -81,7 +83,7 @@ class ProjectDetail extends Component {
         let endPoint = `${API_URLS['ADMIN']}/${this.state.pid}`,
             dataToPost = {
                 "type": "general",
-                "status": "active"
+                "status": this.state.type
             },
             config = getApiConfig(endPoint, 'POST', dataToPost);
         this.props.onProjectCreation(config);

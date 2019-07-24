@@ -173,7 +173,7 @@ class ProjectLocationInfo extends Component {
                                 action={
                                 <IconButton className={classes.iconButton}>
                                     <EditIcon 
-                                    onClick={event => editLocation(i, dt)}
+                                    onClick={event => editLocation(i)}
                                     />
                                     {/* <ClearIcon onClick={event => this.removeLocation(dt.InsID, dt.name)}/> */}
                                 </IconButton>
