@@ -330,3 +330,92 @@ export const PROJECT_ACTIONS = {
     HOMEPAGE : "PROJECT_HOMEPAGE",
     INSTALLATIONPAGE: "PROJECT_INSTALLATION"
 }
+
+export const GRAPH_RENDER_TYPE = {
+    COLLATE : 'collate',
+    SUBPLOT : 'subplot'
+}
+
+export const MOCK_DATA = [{
+    "projectHomepageUSM_PC_FW": {
+        "metrics": [
+            {
+                "sampledNumberOfPeople_190417132642CC50E38C4904": {
+                    "column_items": [
+                      "AGG", 
+                      "data_v_count"
+                    ], 
+                    "metric_data_key": "AGG", 
+                    "metric_id": "sampledNumberOfPeople_190417132642CC50E38C4904", 
+                    "metric_name": "Number of People: Sampled", 
+                    "time_index": "AGG", 
+                    "metric_type": "timeseries", 
+                    "data_source_type": "device_raw", 
+                    "data_source": "190417132642CC50E38C4904", 
+                    "dimensions": [
+                      {
+                        "color": "#97ae60", 
+                        "ctype": "bar", 
+                        "dkey": "key", 
+                        "name": "Number of People", 
+                        "show_sampling_widget": true, 
+                        "id": "sampledNumberOfPeople_190417132642CC50E38C4904_did1", 
+                        "actions": [
+                          {
+                            "type": "RESAMPLER", 
+                            "criteria": {
+                              "agg": "sum", 
+                              "window_type": "constant", 
+                              "rule": "60T"
+                            }
+                          }
+                        ], 
+                        "key": "data_v_count"
+                      }
+                    ]
+                }
+            },
+            {
+                "sampledNumberOfPeople_190417132356CC50E38C48E0": {
+                    "column_items": [
+                      "AGG", 
+                      "data_v_count"
+                    ], 
+                    "metric_data_key": "AGG", 
+                    "metric_id": "sampledNumberOfPeople_190417132356CC50E38C48E0", 
+                    "metric_name": "Number of People: Sampled", 
+                    "time_index": "AGG", 
+                    "metric_type": "timeseries", 
+                    "data_source_type": "device_raw", 
+                    "data_source": "190417132356CC50E38C48E0", 
+                    "dimensions": [
+                      {
+                        "color": "#27ae60", 
+                        "ctype": "bar", 
+                        "dkey": "key", 
+                        "name": "Number of People", 
+                        "show_sampling_widget": true, 
+                        "id": "sampledNumberOfPeople_190417132356CC50E38C48E0_did1", 
+                        "actions": [
+                          {
+                            "type": "RESAMPLER", 
+                            "criteria": {
+                              "agg": "sum", 
+                              "window_type": "constant", 
+                              "rule": "60T"
+                            }
+                          }
+                        ], 
+                        "key": "data_v_count"
+                      }
+                    ]
+                }
+            }
+        ],
+        "params": {
+            "render_params": {
+                "show": "collate"// or subplot"
+            }
+        }
+    }
+}]

@@ -1,9 +1,9 @@
-import {_, groupBy, orderBy, sortBy} from 'lodash';
+import _, {groupBy, orderBy, sortBy} from 'lodash';
 import moment from 'moment-timezone';
 
 import {DATE_TIME_FORMAT, GRAPH_LABEL_TIME_FORMAT,
     METRIC_TYPE, ANALYTICS_DATE, GRAPH_LABEL_DATE_TIME_FORMAT,
-    NAMESPACE_MAPPER, DATA_OPERATIONS} from '../constants/Constant';
+    NAMESPACE_MAPPER, DATA_OPERATIONS, GRAPH_RENDER_TYPE} from '../constants/Constant';
 import {formatDateTime, getTimeDifference,
     getTodaysStartDateTime} from '../utils/DateFormat';
 
@@ -26,10 +26,35 @@ export function getFormatedGraphData(passedData, metrics, stateData='', isCustom
  * Finally return the final data back to calling function
  */
     let graphData = [], nameMapper = {}, referenceMapper={};
-    metrics.map(function(row) {
-        let metridId = row.metric_id;
-        let graphSection = [], mapper={}, referenceLine={};
-        Object.keys(passedData[metridId]).map((key) => {
+    let newMetrics= [_.cloneDeep(metrics[0])], metID = metrics[0].metric_id,
+        newMetricData = {};
+    newMetrics[0].dimensions = [];
+
+    // Checking if render type is collate,
+    // If yes, than we have to combine the dimension metrics as well as the data metrics
+    if(metrics[0].renderType === GRAPH_RENDER_TYPE['COLLATE']) {
+        metrics.map(function(row) {
+            row.dimensions.map((r) => {
+                newMetrics[0].dimensions.push(r);
+            })
+            newMetricData[metID] = Object.assign({}, newMetricData[metID], passedData[row.metric_id])
+        });
+    }
+
+    // This condition is added to make sure this is generic function
+    // and it will work for collate or subplot both the cases
+    let metricToUse = metrics[0].renderType === GRAPH_RENDER_TYPE['COLLATE'] ?
+            _.cloneDeep(newMetrics) : _.cloneDeep(metrics),
+        metricDataToUse = metrics[0].renderType === GRAPH_RENDER_TYPE['COLLATE'] ?
+            _.cloneDeep(newMetricData) : _.cloneDeep(passedData);
+    // console.log(metricToUse, metricDataToUse)
+    // Generic part of the function,
+    // which will go through multiple metrics in case its of type subplot or
+    // got through one metric only if its of type collate.
+    metricToUse.map(function(row) {
+        let metridId = row.metric_id,
+            graphSection = [], mapper={}, referenceLine={};
+        Object.keys(metricDataToUse[metridId]).map((key) => {
             row.dimensions.map((dim) => {
                 if(row.metric_type === METRIC_TYPE['TABLE_DATA']) {
                     let tableMapper = [], inputFormat, outputFormat;
@@ -48,7 +73,7 @@ export function getFormatedGraphData(passedData, metrics, stateData='', isCustom
                         tableMapper.push(temp);
                     })
                     nameMapper[metridId] = tableMapper;
-                    passedData[metridId][dim.id].data.data.map((vec) => {
+                    metricDataToUse[metridId][dim.id].data.data.map((vec) => {
                         tableMapper.map((tableMap) => {
                             if(tableMap.type === 'timestamp') {
                                 vec[tableMap.id] = moment(vec[tableMap.id], tableMap.outputFormat, true).isValid() ? vec[tableMap.id] :
@@ -59,7 +84,7 @@ export function getFormatedGraphData(passedData, metrics, stateData='', isCustom
                     })
                     graphData[metridId] = graphSection;
                 } else if(row.metric_type !== METRIC_TYPE['RAW_DATA']) {
-                    passedData[metridId][dim.id].data.map((vec) => {
+                    metricDataToUse[metridId][dim.id].data.map((vec) => {
                         if(row.metric_type === METRIC_TYPE['TIMESERIES']) {
                             let graphElement = {};
                             if(row.metric_data_key && (row.metric_data_key === 't' || row.metric_data_key === 'AGG')) {
@@ -83,7 +108,7 @@ export function getFormatedGraphData(passedData, metrics, stateData='', isCustom
                         }
                     })
                 } else if(stateData.projectLocationList) {
-                    const data = groupBy(passedData[metridId][dim.id].data,'ID');
+                    const data = groupBy(metricDataToUse[metridId][dim.id].data,'ID');
                     /**
                      * This part is specifically for alerts data.
                      * Mapping the location list name with locations ids
@@ -136,7 +161,6 @@ export function getFormatedGraphData(passedData, metrics, stateData='', isCustom
                 nameMapper[metridId] = mapper;
                 referenceMapper[metridId] = referenceLine;
             }
-            
         })
         
         if(row.metricType !== METRIC_TYPE['RAW_DATA'] && row.metricType !== METRIC_TYPE['TABLE_DATA']) {
@@ -156,12 +180,14 @@ export function getFormatedGraphData(passedData, metrics, stateData='', isCustom
                 }
             })
             if(testData.length > 0)
-                graphData[metridId] = sortBy(testData,'name');//testData;
+                graphData[metridId] = sortBy(testData,'name');
         }
     })
+    // console.log(metrics, metricToUse)
     return {graphData: graphData,
         nameMapper: nameMapper,
-        referenceMapper: referenceMapper
+        referenceMapper: referenceMapper,
+        metricToUse: metricToUse
     }
 }
 

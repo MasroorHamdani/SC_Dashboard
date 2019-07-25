@@ -5,8 +5,8 @@ import PropTypes from 'prop-types';
 import {isEqual} from "lodash";
 import styles from './DashboardStyle'
 import ProjectDataComponent from "../../components/projectData/ProjectData";
-import { API_URLS, NAMESPACE, DASHBOARD_METRIC,
-  DATE_TIME_FORMAT, PROJECT_ACTIONS} from "../../constants/Constant";
+import { API_URLS, NAMESPACE, GRAPH_RENDER_TYPE,
+  DATE_TIME_FORMAT, PROJECT_ACTIONS, MOCK_DATA} from "../../constants/Constant";
 import { getApiConfig } from '../../services/ApiCofig';
 import {projectAnalysisData, projectSubMenuList,
   projectDataMetricList, InitialiseDataState,
@@ -37,19 +37,10 @@ class Dashboard extends Component {
     this.setState({loading: true}, function() {
       let getEndPoint = `${API_URLS['NEW_DEVICE_DATA']}/${this.state.PID}`,
         params = {
-          action: PROJECT_ACTIONS['HOMEPAGE']
+          action: PROJECT_ACTIONS['HOMEPAGE']//`${PROJECT_ACTIONS['HOMEPAGE']}_${this.state.PID}`
         },
         getconfig = getApiConfig(getEndPoint, 'GET', '', params);
         this.props.onDataMetricList(getconfig);
-
-      // let dataToPost = DASHBOARD_METRIC,
-      //   endPoint = `${API_URLS['DEVICE_DATA']}/${this.state.PID}/${API_URLS['DEFAULT']}`,
-      //   params = {
-      //     'start' : formatDateTime(this.state.startTime, DATE_TIME_FORMAT, DATE_TIME_FORMAT),
-      //     'end': formatDateWithTimeZone(this.state.endTime, DATE_TIME_FORMAT, DATE_TIME_FORMAT, this.state.timeZone),
-      //   },
-      //   config = getApiConfig(endPoint, 'POST', dataToPost, params);
-      // this.props.onDataAnalysis(config);
     })
   }
 
@@ -122,12 +113,21 @@ class Dashboard extends Component {
       && this.metricsIndex === 0) {
         this.metricLength = this.props.projectMetricList ? this.props.projectMetricList.length : 0;
         if(this.metricsIndex < this.metricLength) {
-          this.props.projectMetricList.map((extRow) => {
+          // this.props.projectMetricList.map((extRow) => {
+            MOCK_DATA.map((extRow) => {
               Object.keys(extRow).map((key) => {
                 let agg_query = []
-                extRow[key].map((row) => {
-                  agg_query.push(Object.values(row)[0])
-                });
+                let renderType = extRow[key]['params']['render_params']['show'] ?
+                  extRow[key]['params']['render_params']['show'] :
+                  GRAPH_RENDER_TYPE['SUBPLOT'];
+                Object.keys(extRow[key]).map((k) => {
+                  if(k === 'metrics') {
+                    extRow[key][k].map((metricRow) => {
+                      Object.values(metricRow)[0]['renderType'] = renderType
+                      agg_query.push(Object.values(metricRow)[0])
+                    })
+                  }
+                })
                   // if(Object.values(row)[0].data_source === this.state.PID) {
                     let dataToPost = {'all_metrics' : agg_query},
                       endPoint = `${API_URLS['NEW_DEVICE_DATA']}/${this.state.PID}`,
@@ -196,12 +196,6 @@ class Dashboard extends Component {
               dashboardData: dashboardData,
               loading: false
             });
-            // if(this.metricsIndexReceived === this.metricLength) {
-            //   this.setState({
-            //     loading: false
-            //   })
-            // }
-            // this.metricsIndexReceived =+1;
         }
         if(this.props.projectLocationList &&
           !isEqual(this.props.projectLocationList, prevProps.projectLocationList)) {

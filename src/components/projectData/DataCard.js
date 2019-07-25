@@ -13,8 +13,9 @@ class DataCard extends Component{
         let analyticsData = getFormatedGraphData(dataAnalysis, metrics, stateData),
             graphData = analyticsData.graphData,
             nameMapper = analyticsData.nameMapper,
+            metricToUse = analyticsData.metricToUse,
             tabData = <GraphPlot graphData={graphData}
-                        nameMapper={nameMapper} metrics={metrics}
+                        nameMapper={nameMapper} metrics={metricToUse}
                         stateData={stateData} isDashboard={true}/>;
         return tabData;
     }
