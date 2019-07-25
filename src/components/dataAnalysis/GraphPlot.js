@@ -277,42 +277,40 @@ class GraphPlot extends Component {
                                         <Legend/>
                                     </PieChart>
                                 : metric.dimensions[0].ctype === DATA_VIEW_TYPE['VERTICAL'] ?
-                                    <ResponsiveContainer width='100%' height={400}>
-                                        <ComposedChart layout="vertical" className={classes.lineChart}
-                                            data={graphData[metric.metric_id]}
-                                            margin={{top: 5, right: 30, left: 20, bottom: 5}}>
-                                            <YAxis dataKey="name" minTickGap={20} type="category"
-                                                label={{ value: 'Dispenser', angle: -90, position: 'insideLeft'}}/>
-                                            <XAxis type="number" 
-                                                label={{ value: 'Value', position: 'insideBottomRight', offset: 0}}/>
-                                            <CartesianGrid strokeDasharray="3 3"/>
-                                            <Tooltip/>
-                                            <Legend />
-                                            {nameMapper &&
-                                                Object.keys(nameMapper[metric.metric_id]).map(key => {
-                                                    let mapper = nameMapper[metric.metric_id][key];
-                                                    return <Bar name={mapper['name']} barSize={60} key={key}
-                                                        dataKey={key} isAnimationActive={false}>
-                                                        {
-                                                            graphData[metric.metric_id].map((entry, index) => {
-                                                                let color;
-                                                                if(entry[key] >= 80)
-                                                                    color = '#1b5e20';
-                                                                else if(entry[key] <= 40)
-                                                                    color = '#dd2c00';
-                                                                else if(entry[key] < 80 && entry[key] > 40)
-                                                                    color = '#ffeb3b';
-                                                                return <Cell key={index} fill={color}
-                                                                    // onClick={e => handleBarClick(entry[key])}
-                                                                />;
-                                                            })
-                                                        }
-                                                    </Bar>
-                                                })
-                                            }
-                                        </ComposedChart>
-                                    </ResponsiveContainer>
-                                : (metric.dimensions[0].ctype === DATA_VIEW_TYPE['TILE'] ?
+                                    <ComposedChart layout="vertical" className={classes.lineChart}
+                                        data={graphData[metric.metric_id]}
+                                        margin={{top: 5, right: 30, left: 20, bottom: 5}}>
+                                        <YAxis dataKey="name" minTickGap={20} type="category"
+                                            label={{ value: 'Dispenser', angle: -90, position: 'insideLeft'}}/>
+                                        <XAxis type="number" 
+                                            label={{ value: 'Value', position: 'insideBottomRight', offset: 0}}/>
+                                        <CartesianGrid strokeDasharray="3 3"/>
+                                        <Tooltip/>
+                                        <Legend />
+                                        {nameMapper &&
+                                            Object.keys(nameMapper[metric.metric_id]).map(key => {
+                                                let mapper = nameMapper[metric.metric_id][key];
+                                                return <Bar name={mapper['name']} barSize={60} key={key}
+                                                    dataKey={key} isAnimationActive={false}>
+                                                    {
+                                                        graphData[metric.metric_id].map((entry, index) => {
+                                                            let color;
+                                                            if(entry[key] >= 80)
+                                                                color = '#1b5e20';
+                                                            else if(entry[key] <= 40)
+                                                                color = '#dd2c00';
+                                                            else if(entry[key] < 80 && entry[key] > 40)
+                                                                color = '#ffeb3b';
+                                                            return <Cell key={index} fill={color}
+                                                                // onClick={e => handleBarClick(entry[key])}
+                                                            />;
+                                                        })
+                                                    }
+                                                </Bar>
+                                            })
+                                        }
+                                    </ComposedChart>
+                                : metric.dimensions[0].ctype === DATA_VIEW_TYPE['TILE'] ?
                                         <div className={classes.tile}
                                             style={{backgroundColor:graphData[metric.metric_id][0].color}}>
                                             <Typography gutterBottom variant="h6">
@@ -322,9 +320,32 @@ class GraphPlot extends Component {
                                                 {graphData[metric.metric_id][0].value}
                                             </Typography>
                                         </div>
-                                    :
-                                        <div>Can't find appropriate Pattern!</div>
-                                    )
+                                : metric.dimensions[0].ctype === DATA_VIEW_TYPE['BAR'] ?
+                                    <ComposedChart className={classes.lineChart}
+                                        data={graphData[metric.metric_id]}
+                                        margin={{top: 5, right: 30, left: 20, bottom: 5}}>
+                                        <XAxis dataKey="name" 
+                                            minTickGap={20}
+                                            label={{ value: 'Feedback', position: 'insideBottomRight', offset: -3}}/>
+                                        <YAxis />
+                                        <CartesianGrid strokeDasharray="3 3"/>
+                                        <Tooltip/>
+                                        <Legend />
+                                        {nameMapper &&
+                                            Object.keys(nameMapper[metric.metric_id]).map(key => {
+                                                let mapper = nameMapper[metric.metric_id][key];
+                                                return  <Bar name={mapper['name']} key={key}
+                                                    dataKey={this.state.selectedLine === null || this.state.selectedLine === key ? key : `${key} `}
+                                                    // dataKey={key}
+                                                    fill={mapper['color']} isAnimationActive={false}
+                                                    // onClick={e => !isCustomModal? handleBarClick(metric.metric_id): ''}
+                                                    fillOpacity={this.state.opacity[key]}
+                                                    />
+                                            })
+                                        }
+                                    </ComposedChart>
+                                :
+                                    <div>Can't find appropriate Pattern!</div>
                                 }
                             </ResponsiveContainer>
                         :

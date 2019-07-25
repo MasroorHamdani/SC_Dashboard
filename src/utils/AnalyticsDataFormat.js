@@ -3,7 +3,8 @@ import moment from 'moment-timezone';
 
 import {DATE_TIME_FORMAT, GRAPH_LABEL_TIME_FORMAT,
     METRIC_TYPE, ANALYTICS_DATE, GRAPH_LABEL_DATE_TIME_FORMAT,
-    NAMESPACE_MAPPER, DATA_OPERATIONS, GRAPH_RENDER_TYPE} from '../constants/Constant';
+    NAMESPACE_MAPPER, DATA_OPERATIONS, GRAPH_RENDER_TYPE,
+    DATA_VIEW_TYPE} from '../constants/Constant';
 import {formatDateTime, getTimeDifference,
     getTodaysStartDateTime} from '../utils/DateFormat';
 
@@ -47,7 +48,7 @@ export function getFormatedGraphData(passedData, metrics, stateData='', isCustom
             _.cloneDeep(newMetrics) : _.cloneDeep(metrics),
         metricDataToUse = metrics[0].renderType === GRAPH_RENDER_TYPE['COLLATE'] ?
             _.cloneDeep(newMetricData) : _.cloneDeep(passedData);
-    // console.log(metricToUse, metricDataToUse)
+
     // Generic part of the function,
     // which will go through multiple metrics in case its of type subplot or
     // got through one metric only if its of type collate.
@@ -101,10 +102,16 @@ export function getFormatedGraphData(passedData, metrics, stateData='', isCustom
                             graphSection.push(graphElement)
                         } else if(row.metric_type === METRIC_TYPE['CATEGORICAL']) {
                             let graphElement = {};
-                            graphElement['name'] = dim.name;
-                            graphElement['value'] = vec[dim.key];
-                            graphElement['color'] = dim.color;
-                            graphSection.push(graphElement)
+                            if(dim.ctype ===  DATA_VIEW_TYPE['PIE']) {
+                                graphElement['name'] = dim.name;
+                                graphElement['value'] = vec[dim.key];
+                                graphElement['color'] = dim.color;
+                                graphSection.push(graphElement)
+                            } else if(dim.ctype ===  DATA_VIEW_TYPE['BAR']) {
+                                graphElement['name'] = dim.name;
+                                graphElement[dim.id] = vec[dim.key];
+                                graphSection.push(graphElement)
+                            }
                         }
                     })
                 } else if(stateData.projectLocationList) {
@@ -183,7 +190,7 @@ export function getFormatedGraphData(passedData, metrics, stateData='', isCustom
                 graphData[metridId] = sortBy(testData,'name');
         }
     })
-    // console.log(metrics, metricToUse)
+
     return {graphData: graphData,
         nameMapper: nameMapper,
         referenceMapper: referenceMapper,
