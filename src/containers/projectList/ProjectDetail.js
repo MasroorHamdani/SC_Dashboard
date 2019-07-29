@@ -107,6 +107,7 @@ class ProjectDetail extends Component {
         )
     }
 }
+
 function mapStateToProps(state) {
     return {
         projectData : state.AdminReducer.data,

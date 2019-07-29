@@ -321,7 +321,8 @@ export const THEME = {
 
 export const PROJECT_CREATION = {
     GENERAL: 'general',
-    LOCATION: 'location'
+    LOCATION: 'location',
+    AREA: 'area'
 }
 
 export const LOCATION_LIMIT = 5

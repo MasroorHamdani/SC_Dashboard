@@ -22,6 +22,7 @@ class ProjectList extends Component {
             parentId: props.match.params.partnerid
         }
     }
+
     componentDidMount() {
         let param = {
             status:'pending'
@@ -38,9 +39,11 @@ class ProjectList extends Component {
 
     componentDidUpdate(prevProps, prevState) {
         if(this.props.projectList && 
-        !isEqual(this.props.projectList, prevProps.projectList)) {
-            this.setState({projectList: this.props.projectList,
-                loading: false})
+            !isEqual(this.props.projectList, prevProps.projectList)) {
+            this.setState({
+                projectList: this.props.projectList,
+                loading: false
+            })
         }
     }
 
@@ -50,8 +53,8 @@ class ProjectList extends Component {
         }, function() {
             this.props.history.push(`${REACT_URLS.PROJECT_LIST(this.state.parentId)}/${this.state.selectedPid}`);
         })
-        
     }
+
     handleTabChange = (event, value) => {
         this.setState({
             loading: true,
@@ -63,6 +66,7 @@ class ProjectList extends Component {
             this.getProjectList(param)
         })
     }
+
     render() {
         const { classes } = this.props;
         return (

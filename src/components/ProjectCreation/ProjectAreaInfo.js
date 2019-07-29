@@ -1,7 +1,8 @@
 import React, {Component} from "react";
 import {withStyles, Grid, TextField, Button,
     Card, IconButton, CardHeader, FormControl,
-    Typography, InputLabel, Select, GridList} from '@material-ui/core';
+    Typography, InputLabel, Select, GridList,
+    CardContent} from '@material-ui/core';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import EditIcon from '@material-ui/icons/Edit';
 
@@ -34,12 +35,12 @@ class ProjectAreaInfo extends Component {
   
     render() {
       const {classes, data, onChange, onClick,
-        onAddtion, handleModalState} = this.props;
+        onAddtion, handleModalState, editArea} = this.props;
       let returnData = <div>
         {data.showFooter &&
           <Grid container spacing={24}>
               <Grid item xs={12} sm={6}>
-                <FormControl className={classes.formControl}>
+                <FormControl className={classes.formControl} fullWidth>
                   <InputLabel htmlFor="age-native-helper">Location</InputLabel>
                   <Select native
                       value={data.area.insid}
@@ -50,7 +51,7 @@ class ProjectAreaInfo extends Component {
                         }}>
                     <option value="" />
                     {data.locations.map(function(loc) {
-                        return <option value={loc.name} name={loc.name} key={loc.name} >
+                        return <option value={loc.insid} name={loc.insid} key={loc.insid} >
                             {loc.name} | {loc.locn}</option>
                     })}
                   </Select>
@@ -122,12 +123,17 @@ class ProjectAreaInfo extends Component {
                         action={
                         <IconButton className={classes.iconButton}>
                             <EditIcon 
-                            // onClick={event => this.editLocation(dt.InsID, dt.name)}
+                            onClick={event => editArea(i)}
                             />
                             {/* <ClearIcon onClick={event => this.removeLocation(dt.InsID, dt.name)}/> */}
                         </IconButton>
                         }
                         title={dt.locn}/>
+                        <CardContent>
+                          <Typography component="p">
+                            <b>Installation :</b> {dt.insid}
+                          </Typography>
+                        </CardContent>
                       </Card>
                     })
                 }
@@ -175,7 +181,7 @@ class ProjectAreaInfo extends Component {
                         variant="contained"
                         color="primary"
                         className={classes.button}
-                        onClick={e=>onClick()}>
+                        onClick={e=>onClick('submit')}>
                         Submit
                     </Button>
                 </Grid>

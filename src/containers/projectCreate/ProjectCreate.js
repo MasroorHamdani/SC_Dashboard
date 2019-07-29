@@ -34,7 +34,7 @@ class ProjectCreate extends Component {
             },
             area: {
                 locn: "",
-                area: ""
+                insid: ""
             },
             locations: [],
             allLocations: [],
@@ -44,6 +44,9 @@ class ProjectCreate extends Component {
             areas: [],
             allAreas: [],
             open: false,
+            tempArea: [],
+            editArea: [],
+            tempEditArea: {},
             openArea: false,
             showFooter: true
         }
@@ -70,15 +73,14 @@ class ProjectCreate extends Component {
      * Post API call to save the data for a user profile.
      */
         this.setState({panel: panel}, function() {
-            if(panel === 'location' && !isDraft) {
+            if((panel === 'location' && !isDraft) || (panel === 'general' && isDraft)) {
                 this.getProjectData();
-            } else if(panel === 'area' && !isDraft) {
-                this.getProjectLocationData();
-            } else if (panel === 'general' && isDraft) {
-                this.getProjectData()
-            } else if (panel === 'location' && isDraft) {
-                this.getProjectLocationData();
-            } else {
+            } else if((panel === 'area' && !isDraft) || (panel === 'location' && isDraft)) {
+                this.getProjectLocationData(isDraft);
+            } else if(panel === 'submit' || panel === 'area' && isDraft) {
+                this.getProjectAreaData(isDraft)
+            }
+            else {
                 this.setState({
                     expanded:panel,
                     generalErrorMessage: ''
@@ -87,7 +89,33 @@ class ProjectCreate extends Component {
         })
     }
 
-    getProjectLocationData = () => {
+    getProjectAreaData = (isDraft=false) => {
+        if(!_.isEmpty(this.state.allAreas)) {
+            let endPoint = `${API_URLS['ADMIN']}`,
+            dataToPost = {};
+            dataToPost['area'] = this.state.allAreas;
+            dataToPost['type'] = PROJECT_CREATION['AREA'];
+            dataToPost['pid'] = this.state.pid; //value returned from previous api call - project id
+            dataToPost['insid'] = this.state.areas[0].insid;
+            let config = getApiConfig(endPoint, 'POST', dataToPost);
+            this.props.onProjectCreation(config, 'POST');
+        }
+        if(!_.isEmpty(this.state.editArea)) {
+            let endPoint = `${API_URLS['ADMIN']}/${this.state.pid}`,
+                dataToPost = {};
+            this.state.editArea.map((row) => {
+                dataToPost = row;
+                dataToPost['type'] = PROJECT_CREATION['AREA'];
+                let config = getApiConfig(endPoint, 'POST', dataToPost);
+                this.props.onProjectUpdate(config, 'POST');
+            })
+        }
+        if (!isDraft && !_.isEmpty(this.state.areas)) {
+            this.setState({expanded: this.state.panel})
+        }
+        // return true
+    }
+    getProjectLocationData = (isDraft=false) => {
         // Call api to save data
         if(!_.isEmpty(this.state.allLocations)) {
             let endPoint = `${API_URLS['ADMIN']}`,
@@ -108,7 +136,10 @@ class ProjectCreate extends Component {
                 this.props.onProjectUpdate(config, 'POST');
             })
         }
-        return true
+        if (!isDraft && !_.isEmpty(this.state.locations)) {
+            this.setState({expanded: this.state.panel})
+        }
+        // return true
     }
 
     getProjectData = () => {
@@ -144,6 +175,17 @@ class ProjectCreate extends Component {
         )
         this.handleModalState('location')
     }
+
+    editArea = (id) => {
+        let area = this.state.areas[id];
+        area['isEdit'] = true
+        this.setState(
+            {area: area,
+            tempEditArea: area}
+        )
+        this.handleModalState('area')
+    }
+
     handleModalState = (panel='') => {
     /**
      * Handle the modal open and close state.
@@ -169,25 +211,12 @@ class ProjectCreate extends Component {
             }
         }
     };
-    
-    difference = (object, base) =>{
-        function changes(object, base) {
-            return _.transform(object, function(result, value, key) {
-                if (!_.isEqual(value, base[key])) {
-                    result[key] = (_.isObject(value) && _.isObject(base[key])) ? changes(value, base[key]) : value;
-                }
-            });
-        }
-        return changes(object, base)
-    }
-    
 
-    onAddtion = () => {
+    onLocationAddtion = () => {
         if (this.state.location.name && this.state.location.locn &&
             this.state.location.offday && this.state.location.ShiftEnd &&
             this.state.location.ShiftStart) {
                 let dataToPost = {}, temp = {};
-                // console.log(this.state.location);
                 dataToPost['name'] = this.state.location.name;
                 dataToPost['locn'] = this.state.location.locn;
                 dataToPost['Mute'] = this.state.location.Mute;
@@ -197,13 +226,11 @@ class ProjectCreate extends Component {
                     'End': formatDateTime(this.state.location.ShiftEnd, "hh:mm a", "HHmm"),
                     'Start': formatDateTime(this.state.location.ShiftStart, "hh:mm a", "HHmm")
                 }]
-                // if(this.state.location.InsID)
-                // dataToPost['insid'] = this.state.location.InsID ? this.state.location.InsID : '';
+
                 temp =  _.cloneDeep(dataToPost);
                 temp['ShiftEnd'] = this.state.location.ShiftEnd;
                 temp['ShiftStart'] = this.state.location.ShiftStart;
                 temp['offday'] = this.state.location.offday
-                // let index = this.state.locations.indexOf(this.state.tempEdit);
                 let index = -1;
                 if (!_.isEmpty(this.state.tempEdit))
                     index = _.findIndex(this.state.locations, this.state.tempEdit);
@@ -211,7 +238,6 @@ class ProjectCreate extends Component {
                 if(index >= 0)
                     this.state.locations.splice(index, 1);
                 
-
                 if(this.state.location.insid) {
                     dataToPost['insid'] = this.state.location.insid;
                     temp['insid'] = dataToPost['insid'];
@@ -220,9 +246,6 @@ class ProjectCreate extends Component {
                     delete allLocTemp['ShiftStart'];
                     delete allLocTemp['offday'];
                     delete allLocTemp['isEdit'];
-                    console.log(this.state.tempEdit)
-                    console.log(this.state.editLocation)
-                    // let index = this.state.editLocation.indexOf(this.state.tempEdit);
                     let index = _.findIndex(this.state.editLocation, allLocTemp);
                     if(index >= 0)
                         this.state.editLocation.splice(index, 1);
@@ -242,10 +265,7 @@ class ProjectCreate extends Component {
                             Mute: false
                         },
                         tempEdit: {}
-                    }, function() {
-                        console.log(this.state.locations)
                     });
-                    
                 } else if(this.state.location.isEdit) {
                     let allLocTemp = this.state.tempEdit;
                     delete allLocTemp['ShiftEnd'];
@@ -254,10 +274,6 @@ class ProjectCreate extends Component {
                     delete allLocTemp['isEdit'];
 
                     let tempIndex = _.findIndex(this.state.allLocations, allLocTemp);
-                    // console.log(this.state.allLocations.indexOf(allLocTemp))
-                    // console.log(this.state.allLocations[0], allLocTemp)
-                    // console.log(_.findIndex(this.state.allLocations, allLocTemp));
-                    // console.log(this.difference(this.state.allLocations[0], allLocTemp))
                     if(tempIndex >= 0)
                         this.state.allLocations.splice(tempIndex, 1);
                     
@@ -283,8 +299,6 @@ class ProjectCreate extends Component {
                             Mute: false
                         },
                         tempEdit: {}
-                    }, function() {
-                        console.log(this.state.allLocations);
                     });
                 }
                 else {
@@ -315,21 +329,86 @@ class ProjectCreate extends Component {
     }
 
     onAreaAddtion = () => {
-        if(this.state.area.locn) {
-            let dataToPost = this.state.area;
-            this.setState({
-                areas: [
-                    ...this.state.areas.concat(dataToPost)
-                ],
-                allAreas: [
-                    ...this.state.allAreas.concat(dataToPost)
-                ],
-            }, function() {
-                this.setState({area: {
-                    locn: "",
-                    insid: "",
-                },})
-            });
+        // Fix the Area Edit part (insid one)
+        if(this.state.area.locn && this.state.area.insid) {
+            let dataToPost = {}, temp = {};
+            dataToPost['locn'] = this.state.area.locn;
+            temp =  _.cloneDeep(dataToPost);
+            temp['insid'] = this.state.area.insid;
+            // delete temp['isEdit'];
+            // delete dataToPost['isEdit'];
+            let index = -1;
+            if (!_.isEmpty(this.state.tempEditArea))
+                index = _.findIndex(this.state.areas, this.state.tempEditArea);
+            
+            if(index >= 0)
+                this.state.areas.splice(index, 1);
+            if(this.state.area.areaid) {
+                dataToPost['areaid'] = this.state.area.areaid;
+                temp['areaid'] = dataToPost['areaid'];
+                let allAreaTemp = this.state.tempEditArea;
+                delete allAreaTemp['isEdit'];
+                let index = _.findIndex(this.state.editArea, allAreaTemp);
+                if(index >= 0)
+                    this.state.editArea.splice(index, 1);
+                this.setState({
+                    editArea: [
+                        ...this.state.editArea.concat(dataToPost)
+                    ],
+                    areas: [
+                        ...this.state.areas.concat(temp)
+                    ],
+                    area: {
+                        locn: "",
+                        insid: ""
+                    },
+                    tempEditArea: {}
+                });
+            } else if(this.state.area.isEdit) {
+                let allAreaTemp = _.clone(this.state.tempEditArea);
+                delete allAreaTemp['isEdit'];
+                delete allAreaTemp['insid'];
+
+                let tempIndex = _.findIndex(this.state.allAreas, allAreaTemp);
+                if(tempIndex >= 0)
+                    this.state.allAreas.splice(tempIndex, 1);
+                
+                let index = _.findIndex(this.state.tempArea, allAreaTemp);
+                if(index >= 0)
+                    this.state.tempArea.splice(index, 1);
+                this.setState({
+                    areas: [
+                        ...this.state.areas.concat(temp)
+                    ],
+                    allAreas: [
+                        ...this.state.allAreas.concat(dataToPost)//dataToPost)
+                    ],
+                    tempArea: [
+                        ...this.state.tempArea.concat(temp)
+                    ],
+                    area: {
+                        locn: "",
+                        insid: ""
+                    },
+                    tempEditArea: {}
+                });
+            } else {
+                this.setState({
+                    areas: [
+                        ...this.state.areas.concat(temp)
+                    ],
+                    tempArea: [
+                        ...this.state.tempArea.concat(temp)
+                    ],
+                    allAreas: [
+                        ...this.state.allAreas.concat(dataToPost)
+                    ],
+                    area: {
+                        locn: "",
+                        insid: ""
+                    }
+                })
+            }
             this.handleModalState('area');
         } else {
             this.setState({errorAreaMessage : "Please enter all valid details"})
@@ -339,43 +418,64 @@ class ProjectCreate extends Component {
     componentDidUpdate(prevProps, prevState) {
         if(this.props.projectData && 
             !isEqual(this.props.projectData, prevProps.projectData)) {
-                if(this.props.projectData['PID'] && !this.props.projectData['location'])
-                    this.setState({
-                        pid : this.props.projectData['PID'],
-                        expanded: this.state.panel,
-                        generalProject: this.state.general
+            if(this.props.projectData['PID'] && this.props.projectData['type'] === PROJECT_CREATION['GENERAL']){
+            // !this.props.projectData['location'] && !this.props.projectData['area']) {
+                this.setState({
+                    pid : this.props.projectData['PID'],
+                    expanded: this.state.panel,
+                    generalProject: this.state.general
                 })
-                else {
-                    this.state.tempLocation.map((row) => {
-                        let index = _.findIndex(this.state.locations, row)
-                        if(index >= 0)
-                            this.state.locations.splice(index, 1);
-                    })
+            } else if(this.props.projectData['PID'] && this.props.projectData['type'] === PROJECT_CREATION['LOCATION']) {
+                this.state.tempLocation.map((row) => {
+                    let index = _.findIndex(this.state.locations, row)
+                    if(index >= 0)
+                        this.state.locations.splice(index, 1);
+                })
 
-                    let loc = this.props.projectData['location'];
-                    loc.map((row) => {
-                        row['ShiftEnd'] = formatDateTime(row['offtimes'][0]['End'], "HHmm", "HH:mm")
-                        row['ShiftStart'] = formatDateTime(row['offtimes'][0]['Start'], "HHmm", "HH:mm")
-                        row['insid'] = row['InsID']
-                    })
-                    this.setState({
-                        expanded: this.state.panel,
-                        limitErrorMessage: '',
-                        allLocations: [],
-                        tempLocation: [],
-                        locations: [
-                            ...this.state.locations.concat(loc)
-                        ],
-                    })
-                }
+                let loc = this.props.projectData['location'];
+                loc.map((row) => {
+                    row['ShiftEnd'] = formatDateTime(row['offtimes'][0]['End'], "HHmm", "HH:mm")
+                    row['ShiftStart'] = formatDateTime(row['offtimes'][0]['Start'], "HHmm", "HH:mm")
+                    row['insid'] = row['InsID']
+                })
+                this.setState({
+                    expanded: this.state.panel,
+                    limitErrorMessage: '',
+                    allLocations: [],
+                    tempLocation: [],
+                    locations: [
+                        ...this.state.locations.concat(loc)
+                    ],
+                })
+            } else if(this.props.projectData['PID'] && this.props.projectData['type'] === PROJECT_CREATION['AREA']) {
+                this.state.tempArea.map((row) => {
+                    let index = _.findIndex(this.state.areas, row)
+                    if(index >= 0)
+                        this.state.areas.splice(index, 1);
+                })
+                let area = this.props.projectData['area'];
+                area.map((row) => {
+                    row['insid'] = row['insid']
+                })
+                this.setState({
+                    expanded: this.state.panel,
+                    limitErrorMessage: '',
+                    allAreas: [],
+                    tempArea: [],
+                    areas: [
+                        ...this.state.areas.concat(area)
+                    ],
+                })
+            }
         }
 
         if(this.props.projectUpdate && 
             !isEqual(this.props.projectUpdate, prevProps.projectUpdate)) {
-                this.setState({
-                    editLocation: []
-                })
-                console.log(projectUpdate);
+            console.log(this.props.projectUpdate, "this.props.projectUpdate")
+            this.setState({
+                editLocation: [],
+                editArea: []
+            })
         }
     }
 
@@ -387,10 +487,11 @@ class ProjectCreate extends Component {
                     <ProjectCreation onChange={this.handleChange}
                         data={this.state}
                         onClick={this.handleClick}
-                        onAddtion={this.onAddtion}
+                        onLocationAddtion={this.onLocationAddtion}
                         onAreaAddtion={this.onAreaAddtion}
                         handleModalState={this.handleModalState}
-                        editLocation={this.editLocation}/>
+                        editLocation={this.editLocation}
+                        editArea={this.editArea}/>
                 </main>
           </div>
         )
@@ -414,6 +515,5 @@ function mapDispatchToProps(dispatch) {
         }
     }
 }
-
 
 export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(ProjectCreate));

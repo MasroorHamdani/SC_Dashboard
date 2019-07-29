@@ -91,7 +91,7 @@ class ProjectLocationInfo extends Component {
                         required
                         id="ShiftStart"
                         name="ShiftStart"
-                        label="Shift Start"
+                        label="Offtime Start"
                         type="time"
                         placeholder="HHMM"
                         fullWidth
@@ -106,7 +106,7 @@ class ProjectLocationInfo extends Component {
                         required
                         id="ShiftEnd"
                         name="ShiftEnd"
-                        label="Shift End"
+                        label="Offtime End"
                         type="time"
                         placeholder="HHMM"
                         fullWidth
