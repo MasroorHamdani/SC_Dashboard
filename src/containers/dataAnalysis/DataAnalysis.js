@@ -302,11 +302,9 @@ class DataAnalysis extends Component {
 
     if(this.state.projectMetricList && this.state.projectMetricList.length > 0) {
       this.state.projectMetricList.map(row => {
-        Object.values(row).map(rowValue => {
-          rowValue.map(r=> {
-            if(Object.values(r)[0].metric_id === this.state.selectedMetric)
-              dataToPost['all_metrics'] = Object.values(r);
-          })
+        Object.values(row)[0].Metrics.map(rowValue => {
+          if(Object.values(rowValue)[0].metric_id === this.state.selectedMetric)
+            dataToPost['all_metrics'] = Object.values(rowValue);
         })
       })
       let endPoint = `${API_URLS['NEW_DEVICE_DATA']}/${this.state.pid}`,

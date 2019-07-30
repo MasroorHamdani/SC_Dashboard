@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {withStyles, Typography, Divider} from '@material-ui/core';
 import {Line, XAxis, YAxis, CartesianGrid, Tooltip,
     Legend, ResponsiveContainer, Brush, ComposedChart,
-    Bar, PieChart, Pie, Cell, Sector, Area, ReferenceLine} from 'recharts';
+    Bar, PieChart, Pie, Cell, Sector, Area, ReferenceLine, LineChart} from 'recharts';
 import {isEmpty} from 'lodash';
 import EnhancedTable from '../grid/Grid';
 import {METRIC_TYPE, DATA_VIEW_TYPE, SORTING} from '../../constants/Constant';
@@ -126,7 +126,6 @@ class GraphPlot extends Component {
                 </g>
             );
         };
-
         return (
         /**
          * Loop through metrics dimentions, in order to get all the graphs drawn.
@@ -370,6 +369,11 @@ class GraphPlot extends Component {
                                 allowDelete={false} allowEdit={false}/>
                             </div>
                         }
+                    </div>
+                else 
+                    return <div className={classes.emptyChart}>
+                        <Divider className={classes.seperator}/>
+                        No Data Available for {metric.metric_name}
                     </div>
             })
         )

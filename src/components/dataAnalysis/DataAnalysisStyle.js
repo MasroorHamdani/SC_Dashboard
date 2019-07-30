@@ -143,6 +143,10 @@ const styles = theme => ({
     lineChart: {
         width: "80%",
     },
+    emptyChart: {
+        width: "100%",
+        height: '100px'
+    },
     //tile dimentions
     tile: {
         // width: '160px',

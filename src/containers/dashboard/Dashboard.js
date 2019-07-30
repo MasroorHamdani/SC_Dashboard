@@ -6,7 +6,7 @@ import {isEqual} from "lodash";
 import styles from './DashboardStyle'
 import ProjectDataComponent from "../../components/projectData/ProjectData";
 import { API_URLS, NAMESPACE, GRAPH_RENDER_TYPE,
-  DATE_TIME_FORMAT, PROJECT_ACTIONS, MOCK_DATA} from "../../constants/Constant";
+  DATE_TIME_FORMAT, PROJECT_ACTIONS} from "../../constants/Constant";
 import { getApiConfig } from '../../services/ApiCofig';
 import {projectAnalysisData, projectSubMenuList,
   projectDataMetricList, InitialiseDataState,
