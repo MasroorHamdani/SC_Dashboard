@@ -26,28 +26,60 @@ export function getFormatedGraphData(passedData, metrics, stateData='', isCustom
  * grouping them will get ride of duplicate values.
  * Finally return the final data back to calling function
  */
-    let graphData = [], nameMapper = {}, referenceMapper={};
-    let newMetrics= [_.cloneDeep(metrics[0])], metID = metrics[0].metric_id,
-        newMetricData = {};
-    newMetrics[0].dimensions = [];
-
+    let graphData = [], nameMapper = {}, referenceMapper={},
+        newMetrics =[], metID,
+        newMetricData = {}, tempMetric = {},
+        oldMetric = {}, tempMetricData = {}, oldMetricData = {};
     // Checking if render type is collate,
     // If yes, than we have to combine the dimension metrics as well as the data metrics
-    if(metrics[0].renderType === GRAPH_RENDER_TYPE['COLLATE']) {
-        metrics.map(function(row) {
-            row.dimensions.map((r) => {
-                newMetrics[0].dimensions.push(r);
-            })
-            newMetricData[metID] = Object.assign({}, newMetricData[metID], passedData[row.metric_id])
-        });
-    }
+
+    metrics.map((row) => {
+        if (row.renderType ===  GRAPH_RENDER_TYPE['COLLATE']) {
+            let serviceId = row.serviceId;
+            
+            if (!_.isEmpty(newMetrics) && _.find(newMetrics, {'serviceId': serviceId})) {
+                oldMetric = _.find(newMetrics, {'serviceId': serviceId});
+            }
+            if (oldMetric.serviceId !== serviceId) {
+                metID = row.metric_id
+            }
+            if (!_.isEmpty(newMetricData) && newMetricData[metID]) {
+                oldMetricData = newMetricData[metID];
+            }
+            if(_.isEmpty(oldMetric) || oldMetric.serviceId !== serviceId) {
+                tempMetric = _.cloneDeep(row)
+            } else if (oldMetric.serviceId === serviceId) {
+                row.dimensions.map((r) => {
+                    tempMetric.dimensions.push(r);
+                })
+            }
+            if(_.isEmpty(oldMetricData)) {
+                tempMetricData = _.cloneDeep(passedData[row.metric_id])
+            } else {
+                tempMetricData = Object.assign({}, newMetricData[metID], passedData[row.metric_id])
+            }
+
+            let index = -1;
+            if (!_.isEmpty(oldMetric))
+                index = _.findIndex(newMetrics, oldMetric);
+            if (index >= 0)
+                newMetrics.splice(index, 1);
+
+            if (!_.isEmpty(oldMetricData))
+                newMetricData[metID] = {}
+
+            newMetrics.push(tempMetric)
+            newMetricData[metID] = tempMetricData;
+        } else {
+            newMetrics.push(_.cloneDeep(row))
+            newMetricData[row.metric_id] = passedData[row.metric_id]
+        }
+    })
 
     // This condition is added to make sure this is generic function
     // and it will work for collate or subplot both the cases
-    let metricToUse = metrics[0].renderType === GRAPH_RENDER_TYPE['COLLATE'] ?
-            _.cloneDeep(newMetrics) : _.cloneDeep(metrics),
-        metricDataToUse = metrics[0].renderType === GRAPH_RENDER_TYPE['COLLATE'] ?
-            _.cloneDeep(newMetricData) : _.cloneDeep(passedData);
+    let metricToUse = _.cloneDeep(newMetrics),
+        metricDataToUse = _.cloneDeep(newMetricData);
 
     // Generic part of the function,
     // which will go through multiple metrics in case its of type subplot or
@@ -110,6 +142,11 @@ export function getFormatedGraphData(passedData, metrics, stateData='', isCustom
                             } else if(dim.ctype ===  DATA_VIEW_TYPE['BAR']) {
                                 graphElement['name'] = dim.name;
                                 graphElement[dim.id] = vec[dim.key];
+                                graphSection.push(graphElement)
+                            } else {
+                                graphElement['name'] = dim.name;
+                                graphElement['value'] = vec[dim.key];
+                                graphElement['color'] = dim.color;
                                 graphSection.push(graphElement)
                             }
                         }

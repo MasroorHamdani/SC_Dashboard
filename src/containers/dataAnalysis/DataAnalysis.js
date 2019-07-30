@@ -7,7 +7,7 @@ import moment from 'moment-timezone';
 import DataAnalysisComponent from '../../components/dataAnalysis/DataAnalysis';
 import {getApiConfig} from '../../services/ApiCofig';
 import {API_URLS, NAMESPACE_MAPPER, RANGE_ERROR,
-  PROJECT_ACTIONS} from '../../constants/Constant';
+  PROJECT_ACTIONS, GRAPH_RENDER_TYPE} from '../../constants/Constant';
 import {projectSubMenuList, projectInstallationList,
   projectAnalysisData, clearDataAnalysis,
   modalProjectAnalysisData, projectDataMetricList,
@@ -574,28 +574,36 @@ class DataAnalysis extends Component {
         }
     }
     
-    if(this.props.projectMetricList 
-      &&
+    if(this.props.projectMetricList &&
       !isEqual(this.props.projectMetricList, prevProps.projectMetricList)
       && this.metricsIndex === 0) {
         this.metricLength = this.props.projectMetricList ? this.props.projectMetricList.length : 0;
         this.setState({projectMetricList: this.props.projectMetricList});
         if(this.metricsIndex < this.metricLength) {
           this.props.projectMetricList.map((extRow) => {
-              Object.keys(extRow).map((key) => {
-                let agg_query = []
-                extRow[key].map((row) => {
-                  agg_query.push(Object.values(row)[0])
-                });
-                    let dataToPost = {'all_metrics' : agg_query},
-                      endPoint = `${API_URLS['NEW_DEVICE_DATA']}/${this.state.pid}`,
-                      params = {
-                        'start_date_time' : this.state.start,//formatDateTime(this.state.start, DATE_TIME_FORMAT, DATE_TIME_FORMAT),
-                        'end_date_time': this.state.end,//formatDateWithTimeZone(this.state.end, DATE_TIME_FORMAT, DATE_TIME_FORMAT, this.state.timeZone),
-                      },
-                      config = getApiConfig(endPoint, 'POST', dataToPost, params);
-                    this.props.onDataAnalysis(config);
+            Object.keys(extRow).map((key) => {
+              let agg_query = [],
+                renderType = extRow[key]['Params']['RenderParams']['show'] ?
+                  extRow[key]['Params']['RenderParams']['show'] :
+                  GRAPH_RENDER_TYPE['SUBPLOT'];
+              Object.keys(extRow[key]).map((k) => {
+                if(k === 'Metrics') {
+                  extRow[key][k].map((metricRow) => {
+                    Object.values(metricRow)[0]['renderType'] = renderType
+                    Object.values(metricRow)[0]['serviceId'] = key
+                    agg_query.push(Object.values(metricRow)[0])
+                  })
+                }
               })
+              let dataToPost = {'all_metrics' : agg_query},
+                endPoint = `${API_URLS['NEW_DEVICE_DATA']}/${this.state.pid}`,
+                params = {
+                  'start_date_time' : this.state.start,//formatDateTime(this.state.start, DATE_TIME_FORMAT, DATE_TIME_FORMAT),
+                  'end_date_time': this.state.end,//formatDateWithTimeZone(this.state.end, DATE_TIME_FORMAT, DATE_TIME_FORMAT, this.state.timeZone),
+                },
+                config = getApiConfig(endPoint, 'POST', dataToPost, params);
+              this.props.onDataAnalysis(config);
+            })
             this.metricsIndex += 1;
           })
         }

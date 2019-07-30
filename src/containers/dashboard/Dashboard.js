@@ -37,7 +37,7 @@ class Dashboard extends Component {
     this.setState({loading: true}, function() {
       let getEndPoint = `${API_URLS['NEW_DEVICE_DATA']}/${this.state.PID}`,
         params = {
-          action: PROJECT_ACTIONS['HOMEPAGE']//`${PROJECT_ACTIONS['HOMEPAGE']}_${this.state.PID}`
+          action: `${PROJECT_ACTIONS['HOMEPAGE']}_${this.state.PID}` //PROJECT_ACTIONS['HOMEPAGE']//
         },
         getconfig = getApiConfig(getEndPoint, 'GET', '', params);
         this.props.onDataMetricList(getconfig);
@@ -113,32 +113,32 @@ class Dashboard extends Component {
       && this.metricsIndex === 0) {
         this.metricLength = this.props.projectMetricList ? this.props.projectMetricList.length : 0;
         if(this.metricsIndex < this.metricLength) {
-          // this.props.projectMetricList.map((extRow) => {
-            MOCK_DATA.map((extRow) => {
-              Object.keys(extRow).map((key) => {
-                let agg_query = []
-                let renderType = extRow[key]['params']['render_params']['show'] ?
-                  extRow[key]['params']['render_params']['show'] :
+          this.props.projectMetricList.map((extRow) => {
+            Object.keys(extRow).map((key) => {
+              let agg_query = [],
+                renderType = extRow[key]['Params']['RenderParams']['show'] ?
+                  extRow[key]['Params']['RenderParams']['show'] :
                   GRAPH_RENDER_TYPE['SUBPLOT'];
-                Object.keys(extRow[key]).map((k) => {
-                  if(k === 'metrics') {
-                    extRow[key][k].map((metricRow) => {
-                      Object.values(metricRow)[0]['renderType'] = renderType
-                      agg_query.push(Object.values(metricRow)[0])
-                    })
-                  }
-                })
-                  // if(Object.values(row)[0].data_source === this.state.PID) {
-                    let dataToPost = {'all_metrics' : agg_query},
-                      endPoint = `${API_URLS['NEW_DEVICE_DATA']}/${this.state.PID}`,
-                      params = {
-                        'start_date_time' : formatDateTime(this.state.startTime, DATE_TIME_FORMAT, DATE_TIME_FORMAT),
-                        'end_date_time': formatDateWithTimeZone(this.state.endTime, DATE_TIME_FORMAT, DATE_TIME_FORMAT, this.state.timeZone),
-                      },
-                      config = getApiConfig(endPoint, 'POST', dataToPost, params);
-                    this.props.onDataAnalysis(config);
-                  // }
+              Object.keys(extRow[key]).map((k) => {
+                if(k === 'Metrics') {
+                  extRow[key][k].map((metricRow) => {
+                    Object.values(metricRow)[0]['renderType'] = renderType
+                    Object.values(metricRow)[0]['serviceId'] = key
+                    agg_query.push(Object.values(metricRow)[0])
+                  })
+                }
               })
+            // if(Object.values(row)[0].data_source === this.state.PID) {
+              let dataToPost = {'all_metrics' : agg_query},
+                endPoint = `${API_URLS['NEW_DEVICE_DATA']}/${this.state.PID}`,
+                params = {
+                  'start_date_time' : formatDateTime(this.state.startTime, DATE_TIME_FORMAT, DATE_TIME_FORMAT),
+                  'end_date_time': formatDateWithTimeZone(this.state.endTime, DATE_TIME_FORMAT, DATE_TIME_FORMAT, this.state.timeZone),
+                },
+                config = getApiConfig(endPoint, 'POST', dataToPost, params);
+              this.props.onDataAnalysis(config);
+            // }
+            })
             this.metricsIndex += 1;
           })
         }
