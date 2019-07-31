@@ -2,7 +2,8 @@ import React, {Component} from 'react';
 import {withStyles, Typography, Divider} from '@material-ui/core';
 import {Line, XAxis, YAxis, CartesianGrid, Tooltip,
     Legend, ResponsiveContainer, Brush, ComposedChart,
-    Bar, PieChart, Pie, Cell, Sector, Area, ReferenceLine, LineChart} from 'recharts';
+    Bar, PieChart, Pie, Cell, Sector, Area, ReferenceLine,
+    LineChart, Label} from 'recharts';
 import {isEmpty} from 'lodash';
 import EnhancedTable from '../grid/Grid';
 import {METRIC_TYPE, DATA_VIEW_TYPE, SORTING} from '../../constants/Constant';
@@ -79,6 +80,7 @@ class GraphPlot extends Component {
             stateData, handleSamplingChange, isDashboard,
             handleBarClick, handleClose, isCustomModal,
             referenceMapper} = this.props;
+        let emptyGraph = [{'name': 'No Data'}]
         const renderActiveShape = (props) => {
         /**
          * This function will create an arc on mouse hover for pie chanrt 
@@ -371,9 +373,23 @@ class GraphPlot extends Component {
                         }
                     </div>
                 else 
-                    return <div className={classes.emptyChart}>
+                    return <div key={index}
+                        className={isDashboard && metric['metric_type'] === "raw_data"? classes.alertBox :
+                        isDashboard && metric['metric_type'] === "categorical" ? classes.dashboardPie : 
+                        isCustomModal ? classes.customModal : classes.otherData} >
                         <Divider className={classes.seperator}/>
-                        No Data Available for {metric.metric_name}
+                        <Typography gutterBottom variant="h6">
+                            {metric.metric_name}
+                        </Typography>
+                        <ResponsiveContainer width='100%' height={400}>
+                            <ComposedChart data={emptyGraph}>
+                            <XAxis dataKey="name" tick={false}>
+                                <Label value="Data not Found" offset={200} position="insideBottom" />
+                                </XAxis>
+                                <YAxis/>
+                                <CartesianGrid strokeDasharray="3 3"/>
+                            </ComposedChart>
+                        </ResponsiveContainer>
                     </div>
             })
         )
