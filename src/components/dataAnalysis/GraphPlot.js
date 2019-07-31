@@ -376,20 +376,24 @@ class GraphPlot extends Component {
                     return <div key={index}
                         className={isDashboard && metric['metric_type'] === "raw_data"? classes.alertBox :
                         isDashboard && metric['metric_type'] === "categorical" ? classes.dashboardPie : 
-                        isCustomModal ? classes.customModal : classes.otherData} >
-                        <Divider className={classes.seperator}/>
-                        <Typography gutterBottom variant="h6">
-                            {metric.metric_name}
-                        </Typography>
-                        <ResponsiveContainer width='100%' height={400}>
-                            <ComposedChart data={emptyGraph}>
-                            <XAxis dataKey="name" tick={false}>
-                                <Label value="Data not Found" offset={200} position="insideBottom" />
-                                </XAxis>
-                                <YAxis/>
-                                <CartesianGrid strokeDasharray="3 3"/>
-                            </ComposedChart>
-                        </ResponsiveContainer>
+                        isCustomModal ? classes.customModal : classes.otherData}>
+                        {!isDashboard &&
+                            <div>
+                                <Divider className={classes.seperator}/>
+                                <Typography gutterBottom variant="h6">
+                                    {metric.metric_name}
+                                </Typography>
+                                <ResponsiveContainer width='100%' height={400}>
+                                    <ComposedChart data={emptyGraph}>
+                                    <XAxis dataKey="name" tick={false}>
+                                        <Label value="Data not Found" offset={200} position="insideBottom" />
+                                        </XAxis>
+                                        <YAxis/>
+                                        <CartesianGrid strokeDasharray="3 3"/>
+                                    </ComposedChart>
+                                </ResponsiveContainer>
+                            </div>
+                        }
                     </div>
             })
         )
