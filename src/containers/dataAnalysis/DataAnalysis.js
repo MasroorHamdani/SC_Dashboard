@@ -211,7 +211,7 @@ class DataAnalysis extends Component {
     this.props.onInitialState();
     this.state.installationList.map((row) => {
       if(row.key === tab) {
-        this.setStateValue(tab, row.type,
+        this.setStateValue(tab, row.key,
           row.devid, row.subType, row.pid)
       }
     })
