@@ -312,15 +312,19 @@ class GraphPlot extends Component {
                                         }
                                     </ComposedChart>
                                 : metric.dimensions[0].ctype === DATA_VIEW_TYPE['TILE'] ?
-                                        <div className={classes.tile}
-                                            style={{backgroundColor:graphData[metric.metric_id][0].color}}>
-                                            <Typography gutterBottom variant="h6">
-                                                {graphData[metric.metric_id][0].name}
-                                            </Typography>
-                                            <Typography gutterBottom variant="h6">
-                                                {graphData[metric.metric_id][0].value}
-                                            </Typography>
-                                        </div>
+                                    <div>
+                                        {graphData[metric.metric_id].map(row => {
+                                            return<div className={classes.tile}
+                                                style={{backgroundColor:row.color}}>
+                                                <Typography gutterBottom variant="h6">
+                                                    {row.name}
+                                                </Typography>
+                                                <Typography gutterBottom variant="h6">
+                                                    {row.value}
+                                                </Typography>
+                                            </div>
+                                        })}
+                                    </div>
                                 : metric.dimensions[0].ctype === DATA_VIEW_TYPE['BAR'] ?
                                     <ComposedChart className={classes.lineChart}
                                         data={graphData[metric.metric_id]}

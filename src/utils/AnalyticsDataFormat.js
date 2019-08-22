@@ -29,13 +29,13 @@ export function getFormatedGraphData(passedData, metrics, stateData='', isCustom
     let graphData = [], nameMapper = {}, referenceMapper={},
         newMetrics =[], metID,
         newMetricData = {}, tempMetric = {},
-        oldMetric = {}, tempMetricData = {}, oldMetricData = {};
+        tempMetricData = {}, oldMetricData = {};
     // Checking if render type is collate,
     // If yes, than we have to combine the dimension metrics as well as the data metrics
 
     metrics.map((row) => {
         if (row.renderType ===  GRAPH_RENDER_TYPE['COLLATE']) {
-            let serviceId = row.serviceId;
+            let serviceId = row.serviceId, oldMetric = {};
             
             if (!_.isEmpty(newMetrics) && _.find(newMetrics, {'serviceId': serviceId})) {
                 oldMetric = _.find(newMetrics, {'serviceId': serviceId});
