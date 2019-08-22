@@ -4,7 +4,7 @@ import {withStyles, LinearProgress,
 import { connect } from "react-redux";
 import _, {isEqual} from 'lodash';
 
-import TabData from '../../components/ProjectCreation/TabData';
+import TabData from '../../components/projectCreation/TabData';
 import {API_URLS, REACT_URLS} from '../../constants/Constant';
 import {getApiConfig} from '../../services/ApiCofig';
 import {projectList} from  '../../actions/AdminAction';

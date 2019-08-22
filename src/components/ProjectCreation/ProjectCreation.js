@@ -1,6 +1,6 @@
 import React, {Component} from "react";
 import {withStyles, Typography, ExpansionPanel,
-  ExpansionPanelSummary, ExpansionPanelDetails} from '@material-ui/core';
+  ExpansionPanelSummary, ExpansionPanelDetails} from '@material-ui/core'
 import ProjectGeneralInfo from './ProjectGeneralInfo';
 import ProjectLocationInfo from './ProjectLocationInfo';
 import ProjectAreaInfo from './ProjectAreaInfo';

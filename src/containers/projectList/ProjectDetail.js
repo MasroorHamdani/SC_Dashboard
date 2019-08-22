@@ -7,7 +7,7 @@ import {API_URLS, PROJECT_STATUS} from '../../constants/Constant';
 import {projectCreation} from  '../../actions/AdminAction'; 
 import {getApiConfig} from '../../services/ApiCofig';
 import {formatDateTime} from '../../utils/DateFormat';
-import ProjectDescription from '../../components/ProjectCreation/ProjectDescription';
+import ProjectDescription from '../../components/projectCreation/ProjectDescription';
 
 import styles from './ProjectListStyle';
 

@@ -6,8 +6,8 @@ import {withStyles, Grid, TextField, Button,
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import EditIcon from '@material-ui/icons/Edit';
 
-import CustomModal from '../../components/modal/Modal';
-import EnhancedTable from '../../components/grid/Grid';
+import CustomModal from '../modal/Modal';
+import EnhancedTable from '../grid/Grid';
 
 import {SORTING} from '../../constants/Constant';
 import {formatDateTime} from '../../utils/DateFormat';

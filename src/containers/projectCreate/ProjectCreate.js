@@ -3,7 +3,7 @@ import {withStyles} from '@material-ui/core';
 import { connect } from "react-redux";
 import _, {isEqual} from 'lodash';
 
-import ProjectCreation from '../../components/ProjectCreation/ProjectCreation';
+import ProjectCreation from '../../components/projectCreation/ProjectCreation';
 import {PROJECT_CREATION, LOCATION_LIMIT, API_URLS} from '../../constants/Constant';
 import {projectCreation, projectUpdate} from  '../../actions/AdminAction';
 

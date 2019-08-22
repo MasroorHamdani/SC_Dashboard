@@ -7,8 +7,8 @@ import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import EditIcon from '@material-ui/icons/Edit';
 
 import {SORTING} from '../../constants/Constant';
-import CustomModal from '../../components/modal/Modal';
-import EnhancedTable from '../../components/grid/Grid';
+import CustomModal from '../modal/Modal';
+import EnhancedTable from '../grid/Grid';
 
 import styles from './ProjectCreationStyle';
 
