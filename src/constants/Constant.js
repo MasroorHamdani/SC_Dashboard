@@ -272,7 +272,8 @@ export const DATA_VIEW_TYPE = {
     'PIE': 'pie',
     'TILE': 'tile',
     'AREA': 'area',
-    'VERTICAL': 'vertical'
+    'VERTICAL': 'vertical',
+    'STACKED': 'stacked'
 }
 
 export const ALERT_LEVEL = [

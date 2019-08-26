@@ -11,6 +11,9 @@ import DataProcessingComponent from './DataProcessComponent';
 import AlertAnalysis from './AlertAnalysis';
 import styles from './DataAnalysisStyle';
 
+import { Scrollbars } from 'react-custom-scrollbars';
+import DefaultLegendContent from 'recharts/lib/component/DefaultLegendContent';
+
 class GraphPlot extends Component {
     state = ({
         activeIndex: 0,
@@ -37,6 +40,22 @@ class GraphPlot extends Component {
         });
     }
 
+    scrollableLegend = (props) => {
+        const newProps = {...props};
+        newProps.layout = 'horizontal';
+        newProps.fontSize = '5'; // This property doesn't work
+        newProps.iconSize = '5';
+        return (
+            <Scrollbars
+                style={{
+                    width: 'fit-content',
+                }}
+                autoHeight
+                autoHeightMax={100}>
+                <DefaultLegendContent {...newProps} />
+            </Scrollbars>
+        );
+    };
     handleLegendMouseEnter = (o) =>{
         const { dataKey } = o;
         const { opacity } = this.state;
@@ -134,10 +153,18 @@ class GraphPlot extends Component {
          * Check for the type of the graph and as per conditions decide what to show.
          */
             metrics.map((metric, index) => {
+                let max=0, count=0;
+                graphData[metric.metric_id].map(row => {
+                    if (row['name'] && row['name'].length > max){
+                        max = row.name.length;
+                    }
+                    count+=1;
+                })
                 if(graphData[metric.metric_id] && !isEmpty(graphData[metric.metric_id]))
                 return <div key={index}
                     className={isDashboard && metric['metric_type'] === "raw_data"? classes.alertBox :
-                    isDashboard && metric['metric_type'] === "categorical" ? classes.dashboardPie : 
+                    isDashboard && metric['total_width'] === true ? classes.customModal :
+                    isDashboard && metric['metric_type'] === "categorical"? classes.dashboardPie :
                     isCustomModal ? classes.customModal : classes.otherData} >
                     <Divider className={classes.seperator}/>
                         {/* <DataProcessingComponent stateData={stateData}
@@ -156,13 +183,18 @@ class GraphPlot extends Component {
                                             minTickGap={20}
                                             height={40}
                                             // type="number"
-                                            label={{ value: 'Time of day', position: 'insideBottomRight', offset: 2}}//-3
+                                            label={{ value: 'Time of day', position: 'insideBottomRight', offset: 2,
+                                            fontSize: '80%', fill: '#C0C0C0'}}//-3
                                         />
                                     :
                                         <XAxis dataKey="name" 
-                                            minTickGap={20}
+                                            // minTickGap={20}
+                                            interval={count<=20 ? 0: ''}
+                                            tick={{ angle: -45, fontSize: 10, dy: max+6}}
+                                            height={max*6}
                                             // type="number"
-                                            label={{ value: 'Time of day', position: 'insideBottomRight', offset: -3}}
+                                            label={{ value: 'Time of day', position: 'insideBottomRight', offset: -12,
+                                            fontSize: '80%', fill: '#C0C0C0'}}
                                         />
                                     }
                                     {metric.dimensions[0].type === 'derivedDim' ?
@@ -179,6 +211,7 @@ class GraphPlot extends Component {
                                     <Legend onClick={isCustomModal ? this.selectLine : ''}
                                         onMouseEnter={!isCustomModal ? !isDashboard ?this.handleLegendMouseEnter: '' :''}
                                         onMouseLeave={!isCustomModal ? !isDashboard ? this.handleLegendMouseLeave: '' :''}
+                                        content={this.scrollableLegend}
                                         />
                                     {isCustomModal &&
                                         <Brush dataKey='name' height={30} stroke="#8884d8"/>
@@ -201,6 +234,16 @@ class GraphPlot extends Component {
                                             }
                                             if (mapper['chartType'] === DATA_VIEW_TYPE['BAR']) {
                                                 return <Bar name={mapper['name']} key={key}
+                                                    dataKey={this.state.selectedLine === null || this.state.selectedLine === key ? key : `${key} `}
+                                                    // dataKey={key}
+                                                    fill={mapper['color']} isAnimationActive={false}
+                                                    // onClick={e => !isCustomModal? handleBarClick(metric.metric_id): ''}
+                                                    fillOpacity={this.state.opacity[key]}
+                                                    />
+                                            }
+                                            if (mapper['chartType'] === DATA_VIEW_TYPE['STACKED']) {
+                                                return <Bar name={mapper['name']} key={key}
+                                                    stackId="a" // Generic defined as 'a', as all the bars will be compared across
                                                     dataKey={this.state.selectedLine === null || this.state.selectedLine === key ? key : `${key} `}
                                                     // dataKey={key}
                                                     fill={mapper['color']} isAnimationActive={false}
@@ -275,7 +318,7 @@ class GraphPlot extends Component {
                                                 )
                                             }
                                         </Pie>
-                                        <Legend/>
+                                        <Legend content={this.scrollableLegend}/>
                                     </PieChart>
                                 : metric.dimensions[0].ctype === DATA_VIEW_TYPE['VERTICAL'] ?
                                     <ComposedChart layout="vertical" className={classes.lineChart}
@@ -284,10 +327,11 @@ class GraphPlot extends Component {
                                         <YAxis dataKey="name" minTickGap={20} type="category"
                                             label={{ value: 'Dispenser', angle: -90, position: 'insideLeft'}}/>
                                         <XAxis type="number" 
-                                            label={{ value: 'Value', position: 'insideBottomRight', offset: 0}}/>
+                                            label={{ value: 'Value', position: 'insideBottomRight', offset: 0,
+                                            fontSize: '80%', fill: '#C0C0C0'}}/>
                                         <CartesianGrid strokeDasharray="3 3"/>
                                         <Tooltip/>
-                                        <Legend />
+                                        <Legend content={this.scrollableLegend}/>
                                         {nameMapper &&
                                             Object.keys(nameMapper[metric.metric_id]).map(key => {
                                                 let mapper = nameMapper[metric.metric_id][key];
@@ -329,13 +373,17 @@ class GraphPlot extends Component {
                                     <ComposedChart className={classes.lineChart}
                                         data={graphData[metric.metric_id]}
                                         margin={{top: 5, right: 30, left: 20, bottom: 5}}>
-                                        <XAxis dataKey="name" 
-                                            minTickGap={20}
-                                            label={{ value: 'Feedback', position: 'insideBottomRight', offset: -3}}/>
+                                        <XAxis dataKey="name"
+                                            interval={0}
+                                            tick={{ angle: -45, fontSize: 10, dy: max+6}}
+                                            height={max*5}
+                                            // minTickGap={20}
+                                            // label={{ value: 'Feedback', position: 'insideBottomRight', offset: -3}}
+                                            />
                                         <YAxis />
                                         <CartesianGrid strokeDasharray="3 3"/>
                                         <Tooltip/>
-                                        <Legend />
+                                        <Legend content={this.scrollableLegend} verticalAlign="top"/>
                                         {nameMapper &&
                                             Object.keys(nameMapper[metric.metric_id]).map(key => {
                                                 let mapper = nameMapper[metric.metric_id][key];
