@@ -13,6 +13,7 @@ import styles from './DataAnalysisStyle';
 
 import { Scrollbars } from 'react-custom-scrollbars';
 import DefaultLegendContent from 'recharts/lib/component/DefaultLegendContent';
+import DefaultTooltipContent from 'recharts/lib/component/DefaultTooltipContent';
 
 class GraphPlot extends Component {
     state = ({
@@ -55,6 +56,28 @@ class GraphPlot extends Component {
                 <DefaultLegendContent {...newProps} />
             </Scrollbars>
         );
+    };
+
+    CustomTooltip = props => {
+        // payload[0] doesn't exist when tooltip isn't visible
+        if (props.payload[0] != null) {
+            // mutating props directly is against react's conventions
+            // so we create a new payload with the name and value fields set to what we want
+            const newPayload = [
+                {
+                    name: 'XAxis value',
+                    // all your data which created the tooltip is located in the .payload property
+                    value: props.payload[0].payload.name,
+                    // you can also add "unit" here if you need it
+                },
+                ...props.payload,
+            ];
+            // we render the default, but with our overridden payload
+            // return <DefaultTooltipContent {...props} payload={newPayload} />; // This will append the default xaxis value as well
+            return <DefaultTooltipContent payload={newPayload} />;
+        }
+        // we just render the default
+        return <DefaultTooltipContent {...props} />;
     };
     handleLegendMouseEnter = (o) =>{
         const { dataKey } = o;
@@ -206,8 +229,10 @@ class GraphPlot extends Component {
                                         />
                                     }
                                     <CartesianGrid strokeDasharray="3 3"/>
-                                    <Tooltip/>
-                                    {/* <Tooltip content={<CustomTooltip/>}/> */}
+                                    {/* <Tooltip/> */}
+                                    <Tooltip 
+                                    content={<this.CustomTooltip/>}
+                                    />
                                     <Legend onClick={isCustomModal ? this.selectLine : ''}
                                         onMouseEnter={!isCustomModal ? !isDashboard ?this.handleLegendMouseEnter: '' :''}
                                         onMouseLeave={!isCustomModal ? !isDashboard ? this.handleLegendMouseLeave: '' :''}
@@ -388,6 +413,7 @@ class GraphPlot extends Component {
                                             Object.keys(nameMapper[metric.metric_id]).map(key => {
                                                 let mapper = nameMapper[metric.metric_id][key];
                                                 return  <Bar name={mapper['name']} key={key}
+                                                    barSize={60}
                                                     dataKey={this.state.selectedLine === null || this.state.selectedLine === key ? key : `${key} `}
                                                     // dataKey={key}
                                                     fill={mapper['color']} isAnimationActive={false}
@@ -454,37 +480,36 @@ class GraphPlot extends Component {
 
 export default withStyles(styles)(GraphPlot);
 
-
 // const CustomTooltip  = React.createClass({
-  
+
 //     getIntroOfPage(label) {
 //         let mapper =[];
 //     let toolTip = ''
-//       mapper.map((dt) => {
-//           if(dt['label'] === label && dt['toolTip']) {
+//     mapper.map((dt) => {
+//         if(dt['label'] === label && dt['toolTip']) {
 //             toolTip =  dt['toolTip']
 //         }
-//       })
-//       return toolTip;
+//     })
+//     return toolTip;
 //     },
-  
+
 //     render() {
-//       const { active } = this.props;
-  
-//       if (active) {
+//     const { active } = this.props;
+
+//     if (active) {
 //         const { payload } = this.props;
-//           return (
+//         return (
 //             <div className="custom-tooltip">
-//              {payload.map((row) =>
-//              <div>
-//                <p className="label">{`${row.dataKey} : ${row.value}`}</p>
-//                <p className="intro">{this.getIntroOfPage(row.dataKey)}</p>
-//                </div>
-//              )}
+//             {payload.map((row) =>
+//             <div>
+//             <p className="label">{`${row.dataKey} : ${row.value}`}</p>
+//             <p className="intro">{this.getIntroOfPage(row.dataKey)}</p>
 //             </div>
-//           );
-       
-//       }
-//       return null;
+//             )}
+//             </div>
+//         );
+    
 //     }
-//   });
+//     return null;
+//     }
+// });
