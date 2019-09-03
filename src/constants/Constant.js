@@ -3,6 +3,7 @@ export const API_END_POINT = process.env.REACT_APP_API_END_POINT
 //"https://4l6qi5oh0h.execute-api.ap-southeast-1.amazonaws.com/prod";
 export const ADMIN = "http://127.0.0.1:5000"
 
+export const NEW_API_END_POINT = "https://4l6qi5oh0h.execute-api.ap-southeast-1.amazonaws.com/betaV2"
 export const S3_REPORTS_END_POINT = process.env.REACT_APP_S3_REPORTS_END_POINT
 //"https://80y6zxl35d.execute-api.ap-southeast-1.amazonaws.com/beta/reports";
 export const API_URLS = {
@@ -16,6 +17,7 @@ export const API_URLS = {
     "USER_PROFILE": "/authV2/profile",
     // "DEVICE_DATA": "/authV2/devices/data/project",
     "DEVICE_DATA": "/authV2/devices/datatemp/project",
+    "NEW_DEVICE_DATA": "/authV2/devices/datanew/analytics/projects",
     "DEVICE_METRICS": "/auth/devices/metrics",
     "SERVICE_REQUIREMENTS": "/auth/algorithms",
     "PROJECT_LOCATION": "/installations/devices",
@@ -34,9 +36,13 @@ export const API_URLS = {
 };
 
 export const DASHBOARD_METRIC = {
-    "ReqType": "default",
-    "Type": "DASHBOARD",
-    "SubType": "V1"
+    // "ReqType": "default",
+    // "Type": "DASHBOARD",
+    // "SubType": "V1"
+    "req_type": "DEFAULT",
+    "type": "DASHBOARD",
+    "sub_type": "V1",
+    "all_metrics": []
 }
 export const NEW_PASSWORD_REQUIRED = "NEW_PASSWORD_REQUIRED";
 
@@ -270,7 +276,8 @@ export const DATA_VIEW_TYPE = {
     'PIE': 'pie',
     'TILE': 'tile',
     'AREA': 'area',
-    'VERTICAL': 'vertical'
+    'VERTICAL': 'vertical',
+    'STACKED': 'stacked'
 }
 
 export const ALERT_LEVEL = [
@@ -289,8 +296,13 @@ export const ALERT_LEVEL = [
 export const PASSWORD_REGEX = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,12})");
 
 export const DATA_OPERATIONS = {
-    'FILTER': 'FILTER',
-    'RESAMPLER': 'RESAMPLER'
+    FILTER: 'FILTER',
+    RESAMPLER: 'RESAMPLER'
+}
+
+export const OPERATION_TYPE = {
+    DEFAULT: 'DEFAULT',
+    ON_DEMAND: 'ON_DEMAND'
 }
 
 export const DEVICE_TOOL_TIP = {
@@ -343,3 +355,14 @@ export const REGION_LIST = [
     {key: 'Europe/Paris',
     display: 'Europe/Paris'}
 ]
+
+export const PROJECT_ACTIONS = {
+    HOMEPAGE : "PROJECT_HOMEPAGE",
+    INSTALLATIONPAGE: "PROJECT_INSTALLATION",
+    INSTALLATIONHOMEPAGE: "INSTALLATION_HOMEPAGE"
+}
+
+export const GRAPH_RENDER_TYPE = {
+    COLLATE : 'collate',
+    SUBPLOT : 'subplot'
+}

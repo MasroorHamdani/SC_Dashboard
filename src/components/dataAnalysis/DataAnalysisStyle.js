@@ -31,6 +31,12 @@ const styles = theme => ({
         flexShrink: 0,
         textAlign: 'left'
     },
+    dashboardHeading: {
+        // fontSize: theme.typography.pxToRem(15),
+        flexBasis: '79%',
+        flexShrink: 0,
+        textAlign: 'left'
+    },
     pending: {
         color: '#fff',
         height: '25px',
@@ -115,7 +121,7 @@ const styles = theme => ({
     },
     // Grap Plot CSS
     alertBox: {
-        width: '55%'
+        width: '50%', //'55%'
     },
     otherData: {
         width: '50%'
@@ -136,6 +142,10 @@ const styles = theme => ({
     //Line chart dimentions
     lineChart: {
         width: "80%",
+    },
+    emptyChart: {
+        width: "100%",
+        height: '100px'
     },
     //tile dimentions
     tile: {

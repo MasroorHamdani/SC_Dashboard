@@ -67,7 +67,19 @@ const styles = theme => ({
     },
     modalIniatialDimentions: {
         height: '500px',
-    }
+    },
+    gridList: {
+        width: '100%',
+        height: '100vh',
+    },
+    paddingContent: {
+        padding: theme.spacing.unit * 3,
+    },
+    flexContainer: {
+        width: '100% !important',
+        display: 'flex',
+        flexWrap: 'wrap'
+    },
 })
 
 export default styles;

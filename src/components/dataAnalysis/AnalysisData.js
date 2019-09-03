@@ -53,8 +53,16 @@ class AnalysisData extends Component {
      * and pass that to a generic function to create data to display, which will be latter on passed to modal.
      */
         if(!isString) {
+            // let metricsData = {
+            //     [this.state.selectedMetric]:
+            //     this.props.stateData.modalDataAnalysis.data.data.metrics[this.state.selectedMetric]
+            // },
+            // metricIndex = this.props.stateData.modalDataAnalysis.data.data.all_metrics.findIndex(p =>
+            //     p.metric_id == this.state.selectedMetric),
+            // metricDim = [];
+            // metricDim.push(this.props.stateData.modalDataAnalysis.data.data.all_metrics[metricIndex]);
             return this.generateDataAnalytics(this.props.stateData.modalDataAnalysis.data.data.metrics,
-                this.props.stateData.modalDataAnalysis.data.data.allMetrics, this.props.classes, true);
+                this.props.stateData.modalDataAnalysis.data.data.all_metrics, this.props.classes, true);
         } else {
             return this.generateDataAnalytics('', '', this.props.classes, true, isString);
         }
@@ -82,7 +90,6 @@ class AnalysisData extends Component {
                 graphData = analyticsData.graphData,
                 nameMapper = analyticsData.nameMapper,
                 referenceMapper = analyticsData.referenceMapper;
-                
                 if(this.state.barClick && isCustomModal) {
                     tabData = <div className={classes.dispenserGraph}>
                         <DateRowComponent handleDatePicker={this.props.handleDatePicker}
@@ -130,7 +137,7 @@ class AnalysisData extends Component {
         let tabData, customModalData = <div className={classes.modalIniatialDimentions}></div>;
         if (stateData.dataAnalysis && stateData.dataAnalysis.data){
             tabData = this.generateDataAnalytics(stateData.dataAnalysis.data.data.metrics,
-                stateData.dataAnalysis.data.data.allMetrics, classes, false);
+                stateData.dataAnalysis.data.data.all_metrics, classes, false);
         } else if(typeof(stateData.dataAnalysis) === 'string' && !this.state.barClick) {
             tabData = stateData.dataAnalysis;
         }

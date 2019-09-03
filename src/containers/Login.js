@@ -142,7 +142,7 @@ class Login extends React.Component {
    * Get User details from the token passed in JWT.
    * This user data is used in Header component to be displayed.
    */
-    let tokenDict = JSON.parse(token['R']), data;
+    let tokenDict = token['R'] ? JSON.parse(token['R']) : [], data;
     if(tokenDict && tokenDict.length >0) 
     {
       data = _.find(tokenDict, attr)

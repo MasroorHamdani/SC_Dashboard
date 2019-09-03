@@ -1,9 +1,10 @@
-import {_, groupBy, orderBy, sortBy} from 'lodash';
+import _, {groupBy, orderBy, sortBy} from 'lodash';
 import moment from 'moment-timezone';
 
 import {DATE_TIME_FORMAT, GRAPH_LABEL_TIME_FORMAT,
     METRIC_TYPE, ANALYTICS_DATE, GRAPH_LABEL_DATE_TIME_FORMAT,
-    NAMESPACE_MAPPER} from '../constants/Constant';
+    NAMESPACE_MAPPER, DATA_OPERATIONS, GRAPH_RENDER_TYPE,
+    DATA_VIEW_TYPE} from '../constants/Constant';
 import {formatDateTime, getTimeDifference,
     getTodaysStartDateTime} from '../utils/DateFormat';
 
@@ -25,13 +26,69 @@ export function getFormatedGraphData(passedData, metrics, stateData='', isCustom
  * grouping them will get ride of duplicate values.
  * Finally return the final data back to calling function
  */
-    let graphData = [], nameMapper = {}, referenceMapper={};
-    metrics.map(function(row) {
-        let metridId = row.metricID;
-        let graphSection = [], mapper={}, referenceLine={};
-        Object.keys(passedData[metridId]).map((key) => {
+    let graphData = [], nameMapper = {}, referenceMapper={},
+        newMetrics =[], metID,
+        newMetricData = {}, tempMetric = {},
+        tempMetricData = {}, oldMetricData = {};
+    // Checking if render type is collate,
+    // If yes, than we have to combine the dimension metrics as well as the data metrics
+    metrics.map((row) => {
+        if (row.renderType ===  GRAPH_RENDER_TYPE['COLLATE']) {
+            let serviceId = row.serviceId, oldMetric = {};
+            
+            if (!_.isEmpty(newMetrics) && _.find(newMetrics, {'serviceId': serviceId})) {
+                oldMetric = _.find(newMetrics, {'serviceId': serviceId});
+            }
+            if (oldMetric.serviceId !== serviceId) {
+                metID = row.metric_id
+            }
+            if (!_.isEmpty(newMetricData) && newMetricData[metID]) {
+                oldMetricData = newMetricData[metID];
+            }
+            if(_.isEmpty(oldMetric) || oldMetric.serviceId !== serviceId) {
+                tempMetric = _.cloneDeep(row)
+            } else if (oldMetric.serviceId === serviceId) {
+                row.dimensions.map((r) => {
+                    tempMetric.dimensions.push(r);
+                })
+            }
+            if(_.isEmpty(oldMetricData)) {
+                tempMetricData = _.cloneDeep(passedData[row.metric_id])
+            } else {
+                tempMetricData = Object.assign({}, newMetricData[metID], passedData[row.metric_id])
+            }
+
+            let index = -1;
+            if (!_.isEmpty(oldMetric))
+                index = _.findIndex(newMetrics, oldMetric);
+            if (index >= 0)
+                newMetrics.splice(index, 1);
+
+            if (!_.isEmpty(oldMetricData))
+                newMetricData[metID] = {}
+
+            newMetrics.push(tempMetric)
+            newMetricData[metID] = tempMetricData;
+        } else {
+            newMetrics.push(_.cloneDeep(row))
+            newMetricData[row.metric_id] = passedData[row.metric_id]
+        }
+    })
+
+    // This condition is added to make sure this is generic function
+    // and it will work for collate or subplot both the cases
+    let metricToUse = _.cloneDeep(newMetrics),
+        metricDataToUse = _.cloneDeep(newMetricData);
+
+    // Generic part of the function,
+    // which will go through multiple metrics in case its of type subplot or
+    // got through one metric only if its of type collate.
+    metricToUse.map(function(row) {
+        let metridId = row.metric_id,
+            graphSection = [], mapper={}, referenceLine={};
+        Object.keys(metricDataToUse[metridId]).map((key) => {
             row.dimensions.map((dim) => {
-                if(row.metricType === METRIC_TYPE['TABLE_DATA']) {
+                if(row.metric_type === METRIC_TYPE['TABLE_DATA']) {
                     let tableMapper = [], inputFormat, outputFormat;
                     row.dimensions[0].columns.map((col) => {
                         let temp = {};
@@ -48,7 +105,7 @@ export function getFormatedGraphData(passedData, metrics, stateData='', isCustom
                         tableMapper.push(temp);
                     })
                     nameMapper[metridId] = tableMapper;
-                    passedData[metridId][dim.id].data.data.map((vec) => {
+                    metricDataToUse[metridId][dim.id].data.data.map((vec) => {
                         tableMapper.map((tableMap) => {
                             if(tableMap.type === 'timestamp') {
                                 vec[tableMap.id] = moment(vec[tableMap.id], tableMap.outputFormat, true).isValid() ? vec[tableMap.id] :
@@ -58,33 +115,43 @@ export function getFormatedGraphData(passedData, metrics, stateData='', isCustom
                         graphSection.push(vec)
                     })
                     graphData[metridId] = graphSection;
-                } else 
-                if(row.metricType !== METRIC_TYPE['RAW_DATA']) {
-                    passedData[metridId][dim.id].data.map((vec) => {
-                        if(row.metricType === METRIC_TYPE['TIMESERIES']) {
+                } else if(row.metric_type !== METRIC_TYPE['RAW_DATA']) {
+                    metricDataToUse[metridId][dim.id].data.map((vec) => {
+                        if(row.metric_type === METRIC_TYPE['TIMESERIES']) {
                             let graphElement = {};
-                            if(row.metricDataKey && row.metricDataKey === 't') {
+                            if(row.metric_data_key && (row.metric_data_key === 't' || row.metric_data_key === 'AGG')) {
                                 let timeDiffer = getTimeDifference(isCustomModal ? stateData.modalStart : stateData.start,
                                     isCustomModal ? stateData.modalEnd : stateData.end);
                                 if(timeDiffer) {
-                                    graphElement['name'] = formatDateTime(vec.t, DATE_TIME_FORMAT, GRAPH_LABEL_TIME_FORMAT)
+                                    graphElement['name'] = formatDateTime(vec[row.metric_data_key], DATE_TIME_FORMAT, GRAPH_LABEL_TIME_FORMAT)
                                     //moment(vec.t, DATE_TIME_FORMAT).format(GRAPH_LABEL_TIME_FORMAT);
                                 } else {
-                                    graphElement['name'] = formatDateTime(vec.t, DATE_TIME_FORMAT, GRAPH_LABEL_DATE_TIME_FORMAT)
+                                    graphElement['name'] = formatDateTime(vec[row.metric_data_key], DATE_TIME_FORMAT, GRAPH_LABEL_DATE_TIME_FORMAT)
                                 }
                             }
                             graphElement[dim.id] = vec[dim.key];
                             graphSection.push(graphElement)
-                        } else if(row.metricType === METRIC_TYPE['CATEGORICAL']) {
+                        } else if(row.metric_type === METRIC_TYPE['CATEGORICAL']) {
                             let graphElement = {};
-                            graphElement['name'] = dim.name;
-                            graphElement['value'] = vec[dim.key];
-                            graphElement['color'] = dim.color;
-                            graphSection.push(graphElement)
+                            if(dim.ctype ===  DATA_VIEW_TYPE['PIE']) {
+                                graphElement['name'] = dim.name;
+                                graphElement['value'] = vec[dim.key];
+                                graphElement['color'] = dim.color;
+                                graphSection.push(graphElement)
+                            } else if(dim.ctype ===  DATA_VIEW_TYPE['BAR']) {
+                                graphElement['name'] = dim.name;
+                                graphElement[dim.id] = vec[dim.key];
+                                graphSection.push(graphElement)
+                            } else {
+                                graphElement['name'] = dim.name;
+                                graphElement['value'] = vec[dim.key];
+                                graphElement['color'] = dim.color;
+                                graphSection.push(graphElement)
+                            }
                         }
                     })
                 } else if(stateData.projectLocationList) {
-                    const data = groupBy(passedData[metridId][dim.id].data.Items,'ID');
+                    const data = groupBy(metricDataToUse[metridId][dim.id].data,'ID');
                     /**
                      * This part is specifically for alerts data.
                      * Mapping the location list name with locations ids
@@ -137,7 +204,6 @@ export function getFormatedGraphData(passedData, metrics, stateData='', isCustom
                 nameMapper[metridId] = mapper;
                 referenceMapper[metridId] = referenceLine;
             }
-            
         })
         
         if(row.metricType !== METRIC_TYPE['RAW_DATA'] && row.metricType !== METRIC_TYPE['TABLE_DATA']) {
@@ -157,12 +223,14 @@ export function getFormatedGraphData(passedData, metrics, stateData='', isCustom
                 }
             })
             if(testData.length > 0)
-                graphData[metridId] = sortBy(testData,'name');//testData;
+                graphData[metridId] = sortBy(testData,'name');
         }
     })
+
     return {graphData: graphData,
         nameMapper: nameMapper,
-        referenceMapper: referenceMapper
+        referenceMapper: referenceMapper,
+        metricToUse: metricToUse
     }
 }
 
@@ -249,47 +317,40 @@ export function getVector(metricsResponse, deviceKey) {
  */
     let dataMetrics = {}, path = [], metric = {};
     metricsResponse.map((metrics) => {
-        dataMetrics['metricType'] = metrics['metricType'];
-        dataMetrics['name'] = metrics['metricName'];
+        dataMetrics['metricType'] = metrics['metric_type'];
+        dataMetrics['name'] = metrics['metric_name'];
         dataMetrics['vector'] = [];
-        metric[metrics['metricID']] = {};
+        metric[metrics['metric_id']] = {};
         path=[];
         metrics.dimensions.map((vector) => {
             let vec = {
                 name: vector.name,
                 path: vector.key,
-                // unit: vector.Unit,
                 shortName: vector.id,
                 color: vector.color,
                 chartType: vector.ctype,
-                showSamplingWidget: vector.showSamplingWidget,
-                statistic: vector.statistic,
-                window: vector.window,
-                sampling: vector.window.substr(0, vector.window.length-1) ? vector.window.substr(0, vector.window.length-1): 1,
-                unit: vector.window.substr(vector.window.length-1, 1),
                 type: deviceKey
             }
-            // , actions = {};
-            // vector.actions.map((row) => {
-            //     let action = {};
-            //     action.type = row.type;
-            //     if(row.type === DATA_OPERATIONS['FILTER'])
-            //         action.criteria = row.criteria;
-            //     else if(row.type === DATA_OPERATIONS['RESAMPLER']) {
-            //         action.criteria = {};
-            //         action.criteria.statistic = row.criteria.statistic;
-            //         action.criteria.window = row.criteria.window;
-            //         action.criteria.sampling = row.criteria.window.substr(0, row.criteria.window.length-1) ? row.criteria.window.substr(0, row.criteria.window.length-1): 1;
-            //         action.criteria.unit = row.criteria.window.substr(row.criteria.window.length-1, 1);
-            //     }
-            //     actions.push(action);
-            // })
-            // vec.actions = actions;
-            dataMetrics['vector'].push(vec)
-            if(vector.showSamplingWidget)
-                path.push({[vector.id] : vec});
+            , actions = [];
+            vector.actions.map((row) => {
+                let action = {};
+                action.type = row.type;
+                if(row.type === DATA_OPERATIONS['FILTER'])
+                    action.criteria = row.criteria;
+                else if(row.type === DATA_OPERATIONS['RESAMPLER']) {
+                    action.criteria = {};
+                    action.criteria.statistic = row.criteria.agg;
+                    action.criteria.window = row.criteria.rule;
+                    action.criteria.sampling = row.criteria.rule.substr(0, row.criteria.rule.length-1) ? row.criteria.rule.substr(0, row.criteria.rule.length-1): 1;
+                    action.criteria.unit = row.criteria.rule.substr(row.criteria.rule.length-1, 1);
+                }
+                actions.push(action);
+            })
+            vec.actions = actions;
+            dataMetrics['vector'].push(vec);
+            path.push({[vector.id] : vec});
         })
-        metric[metrics['metricID']] = path;
+        metric[metrics['metric_id']] = path;
     })
     return {'dataMetrics': dataMetrics,
             'metric': metric}

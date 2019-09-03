@@ -1,7 +1,8 @@
 import axios from 'axios';
 import { merge } from "lodash-es";
 
-import {API_END_POINT, API_URLS, REACT_URLS, ADMIN} from "../constants/Constant";
+import {API_END_POINT, API_URLS, REACT_URLS,
+    NEW_API_END_POINT, ADMIN} from "../constants/Constant";
 
 function ApiService(configObject) {
     // This part will fetch the partnerid from URL if any,
@@ -17,15 +18,30 @@ function ApiService(configObject) {
         addressArray[mainIndex + 1] !== 'health' &&
         addressArray[mainIndex + 1] !== 'login' &&
         addressArray[mainIndex + 1] !== 'logout') ? addressArray[mainIndex + 1] : '';
-
-
-        const url = configObject.url.includes('admin') ? ADMIN : API_END_POINT,
+        
+    let url, newUrl
+    if(configObject.url.includes('datanew')) {
+        url = NEW_API_END_POINT;
         newUrl = `${url}${configObject.url}`;
+        axios.defaults.baseURL = NEW_API_END_POINT;
+        axios.defaults.timeout = 7000;
+    } else if(configObject.url.includes('admin')) {
+        url = ADMIN;
+        newUrl = `${url}${configObject.url}`;
+        axios.defaults.baseURL = ADMIN;
+        axios.defaults.timeout = 7000;
+    } else {
+        url = API_END_POINT;
+        newUrl = `${url}${configObject.url}`;
+        // const config = merge({}, configObject, {
+        //     url: newUrl.replace(/\s/g, "")
+        // });
+        axios.defaults.baseURL = API_END_POINT;
+        axios.defaults.timeout = 7000;
+    }
     const config = merge({}, configObject, {
         url: newUrl.replace(/\s/g, "")
     });
-    axios.defaults.baseURL = configObject.url.includes('admin') ? ADMIN : API_END_POINT;
-    axios.defaults.timeout = 7000;
 
     /**
      * This part is called as soon as an API call is made
