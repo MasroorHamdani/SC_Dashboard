@@ -166,9 +166,11 @@ class Dashboard extends Component {
         if(this.props.dataAnalysis &&
           !isEqual(this.props.dataAnalysis, prevProps.dataAnalysis)
           || !this.state.dashboardData.length > 0) {
+            
             let projObj = {}, metricsData={};
             const deviceResponse = this.props.dataAnalysis ? this.props.dataAnalysis.data.data : '';
             if(this.props.dataAnalysis && this.props.dataAnalysis.data.status === "success") {
+              this.metricsIndexReceived += 1;
               this.getInstallationLocation();
               metricsData = getVector(this.props.dataAnalysis.data.data.all_metrics, 'DASHBOARD');
               projObj['PID'] = deviceResponse.pid;
@@ -194,8 +196,12 @@ class Dashboard extends Component {
             dashboardData.push(projObj);
             this.setState({
               dashboardData: dashboardData,
-              loading: false
+              // loading: false
             });
+            if(this.metricsIndexReceived === this.metricLength)
+                this.setState({
+                    loading: false,
+                });
         }
         if(this.props.projectLocationList &&
           !isEqual(this.props.projectLocationList, prevProps.projectLocationList)) {

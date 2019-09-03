@@ -3,17 +3,18 @@ import {withStyles, Typography, Divider} from '@material-ui/core';
 import {Line, XAxis, YAxis, CartesianGrid, Tooltip,
     Legend, ResponsiveContainer, Brush, ComposedChart,
     Bar, PieChart, Pie, Cell, Sector, Area, ReferenceLine,
-    LineChart, Label} from 'recharts';
+    Label} from 'recharts';
 import {isEmpty} from 'lodash';
 import EnhancedTable from '../grid/Grid';
 import {METRIC_TYPE, DATA_VIEW_TYPE, SORTING} from '../../constants/Constant';
 import DataProcessingComponent from './DataProcessComponent';
 import AlertAnalysis from './AlertAnalysis';
-import styles from './DataAnalysisStyle';
-
 import { Scrollbars } from 'react-custom-scrollbars';
 import DefaultLegendContent from 'recharts/lib/component/DefaultLegendContent';
 import DefaultTooltipContent from 'recharts/lib/component/DefaultTooltipContent';
+
+import styles from './DataAnalysisStyle';
+
 
 class GraphPlot extends Component {
     state = ({

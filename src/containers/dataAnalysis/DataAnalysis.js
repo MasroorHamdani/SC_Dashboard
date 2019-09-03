@@ -12,7 +12,7 @@ import {projectSubMenuList, projectInstallationList,
   projectAnalysisData, clearDataAnalysis,
   modalProjectAnalysisData, projectDataMetricList,
   InitialiseDataState, InitialiseMetricState} from '../../actions/DataAnalysis';
-import styles from './DataAvalysisStyle';
+import styles from './DataAnalysisStyle';
 import RadioButtonComponent from '../../components/dataAnalysis/RadioButtonController';
 import {getStartEndTime, getVector} from '../../utils/AnalyticsDataFormat';
 import {getXHourOldDateTime, getTodaysStartDateTime} from '../../utils/DateFormat';

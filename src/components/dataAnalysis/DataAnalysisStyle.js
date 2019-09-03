@@ -121,7 +121,7 @@ const styles = theme => ({
     },
     // Grap Plot CSS
     alertBox: {
-        width: '55%'
+        width: '50%', //'55%'
     },
     otherData: {
         width: '50%'

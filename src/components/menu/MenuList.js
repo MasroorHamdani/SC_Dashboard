@@ -16,10 +16,16 @@ return ([
       toolTip: "Project details"
     },
     {
-      name: "Data Analysis",
+      name: "Data View",
+      url: partnerId ? `/${partnerId}/view/project/${pid}` : `/view/project/${pid}`,
+      icon: "BarChartIcon",
+      toolTip: "Data View"
+    },
+    {
+      name: "Data Analytics",
       url: partnerId ? `/${partnerId}/data/project/${pid}` : `/data/project/${pid}`,
       icon: "BarChartIcon",
-      toolTip: "Data Analysis"
+      toolTip: "Data Analytics"
     },
     {
       name: "Reports",

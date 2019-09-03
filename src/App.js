@@ -25,6 +25,7 @@ import ReportView from "./containers/ReportView";
 import Health from "./containers/Health";
 import HealthStatus from "./containers/HealthStatus";
 import PageLoader from "./components/pageLoader/PageLoader";
+import InstallationData from "./containers/installationData/InstallationData";
 
 import axios from 'axios';
 import {API_END_POINT, API_URLS} from "./constants/Constant";
@@ -43,6 +44,7 @@ class App extends React.Component {
         mainIndex = addressArray.indexOf('optimus'),
         partnerid = (addressArray[mainIndex + 1] !== 'profile' &&
         addressArray[mainIndex + 1] !== 'project' &&
+        addressArray[mainIndex + 1] !== 'view' &&
         addressArray[mainIndex + 1] !== 'alert' &&
         addressArray[mainIndex + 1] !== 'dispenser' &&
         addressArray[mainIndex + 1] !== 'data' &&
@@ -114,11 +116,12 @@ class App extends React.Component {
                       <Route path="/:partnerid?/alert/project/:pid?" component={AlertDetails} />
                       <Route path="/:partnerid?/dispenser/project/:pid?" component={DispenserDetails} />
                       <Route path="/:partnerid?/data/project/:pid" component={DataAnalysis} />
+                      <Route path="/:partnerid?/view/project/:pid" component={InstallationData} />
                       <Route exact path="/:partnerid?/report/configure/project/:pid?" component={Report} />
                       <Route path="/:partnerid?/report/project/:pid?" component={ReportView} />
                       <Route path="/:partnerid?/health/project/:pid/:insid" component={HealthStatus}/>
                       <Route exact path="/:partnerid?/health/project/:pid" component={Health}/>
-                      <Route path="/:partnerid?/project/:pid/installations/:insid?" component={ProjectInstallationDetails} />
+                      <Route exact path="/:partnerid?/project/:pid/installations/:insid?" component={ProjectInstallationDetails} />
                       <Route path="/:partnerid?/project/:pid/team/:uid?" component={ProjectTeamDetails} />
                       <Route path="/:partnerid?/project/:pid?" component={ProjectDetails} />
                       <Route path="/:partnerid?/logout" component={Logout} />

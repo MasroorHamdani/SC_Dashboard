@@ -32,7 +32,6 @@ export function getFormatedGraphData(passedData, metrics, stateData='', isCustom
         tempMetricData = {}, oldMetricData = {};
     // Checking if render type is collate,
     // If yes, than we have to combine the dimension metrics as well as the data metrics
-
     metrics.map((row) => {
         if (row.renderType ===  GRAPH_RENDER_TYPE['COLLATE']) {
             let serviceId = row.serviceId, oldMetric = {};
