@@ -3,13 +3,14 @@ import {withStyles} from '@material-ui/core';
 import { connect } from "react-redux";
 import _, {isEqual} from 'lodash';
 // import S3FileUpload from 'react-s3';
-
+import AWS from 'aws-sdk';
 import configureAWS from '../../services/AWSService';
 import { fabric } from 'fabric';
 import mapImg from '../../images/DEMO_PROJECT_LOCN1.jpeg';
 
 import ProjectCreation from '../../components/projectCreation/ProjectCreation';
-import {PROJECT_CREATION, LOCATION_LIMIT, API_URLS} from '../../constants/Constant';
+import {PROJECT_CREATION, LOCATION_LIMIT,
+    API_URLS, S3_LOCATION_MAP_END_POINT} from '../../constants/Constant';
 import {projectCreation, projectUpdate} from  '../../actions/AdminAction';
 
 import {formatDateTime} from '../../utils/DateFormat';
@@ -58,6 +59,10 @@ class ProjectCreate extends Component {
         }
     }
 
+    // componentDidMount() {
+    //     this.getImage();
+    // }
+
     handleChange = (event, param) => {
     /**
      * Common function to set any fields value from UI in state.
@@ -71,16 +76,23 @@ class ProjectCreate extends Component {
                 ...this.state[param],
                 [name]: value
             }
+        }, function() {
+            if (param === 'area' && name === 'insid') {
+                this.getImage();
+            }
         });
-        if (param === 'area' && name === 'insid') {
-            this.getImage();
-        }
+        
     }
 
     getImage = () => {
         let img = new Image(),
             canvas = new fabric.Canvas('canvas', {});
-        img.src = mapImg;
+        let index = _.findIndex(this.state.locations, {'InsID': this.state.area.insid}),
+            url = '';
+        if (index >=0) {
+            url = `${S3_LOCATION_MAP_END_POINT}${this.state.pid}/mapview/${this.state.locations[index].fileUrl}`;
+        }
+        img.src = url;
         img.onload = () => {
             this.setState({
                 dimensions:{
@@ -88,13 +100,13 @@ class ProjectCreate extends Component {
                     width:img.width
                 }
             }, function() {
-                canvas = this.setCanvas(canvas);
+                canvas = this.setCanvas(canvas, url);
             });
         }
     }
 
-    setCanvas = (canvas) => {
-        canvas.setBackgroundImage(mapImg, canvas.renderAll.bind(canvas));
+    setCanvas = (canvas, url) => {
+        canvas.setBackgroundImage(url, canvas.renderAll.bind(canvas));
         canvas.selectionColor = 'rgba(0,255,0,0.3)';
         canvas.selectionBorderColor = 'red';
         canvas.selectionLineWidth = 1;

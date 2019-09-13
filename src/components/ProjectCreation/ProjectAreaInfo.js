@@ -42,20 +42,20 @@ class ProjectAreaInfo extends Component {
         deleteObject} = this.props;
       let {width, height} = data.dimensions;
 
-      width = width ? width.toString(): "504";
-      height = height? height.toString(): "777";
+      width = width ? width.toString(): "";//"504";
+      height = height? height.toString(): "";//"777";
       let returnData = <div>
         {data.showFooter &&
           <Grid container spacing={1}>
               {data.dimensions.width &&
                 <Grid container item xs={12} spacing={3}>
-                  <Grid item xs={4}>
+                  <Grid container item xs={8}>
                     <canvas id="canvas"
                         width={width}
                         height={height}>
                       </canvas>
                   </Grid>
-                  <Grid spacing={1} direction="column">
+                  <Grid container spacing={1} xs={2} direction="column">
                       <Button
                         variant="contained"
                         color="primary"
