@@ -322,10 +322,10 @@ class GraphPlot extends Component {
                             </ResponsiveContainer>
                         }
                         {(metric.metric_type === METRIC_TYPE['CATEGORICAL']) ?
-                            <ResponsiveContainer
-                            width='100%' 
-                            height={400}>
-                                {metric.dimensions[0].ctype === DATA_VIEW_TYPE['PIE'] ?
+                                metric.dimensions[0].ctype === DATA_VIEW_TYPE['PIE'] ?
+                                <ResponsiveContainer
+                                    width='100%' 
+                                    height={400}>
                                     <PieChart>
                                         <Pie
                                             dataKey="value"
@@ -346,41 +346,46 @@ class GraphPlot extends Component {
                                         </Pie>
                                         <Legend content={this.scrollableLegend}/>
                                     </PieChart>
+                                </ResponsiveContainer>
                                 : metric.dimensions[0].ctype === DATA_VIEW_TYPE['VERTICAL'] ?
-                                    <ComposedChart layout="vertical" className={classes.lineChart}
-                                        data={graphData[metric.metric_id]}
-                                        margin={{top: 5, right: 30, left: 20, bottom: 5}}>
-                                        <YAxis dataKey="name" minTickGap={20} type="category"
-                                            label={{ value: 'Dispenser', angle: -90, position: 'insideLeft'}}/>
-                                        <XAxis type="number" 
-                                            label={{ value: 'Value', position: 'insideBottomRight', offset: 0,
-                                            fontSize: '80%', fill: '#C0C0C0'}}/>
-                                        <CartesianGrid strokeDasharray="3 3"/>
-                                        <Tooltip/>
-                                        <Legend content={this.scrollableLegend}/>
-                                        {nameMapper &&
-                                            Object.keys(nameMapper[metric.metric_id]).map(key => {
-                                                let mapper = nameMapper[metric.metric_id][key];
-                                                return <Bar name={mapper['name']} barSize={60} key={key}
-                                                    dataKey={key} isAnimationActive={false}>
-                                                    {
-                                                        graphData[metric.metric_id].map((entry, index) => {
-                                                            let color;
-                                                            if(entry[key] >= 80)
-                                                                color = '#1b5e20';
-                                                            else if(entry[key] <= 40)
-                                                                color = '#dd2c00';
-                                                            else if(entry[key] < 80 && entry[key] > 40)
-                                                                color = '#ffeb3b';
-                                                            return <Cell key={index} fill={color}
-                                                                // onClick={e => handleBarClick(entry[key])}
-                                                            />;
-                                                        })
-                                                    }
-                                                </Bar>
-                                            })
-                                        }
-                                    </ComposedChart>
+                                    <ResponsiveContainer
+                                        width='100%' 
+                                        height={400}>
+                                        <ComposedChart layout="vertical" className={classes.lineChart}
+                                            data={graphData[metric.metric_id]}
+                                            margin={{top: 5, right: 30, left: 20, bottom: 5}}>
+                                            <YAxis dataKey="name" minTickGap={20} type="category"
+                                                label={{ value: 'Dispenser', angle: -90, position: 'insideLeft'}}/>
+                                            <XAxis type="number" 
+                                                label={{ value: 'Value', position: 'insideBottomRight', offset: 0,
+                                                fontSize: '80%', fill: '#C0C0C0'}}/>
+                                            <CartesianGrid strokeDasharray="3 3"/>
+                                            <Tooltip/>
+                                            <Legend content={this.scrollableLegend}/>
+                                            {nameMapper &&
+                                                Object.keys(nameMapper[metric.metric_id]).map(key => {
+                                                    let mapper = nameMapper[metric.metric_id][key];
+                                                    return <Bar name={mapper['name']} barSize={60} key={key}
+                                                        dataKey={key} isAnimationActive={false}>
+                                                        {
+                                                            graphData[metric.metric_id].map((entry, index) => {
+                                                                let color;
+                                                                if(entry[key] >= 80)
+                                                                    color = '#1b5e20';
+                                                                else if(entry[key] <= 40)
+                                                                    color = '#dd2c00';
+                                                                else if(entry[key] < 80 && entry[key] > 40)
+                                                                    color = '#ffeb3b';
+                                                                return <Cell key={index} fill={color}
+                                                                    // onClick={e => handleBarClick(entry[key])}
+                                                                />;
+                                                            })
+                                                        }
+                                                    </Bar>
+                                                })
+                                            }
+                                        </ComposedChart>
+                                    </ResponsiveContainer>
                                 : metric.dimensions[0].ctype === DATA_VIEW_TYPE['TILE'] ?
                                     <div>
                                         {graphData[metric.metric_id].map(row => {
@@ -396,38 +401,42 @@ class GraphPlot extends Component {
                                         })}
                                     </div>
                                 : metric.dimensions[0].ctype === DATA_VIEW_TYPE['BAR'] ?
-                                    <ComposedChart className={classes.lineChart}
-                                        data={graphData[metric.metric_id]}
-                                        margin={{top: 5, right: 30, left: 20, bottom: 5}}>
-                                        <XAxis dataKey="name"
-                                            interval={0}
-                                            tick={{ angle: -45, fontSize: 10, dy: max+6}}
-                                            height={max*5}
-                                            // minTickGap={20}
-                                            // label={{ value: 'Feedback', position: 'insideBottomRight', offset: -3}}
-                                            />
-                                        <YAxis />
-                                        <CartesianGrid strokeDasharray="3 3"/>
-                                        <Tooltip/>
-                                        <Legend content={this.scrollableLegend} verticalAlign="top"/>
-                                        {nameMapper &&
-                                            Object.keys(nameMapper[metric.metric_id]).map(key => {
-                                                let mapper = nameMapper[metric.metric_id][key];
-                                                return  <Bar name={mapper['name']} key={key}
-                                                    barSize={60}
-                                                    dataKey={this.state.selectedLine === null || this.state.selectedLine === key ? key : `${key} `}
-                                                    // dataKey={key}
-                                                    fill={mapper['color']} isAnimationActive={false}
-                                                    // onClick={e => !isCustomModal? handleBarClick(metric.metric_id): ''}
-                                                    fillOpacity={this.state.opacity[key]}
-                                                    />
-                                            })
-                                        }
-                                    </ComposedChart>
+                                    <ResponsiveContainer
+                                        width='100%' 
+                                        height={400}>
+                                        <ComposedChart className={classes.lineChart}
+                                            data={graphData[metric.metric_id]}
+                                            margin={{top: 5, right: 30, left: 20, bottom: 5}}>
+                                            <XAxis dataKey="name"
+                                                interval={0}
+                                                tick={{ angle: -45, fontSize: 10, dy: max+6}}
+                                                height={max*5}
+                                                // minTickGap={20}
+                                                // label={{ value: 'Feedback', position: 'insideBottomRight', offset: -3}}
+                                                />
+                                            <YAxis />
+                                            <CartesianGrid strokeDasharray="3 3"/>
+                                            <Tooltip/>
+                                            <Legend content={this.scrollableLegend} verticalAlign="top"/>
+                                            {nameMapper &&
+                                                Object.keys(nameMapper[metric.metric_id]).map(key => {
+                                                    let mapper = nameMapper[metric.metric_id][key];
+                                                    return  <Bar name={mapper['name']} key={key}
+                                                        barSize={60}
+                                                        dataKey={this.state.selectedLine === null || this.state.selectedLine === key ? key : `${key} `}
+                                                        // dataKey={key}
+                                                        fill={mapper['color']} isAnimationActive={false}
+                                                        // onClick={e => !isCustomModal? handleBarClick(metric.metric_id): ''}
+                                                        fillOpacity={this.state.opacity[key]}
+                                                        />
+                                                })
+                                            }
+                                        </ComposedChart>
+                                    </ResponsiveContainer>
                                 :
                                     <div>Can't find appropriate Pattern!</div>
-                                }
-                            </ResponsiveContainer>
+                                
+                            // </ResponsiveContainer>
                         :
                         (metric.metric_type === METRIC_TYPE['RAW_DATA'] &&
                             <AlertAnalysis stateData={graphData[metric.metric_id]}

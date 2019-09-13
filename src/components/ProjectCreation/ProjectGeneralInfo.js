@@ -9,9 +9,10 @@ class ProjectGeneralInfo extends Component {
     constructor(props) {
       super(props)
       this.state = {
-        // expanded: 'project'
+        // expanded: 'project',
       }
     }
+
     render() {
         const {classes, data, onChange, onClick} = this.props;
         return (

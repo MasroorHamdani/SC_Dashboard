@@ -70,6 +70,9 @@ const styles = theme => ({
     },
     divider: {
         margin: '25px'
+    },
+    hide: {
+        display: 'none'
     }
 });
 

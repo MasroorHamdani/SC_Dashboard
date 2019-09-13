@@ -2,6 +2,11 @@ import React, {Component} from "react";
 import {withStyles} from '@material-ui/core';
 import { connect } from "react-redux";
 import _, {isEqual} from 'lodash';
+// import S3FileUpload from 'react-s3';
+
+import configureAWS from '../../services/AWSService';
+import { fabric } from 'fabric';
+import mapImg from '../../images/DEMO_PROJECT_LOCN1.jpeg';
 
 import ProjectCreation from '../../components/projectCreation/ProjectCreation';
 import {PROJECT_CREATION, LOCATION_LIMIT, API_URLS} from '../../constants/Constant';
@@ -48,7 +53,8 @@ class ProjectCreate extends Component {
             editArea: [],
             tempEditArea: {},
             openArea: false,
-            showFooter: true
+            showFooter: true,
+            dimensions: {}
         }
     }
 
@@ -66,8 +72,70 @@ class ProjectCreate extends Component {
                 [name]: value
             }
         });
+        if (param === 'area' && name === 'insid') {
+            this.getImage();
+        }
     }
 
+    getImage = () => {
+        let img = new Image(),
+            canvas = new fabric.Canvas('canvas', {});
+        img.src = mapImg;
+        img.onload = () => {
+            this.setState({
+                dimensions:{
+                    height:img.height,
+                    width:img.width
+                }
+            }, function() {
+                canvas = this.setCanvas(canvas);
+            });
+        }
+    }
+
+    setCanvas = (canvas) => {
+        canvas.setBackgroundImage(mapImg, canvas.renderAll.bind(canvas));
+        canvas.selectionColor = 'rgba(0,255,0,0.3)';
+        canvas.selectionBorderColor = 'red';
+        canvas.selectionLineWidth = 1;
+
+        let tlx, tly, brx, bry, pointX, pointY;
+        canvas.on('mouse:down', function(options) {
+            tlx = options.e.clientX;
+            tly = options.e.clientY;
+            pointX = canvas.getPointer(options.e)['x']
+            pointY = canvas.getPointer(options.e)['y']
+        });
+
+        canvas.on('mouse:up', function(options) {
+            brx = options.e.clientX;
+            bry = options.e.clientY;
+            let width = Math.abs(+tlx - +brx),
+            height = Math.abs(+tly - +bry);
+            if(!canvas.getActiveObject()) {
+                var rect = new fabric.Rect({
+                    left: pointX,//+tlx,
+                    top: pointY,//+tly,
+                    width: width,
+                    height: height,
+                    fill: 'rgba(0,255,0,0.3)',
+                    originX: "left",
+                    originY: "top",
+                    perPixelTargetFind: false,
+                    hasRotatingPoint: false
+                });
+                canvas.add(rect)
+            }
+        });
+
+        window.deleteObject = function() {
+            console.log('delete')
+            if(canvas.getActiveObject()) {
+                canvas.remove(canvas.getActiveObject());
+            }
+        }
+        return canvas;
+    }
     handleClick = (panel="", isDraft=false) => {
     /**
      * Post API call to save the data for a user profile.
@@ -115,6 +183,7 @@ class ProjectCreate extends Component {
         }
         // return true
     }
+
     getProjectLocationData = (isDraft=false) => {
         // Call api to save data
         if(!_.isEmpty(this.state.allLocations)) {
@@ -171,9 +240,11 @@ class ProjectCreate extends Component {
         location['isEdit'] = true
         this.setState(
             {location: location,
-            tempEdit: location}
+            tempEdit: location},
+            function() {
+                this.handleModalState('location')
+            }
         )
-        this.handleModalState('location')
     }
 
     editArea = (id) => {
@@ -195,7 +266,16 @@ class ProjectCreate extends Component {
             if(this.state.allLocations.length < LOCATION_LIMIT)
                 this.setState({
                     errorMessage: '',
-                    open: !this.state.open
+                    location: this.state.open ?
+                        {
+                            locn: "",
+                            name: "",
+                            offday: "",
+                            ShiftStart: "",
+                            ShiftEnd: "",
+                            Mute: false
+                        }: this.state.location,
+                    open: !this.state.open,
                 });
             else {
                 this.setState({limitErrorMessage : "Please Save the Details before adding more locations"})
@@ -220,6 +300,7 @@ class ProjectCreate extends Component {
                 dataToPost['name'] = this.state.location.name;
                 dataToPost['locn'] = this.state.location.locn;
                 dataToPost['Mute'] = this.state.location.Mute;
+                dataToPost['fileUrl'] = this.state.location.file ? this.state.location.file[0].name: this.state.location.fileUrl ? this.state.location.fileUrl : null;
                 let offDays = this.state.location.offday.split(',')
                 dataToPost['offdays'] = offDays;
                 dataToPost['offtimes'] = [{
@@ -230,7 +311,8 @@ class ProjectCreate extends Component {
                 temp =  _.cloneDeep(dataToPost);
                 temp['ShiftEnd'] = this.state.location.ShiftEnd;
                 temp['ShiftStart'] = this.state.location.ShiftStart;
-                temp['offday'] = this.state.location.offday
+                temp['offday'] = this.state.location.offday;
+                temp['file'] = this.state.location.file ? this.state.location.file: null;
                 let index = -1;
                 if (!_.isEmpty(this.state.tempEdit))
                     index = _.findIndex(this.state.locations, this.state.tempEdit);
@@ -246,6 +328,8 @@ class ProjectCreate extends Component {
                     delete allLocTemp['ShiftStart'];
                     delete allLocTemp['offday'];
                     delete allLocTemp['isEdit'];
+                    delete allLocTemp['file'];
+
                     let index = _.findIndex(this.state.editLocation, allLocTemp);
                     if(index >= 0)
                         this.state.editLocation.splice(index, 1);
@@ -272,6 +356,7 @@ class ProjectCreate extends Component {
                     delete allLocTemp['ShiftStart'];
                     delete allLocTemp['offday'];
                     delete allLocTemp['isEdit'];
+                    delete allLocTemp['file'];
 
                     let tempIndex = _.findIndex(this.state.allLocations, allLocTemp);
                     if(tempIndex >= 0)
@@ -322,6 +407,7 @@ class ProjectCreate extends Component {
                     }
                 });
             }
+            this.submitFile();
             this.handleModalState('location');
         } else {
             this.setState({errorMessage : "Please enter all valid details"})
@@ -410,8 +496,50 @@ class ProjectCreate extends Component {
                 })
             }
             this.handleModalState('area');
+            
         } else {
             this.setState({errorAreaMessage : "Please enter all valid details"})
+        }
+    }
+
+    handleFileUpload = (event) => {
+        this.setState({file: event.target.files,
+                imageUploaded: false,
+                'location': {
+                    ...this.state.location,
+                    file: event.target.files
+                }
+        });
+    }
+
+    submitFile = () => {
+        if(this.state.location.file && !this.state.imageUploaded) {
+            let self = this;
+            let s3 = configureAWS()
+            let file = this.state.file[0];
+
+            var fileName = file.name;
+            let albumName = `${this.state.pid}/mapview/`
+
+            var photoKey = `${albumName}${fileName}`
+            s3.upload({
+                Key: photoKey,
+                Body: file,
+                ACL: 'public-read',
+            }, function(err, response) {
+                if (err) {
+                    return self.setState({imageError: "There was an error uploading your photo"})
+                }
+                self.setState({
+                    imageUploaded: true
+                })
+                return
+            });
+            // const config = configureAWS()
+            // S3FileUpload
+            // .uploadFile(file, config)
+            // .then(data => console.log(data))
+            // .catch(err => console.error(err))
         }
     }
 
@@ -491,7 +619,9 @@ class ProjectCreate extends Component {
                         onAreaAddtion={this.onAreaAddtion}
                         handleModalState={this.handleModalState}
                         editLocation={this.editLocation}
-                        editArea={this.editArea}/>
+                        editArea={this.editArea}
+                        handleFileUpload={this.handleFileUpload}
+                        deleteObject={window.deleteObject}/>
                 </main>
           </div>
         )

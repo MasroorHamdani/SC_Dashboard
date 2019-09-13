@@ -60,7 +60,8 @@ class App extends React.Component {
         addressArray[mainIndex + 1] !== 'health' &&
         addressArray[mainIndex + 1] !== 'login' &&
         addressArray[mainIndex + 1] !== 'logout' &&
-        addressArray[mainIndex + 1] !== 'listproject') ? addressArray[mainIndex + 1] : '';
+        addressArray[mainIndex + 1] !== 'listproject' &&
+        addressArray[mainIndex + 1] !== 'newproject') ? addressArray[mainIndex + 1] : '';
         
         const urlEndPoint = `${API_END_POINT}${API_URLS['PARTNER']}${partnerid ? partnerid.toUpperCase() : 'default'}${API_URLS['THEME']}`;
         axios({

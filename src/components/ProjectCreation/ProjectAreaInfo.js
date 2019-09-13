@@ -6,6 +6,9 @@ import {withStyles, Grid, TextField, Button,
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import EditIcon from '@material-ui/icons/Edit';
 
+import { fabric } from 'fabric';
+import mapImg from '../../images/DEMO_PROJECT_LOCN1.jpeg';
+
 import {SORTING} from '../../constants/Constant';
 import CustomModal from '../modal/Modal';
 import EnhancedTable from '../grid/Grid';
@@ -20,7 +23,7 @@ class ProjectAreaInfo extends Component {
         orderBy: 'locn',
         selected: [],
         page: 0,
-        rowsPerPage: 5
+        rowsPerPage: 5,
       }
     }
 
@@ -32,13 +35,58 @@ class ProjectAreaInfo extends Component {
             [name] : value
         });
     }
-  
+
     render() {
       const {classes, data, onChange, onClick,
-        onAddtion, handleModalState, editArea} = this.props;
+        onAddtion, handleModalState, editArea,
+        deleteObject} = this.props;
+      let {width, height} = data.dimensions;
+
+      width = width ? width.toString(): "504";
+      height = height? height.toString(): "777";
       let returnData = <div>
         {data.showFooter &&
-          <Grid container spacing={24}>
+          <Grid container spacing={1}>
+              {data.dimensions.width &&
+                <Grid container item xs={12} spacing={3}>
+                  <Grid item xs={4}>
+                    <canvas id="canvas"
+                        width={width}
+                        height={height}>
+                      </canvas>
+                  </Grid>
+                  <Grid spacing={1} direction="column">
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        className={classes.button}
+                        onClick={window.deleteObject}>
+                        Basin Area
+                      </Button>
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        className={classes.button}
+                        onClick={window.deleteObject}>
+                        Cubicle
+                      </Button>
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        className={classes.button}
+                        onClick={window.deleteObject}>
+                        Urinal
+                      </Button>
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        className={classes.button}
+                        onClick={deleteObject}>
+                        Remove
+                      </Button>
+                  </Grid>
+                </Grid>
+              }
               <Grid item xs={12} sm={6}>
                 <FormControl className={classes.formControl} fullWidth>
                   <InputLabel htmlFor="age-native-helper">Location</InputLabel>

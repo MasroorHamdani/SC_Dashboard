@@ -18,7 +18,8 @@ class ProjectCreation extends Component {
     // }
     render() {
       const {classes, onChange, data, onClick, onLocationAddtion,
-        handleModalState, onAreaAddtion, editLocation, editArea} = this.props;
+        handleModalState, onAreaAddtion, editLocation, editArea,
+        handleFileUpload, deleteObject} = this.props;
       return (
         <div>
           <Typography variant="h6">
@@ -40,7 +41,8 @@ class ProjectCreation extends Component {
             <ExpansionPanelDetails>
               <ProjectLocationInfo onChange={onChange}
                 data={data} onClick={onClick} onAddtion={onLocationAddtion}
-                handleModalState={handleModalState} editLocation={editLocation}/>
+                handleModalState={handleModalState} editLocation={editLocation}
+                handleFileUpload={handleFileUpload}/>
             </ExpansionPanelDetails>
           </ExpansionPanel>
           <ExpansionPanel expanded={data.expanded === 'area'}>
@@ -50,7 +52,8 @@ class ProjectCreation extends Component {
             <ExpansionPanelDetails>
             <ProjectAreaInfo onChange={onChange}
                 data={data} onClick={onClick} onAddtion={onAreaAddtion}
-                handleModalState={handleModalState} editArea={editArea}/>
+                handleModalState={handleModalState} editArea={editArea}
+                deleteObject={deleteObject}/>
             </ExpansionPanelDetails>
           </ExpansionPanel>
         </div>

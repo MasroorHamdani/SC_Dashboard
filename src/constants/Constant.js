@@ -5,6 +5,12 @@ export const ADMIN = "http://127.0.0.1:5000"
 
 export const NEW_API_END_POINT = "https://4l6qi5oh0h.execute-api.ap-southeast-1.amazonaws.com/betaV2"
 export const S3_REPORTS_END_POINT = process.env.REACT_APP_S3_REPORTS_END_POINT
+export const S3_LOCATION_MAP_END_POINT = "https://4l6qi5oh0h.execute-api.ap-southeast-1.amazonaws.com/prod/assets"
+export const S3_BUCKET = process.env.REACT_APP_S3_BUCKET
+export const S3_REGION = process.env.REACT_APP_S3_REGION
+export const S3_ACCESS_KEY_ID = process.env.REACT_APP_S3_ACCESS_KEY_ID
+export const S3_SECRET_ACCESS_KEY = process.env.REACT_APP_S3_SECRET_ACCESS_KEY
+//process.env.REACT_APP_S3_LOCATION_MAP_END_POINT
 //"https://80y6zxl35d.execute-api.ap-southeast-1.amazonaws.com/beta/reports";
 export const API_URLS = {
     "LOGIN": "/unauth/login",

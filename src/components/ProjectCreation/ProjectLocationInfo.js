@@ -23,7 +23,8 @@ class ProjectLocationInfo extends Component {
         orderBy: 'name',
         selected: [],
         page: 0,
-        rowsPerPage: 5
+        rowsPerPage: 5,
+        imageUploaded: false
       }
     }
 
@@ -35,13 +36,27 @@ class ProjectLocationInfo extends Component {
             [name] : value
         });
     }
-    
+
     render() {
         const {classes, data, onChange, onClick,
-            onAddtion, handleModalState, editLocation} = this.props;
+            onAddtion, handleModalState, editLocation,
+            handleFileUpload} = this.props;
         let returnData = <div>
             {data.showFooter &&
             <Grid container spacing={24}>
+                <Grid item xs={24} sm={12}>
+                    <input label="Upload Floor Map"
+                        type="file"
+                        id="fileUrl"
+                        name="fileUrl"
+                        onChange={handleFileUpload}
+                        />
+                    { data.location.fileUrl &&
+                        <Typography component="p">
+                            <b>Map Image:</b> {data.location.fileUrl}
+                        </Typography>
+                    }
+                </Grid>
                 <Grid item xs={12} sm={6}>
                     <TextField
                         required
@@ -181,11 +196,16 @@ class ProjectLocationInfo extends Component {
                                 title={dt.name}
                                 subheader={dt.locn}/>
                                 <CardContent>
+                                    { dt.fileUrl &&
+                                        <Typography component="p">
+                                            <b>Map Image:</b> {dt.fileUrl}
+                                        </Typography>
+                                    }
                                     <Typography component="p">
-                                    <b>Shift Start At :</b> {formatDateTime(dt.ShiftStart, "HHmm", "hh:mm A")}
+                                        <b>Shift Start At :</b> {formatDateTime(dt.ShiftStart, "HHmm", "hh:mm A")}
                                     </Typography>
                                     <Typography component="p">
-                                    <b>Shift Ends At :</b> {formatDateTime(dt.ShiftEnd, "HHmm", "hh:mm A")}
+                                    <   b>Shift Ends At :</b> {formatDateTime(dt.ShiftEnd, "HHmm", "hh:mm A")}
                                     </Typography>
                                     <Typography component="div">
                                         <b>Off Days :</b> 
