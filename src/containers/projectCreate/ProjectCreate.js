@@ -507,7 +507,8 @@ class ProjectCreate extends Component {
                         area_type: ""
                     },
                     tempEditArea: {},
-                    dimensions: {}
+                    dimensions: {},
+                    coordinates: {}
                 });
             } else if(this.state.area.isEdit) {
                 let allAreaTemp = _.clone(this.state.tempEditArea);
@@ -536,7 +537,8 @@ class ProjectCreate extends Component {
                         insid: ""
                     },
                     tempEditArea: {},
-                    dimensions: {}
+                    dimensions: {},
+                    coordinates: {}
                 });
             } else {
                 this.setState({
@@ -554,7 +556,8 @@ class ProjectCreate extends Component {
                         insid: "",
                         area_type: ""
                     },
-                    dimensions: {}
+                    dimensions: {},
+                    coordinates: {}
                 })
             }
             this.handleModalState('area');
