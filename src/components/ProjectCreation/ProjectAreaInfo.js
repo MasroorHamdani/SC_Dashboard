@@ -9,7 +9,7 @@ import EditIcon from '@material-ui/icons/Edit';
 import { fabric } from 'fabric';
 import mapImg from '../../images/DEMO_PROJECT_LOCN1.jpeg';
 
-import {SORTING} from '../../constants/Constant';
+import {SORTING, AREA_LIST} from '../../constants/Constant';
 import CustomModal from '../modal/Modal';
 import EnhancedTable from '../grid/Grid';
 
@@ -48,45 +48,43 @@ class ProjectAreaInfo extends Component {
         {data.showFooter &&
           <Grid container spacing={1}>
               {data.dimensions.width &&
-                <Grid container item xs={12} spacing={3}>
-                  <Grid container item xs={8}>
+                <Grid>
+                  <Grid container item xs={10}>
                     <canvas id="canvas"
                         width={width}
                         height={height}>
                       </canvas>
                   </Grid>
-                  <Grid container spacing={1} xs={2} direction="column">
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        className={classes.button}
-                        onClick={window.deleteObject}>
-                        Basin Area
-                      </Button>
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        className={classes.button}
-                        onClick={window.deleteObject}>
-                        Cubicle
-                      </Button>
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        className={classes.button}
-                        onClick={window.deleteObject}>
-                        Urinal
-                      </Button>
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        className={classes.button}
-                        onClick={deleteObject}>
-                        Remove
-                      </Button>
+                  <Grid container item xs={2}>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      className={classes.button}
+                      onClick={deleteObject}
+                      >
+                      Remove
+                    </Button>
                   </Grid>
                 </Grid>
               }
+              <Grid item xs={12} sm={6}>
+                <FormControl className={classes.formControl} fullWidth>
+                    <InputLabel htmlFor="age-native-helper">Area List</InputLabel>
+                    <Select native
+                        value={data.area.area_type}
+                        onChange={e=>onChange(e, 'area')}
+                        inputProps={{
+                            name: 'area_type',
+                            id: 'area_type',
+                            }}>
+                    <option value="" />
+                        {AREA_LIST.map(function(area) {
+                            return <option value={area.color} name={area.key} key={area.key} >
+                                {area.display}</option>
+                    })}
+                    </Select>
+                </FormControl>
+              </Grid>
               <Grid item xs={12} sm={6}>
                 <FormControl className={classes.formControl} fullWidth>
                   <InputLabel htmlFor="age-native-helper">Location</InputLabel>
@@ -148,7 +146,7 @@ class ProjectAreaInfo extends Component {
         <div className={classes.gridRoot}>
           {data.showFooter ?
             <div>
-              <Grid spacing={24} className={classes.grid}>
+              <Grid spacing={12} className={classes.grid}>
                 <Grid item xs={24} sm={12}
                     container
                     alignItems='right'

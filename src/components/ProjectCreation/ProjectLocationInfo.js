@@ -166,7 +166,7 @@ class ProjectLocationInfo extends Component {
         return (<div className={classes.gridRoot}>
             {data.showFooter ?
             <div>
-                <Grid spacing={24} className={classes.grid}>
+                <Grid spacing={12} className={classes.grid}>
                     <Grid item xs={24} sm={12}
                         container
                         alignItems='right'

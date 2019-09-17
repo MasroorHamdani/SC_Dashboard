@@ -40,7 +40,8 @@ class ProjectCreate extends Component {
             },
             area: {
                 locn: "",
-                insid: ""
+                insid: "",
+                area_type: ""
             },
             locations: [],
             allLocations: [],
@@ -85,27 +86,30 @@ class ProjectCreate extends Component {
     }
 
     getImage = () => {
-        let img = new Image(),
-            canvas = new fabric.Canvas('canvas', {});
-        let index = _.findIndex(this.state.locations, {'InsID': this.state.area.insid}),
-            url = '';
-        if (index >=0) {
-            url = `${S3_LOCATION_MAP_END_POINT}${this.state.pid}/mapview/${this.state.locations[index].fileUrl}`;
-        }
-        img.src = url;
-        img.onload = () => {
-            this.setState({
-                dimensions:{
-                    height:img.height,
-                    width:img.width
-                }
-            }, function() {
-                canvas = this.setCanvas(canvas, url);
-            });
+        if(this.state.area.insid) {
+            let img = new Image(),
+                canvas = new fabric.Canvas('canvas', {});
+            let index = _.findIndex(this.state.locations, {'InsID': this.state.area.insid}),
+                url = '';
+            if (index >=0) {
+                url = `${S3_LOCATION_MAP_END_POINT}${this.state.pid}/mapview/${this.state.locations[index].fileUrl}`;
+            }
+            img.src = url;
+            img.onload = () => {
+                this.setState({
+                    dimensions:{
+                        height:img.height,
+                        width:img.width
+                    }
+                }, function() {
+                    canvas = this.setCanvas(canvas, url);
+                });
+            }
         }
     }
 
     setCanvas = (canvas, url) => {
+        let self = this;
         canvas.setBackgroundImage(url, canvas.renderAll.bind(canvas));
         canvas.selectionColor = 'rgba(0,255,0,0.3)';
         canvas.selectionBorderColor = 'red';
@@ -137,15 +141,46 @@ class ProjectCreate extends Component {
                     hasRotatingPoint: false
                 });
                 canvas.add(rect)
+                self.setState({
+                    'coordinates': {
+                        tlx: tlx,
+                        tly: tly,
+                        brx: brx,
+                        bry: bry,
+                        width: width,
+                        height: height,
+                        originX: "left",
+                        originY: "top",
+                        pointX: pointX,
+                        pointY: pointY
+                    }
+                })
             }
         });
 
         window.deleteObject = function() {
-            console.log('delete')
             if(canvas.getActiveObject()) {
                 canvas.remove(canvas.getActiveObject());
             }
         }
+        this.state.areas.map((row) => {
+            if(row.co_ordinates && row.insid === this.state.area.insid) {
+                console.log(row.co_ordinates, "row.co_ordinates")
+                var rect = new fabric.Rect({
+                    left: row['co_ordinates']['pointX'],
+                    top: row['co_ordinates']['pointY'],
+                    width: row['co_ordinates']['width'],
+                    height: row['co_ordinates']['height'],
+                    fill: row['area_type'],
+                    originX: row['co_ordinates']['originX'],
+                    originY: row['co_ordinates']['originY'],
+                    perPixelTargetFind: false,
+                    hasRotatingPoint: false,
+                    selectable: row.isEdit ? true : false
+                });
+                canvas.add(rect)
+            }
+        })
         return canvas;
     }
     handleClick = (panel="", isDraft=false) => {
@@ -172,20 +207,25 @@ class ProjectCreate extends Component {
     getProjectAreaData = (isDraft=false) => {
         if(!_.isEmpty(this.state.allAreas)) {
             let endPoint = `${API_URLS['ADMIN']}`,
-            dataToPost = {};
+                dataToPost = {};
             dataToPost['area'] = this.state.allAreas;
             dataToPost['type'] = PROJECT_CREATION['AREA'];
             dataToPost['pid'] = this.state.pid; //value returned from previous api call - project id
-            dataToPost['insid'] = this.state.areas[0].insid;
+            // index = _.findIndex(this.state.areas, {'areaid':row['areaid'], 'locn':row['locn']});
+            // dataToPost['insid'] = this.state.areas[index].insid;
+            // dataToPost['insid'] = this.state.areas[0].insid;
             let config = getApiConfig(endPoint, 'POST', dataToPost);
             this.props.onProjectCreation(config, 'POST');
         }
         if(!_.isEmpty(this.state.editArea)) {
             let endPoint = `${API_URLS['ADMIN']}/${this.state.pid}`,
-                dataToPost = {};
+                dataToPost = {},
+                index = -1;
             this.state.editArea.map((row) => {
                 dataToPost = row;
                 dataToPost['type'] = PROJECT_CREATION['AREA'];
+                // index = _.findIndex(this.state.areas, {'areaid':row['areaid'], 'locn':row['locn']});
+                // dataToPost['insid'] = this.state.areas[index].insid;
                 let config = getApiConfig(endPoint, 'POST', dataToPost);
                 this.props.onProjectUpdate(config, 'POST');
             })
@@ -264,9 +304,11 @@ class ProjectCreate extends Component {
         area['isEdit'] = true
         this.setState(
             {area: area,
-            tempEditArea: area}
+            tempEditArea: area},
+            function() {
+                this.handleModalState('area')
+            }
         )
-        this.handleModalState('area')
     }
 
     handleModalState = (panel='') => {
@@ -293,12 +335,13 @@ class ProjectCreate extends Component {
                 this.setState({limitErrorMessage : "Please Save the Details before adding more locations"})
             }
         } else if(panel === 'area') {
-            if(this.state.areas.length < LOCATION_LIMIT)
+            if(this.state.allAreas.length < LOCATION_LIMIT) {
                 this.setState({
                     errorAreaMessage: '',
                     openArea: !this.state.openArea
                 });
-            else {
+                this.getImage();
+            } else {
                 this.setState({limitAreaErrorMessage : "Please Save the Details before adding more locations"})
             }
         }
@@ -307,7 +350,7 @@ class ProjectCreate extends Component {
     onLocationAddtion = () => {
         if (this.state.location.name && this.state.location.locn &&
             this.state.location.offday && this.state.location.ShiftEnd &&
-            this.state.location.ShiftStart) {
+            this.state.location.ShiftStart && this.state.location.file) {
                 let dataToPost = {}, temp = {};
                 dataToPost['name'] = this.state.location.name;
                 dataToPost['locn'] = this.state.location.locn;
@@ -428,13 +471,15 @@ class ProjectCreate extends Component {
 
     onAreaAddtion = () => {
         // Fix the Area Edit part (insid one)
-        if(this.state.area.locn && this.state.area.insid) {
+        if(this.state.area.locn && this.state.area.insid &&
+            !_.isEmpty(this.state.coordinates) && this.state.area.area_type) {
             let dataToPost = {}, temp = {};
             dataToPost['locn'] = this.state.area.locn;
+            dataToPost['co_ordinates'] = this.state.coordinates;
+            dataToPost['area_type'] = this.state.area.area_type;
+            dataToPost['insid'] = this.state.area.insid
             temp =  _.cloneDeep(dataToPost);
-            temp['insid'] = this.state.area.insid;
-            // delete temp['isEdit'];
-            // delete dataToPost['isEdit'];
+
             let index = -1;
             if (!_.isEmpty(this.state.tempEditArea))
                 index = _.findIndex(this.state.areas, this.state.tempEditArea);
@@ -458,9 +503,11 @@ class ProjectCreate extends Component {
                     ],
                     area: {
                         locn: "",
-                        insid: ""
+                        insid: "",
+                        area_type: ""
                     },
-                    tempEditArea: {}
+                    tempEditArea: {},
+                    dimensions: {}
                 });
             } else if(this.state.area.isEdit) {
                 let allAreaTemp = _.clone(this.state.tempEditArea);
@@ -488,7 +535,8 @@ class ProjectCreate extends Component {
                         locn: "",
                         insid: ""
                     },
-                    tempEditArea: {}
+                    tempEditArea: {},
+                    dimensions: {}
                 });
             } else {
                 this.setState({
@@ -503,8 +551,10 @@ class ProjectCreate extends Component {
                     ],
                     area: {
                         locn: "",
-                        insid: ""
-                    }
+                        insid: "",
+                        area_type: ""
+                    },
+                    dimensions: {}
                 })
             }
             this.handleModalState('area');
@@ -588,14 +638,16 @@ class ProjectCreate extends Component {
                     ],
                 })
             } else if(this.props.projectData['PID'] && this.props.projectData['type'] === PROJECT_CREATION['AREA']) {
+                let area = this.props.projectData['area'];
                 this.state.tempArea.map((row) => {
                     let index = _.findIndex(this.state.areas, row)
                     if(index >= 0)
                         this.state.areas.splice(index, 1);
                 })
-                let area = this.props.projectData['area'];
-                area.map((row) => {
-                    row['insid'] = row['insid']
+                area.map((r) => {
+                    let innerIndex = -1;
+                    innerIndex = _.findIndex(this.state.tempArea, {'locn': r['locn']});
+                    r['insid']  = this.state.tempArea[innerIndex]['insid'];
                 })
                 this.setState({
                     expanded: this.state.panel,
@@ -611,7 +663,6 @@ class ProjectCreate extends Component {
 
         if(this.props.projectUpdate && 
             !isEqual(this.props.projectUpdate, prevProps.projectUpdate)) {
-            console.log(this.props.projectUpdate, "this.props.projectUpdate")
             this.setState({
                 editLocation: [],
                 editArea: []

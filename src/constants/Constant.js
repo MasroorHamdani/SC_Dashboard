@@ -177,6 +177,7 @@ export const FUNCTION_LIST = [
     }
 
 ]
+
 export const REPORT_TABS = {
     'SERVICE' : 'service',
     'LOCATION': 'location',
@@ -322,11 +323,12 @@ export const DEVICE_TOOL_TIP = {
 
 export const DEVICE_TYPE = {
     'ODRDTR': 'Air Quality Devices',
-    'PC': 'People Count Devices',
+    'PPLCTR': 'People Count Devices',
     'PT': 'Paper Towel Devices',
     'WD': 'Wetness Detection Devices',
     'GW': 'Gateway Devices',
-    'TR': 'Toilet Roll Devices'
+    'TR': 'Toilet Roll Devices',
+    'FD': 'FeedBack',
 }
 
 export const RANGE_ERROR = "Please select Range within End Date limits - *Reset the time to Default"
@@ -373,3 +375,17 @@ export const GRAPH_RENDER_TYPE = {
     COLLATE : 'collate',
     SUBPLOT : 'subplot'
 }
+
+export const AREA_LIST = [{
+    key : 'BASIN_AREA',
+    display: 'Basin Area',
+    color: 'rgba(218,50,23,0.3)'//'rgba(0,255,0,0.3)'
+    },
+    {key: 'CUBICLE',
+    display: 'Cubicle',
+    color: 'rgba(35,23,218,0.3)'//'rgba(0,0,255,0.3)'
+    },
+    {key: 'URINAL',
+    display: 'Urinal',
+    color: 'rgba(23,128,218,0.3)'//'rgba(255,255,0,0.3)'
+}]
