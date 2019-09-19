@@ -46,7 +46,7 @@ class ProjectAreaInfo extends Component {
       height = height? height.toString(): "";//"777";
       let returnData = <div>
         {data.showFooter &&
-          <Grid container spacing={1}>
+          <Grid container spacing={16}>
               {data.dimensions.width &&
                 <Grid>
                   <Grid container item xs={10}>
@@ -146,10 +146,10 @@ class ProjectAreaInfo extends Component {
         <div className={classes.gridRoot}>
           {data.showFooter ?
             <div>
-              <Grid spacing={12} className={classes.grid}>
-                <Grid item xs={24} sm={12}
+              <Grid spacing={16} container className={classes.grid}>
+                <Grid item xs={12} sm={12}
                     container
-                    alignItems='right'
+                    alignItems='flex-end'//'right'
                     direction='row'
                     justify='flex-end'>
                     <IconButton>
@@ -177,7 +177,7 @@ class ProjectAreaInfo extends Component {
                         title={dt.locn}/>
                         <CardContent>
                           <Typography component="p">
-                            <b>Installation :</b> {dt.insid}
+                            <b>Installation :</b> {dt.locDisp}
                           </Typography>
                         </CardContent>
                       </Card>
@@ -196,8 +196,9 @@ class ProjectAreaInfo extends Component {
               }
               <Grid container spacing={24}>
                 <Grid item xs={6} sm={3}
-                  direction='row'
-                  justify='flex-start'>
+                  // direction='row'
+                  // justify='flex-start'
+                  >
                   <Button
                       variant="contained"
                       color="primary"
@@ -207,7 +208,7 @@ class ProjectAreaInfo extends Component {
                       Draft
                   </Button>
                 </Grid>
-                <Grid item xs={16} sm={8}
+                <Grid item xs={12} sm={8}
                     container
                     direction='row'
                     justify='flex-end'>

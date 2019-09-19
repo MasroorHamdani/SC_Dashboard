@@ -44,7 +44,7 @@ class ProjectLocationInfo extends Component {
         let returnData = <div>
             {data.showFooter &&
             <Grid container spacing={24}>
-                <Grid item xs={24} sm={12}>
+                <Grid item xs={12} sm={12}>
                     <input label="Upload Floor Map"
                         type="file"
                         id="fileUrl"
@@ -134,7 +134,7 @@ class ProjectLocationInfo extends Component {
                 </Grid>
                 {data.errorMessage &&
                     <Grid item
-                        xs={24} sm={12}>
+                        xs={12} sm={12}>
                         <Typography
                             variant="contained"
                             color="secondary">
@@ -166,10 +166,10 @@ class ProjectLocationInfo extends Component {
         return (<div className={classes.gridRoot}>
             {data.showFooter ?
             <div>
-                <Grid spacing={12} className={classes.grid}>
-                    <Grid item xs={24} sm={12}
+                <Grid spacing={16} container className={classes.grid}>
+                    <Grid item xs={12} sm={12}
                         container
-                        alignItems='right'
+                        alignItems='flex-end'//'right'
                         direction='row'
                         justify='flex-end'>
                         <IconButton>
@@ -225,7 +225,7 @@ class ProjectLocationInfo extends Component {
                 {data.limitErrorMessage &&
                     <Grid 
                         item
-                        xs={24} sm={12}>
+                        xs={12} sm={12}>
                         <Typography
                             color="secondary">
                             {data.limitErrorMessage}
@@ -234,8 +234,9 @@ class ProjectLocationInfo extends Component {
                 }
                 <Grid container spacing={24}>
                     <Grid item xs={6} sm={3}
-                        direction='row'
-                        justify='flex-start'>
+                        // direction='row'
+                        // justify='flex-start'
+                        >
                         <Button
                             variant="contained"
                             color="primary"
@@ -245,7 +246,7 @@ class ProjectLocationInfo extends Component {
                             Draft
                         </Button>
                     </Grid>
-                    <Grid item xs={16} sm={8}
+                    <Grid item xs={2} sm={8}
                         container
                         direction='row'
                         justify='flex-end'>

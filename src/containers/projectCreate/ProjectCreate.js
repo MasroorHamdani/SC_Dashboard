@@ -138,34 +138,53 @@ class ProjectCreate extends Component {
                     originX: "left",
                     originY: "top",
                     perPixelTargetFind: false,
-                    hasRotatingPoint: false
+                    hasRotatingPoint: false,
+                    lockMovementX: true,
+                    lockMovementY: true
                 });
-                canvas.add(rect)
-                self.setState({
-                    'coordinates': {
-                        tlx: tlx,
-                        tly: tly,
-                        brx: brx,
-                        bry: bry,
-                        width: width,
-                        height: height,
-                        originX: "left",
-                        originY: "top",
-                        pointX: pointX,
-                        pointY: pointY
-                    }
-                })
+                canvas.add(rect);
             }
+            if(canvas.getActiveObject()) {
+                console.log(canvas.getActiveObject())
+                let activeObj = canvas.getActiveObject();
+                brx = activeObj.oCoords.br.x;
+                bry = activeObj.oCoords.br.y;
+                tlx = activeObj.oCoords.tl.x;
+                tly = activeObj.oCoords.tl.y;
+                width = Math.abs(+tlx - +brx);
+                height = Math.abs(+tly - +bry);
+                pointX = activeObj.left;//canvas.getPointer(rect)['x'];
+                pointY = activeObj.top;//canvas.getPointer(rect)['y'];
+            }
+            self.setState({
+                'coordinates': {
+                    tlx: tlx,
+                    tly: tly,
+                    brx: brx,
+                    bry: bry,
+                    width: width,
+                    height: height,
+                    originX: "left",
+                    originY: "top",
+                    pointX: pointX,
+                    pointY: pointY
+                }
+            }, function() {
+                console.log(self.state.coordinates, "modified");
+            })
         });
 
         window.deleteObject = function() {
             if(canvas.getActiveObject()) {
                 canvas.remove(canvas.getActiveObject());
+                self.setState({
+                    coordinates: {}
+                })
             }
         }
         this.state.areas.map((row) => {
             if(row.co_ordinates && row.insid === this.state.area.insid) {
-                console.log(row.co_ordinates, "row.co_ordinates")
+                console.log(row.co_ordinates, "view")
                 var rect = new fabric.Rect({
                     left: row['co_ordinates']['pointX'],
                     top: row['co_ordinates']['pointY'],
@@ -176,7 +195,9 @@ class ProjectCreate extends Component {
                     originY: row['co_ordinates']['originY'],
                     perPixelTargetFind: false,
                     hasRotatingPoint: false,
-                    selectable: row.isEdit ? true : false
+                    selectable: row.isEdit ? true : false,
+                    lockMovementX: true,
+                    lockMovementY: true
                 });
                 canvas.add(rect)
             }
@@ -472,14 +493,16 @@ class ProjectCreate extends Component {
     onAreaAddtion = () => {
         // Fix the Area Edit part (insid one)
         if(this.state.area.locn && this.state.area.insid &&
-            !_.isEmpty(this.state.coordinates) && this.state.area.area_type) {
+            (!_.isEmpty(this.state.coordinates) || !_.isEmpty(this.state.area.co_ordinates)) && this.state.area.area_type) {
             let dataToPost = {}, temp = {};
             dataToPost['locn'] = this.state.area.locn;
-            dataToPost['co_ordinates'] = this.state.coordinates;
+            dataToPost['co_ordinates'] = !_.isEmpty(this.state.coordinates) ? this.state.coordinates : this.state.area.co_ordinates;
             dataToPost['area_type'] = this.state.area.area_type;
-            dataToPost['insid'] = this.state.area.insid
+            dataToPost['insid'] = this.state.area.insid;
             temp =  _.cloneDeep(dataToPost);
-
+            let locIndex = -1;
+            locIndex = _.findIndex(this.state.locations, {'insid': this.state.area.insid});
+            temp['locDisp'] = `${this.state.locations[locIndex].name} | ${this.state.locations[locIndex].locn}`
             let index = -1;
             if (!_.isEmpty(this.state.tempEditArea))
                 index = _.findIndex(this.state.areas, this.state.tempEditArea);
@@ -651,6 +674,9 @@ class ProjectCreate extends Component {
                     let innerIndex = -1;
                     innerIndex = _.findIndex(this.state.tempArea, {'locn': r['locn']});
                     r['insid']  = this.state.tempArea[innerIndex]['insid'];
+                    // let locIndex = -1;
+                    // locIndex = _.findIndex(this.state.locations, {'insid': this.state.tempArea[innerIndex]['insid']});
+                    // r['locDisp'] = `${this.state.locations[locIndex].name} | ${this.state.locations[locIndex].locn}`;
                 })
                 this.setState({
                     expanded: this.state.panel,

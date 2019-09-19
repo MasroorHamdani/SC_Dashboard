@@ -87,7 +87,7 @@ class ProjectGeneralInfo extends Component {
                     {data.generalErrorMessage &&
                         <Grid 
                             item
-                            xs={24} sm={12}>
+                            xs={12} sm={12}>
                             <Typography
                                 color="secondary">
                                 {data.generalErrorMessage}
@@ -96,8 +96,8 @@ class ProjectGeneralInfo extends Component {
                     }
                     {data.showFooter &&
                         <Grid item xs={12} sm={6}
-                            direction='row'
-                            justify='flex-end'
+                            // direction='row'
+                            // justify='flex-end'
                             >
                             <Button
                                 variant="contained"
