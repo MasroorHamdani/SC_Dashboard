@@ -26,6 +26,10 @@ const styles = theme => ({
     },
     denseList: {
       paddingLeft: '0px'
+    },
+    deviceDisplay: {
+      display: 'flex',
+      flexWrap: 'wrap',
     }
   });
 

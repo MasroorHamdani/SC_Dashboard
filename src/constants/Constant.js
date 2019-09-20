@@ -87,6 +87,8 @@ export const REACT_URLS = {
     'DISPENSER': (partnerId) => partnerId ? `/${partnerId}/dispenser/project` : '/dispenser/project',
     'HEALTH_STATUS': (partnerId) => partnerId ? `/${partnerId}/health/project` : '/health/project',
     'PROJECT_LIST': (partnerId) => partnerId ? `/${partnerId}/listproject` :'/listproject',
+    'MY_PROJECT_LIST': (partnerId) => partnerId ? `/${partnerId}/myproject` :'/myproject',
+    'NEW_PROJECT': (partnerId) => partnerId ? `/${partnerId}/newproject` :'/newproject',
     // 'PROJECT_LIST': '/listproject'
 }
 // "ALERT': (partnerId) => partnerId ? `${partnerId}/project/${pid}`: `/project/${pid}`
@@ -351,7 +353,8 @@ export const LOCATION_LIMIT = 5
 export const PROJECT_STATUS = {
     'PENDING': 'pending',
     'ACTIVE': 'active',
-    'REJECT': 'reject'
+    'REJECT': 'reject',
+    'DRAFT': 'draft'
 }
 
 export const REGION_LIST = [

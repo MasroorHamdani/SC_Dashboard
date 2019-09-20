@@ -73,6 +73,20 @@ const styles = theme => ({
     },
     hide: {
         display: 'none'
+    },
+    flexList: {
+        display: 'flex',
+        flexWrap: 'wrap',
+        flexDirection: 'row',
+        width: '100%'
+    },
+    listItem: {
+        width: '25%',
+        wordBreak: 'break-word'
+    },
+    deviceDisplay: {
+        display: 'flex',
+        flexWrap: 'wrap',
     }
 });
 

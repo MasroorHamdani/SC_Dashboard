@@ -63,6 +63,12 @@ export function secondaryMenuList (pid, partnerId) {
       toolTip: "List Project"
     },
     {
+      name: "My Projects",
+      url: partnerId ? `/${partnerId}/myproject` : `/myproject`,
+      icon: "ListIcon",
+      toolTip: "My Projects"
+    },
+    {
       name: "Add Project",
       url: partnerId ? `/${partnerId}/newproject` : `/newproject`,
       icon: "CreateIcon",

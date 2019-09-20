@@ -31,6 +31,8 @@ import PageLoader from "./components/pageLoader/PageLoader";
 import ProjectCreate from "./containers/projectCreate/ProjectCreate";
 import ProjectList from "./containers/projectList/ProjectList";
 import ProjectDetail from "./containers/projectList/ProjectDetail";
+import MyProjectList from "./containers/myProjectList/MyProjectList";
+import MyProjectDetail from "./containers/myProjectList/MyProjectDetail";
 // import {projectSelect}  from './actions/MenuAction';
 import InstallationData from "./containers/installationData/InstallationData";
 
@@ -61,6 +63,7 @@ class App extends React.Component {
         addressArray[mainIndex + 1] !== 'login' &&
         addressArray[mainIndex + 1] !== 'logout' &&
         addressArray[mainIndex + 1] !== 'listproject' &&
+        addressArray[mainIndex + 1] !== 'myproject' &&
         addressArray[mainIndex + 1] !== 'newproject') ? addressArray[mainIndex + 1] : '';
         
         const urlEndPoint = `${API_END_POINT}${API_URLS['PARTNER']}${partnerid ? partnerid.toUpperCase() : 'default'}${API_URLS['THEME']}`;
@@ -122,9 +125,12 @@ class App extends React.Component {
                     <Header {...this.props}  params={this.props.match.params}/>
                     <Menu {...this.props}/>
                     <Switch>
+                      <Route path="/:partnerid?/newproject/:pid" component={ProjectCreate} />
                       <Route path="/:partnerid?/newproject" component={ProjectCreate} />
                       <Route path="/:partnerid?/listproject/:pid" component={ProjectDetail} />
                       <Route path="/:partnerid?/listproject" component={ProjectList} />
+                      <Route path="/:partnerid?/myproject/:pid" component={MyProjectDetail} />
+                      <Route path="/:partnerid?/myproject" component={MyProjectList} />
                       <Route path="/:partnerid?/profile/:userid?" component={UserProfile} />
                       <Route path="/:partnerid?/alert/project/:pid?" component={AlertDetails} />
                       <Route path="/:partnerid?/dispenser/project/:pid?" component={DispenserDetails} />

@@ -13,7 +13,7 @@ import styles from './ProjectCreationStyle';
 class ProjectDescription extends Component {
     render() {
         const {classes, statedata, handleModalState,
-            onClick} = this.props;
+            onClick, handleEdit} = this.props;
         return (<div>
             {!isEmpty(statedata.projectDetail) &&
             <div>
@@ -31,7 +31,22 @@ class ProjectDescription extends Component {
                     Project Area Details
                 </Typography>
                 <ProjectAreaInfo data={statedata.projectDetail}/>
-                {(statedata.projectDetail.general.SUB2 !== PROJECT_STATUS['ACTIVE'] &&
+                {statedata.projectDetail.general.SUB2 === PROJECT_STATUS['DRAFT'] ?
+                    <Grid container spacing={24}>
+                        <Grid item xs={true}
+                            direction='row'
+                            justify='flex-end'>
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                className={classes.button}
+                                onClick={e=>handleEdit(PROJECT_STATUS['DRAFT'])}>
+                                Edit
+                            </Button>
+                        </Grid>
+                    </Grid>
+                :
+                    (statedata.projectDetail.general.SUB2 !== PROJECT_STATUS['ACTIVE'] &&
                     statedata.projectDetail.general.SUB2 !== PROJECT_STATUS['REJECT']) &&
                     <Grid container spacing={24}>
                         <Grid item xs={12} sm={6}

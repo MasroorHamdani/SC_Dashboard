@@ -6,9 +6,6 @@ import {withStyles, Grid, TextField, Button,
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import EditIcon from '@material-ui/icons/Edit';
 
-import { fabric } from 'fabric';
-import mapImg from '../../images/DEMO_PROJECT_LOCN1.jpeg';
-
 import {SORTING, AREA_LIST} from '../../constants/Constant';
 import CustomModal from '../modal/Modal';
 import EnhancedTable from '../grid/Grid';
@@ -40,7 +37,7 @@ class ProjectAreaInfo extends Component {
       const {classes, data, onChange, onClick,
         onAddtion, handleModalState, editArea,
         deleteObject} = this.props;
-      let {width, height} = data.dimensions;
+      let {width, height} = data.dimensions? data.dimensions : '';
 
       width = width ? width.toString(): "";//"504";
       height = height? height.toString(): "";//"777";
@@ -48,20 +45,19 @@ class ProjectAreaInfo extends Component {
         {data.showFooter &&
           <Grid container spacing={16}>
               {data.dimensions.width &&
-                <Grid>
-                  <Grid container item xs={10}>
+                <Grid container item xs={12} spacing={3}>
+                  <Grid item xs={8}>
                     <canvas id="canvas"
                         width={width}
                         height={height}>
                       </canvas>
                   </Grid>
-                  <Grid container item xs={2}>
+                  <Grid item xs={2}>
                     <Button
                       variant="contained"
                       color="primary"
                       className={classes.button}
-                      onClick={deleteObject}
-                      >
+                      onClick={deleteObject}>
                       Remove
                     </Button>
                   </Grid>
@@ -149,13 +145,11 @@ class ProjectAreaInfo extends Component {
               <Grid spacing={16} container className={classes.grid}>
                 <Grid item xs={12} sm={12}
                     container
-                    alignItems='flex-end'//'right'
+                    alignItems='flex-end'
                     direction='row'
                     justify='flex-end'>
-                    <IconButton>
-                        <AddCircleOutlineIcon 
-                            onClick={event => handleModalState('area')}
-                        />
+                    <IconButton onClick={event => handleModalState('area')}>
+                        <AddCircleOutlineIcon/>
                     </IconButton>
                 </Grid>
               </Grid>
@@ -167,10 +161,10 @@ class ProjectAreaInfo extends Component {
                     return <Card className={classes.card} key={i}>
                       <CardHeader
                         action={
-                        <IconButton className={classes.iconButton}>
-                            <EditIcon 
-                            onClick={event => editArea(i)}
-                            />
+                        <IconButton
+                          className={classes.iconButton}
+                          onClick={event => editArea(i)}>
+                            <EditIcon/>
                             {/* <ClearIcon onClick={event => this.removeLocation(dt.InsID, dt.name)}/> */}
                         </IconButton>
                         }
@@ -185,8 +179,7 @@ class ProjectAreaInfo extends Component {
                 }
               </GridList>
               {data.limitAreaErrorMessage &&
-                <Grid 
-                  item
+                <Grid item
                   xs={24} sm={12}>
                   <Typography
                       color="secondary">
@@ -195,16 +188,12 @@ class ProjectAreaInfo extends Component {
                 </Grid>
               }
               <Grid container spacing={24}>
-                <Grid item xs={6} sm={3}
-                  // direction='row'
-                  // justify='flex-start'
-                  >
+                <Grid item xs={6} sm={3}>
                   <Button
                       variant="contained"
                       color="primary"
                       className={classes.button}
-                      onClick={e=>onClick('area', true)}
-                      >
+                      onClick={e=>onClick('area', true)}>
                       Draft
                   </Button>
                 </Grid>

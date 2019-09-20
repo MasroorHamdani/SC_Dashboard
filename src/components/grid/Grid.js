@@ -4,13 +4,14 @@ import { withStyles } from '@material-ui/core/styles';
 import _ from 'lodash';
 import {Table, TableBody, TableCell, TablePagination,
   TableRow, TableFooter, Paper, TextField, Select, MenuItem,
-  List, ListItem, Switch} from '@material-ui/core';
+  List, ListItem, Switch, Typography} from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EnhancedTableHead from './GridHeader';
 import styles from "./GridStyle";
 import CustomModal from '../../components/modal/Modal';
 import { NamespacesConsumer } from 'react-i18next';
+import { isDeepStrictEqual } from 'util';
 
 function desc(a, b, orderBy) {
 /**
@@ -172,22 +173,20 @@ class EnhancedTable extends React.Component {
             * and the function will be called on key change and refine the data in the table
             */}
               <Select
-              displayEmpty
-              value={this.state.queryToColumn}
-              onChange={this.setQueryColumn}
-              >
-              <MenuItem value="" disabled>{t('selectColumn')}</MenuItem>
-              {searchList.map(row => {
-                return <MenuItem value={row.id} key={row.id}>{row.label}</MenuItem>
-                }, this)}
+                displayEmpty
+                value={this.state.queryToColumn}
+                onChange={this.setQueryColumn}>
+                <MenuItem value="" disabled>{t('selectColumn')}</MenuItem>
+                {searchList.map(row => {
+                  return <MenuItem value={row.id} key={row.id}>{row.label}</MenuItem>
+                  }, this)}
               </Select>
               <TextField
-              className={classes.searchField}
-              disabled={this.state.queryToColumn ? false : true}
-              placeholder="All"
-              value={this.state.query}
-              onChange={e=>this.setState({query: e.target.value})}
-              />
+                className={classes.searchField}
+                disabled={this.state.queryToColumn ? false : true}
+                placeholder="All"
+                value={this.state.query}
+                onChange={e=>this.setState({query: e.target.value})}/>
             </div>
           }
           <Table className={classes.table} aria-labelledby="tableTitle">
@@ -252,8 +251,14 @@ class EnhancedTable extends React.Component {
                                   checked={n[id]}
                                   value="Mute"
                                 />
-                                :
+                                : _.isString(n[id]) ?
                                   <span>{n[id]}</span>
+                                :
+                                  <div className={classes.deviceDisplay}>
+                                    {Object.keys(n[id]).map((key, index) => {
+                                        return <Typography key={index}> {key} - { n[id][key]} <b>|</b> </Typography>
+                                    })}
+                                  </div>
                                 }
                               </TableCell>
                       })}

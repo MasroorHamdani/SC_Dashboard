@@ -3,14 +3,14 @@ import {withStyles} from '@material-ui/core';
 import { connect } from "react-redux";
 import _, {isEqual} from 'lodash';
 // import S3FileUpload from 'react-s3';
-import AWS from 'aws-sdk';
+
 import configureAWS from '../../services/AWSService';
 import { fabric } from 'fabric';
-import mapImg from '../../images/DEMO_PROJECT_LOCN1.jpeg';
 
 import ProjectCreation from '../../components/projectCreation/ProjectCreation';
 import {PROJECT_CREATION, LOCATION_LIMIT,
-    API_URLS, S3_LOCATION_MAP_END_POINT} from '../../constants/Constant';
+    API_URLS, S3_LOCATION_MAP_END_POINT,
+    DEVICE_TYPE, PROJECT_STATUS} from '../../constants/Constant';
 import {projectCreation, projectUpdate} from  '../../actions/AdminAction';
 
 import {formatDateTime} from '../../utils/DateFormat';
@@ -22,8 +22,14 @@ import styles from './ProjectCreateStyle';
 class ProjectCreate extends Component {
     constructor(props) {
         super(props);
+        let devices_count= {};
+        Object.keys(DEVICE_TYPE).map((key, index) => {
+            devices_count[key] = 0
+        });
         this.state = {
+            pid: props.match.params.pid,
             expanded: 'general',
+            devices_count: devices_count,
             general: {
                 site: "",
                 site_addr: "",
@@ -36,7 +42,8 @@ class ProjectCreate extends Component {
                 offday: "",
                 ShiftStart: "",
                 ShiftEnd: "",
-                Mute: false
+                Mute: false,
+                devices_count: devices_count
             },
             area: {
                 locn: "",
@@ -60,36 +67,50 @@ class ProjectCreate extends Component {
         }
     }
 
-    // componentDidMount() {
-    //     this.getImage();
-    // }
-
+    componentDidMount() {
+        if(this.state.pid) {
+            let endPoint = `${API_URLS['ADMIN']}/${this.state.pid}`,
+                config = getApiConfig(endPoint, 'GET');
+            this.props.onProjectCreation(config);
+        }
+    }
     handleChange = (event, param) => {
     /**
      * Common function to set any fields value from UI in state.
      */
         let {name, value} = event.target;
+        
         if (name === 'Mute') {
             value = event.target.checked;
         }
-        this.setState({
-            [param]: {
-                ...this.state[param],
-                [name]: value
-            }
-        }, function() {
-            if (param === 'area' && name === 'insid') {
-                this.getImage();
-            }
-        });
-        
+        if(_.has(DEVICE_TYPE, name)) {
+            this.setState({
+                [param]: {
+                    ...this.state[param],
+                    devices_count: {
+                        ...this.state[param].devices_count,
+                        [name]: value
+                    }
+                }
+            })
+        } else 
+            this.setState({
+                [param]: {
+                    ...this.state[param],
+                    [name]: value
+                }
+            }, function() {
+                if (param === 'area' && name === 'insid') {
+                    this.getImage();
+                }
+            });
     }
 
     getImage = () => {
         if(this.state.area.insid) {
             let img = new Image(),
                 canvas = new fabric.Canvas('canvas', {});
-            let index = _.findIndex(this.state.locations, {'InsID': this.state.area.insid}),
+            let index = _.findIndex(this.state.locations, {'insid': this.state.area.insid}), //{'InsID': this.state.area.insid}
                 url = '';
             if (index >=0) {
                 url = `${S3_LOCATION_MAP_END_POINT}${this.state.pid}/mapview/${this.state.locations[index].fileUrl}`;
@@ -145,7 +166,6 @@ class ProjectCreate extends Component {
                 canvas.add(rect);
             }
             if(canvas.getActiveObject()) {
-                console.log(canvas.getActiveObject())
                 let activeObj = canvas.getActiveObject();
                 brx = activeObj.oCoords.br.x;
                 bry = activeObj.oCoords.br.y;
@@ -153,8 +173,8 @@ class ProjectCreate extends Component {
                 tly = activeObj.oCoords.tl.y;
                 width = Math.abs(+tlx - +brx);
                 height = Math.abs(+tly - +bry);
-                pointX = activeObj.left;//canvas.getPointer(rect)['x'];
-                pointY = activeObj.top;//canvas.getPointer(rect)['y'];
+                pointX = activeObj.left;
+                pointY = activeObj.top;
             }
             self.setState({
                 'coordinates': {
@@ -169,9 +189,7 @@ class ProjectCreate extends Component {
                     pointX: pointX,
                     pointY: pointY
                 }
-            }, function() {
-                console.log(self.state.coordinates, "modified");
-            })
+            });
         });
 
         window.deleteObject = function() {
@@ -184,7 +202,6 @@ class ProjectCreate extends Component {
         }
         this.state.areas.map((row) => {
             if(row.co_ordinates && row.insid === this.state.area.insid) {
-                console.log(row.co_ordinates, "view")
                 var rect = new fabric.Rect({
                     left: row['co_ordinates']['pointX'],
                     top: row['co_ordinates']['pointY'],
@@ -213,7 +230,7 @@ class ProjectCreate extends Component {
                 this.getProjectData();
             } else if((panel === 'area' && !isDraft) || (panel === 'location' && isDraft)) {
                 this.getProjectLocationData(isDraft);
-            } else if(panel === 'submit' || panel === 'area' && isDraft) {
+            } else if(panel === 'submit' || (panel === 'area' && isDraft)) {
                 this.getProjectAreaData(isDraft)
             }
             else {
@@ -232,29 +249,29 @@ class ProjectCreate extends Component {
             dataToPost['area'] = this.state.allAreas;
             dataToPost['type'] = PROJECT_CREATION['AREA'];
             dataToPost['pid'] = this.state.pid; //value returned from previous api call - project id
-            // index = _.findIndex(this.state.areas, {'areaid':row['areaid'], 'locn':row['locn']});
-            // dataToPost['insid'] = this.state.areas[index].insid;
-            // dataToPost['insid'] = this.state.areas[0].insid;
             let config = getApiConfig(endPoint, 'POST', dataToPost);
             this.props.onProjectCreation(config, 'POST');
         }
         if(!_.isEmpty(this.state.editArea)) {
             let endPoint = `${API_URLS['ADMIN']}/${this.state.pid}`,
-                dataToPost = {},
-                index = -1;
+                dataToPost = {};
             this.state.editArea.map((row) => {
                 dataToPost = row;
                 dataToPost['type'] = PROJECT_CREATION['AREA'];
-                // index = _.findIndex(this.state.areas, {'areaid':row['areaid'], 'locn':row['locn']});
-                // dataToPost['insid'] = this.state.areas[index].insid;
                 let config = getApiConfig(endPoint, 'POST', dataToPost);
                 this.props.onProjectUpdate(config, 'POST');
             })
         }
+        if(!isDraft) {
+            let endPoint = `${API_URLS['ADMIN']}/${this.state.pid}`,
+                projStatusData = {'type': 'general',
+                'status': isDraft ? PROJECT_STATUS.DRAFT: PROJECT_STATUS.PENDING}
+            let config = getApiConfig(endPoint, 'POST', projStatusData);
+                this.props.onProjectUpdate(config, 'POST');
+        }
         if (!isDraft && !_.isEmpty(this.state.areas)) {
             this.setState({expanded: this.state.panel})
         }
-        // return true
     }
 
     getProjectLocationData = (isDraft=false) => {
@@ -281,7 +298,6 @@ class ProjectCreate extends Component {
         if (!isDraft && !_.isEmpty(this.state.locations)) {
             this.setState({expanded: this.state.panel})
         }
-        // return true
     }
 
     getProjectData = () => {
@@ -297,6 +313,7 @@ class ProjectCreate extends Component {
                 dataToPost['Region'] = this.state.general.Region;
                 dataToPost['type'] = PROJECT_CREATION['GENERAL'];
                 dataToPost['HealthUpdates'] = {'Email': EmailArray};
+                dataToPost['status'] = PROJECT_STATUS.DRAFT;
                 let config = getApiConfig(endPoint, 'POST', dataToPost);
                 this.props.onProjectCreation(config, 'POST');
             } else {
@@ -315,7 +332,7 @@ class ProjectCreate extends Component {
             {location: location,
             tempEdit: location},
             function() {
-                this.handleModalState('location')
+                this.handleModalState('location', true)
             }
         )
     }
@@ -327,12 +344,12 @@ class ProjectCreate extends Component {
             {area: area,
             tempEditArea: area},
             function() {
-                this.handleModalState('area')
+                this.handleModalState('area', true)
             }
         )
     }
 
-    handleModalState = (panel='') => {
+    handleModalState = (panel='', isEdit='') => {
     /**
      * Handle the modal open and close state.
      * Modal shown to add a new allocation.
@@ -348,7 +365,8 @@ class ProjectCreate extends Component {
                             offday: "",
                             ShiftStart: "",
                             ShiftEnd: "",
-                            Mute: false
+                            Mute: false,
+                            devices_count: this.state.devices_count
                         }: this.state.location,
                     open: !this.state.open,
                 });
@@ -357,8 +375,23 @@ class ProjectCreate extends Component {
             }
         } else if(panel === 'area') {
             if(this.state.allAreas.length < LOCATION_LIMIT) {
+                // let indexArea = _.findIndex(this.state.areas, this.state.area);
+                // if(indexArea >=0) {
+                //     let areas = [];
+                //     areas = this.state.areas;
+                //     areas[indexArea].isEdit = !isEdit ? false: areas[indexArea].isEdit;
+                //     this.setState({
+                //         areas : areas
+                //     })
+                //     // this.state.areas[indexArea].isEdit = !isEdit ? false: this.state.areas[indexArea].isEdit;
+                // }
                 this.setState({
                     errorAreaMessage: '',
+                    area: this.state.openArea ?{
+                        locn: "",
+                        insid: "",
+                        area_type: ""
+                    }: this.state.area,
                     openArea: !this.state.openArea
                 });
                 this.getImage();
@@ -371,11 +404,13 @@ class ProjectCreate extends Component {
     onLocationAddtion = () => {
         if (this.state.location.name && this.state.location.locn &&
             this.state.location.offday && this.state.location.ShiftEnd &&
-            this.state.location.ShiftStart && this.state.location.file) {
+            this.state.location.ShiftStart && !_.isEmpty(this.state.location.devices_count) &&
+            (this.state.location.file || this.state.location.fileUrl)) {
                 let dataToPost = {}, temp = {};
                 dataToPost['name'] = this.state.location.name;
                 dataToPost['locn'] = this.state.location.locn;
                 dataToPost['Mute'] = this.state.location.Mute;
+                dataToPost['devices_count'] = this.state.location.devices_count;
                 dataToPost['fileUrl'] = this.state.location.file ? this.state.location.file[0].name: this.state.location.fileUrl ? this.state.location.fileUrl : null;
                 let offDays = this.state.location.offday.split(',')
                 dataToPost['offdays'] = offDays;
@@ -422,7 +457,8 @@ class ProjectCreate extends Component {
                             offday: "",
                             ShiftStart: "",
                             ShiftEnd: "",
-                            Mute: false
+                            Mute: false,
+                            devices_count: this.state.devices_count
                         },
                         tempEdit: {}
                     });
@@ -457,7 +493,8 @@ class ProjectCreate extends Component {
                             offday: "",
                             ShiftStart: "",
                             ShiftEnd: "",
-                            Mute: false
+                            Mute: false,
+                            devices_count: this.state.devices_count
                         },
                         tempEdit: {}
                     });
@@ -479,7 +516,8 @@ class ProjectCreate extends Component {
                         offday: "",
                         ShiftStart: "",
                         ShiftEnd: "",
-                        Mute: false
+                        Mute: false,
+                        devices_count: this.state.devices_count
                     }
                 });
             }
@@ -514,6 +552,7 @@ class ProjectCreate extends Component {
                 temp['areaid'] = dataToPost['areaid'];
                 let allAreaTemp = this.state.tempEditArea;
                 delete allAreaTemp['isEdit'];
+                delete allAreaTemp['locDisp'];
                 let index = _.findIndex(this.state.editArea, allAreaTemp);
                 if(index >= 0)
                     this.state.editArea.splice(index, 1);
@@ -537,6 +576,7 @@ class ProjectCreate extends Component {
                 let allAreaTemp = _.clone(this.state.tempEditArea);
                 delete allAreaTemp['isEdit'];
                 delete allAreaTemp['insid'];
+                delete allAreaTemp['locDisp'];
 
                 let tempIndex = _.findIndex(this.state.allAreas, allAreaTemp);
                 if(tempIndex >= 0)
@@ -635,7 +675,6 @@ class ProjectCreate extends Component {
         if(this.props.projectData && 
             !isEqual(this.props.projectData, prevProps.projectData)) {
             if(this.props.projectData['PID'] && this.props.projectData['type'] === PROJECT_CREATION['GENERAL']){
-            // !this.props.projectData['location'] && !this.props.projectData['area']) {
                 this.setState({
                     pid : this.props.projectData['PID'],
                     expanded: this.state.panel,
@@ -643,16 +682,16 @@ class ProjectCreate extends Component {
                 })
             } else if(this.props.projectData['PID'] && this.props.projectData['type'] === PROJECT_CREATION['LOCATION']) {
                 this.state.tempLocation.map((row) => {
-                    let index = _.findIndex(this.state.locations, row)
+                    let index = _.findIndex(this.state.locations, row);
                     if(index >= 0)
                         this.state.locations.splice(index, 1);
                 })
 
                 let loc = this.props.projectData['location'];
                 loc.map((row) => {
-                    row['ShiftEnd'] = formatDateTime(row['offtimes'][0]['End'], "HHmm", "HH:mm")
-                    row['ShiftStart'] = formatDateTime(row['offtimes'][0]['Start'], "HHmm", "HH:mm")
-                    row['insid'] = row['InsID']
+                    row['ShiftEnd'] = formatDateTime(row['offtimes'][0]['End'], "HHmm", "HH:mm");
+                    row['ShiftStart'] = formatDateTime(row['offtimes'][0]['Start'], "HHmm", "HH:mm");
+                    row['insid'] = row['InsID'];
                 })
                 this.setState({
                     expanded: this.state.panel,
@@ -674,9 +713,9 @@ class ProjectCreate extends Component {
                     let innerIndex = -1;
                     innerIndex = _.findIndex(this.state.tempArea, {'locn': r['locn']});
                     r['insid']  = this.state.tempArea[innerIndex]['insid'];
-                    // let locIndex = -1;
-                    // locIndex = _.findIndex(this.state.locations, {'insid': this.state.tempArea[innerIndex]['insid']});
-                    // r['locDisp'] = `${this.state.locations[locIndex].name} | ${this.state.locations[locIndex].locn}`;
+                    let locIndex = -1;
+                    locIndex = _.findIndex(this.state.locations, {'insid': this.state.tempArea[innerIndex]['insid']});
+                    r['locDisp'] = `${this.state.locations[locIndex].name} | ${this.state.locations[locIndex].locn}`;
                 })
                 this.setState({
                     expanded: this.state.panel,
@@ -687,6 +726,32 @@ class ProjectCreate extends Component {
                         ...this.state.areas.concat(area)
                     ],
                 })
+            } else {
+                let area = this.props.projectData.area,
+                    locations = this.props.projectData.locations,
+                    general = this.props.projectData.general,
+                    email= [];
+                general['ProjectConfig']['HealthUpdates']['Email'].map((row) => {
+                    email.push(Object.values(row)[0]);
+                })
+                general['Email'] = email.join();
+                area.map((r) => {
+                    r['insid'] = r['SUB1'];
+                    let locIndex = -1;
+                    locIndex = _.findIndex(locations, {'InsID': r['SUB1']});
+                    if (locIndex >= 0)
+                        r['locDisp'] = `${locations[locIndex].name} | ${locations[locIndex].locn}`;
+                })
+                locations.map((row) => {
+                    row['ShiftEnd'] = formatDateTime(row['offtimes'][0]['End'], "HHmm", "HH:mm");
+                    row['ShiftStart'] = formatDateTime(row['offtimes'][0]['Start'], "HHmm", "HH:mm");
+                    row['insid'] = row['InsID'];
+                })
+                this.setState({
+                    areas: area,
+                    locations: locations,
+                    general: general
+                })
             }
         }
 
@@ -694,7 +759,7 @@ class ProjectCreate extends Component {
             !isEqual(this.props.projectUpdate, prevProps.projectUpdate)) {
             this.setState({
                 editLocation: [],
-                editArea: []
+                editArea: [],
             })
         }
     }

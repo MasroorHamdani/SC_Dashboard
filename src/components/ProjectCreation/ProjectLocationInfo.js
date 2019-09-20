@@ -2,14 +2,14 @@ import React, {Component} from "react";
 import {withStyles, Grid, TextField, Button,
     Card, IconButton, CardHeader, CardContent,
     Typography, List, ListItem, GridList,
-    Switch, FormControlLabel} from '@material-ui/core';
+    Switch, FormControlLabel, Checkbox} from '@material-ui/core';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import EditIcon from '@material-ui/icons/Edit';
 
 import CustomModal from '../modal/Modal';
 import EnhancedTable from '../grid/Grid';
 
-import {SORTING} from '../../constants/Constant';
+import {SORTING, DEVICE_TYPE} from '../../constants/Constant';
 import {formatDateTime} from '../../utils/DateFormat';
 import {capitalizeFirstLetter} from '../../utils/FormatStrings';
 
@@ -132,6 +132,28 @@ class ProjectLocationInfo extends Component {
                             shrink: true
                         }}/>
                 </Grid>
+                <Grid item xs={true} sm={true}>
+                        <List dense className={classes.flexList}>
+                            {Object.keys(DEVICE_TYPE).map((key, index) => {
+                                return <ListItem className={classes.listItem} key={index}>
+                                        <TextField
+                                            required
+                                            type="number"
+                                            id={key}
+                                            name={key}
+                                            label={DEVICE_TYPE[key]}
+                                            placeholder='Device count'
+                                            fullWidth
+                                            value={data.location.devices_count[key]}
+                                            onChange={e=>onChange(e, 'location')}
+                                            InputLabelProps={{
+                                                shrink: true
+                                            }}/>
+                                    </ListItem>
+                            })}
+                            
+                        </List>
+                </Grid>
                 {data.errorMessage &&
                     <Grid item
                         xs={12} sm={12}>
@@ -150,6 +172,8 @@ class ProjectLocationInfo extends Component {
                     { id: 'offdays', numeric: 'left', disablePadding: false, label: 'Off Days' },
                     { id: 'Mute', numeric: 'left', disablePadding: false, label: 'Mute' },
                     { id: 'offtimes', numeric: 'left', disablePadding: false, label: 'Off Times' },
+                    { id: 'fileUrl', numeric: 'left', disablePadding: false, label: 'Floor Map' },
+                    { id: 'devices_count', numeric: 'left', disablePadding: false, label: 'Total Devices'},
                 ],
             tabData = <Typography component="div">
                 {!data.showFooter &&
@@ -172,13 +196,12 @@ class ProjectLocationInfo extends Component {
                         alignItems='flex-end'//'right'
                         direction='row'
                         justify='flex-end'>
-                        <IconButton>
-                            <AddCircleOutlineIcon 
-                                onClick={event => handleModalState('location')}/>
+                        <IconButton onClick={event => handleModalState('location')}>
+                            <AddCircleOutlineIcon/>
                         </IconButton>
                     </Grid>
                 </Grid>
-                <GridList cellHeight={250} className={classes.gridList}>
+                <GridList cellHeight={350} className={classes.gridList}>
                     {data.locations &&
                         data.locations.map((dt, i) => {
                         // Display the Added locations for the project
@@ -186,10 +209,10 @@ class ProjectLocationInfo extends Component {
                         return <Card className={classes.card} key={i}>
                             <CardHeader
                                 action={
-                                <IconButton className={classes.iconButton}>
-                                    <EditIcon 
-                                    onClick={event => editLocation(i)}
-                                    />
+                                <IconButton
+                                    className={classes.iconButton}
+                                    onClick={event => editLocation(i)}>
+                                    <EditIcon/>
                                     {/* <ClearIcon onClick={event => this.removeLocation(dt.InsID, dt.name)}/> */}
                                 </IconButton>
                                 }
@@ -206,6 +229,14 @@ class ProjectLocationInfo extends Component {
                                     </Typography>
                                     <Typography component="p">
                                     <   b>Shift Ends At :</b> {formatDateTime(dt.ShiftEnd, "HHmm", "hh:mm A")}
+                                    </Typography>
+                                    <Typography component="div">
+                                        <b>Device Count List :</b> 
+                                        <div className={classes.deviceDisplay}>
+                                        {Object.keys(dt.devices_count).map((key, index) => {
+                                            return <Typography key={index}> {key} - { dt.devices_count[key]} <b>|</b> </Typography>
+                                        })}
+                                        </div>
                                     </Typography>
                                     <Typography component="div">
                                         <b>Off Days :</b> 

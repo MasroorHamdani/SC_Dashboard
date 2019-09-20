@@ -24,7 +24,7 @@ class ProjectGeneralInfo extends Component {
                             disabled={!data.showFooter ? true: false}
                             id="site"
                             name="site"
-                            label="Project Name" //{t('firstname')}
+                            label="Project Name"
                             fullWidth
                             value={data.general.site}
                             onChange={e=>onChange(e, 'general')}/>
@@ -39,8 +39,7 @@ class ProjectGeneralInfo extends Component {
                         fullWidth
                         autoComplete="Site Address"
                         value={data.general.site_addr}
-                        onChange={e=>onChange(e, 'general')}
-                    />
+                        onChange={e=>onChange(e, 'general')}/>
                     </Grid>
                     <Grid item xs={12} sm={6}>
                     {!data.showFooter ?
@@ -81,12 +80,10 @@ class ProjectGeneralInfo extends Component {
                             label="Email"
                             fullWidth
                             value={data.general.Email}
-                            onChange={e=>onChange(e, 'general')}
-                        />
+                            onChange={e=>onChange(e, 'general')}/>
                     </Grid>
                     {data.generalErrorMessage &&
-                        <Grid 
-                            item
+                        <Grid item
                             xs={12} sm={12}>
                             <Typography
                                 color="secondary">
@@ -95,10 +92,7 @@ class ProjectGeneralInfo extends Component {
                         </Grid>
                     }
                     {data.showFooter &&
-                        <Grid item xs={12} sm={6}
-                            // direction='row'
-                            // justify='flex-end'
-                            >
+                        <Grid item xs={12} sm={6}>
                             <Button
                                 variant="contained"
                                 color="primary"
@@ -113,8 +107,7 @@ class ProjectGeneralInfo extends Component {
                             container
                             alignItems='center'
                             direction='row'
-                            justify='flex-end'
-                            >
+                            justify='flex-end'>
                             <Button
                                 variant="contained"
                                 color="primary"

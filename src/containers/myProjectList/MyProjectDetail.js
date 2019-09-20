@@ -3,19 +3,20 @@ import {withStyles, LinearProgress} from '@material-ui/core';
 import { connect } from "react-redux";
 import _, {isEqual} from 'lodash';
 
-import {API_URLS, PROJECT_STATUS} from '../../constants/Constant';
+import {API_URLS, PROJECT_STATUS, REACT_URLS} from '../../constants/Constant';
 import {projectCreation} from  '../../actions/AdminAction'; 
 import {getApiConfig} from '../../services/ApiCofig';
 import {formatDateTime} from '../../utils/DateFormat';
 import ProjectDescription from '../../components/projectCreation/ProjectDescription';
 
-import styles from './ProjectListStyle';
+import styles from './MyProjectListStyle';
 
-class ProjectDetail extends Component {
+class MyProjectDetail extends Component {
     constructor(props) {
         super(props);
         this.state = {
             pid: props.match.params.pid,
+            parentId: props.match.params.partnerid,
             loading: true,
             projectDetail: {},
             open: false
@@ -34,7 +35,8 @@ class ProjectDetail extends Component {
         if(this.props.projectData && 
             !isEqual(this.props.projectData, prevProps.projectData)) {
             if(this.props.projectData.status !== PROJECT_STATUS['ACTIVE'] &&
-                this.props.projectData.status !== PROJECT_STATUS['REJECT']) {
+                this.props.projectData.status !== PROJECT_STATUS['REJECT'] &&
+                this.props.projectData.status !== PROJECT_STATUS['DRAFT']) {
                 let projectDetail = this.props.projectData;
                 let email= [];
                 projectDetail.general['ProjectConfig']['HealthUpdates']['Email'].map((row) => {
@@ -90,6 +92,10 @@ class ProjectDetail extends Component {
         this.handleModalState();
     }
 
+    handleEdit = (type) => {
+        this.props.history.push(`${REACT_URLS.NEW_PROJECT(this.state.parentId)}/${this.state.pid}`);
+    }
+
     render() {
         const {classes} = this.props
         return (
@@ -101,7 +107,8 @@ class ProjectDetail extends Component {
                     {this.state.projectDetail &&
                         <ProjectDescription statedata={this.state}
                         handleModalState={this.handleModalState}
-                        onClick={this.onClick}/>
+                        onClick={this.onClick}
+                        handleEdit={this.handleEdit}/>
                     }
                 </main>
             </div>
@@ -123,4 +130,4 @@ function mapDispatchToProps(dispatch) {
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(ProjectDetail))
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(MyProjectDetail))
