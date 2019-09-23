@@ -193,7 +193,7 @@ class ProjectLocationInfo extends Component {
                 <Grid spacing={16} container className={classes.grid}>
                     <Grid item xs={12} sm={12}
                         container
-                        alignItems='flex-end'//'right'
+                        alignItems='flex-end'
                         direction='row'
                         justify='flex-end'>
                         <IconButton onClick={event => handleModalState('location')}>
@@ -234,19 +234,17 @@ class ProjectLocationInfo extends Component {
                                         <b>Device Count List :</b> 
                                         <div className={classes.deviceDisplay}>
                                         {Object.keys(dt.devices_count).map((key, index) => {
-                                            return <Typography key={index}> {key} - { dt.devices_count[key]} <b>|</b> </Typography>
+                                            return <Typography key={index}> {key} - { dt.devices_count[key]} <b>| </b> </Typography>
                                         })}
                                         </div>
                                     </Typography>
                                     <Typography component="div">
-                                        <b>Off Days :</b> 
-                                        <List dense={true}>
-                                        {dt.offdays.map((dt, index) => {
-                                            return <ListItem key={index}>
-                                            {capitalizeFirstLetter(dt)}
-                                            </ListItem>
-                                        })}
-                                        </List>
+                                        <b>Off Days :</b>
+                                        <div className={classes.deviceDisplay}>
+                                            {dt.offdays.map((dt, index) => {
+                                                return <Typography key={index}> {capitalizeFirstLetter(dt)} <b>| </b> </Typography>
+                                            })}
+                                        </div>
                                     </Typography>
                                 </CardContent>
                             </Card>
@@ -264,10 +262,7 @@ class ProjectLocationInfo extends Component {
                     </Grid>
                 }
                 <Grid container spacing={24}>
-                    <Grid item xs={6} sm={3}
-                        // direction='row'
-                        // justify='flex-start'
-                        >
+                    <Grid item xs={6} sm={3}>
                         <Button
                             variant="contained"
                             color="primary"

@@ -120,10 +120,11 @@ class ProjectCreate extends Component {
                 this.setState({
                     dimensions:{
                         height:img.height,
-                        width:img.width
-                    }
+                        width:img.width,
+                    },
+                    url: url
                 }, function() {
-                    canvas = this.setCanvas(canvas, url);
+                    canvas = this.setCanvas(canvas, this.state.url);
                 });
             }
         }
@@ -131,7 +132,8 @@ class ProjectCreate extends Component {
 
     setCanvas = (canvas, url) => {
         let self = this;
-        canvas.setBackgroundImage(url, canvas.renderAll.bind(canvas));
+        console.log(this.state.url, "url*****");
+        canvas.setBackgroundImage(this.state.url, canvas.renderAll.bind(canvas));
         canvas.selectionColor = 'rgba(0,255,0,0.3)';
         canvas.selectionBorderColor = 'red';
         canvas.selectionLineWidth = 1;
@@ -731,22 +733,31 @@ class ProjectCreate extends Component {
                     locations = this.props.projectData.locations,
                     general = this.props.projectData.general,
                     email= [];
-                general['ProjectConfig']['HealthUpdates']['Email'].map((row) => {
-                    email.push(Object.values(row)[0]);
-                })
-                general['Email'] = email.join();
-                area.map((r) => {
-                    r['insid'] = r['SUB1'];
-                    let locIndex = -1;
-                    locIndex = _.findIndex(locations, {'InsID': r['SUB1']});
-                    if (locIndex >= 0)
-                        r['locDisp'] = `${locations[locIndex].name} | ${locations[locIndex].locn}`;
-                })
-                locations.map((row) => {
-                    row['ShiftEnd'] = formatDateTime(row['offtimes'][0]['End'], "HHmm", "HH:mm");
-                    row['ShiftStart'] = formatDateTime(row['offtimes'][0]['Start'], "HHmm", "HH:mm");
-                    row['insid'] = row['InsID'];
-                })
+                if(!_.isEmpty(general)) {
+                    if(general['ProjectConfig'] && general['ProjectConfig']['HealthUpdates'] &&
+                        general['ProjectConfig']['HealthUpdates']['Email']) {
+                        general['ProjectConfig']['HealthUpdates']['Email'].map((row) => {
+                            email.push(Object.values(row)[0]);
+                        })
+                        general['Email'] = email.join();
+                    }
+                }
+                if(!_.isEmpty(area)){
+                    area.map((r) => {
+                        r['insid'] = r['SUB1'];
+                        let locIndex = -1;
+                        locIndex = _.findIndex(locations, {'InsID': r['SUB1']});
+                        if (locIndex >= 0)
+                            r['locDisp'] = `${locations[locIndex].name} | ${locations[locIndex].locn}`;
+                    })
+                }
+                if(!_.isEmpty(locations)){
+                    locations.map((row) => {
+                        row['ShiftEnd'] = row['offtimes'][0] ? formatDateTime(row['offtimes'][0]['End'], "HHmm", "HH:mm") : '';
+                        row['ShiftStart'] = row['offtimes'][0] ? formatDateTime(row['offtimes'][0]['Start'], "HHmm", "HH:mm") : '';
+                        row['insid'] = row['InsID'];
+                    })
+                }
                 this.setState({
                     areas: area,
                     locations: locations,

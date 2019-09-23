@@ -45,7 +45,7 @@ class ProjectAreaInfo extends Component {
         {data.showFooter &&
           <Grid container spacing={16}>
               {data.dimensions.width &&
-                <Grid container item xs={12} spacing={3}>
+                <Grid container item xs={12} spacing={8}>
                   <Grid item xs={8}>
                     <canvas id="canvas"
                         width={width}
