@@ -37,10 +37,10 @@ class ProjectAreaInfo extends Component {
       const {classes, data, onChange, onClick,
         onAddtion, handleModalState, editArea,
         deleteObject} = this.props;
-      let {width, height} = data.dimensions? data.dimensions : '';
+      // let {width, height} = data.dimensions? data.dimensions : '';
 
-      width = width ? width.toString(): "";//"504";
-      height = height? height.toString(): "";//"777";
+      // width = width ? width.toString(): "";//"504";
+      // height = height? height.toString(): "";//"777";
       let returnData = <div>
         {data.showFooter &&
           <Grid container spacing={16}>
@@ -48,8 +48,9 @@ class ProjectAreaInfo extends Component {
                 <Grid container item xs={12} spacing={8}>
                   <Grid item xs={8}>
                     <canvas id="canvas"
-                        width={width}
-                        height={height}>
+                        // width={width}
+                        // height={height}
+                        >
                       </canvas>
                   </Grid>
                   <Grid item xs={2}>

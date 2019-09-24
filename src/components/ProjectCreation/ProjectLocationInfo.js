@@ -201,7 +201,7 @@ class ProjectLocationInfo extends Component {
                         </IconButton>
                     </Grid>
                 </Grid>
-                <GridList cellHeight={350} className={classes.gridList}>
+                <GridList cellHeight={300} spacing={8} className={classes.gridList}>
                     {data.locations &&
                         data.locations.map((dt, i) => {
                         // Display the Added locations for the project
@@ -234,7 +234,7 @@ class ProjectLocationInfo extends Component {
                                         <b>Device Count List :</b> 
                                         <div className={classes.deviceDisplay}>
                                         {Object.keys(dt.devices_count).map((key, index) => {
-                                            return <Typography key={index}> {key} - { dt.devices_count[key]} <b>| </b> </Typography>
+                                            return <Typography key={index}> {key} - { dt.devices_count[key]} <b>|</b> </Typography>
                                         })}
                                         </div>
                                     </Typography>
@@ -242,7 +242,7 @@ class ProjectLocationInfo extends Component {
                                         <b>Off Days :</b>
                                         <div className={classes.deviceDisplay}>
                                             {dt.offdays.map((dt, index) => {
-                                                return <Typography key={index}> {capitalizeFirstLetter(dt)} <b>| </b> </Typography>
+                                                return <Typography key={index}> {capitalizeFirstLetter(dt)} <b>|</b> </Typography>
                                             })}
                                         </div>
                                     </Typography>

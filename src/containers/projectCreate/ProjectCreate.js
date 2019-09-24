@@ -10,7 +10,7 @@ import { fabric } from 'fabric';
 import ProjectCreation from '../../components/projectCreation/ProjectCreation';
 import {PROJECT_CREATION, LOCATION_LIMIT,
     API_URLS, S3_LOCATION_MAP_END_POINT,
-    DEVICE_TYPE, PROJECT_STATUS} from '../../constants/Constant';
+    DEVICE_TYPE, PROJECT_STATUS, REACT_URLS} from '../../constants/Constant';
 import {projectCreation, projectUpdate} from  '../../actions/AdminAction';
 
 import {formatDateTime} from '../../utils/DateFormat';
@@ -110,13 +110,15 @@ class ProjectCreate extends Component {
         if(this.state.area.insid) {
             let img = new Image(),
                 canvas = new fabric.Canvas('canvas', {});
-            let index = _.findIndex(this.state.locations, {'insid': this.state.area.insid}), //{'InsID': this.state.area.insid}
+            let index = _.findIndex(this.state.locations, {'insid': this.state.area.insid}),
                 url = '';
             if (index >=0) {
                 url = `${S3_LOCATION_MAP_END_POINT}${this.state.pid}/mapview/${this.state.locations[index].fileUrl}`;
             }
             img.src = url;
             img.onload = () => {
+                canvas.setHeight(img.height);
+                canvas.setWidth(img.width);
                 this.setState({
                     dimensions:{
                         height:img.height,
@@ -132,8 +134,15 @@ class ProjectCreate extends Component {
 
     setCanvas = (canvas, url) => {
         let self = this;
-        console.log(this.state.url, "url*****");
-        canvas.setBackgroundImage(this.state.url, canvas.renderAll.bind(canvas));
+        // canvas.setBackgroundImage(this.state.url, canvas.renderAll.bind(canvas));
+        canvas.setBackgroundImage(this.state.url,
+            function() {
+                canvas.renderAll();
+            }, {
+                width:canvas.width,
+                height:canvas.height
+            });
+
         canvas.selectionColor = 'rgba(0,255,0,0.3)';
         canvas.selectionBorderColor = 'red';
         canvas.selectionLineWidth = 1;
@@ -167,6 +176,7 @@ class ProjectCreate extends Component {
                 });
                 canvas.add(rect);
             }
+
             if(canvas.getActiveObject()) {
                 let activeObj = canvas.getActiveObject();
                 brx = activeObj.oCoords.br.x;
@@ -178,6 +188,7 @@ class ProjectCreate extends Component {
                 pointX = activeObj.left;
                 pointY = activeObj.top;
             }
+
             self.setState({
                 'coordinates': {
                     tlx: tlx,
@@ -202,8 +213,15 @@ class ProjectCreate extends Component {
                 })
             }
         }
+
         this.state.areas.map((row) => {
             if(row.co_ordinates && row.insid === this.state.area.insid) {
+                let innerIndex = _.findIndex([row],
+                    {'insid': this.state.area.insid,
+                    'area_type': this.state.area.area_type,
+                    'locDisp': this.state.area.locDisp,
+                    'co_ordinates': this.state.area.co_ordinates
+                })
                 var rect = new fabric.Rect({
                     left: row['co_ordinates']['pointX'],
                     top: row['co_ordinates']['pointY'],
@@ -214,7 +232,7 @@ class ProjectCreate extends Component {
                     originY: row['co_ordinates']['originY'],
                     perPixelTargetFind: false,
                     hasRotatingPoint: false,
-                    selectable: row.isEdit ? true : false,
+                    selectable: innerIndex >=0 ? true : false,
                     lockMovementX: true,
                     lockMovementY: true
                 });
@@ -223,6 +241,7 @@ class ProjectCreate extends Component {
         })
         return canvas;
     }
+
     handleClick = (panel="", isDraft=false) => {
     /**
      * Post API call to save the data for a user profile.
@@ -270,6 +289,9 @@ class ProjectCreate extends Component {
                 'status': isDraft ? PROJECT_STATUS.DRAFT: PROJECT_STATUS.PENDING}
             let config = getApiConfig(endPoint, 'POST', projStatusData);
                 this.props.onProjectUpdate(config, 'POST');
+            if(this.props.match.params.pid) {
+                this.props.history.push(`${REACT_URLS.MY_PROJECT_LIST(this.state.parentId)}`);
+            }
         }
         if (!isDraft && !_.isEmpty(this.state.areas)) {
             this.setState({expanded: this.state.panel})
@@ -377,22 +399,12 @@ class ProjectCreate extends Component {
             }
         } else if(panel === 'area') {
             if(this.state.allAreas.length < LOCATION_LIMIT) {
-                // let indexArea = _.findIndex(this.state.areas, this.state.area);
-                // if(indexArea >=0) {
-                //     let areas = [];
-                //     areas = this.state.areas;
-                //     areas[indexArea].isEdit = !isEdit ? false: areas[indexArea].isEdit;
-                //     this.setState({
-                //         areas : areas
-                //     })
-                //     // this.state.areas[indexArea].isEdit = !isEdit ? false: this.state.areas[indexArea].isEdit;
-                // }
                 this.setState({
                     errorAreaMessage: '',
                     area: this.state.openArea ?{
                         locn: "",
                         insid: "",
-                        area_type: ""
+                        area_type: "",
                     }: this.state.area,
                     openArea: !this.state.openArea
                 });
@@ -592,7 +604,7 @@ class ProjectCreate extends Component {
                         ...this.state.areas.concat(temp)
                     ],
                     allAreas: [
-                        ...this.state.allAreas.concat(dataToPost)//dataToPost)
+                        ...this.state.allAreas.concat(dataToPost)
                     ],
                     tempArea: [
                         ...this.state.tempArea.concat(temp)
@@ -655,7 +667,7 @@ class ProjectCreate extends Component {
             s3.upload({
                 Key: photoKey,
                 Body: file,
-                ACL: 'public-read',
+                ACL: 'public-read',//'authenticated-read',//'bucket-owner-full-control',//
             }, function(err, response) {
                 if (err) {
                     return self.setState({imageError: "There was an error uploading your photo"})
