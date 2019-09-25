@@ -74,6 +74,7 @@ class ProjectCreate extends Component {
             this.props.onProjectCreation(config);
         }
     }
+
     handleChange = (event, param) => {
     /**
      * Common function to set any fields value from UI in state.
@@ -107,9 +108,10 @@ class ProjectCreate extends Component {
     }
 
     getImage = () => {
+        let img = new Image(),
+            canvas = new fabric.Canvas('canvas', {});
         if(this.state.area.insid) {
-            let img = new Image(),
-                canvas = new fabric.Canvas('canvas', {});
+            
             let index = _.findIndex(this.state.locations, {'insid': this.state.area.insid}),
                 url = '';
             if (index >=0) {
@@ -119,23 +121,14 @@ class ProjectCreate extends Component {
             img.onload = () => {
                 canvas.setHeight(img.height);
                 canvas.setWidth(img.width);
-                this.setState({
-                    dimensions:{
-                        height:img.height,
-                        width:img.width,
-                    },
-                    url: url
-                }, function() {
-                    canvas = this.setCanvas(canvas, this.state.url);
-                });
+                canvas = this.setCanvas(canvas, url);
             }
         }
     }
 
     setCanvas = (canvas, url) => {
         let self = this;
-        // canvas.setBackgroundImage(this.state.url, canvas.renderAll.bind(canvas));
-        canvas.setBackgroundImage(this.state.url,
+        canvas.setBackgroundImage(url,
             function() {
                 canvas.renderAll();
             }, {
@@ -407,8 +400,12 @@ class ProjectCreate extends Component {
                         area_type: "",
                     }: this.state.area,
                     openArea: !this.state.openArea
+                }, function() {
+                    if(this.state.openArea)
+                        this.getImage();
                 });
-                this.getImage();
+                
+                
             } else {
                 this.setState({limitAreaErrorMessage : "Please Save the Details before adding more locations"})
             }

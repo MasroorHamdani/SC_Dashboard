@@ -37,29 +37,22 @@ class ProjectAreaInfo extends Component {
       const {classes, data, onChange, onClick,
         onAddtion, handleModalState, editArea,
         deleteObject} = this.props;
-      // let {width, height} = data.dimensions? data.dimensions : '';
 
-      // width = width ? width.toString(): "";//"504";
-      // height = height? height.toString(): "";//"777";
       let returnData = <div>
         {data.showFooter &&
           <Grid container spacing={16}>
-              {data.dimensions.width &&
+              {data.area.insid &&
                 <Grid container item xs={12} spacing={8}>
                   <Grid item xs={8}>
-                    <canvas id="canvas"
-                        // width={width}
-                        // height={height}
-                        >
-                      </canvas>
+                    <canvas id="canvas"/>
+                      {/* </canvas> */}
                   </Grid>
                   <Grid item xs={2}>
                     <Button
                       variant="contained"
                       color="primary"
-                      className={classes.button}
                       onClick={deleteObject}>
-                      Remove
+                      Remove Selection
                     </Button>
                   </Grid>
                 </Grid>
