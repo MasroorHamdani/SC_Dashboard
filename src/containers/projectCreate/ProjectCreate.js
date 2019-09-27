@@ -6,7 +6,7 @@ import _, {isEqual} from 'lodash';
 
 import configureAWS from '../../services/AWSService';
 import { fabric } from 'fabric';
-
+import imgMap from '../../images/DEMO_PROJECT_LOCN1.jpeg'
 import ProjectCreation from '../../components/projectCreation/ProjectCreation';
 import {PROJECT_CREATION, LOCATION_LIMIT,
     API_URLS, S3_LOCATION_MAP_END_POINT,
@@ -110,8 +110,8 @@ class ProjectCreate extends Component {
     getImage = () => {
         let img = new Image(),
             canvas = new fabric.Canvas('canvas', {});
+
         if(this.state.area.insid) {
-            
             let index = _.findIndex(this.state.locations, {'insid': this.state.area.insid}),
                 url = '';
             if (index >=0) {
@@ -144,8 +144,8 @@ class ProjectCreate extends Component {
         canvas.on('mouse:down', function(options) {
             tlx = options.e.clientX;
             tly = options.e.clientY;
-            pointX = canvas.getPointer(options.e)['x']
-            pointY = canvas.getPointer(options.e)['y']
+            pointX = canvas.getPointer(options.e)['x'];
+            pointY = canvas.getPointer(options.e)['y'];
         });
 
         canvas.on('mouse:up', function(options) {
@@ -394,18 +394,16 @@ class ProjectCreate extends Component {
             if(this.state.allAreas.length < LOCATION_LIMIT) {
                 this.setState({
                     errorAreaMessage: '',
-                    area: this.state.openArea ?{
+                    area: this.state.openArea ? {
                         locn: "",
                         insid: "",
                         area_type: "",
-                    }: this.state.area,
+                    } : this.state.area,
                     openArea: !this.state.openArea
                 }, function() {
                     if(this.state.openArea)
                         this.getImage();
-                });
-                
-                
+                })
             } else {
                 this.setState({limitAreaErrorMessage : "Please Save the Details before adding more locations"})
             }

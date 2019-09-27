@@ -133,26 +133,26 @@ class ProjectLocationInfo extends Component {
                         }}/>
                 </Grid>
                 <Grid item xs={true} sm={true}>
-                        <List dense className={classes.flexList}>
-                            {Object.keys(DEVICE_TYPE).map((key, index) => {
-                                return <ListItem className={classes.listItem} key={index}>
-                                        <TextField
-                                            required
-                                            type="number"
-                                            id={key}
-                                            name={key}
-                                            label={DEVICE_TYPE[key]}
-                                            placeholder='Device count'
-                                            fullWidth
-                                            value={data.location.devices_count[key]}
-                                            onChange={e=>onChange(e, 'location')}
-                                            InputLabelProps={{
-                                                shrink: true
-                                            }}/>
-                                    </ListItem>
-                            })}
-                            
-                        </List>
+                    <List dense className={classes.flexList}>
+                        {Object.keys(DEVICE_TYPE).map((key, index) => {
+                            return <ListItem className={classes.listItem} key={index}>
+                                    <TextField
+                                        required
+                                        disabled = {data.location.isEdit ? true : false}
+                                        type="number"
+                                        id={key}
+                                        name={key}
+                                        label={DEVICE_TYPE[key]}
+                                        placeholder='Device count'
+                                        fullWidth
+                                        value={data.location.devices_count[key]}
+                                        onChange={e=>onChange(e, 'location')}
+                                        InputLabelProps={{
+                                            shrink: true
+                                        }}/>
+                                </ListItem>
+                        })}
+                    </List>
                 </Grid>
                 {data.errorMessage &&
                     <Grid item

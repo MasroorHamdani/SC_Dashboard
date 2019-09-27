@@ -87,6 +87,9 @@ const styles = theme => ({
     deviceDisplay: {
         display: 'flex',
         flexWrap: 'wrap',
+    },
+    temp: {
+        width: '95%'
     }
 });
 

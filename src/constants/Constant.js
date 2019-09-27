@@ -318,9 +318,12 @@ export const OPERATION_TYPE = {
 export const DEVICE_TOOL_TIP = {
     'ODRDTR': 'Air Quality Devices',
     'PC': 'People Count Devices',
+    'PPLCTR': 'People Count Devices',
     'PT': 'Paper Towel Devices',
     'WD': 'Wetness Detection Devices',
-    'GW': 'Gateway Devices'
+    'GW': 'Gateway Devices',
+    'TR': 'Toilet Roll Devices',
+    'FD': 'FeedBack',
 }
 
 export const DEVICE_TYPE = {

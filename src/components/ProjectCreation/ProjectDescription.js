@@ -16,21 +16,27 @@ class ProjectDescription extends Component {
             onClick, handleEdit} = this.props;
         return (<div>
             {!isEmpty(statedata.projectDetail) &&
-            <div>
-                <Typography variant="h6">
-                    Project General Details
-                </Typography>
-                <ProjectGeneralInfo data={statedata.projectDetail}/>
-                <Divider className={classes.divider}/>
-                <Typography variant="h6">
-                    Project Location Details
-                </Typography>
-                <ProjectLocationInfo data={statedata.projectDetail}/>
-                <Divider className={classes.divider}/>
-                <Typography variant="h6">
-                    Project Area Details
-                </Typography>
-                <ProjectAreaInfo data={statedata.projectDetail}/>
+            <Grid container spacing={24}>
+                <Grid item xs={true}>
+                    <Typography variant="h6">
+                        Project General Details
+                    </Typography>
+                    <ProjectGeneralInfo data={statedata.projectDetail}/>
+                    <Divider className={classes.divider}/>
+                </Grid>
+                <Grid item xs={true}>
+                    <Typography variant="h6">
+                        Project Location Details
+                    </Typography>
+                    <ProjectLocationInfo data={statedata.projectDetail}/>
+                    <Divider className={classes.divider}/>
+                </Grid>
+                <Grid item xs={true}>
+                    <Typography variant="h6">
+                        Project Area Details
+                    </Typography>
+                    <ProjectAreaInfo data={statedata.projectDetail}/>
+                </Grid>
                 {statedata.projectDetail.general.SUB2 === PROJECT_STATUS['DRAFT'] ?
                     <Grid container spacing={24}>
                         <Grid item xs={true}
@@ -84,7 +90,7 @@ class ProjectDescription extends Component {
                     open={statedata.open}
                     showFooter={statedata.showModalFooter}
                 />
-            </div>
+            </Grid>
             }
         </div>)
     }
