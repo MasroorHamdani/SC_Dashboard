@@ -109,7 +109,7 @@ class Reports extends Component {
                     }
                     {(stateData.serviceList && stateData.serviceList.length > 0) &&
                         <GridList 
-                            cellHeight={250} 
+                            cellHeight={300} 
                             className={classes.gridList}>
                         {stateData.serviceList.map((row) => (
                             <Card className={classes.card} key={row.ServiceID}>

@@ -39,9 +39,7 @@ class ProjectDescription extends Component {
                 </Grid>
                 {statedata.projectDetail.general.SUB2 === PROJECT_STATUS['DRAFT'] ?
                     <Grid container spacing={24}>
-                        <Grid item xs={true}
-                            direction='row'
-                            justify='flex-end'>
+                        <Grid item xs={true}>
                             <Button
                                 variant="contained"
                                 color="primary"

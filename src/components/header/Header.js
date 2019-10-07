@@ -14,7 +14,7 @@ import AccountBox from '@material-ui/icons/AccountBox';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import {Link} from "react-router-dom";
 
-import {NAMESPACE, API_URLS, REACT_URLS} from '../../constants/Constant';
+import {NAMESPACE, API_URLS, REACT_URLS, SC_LOGO} from '../../constants/Constant';
 
 import {toolbarClicked, projectSelect, projectList}  from '../../actions/MenuAction';
 import {dashboardData} from '../../actions/DashboardAction';
@@ -159,7 +159,7 @@ class Header extends Component {
     render() {
       const { classes } = this.props;
       const {profileOpen, arrowRef} = this.state;
-      const user = localStorage.getItem('userName');
+      const user = localStorage.getItem('userName') ? localStorage.getItem('userName') : localStorage.getItem('username');
       return (
           <AppBar
             position="absolute" color="default"
@@ -182,7 +182,7 @@ class Header extends Component {
                 noWrap
                 className={classes.title}>
                 <ListItem component={Link} to='/'>
-                  <img src={localStorage.getItem('logo') ? localStorage.getItem('logo') : "https://www.smartclean.sg/images/sc-logo.png"} alt="logo" className={classes.logo}/>
+                  <img src={localStorage.getItem('logo') ? localStorage.getItem('logo') : {SC_LOGO}} alt="logo" className={classes.logo}/>
                 </ListItem>
                 {/* <span className={classes.beta}>BETA</span> */}
               </Typography>

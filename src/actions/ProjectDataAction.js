@@ -1,6 +1,6 @@
 import ApiService from '../services/ApiService';
 import { PROJECT_DETAIL, PROJECT_DETAIL_DATA, PROJECT_TEAM_DATA,
-    PROJECT_TEAM_ASSO_DATA} from '../constants/ActionTypes';
+    PROJECT_TEAM_ASSO_DATA, PROJECT_USER_CREATE} from '../constants/ActionTypes';
 
 function dataReceived(data) {
   return {
@@ -68,6 +68,7 @@ export function projectTeamAsso(config) {
         })
     }
 }
+
 function teamDataReceived(data) {
     return {
         type: PROJECT_TEAM_DATA,
@@ -86,6 +87,27 @@ export function projectTeamData(config) {
         ApiService(config).then(data => {
             //on success we will dispatch a sync action with the data
             dispatch(teamDataReceived(data.data))
+        })
+    }
+}
+
+function userCreated(data) {
+    return {
+        type: PROJECT_USER_CREATE,
+        data
+    }
+}
+
+/**
+ * Dispatched function to call the API service to get
+ * the User created API call.
+ * @param {*} config 
+ */
+export function userCreation(config) {
+    return function (dispatch) {
+        ApiService(config).then(data => {
+            //on success we will dispatch a sync action with the data
+            dispatch(userCreated(data.data))
         })
     }
 }

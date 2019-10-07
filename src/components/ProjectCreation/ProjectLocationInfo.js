@@ -184,7 +184,7 @@ class ProjectLocationInfo extends Component {
                         selected={this.state.selected}
                         handleChange={this.handleChange}
                         category='location'
-                        redirectID="ID"/>
+                        redirectID="InsID"/>
                 }
                 </Typography>
         return (<div className={classes.gridRoot}>

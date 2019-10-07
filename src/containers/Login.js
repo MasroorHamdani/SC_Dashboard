@@ -175,11 +175,11 @@ class Login extends React.Component {
       && !isEqual(this.props.userLogin, prevProps.userLogin)) {
       const responseData = this.props.userLogin;
       if (responseData['status'] === 400) {
-        if(responseData['data'].includes('UserNotFoundException'))
+        if(responseData['data']['message'].includes('UserNotFoundException'))
           this.setState({
             errorMessage: 'User Does not Exist'
           });
-        else if(responseData['data'].includes('NotAuthorizedException'))
+        else if(responseData['data']['message'].includes('NotAuthorizedException'))
           this.setState({
             errorMessage: 'Incorrect username or password'
           });

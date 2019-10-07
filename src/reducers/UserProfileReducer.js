@@ -1,17 +1,23 @@
-import {USER_PROFILE, USER_PROFILE_UPDATE} from '../constants/ActionTypes';
+import {USER_PROFILE, USER_PROFILE_UPDATE,
+    PROJECT_USER_CREATE} from '../constants/ActionTypes';
 
 const userProfile = (state=[], action) => {
     switch(action.type) {
         case USER_PROFILE:
             return {
-            ...state,
-            data: action.data
+                ...state,
+                data: action.data
             };
         case USER_PROFILE_UPDATE:
             return {
-            ...state,
-            data: action.data
+                ...state,
+                data: action.data
             };
+        case PROJECT_USER_CREATE:
+            return {
+                ...state,
+                data: action.data
+            }
         default:
             return state;
     }

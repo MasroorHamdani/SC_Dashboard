@@ -11,6 +11,8 @@ export const S3_BUCKET = process.env.REACT_APP_S3_BUCKET
 export const S3_REGION = process.env.REACT_APP_S3_REGION
 export const S3_ACCESS_KEY_ID = process.env.REACT_APP_S3_ACCESS_KEY_ID
 export const S3_SECRET_ACCESS_KEY = process.env.REACT_APP_S3_SECRET_ACCESS_KEY
+
+export const SC_LOGO = 'https://scprojectimages.s3-ap-southeast-1.amazonaws.com/SC_logo.png'
 //process.env.REACT_APP_S3_LOCATION_MAP_END_POINT
 //"https://80y6zxl35d.execute-api.ap-southeast-1.amazonaws.com/beta/reports";
 export const API_URLS = {
@@ -39,7 +41,8 @@ export const API_URLS = {
     'REPORTING_LIST': '/reports',
     'PARTNER': '/unauth/partners/',
     'THEME': '/theme',
-    'ADMIN': '/admin/project'
+    'ADMIN': '/admin/project',
+    'ADMIN_USER': '/admin/user'
 };
 
 export const DASHBOARD_METRIC = {
@@ -395,3 +398,21 @@ export const AREA_LIST = [{
     display: 'Urinal',
     color: 'rgba(23,128,218,0.3)'//'rgba(255,255,0,0.3)'
 }]
+
+export const USER_DESIGNATION = [
+    {key: 'supervisor',
+    display: 'Supervisor'},
+    {key: 'cleaner',
+    display: 'Cleaner'},
+    {key: 'partneradmin',
+    display: 'Partner Admin'}
+]
+
+export const USER_ROLE = [
+    {key: 'supervisor',
+    display: 'Supervisor'},
+    {key: 'cleaner',
+    display: 'Cleaner'},
+    {key: 'partneradmin',
+    display: 'Partner Admin'}
+]

@@ -44,7 +44,8 @@ class TabContainer extends Component {
      * allowEdit is passed as true or false, by default it will be false.
      *      It will specify if table will show up edit column of not
      */
-        const {category, data, handleClick, stateData} = this.props;
+        const {category, data, handleClick, stateData,
+            handleAddition, onAddition} = this.props;
         let tabData, rows, searchList;
         if(stateData.teamInfo && category === PROJECT_TABS['TEAM']) {
             rows = [{ id: 'Firstname', numeric: 'left', disablePadding: false, label: 'Firstname' },
@@ -60,12 +61,14 @@ class TabContainer extends Component {
                 ]
             tabData = <Typography component="div">
             <EnhancedTable data={stateData.teamInfo} rows={rows}
+                stateData={stateData}
                 order={this.state.order} orderBy={this.state.orderBy}
                 rowsPerPage={this.state.rowsPerPage} page={this.state.page}
                 selected={this.state.selected} category={category}
                 searchList={searchList}
                 handleChange={this.handleChange} handleClick={handleClick} redirectID="UID"
-                allowDelete={false} allowEdit={true}/>
+                handleAddition={handleAddition} onAddition={onAddition}
+                allowDelete={false} allowEdit={true} allowAdd={true}/>
             </Typography>
         } else if (data && category === PROJECT_TABS['INSTALLATION']) {
             rows = [{ id: 'name', numeric: 'left', disablePadding: false, label: 'Name' },

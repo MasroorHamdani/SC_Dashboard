@@ -12,7 +12,7 @@ class ProjectDetails extends Component {
         this.state = {
             pid: props.match.params.pid,
             data : {},
-            parentId: props.match.params.partnerid
+            parentId: props.match.params.partnerid,
         }
     }
 
