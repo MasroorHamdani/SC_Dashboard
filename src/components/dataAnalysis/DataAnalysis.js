@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import {withStyles, AppBar, Tabs, Tab} from '@material-ui/core';
+import {isEmpty} from 'lodash';
 import styles from './DataAnalysisStyle';
 import AnalysisData from './AnalysisData';
 
@@ -19,29 +20,31 @@ class DataAnalysisComponent extends Component {
             handleTabChange, handleSamplingChange,
             handleDatePicker, handleChangeStart,
             handleListSelection, handleChangeEnd,
-            refreshData} = this.props;
+            refreshData, handleBarClick, getModalAnalyticsDataWithMetricId,
+            modalHandleChangeStart, modalHandleChangeEnd} = this.props;
         return(
             <div className={classes.main}>
                 <div>
-                    {stateData.value &&
+                    {(stateData.value && !isEmpty(stateData.installationList)) &&
                         <AppBar position="static" color="default">
                             <Tabs
-                            // scrollable
-                            variant="scrollable"
+                            scrollable
                             scrollButtons="auto"
                             value={stateData.tab}
                             onChange={handleTabChange}
                             indicatorColor="primary"
                             textColor="primary"
                             variant="fullWidth">
-                                {Object.keys(stateData.installationList).map((key)=> {
+                            {/* Object.keys(stateData.installationList).map((key)=> { */}
+                                {stateData.installationList.map((row)=> {
                                     if(stateData.installationList && !this.info) {
                                         this.info = true;
-                                        handleTabChange('', key)
+                                        handleTabChange('', row.key)
                                     }
-                                    return <Tab label={Array.isArray(stateData.installationList[key]) ? stateData.installationList[key][0]['text']: stateData.installationList[key]['text']}
-                                        value={Array.isArray(stateData.installationList[key]) ? stateData.installationList[key][0]['key']: stateData.installationList[key]['key']}
-                                        key={Array.isArray(stateData.installationList[key]) ? stateData.installationList[key][0]['key']: stateData.installationList[key]['key']}/>
+                                    return <Tab label={Array.isArray(row) ? row[0]['text']: row['text']}
+                                        value={Array.isArray(row) ? row[0]['key']: row['key']}
+                                        key={Array.isArray(row) ? row[0]['key']: row['key']}/>
+                                        // stateData.installationList[key]
                                 })}
                             </Tabs>
                         </AppBar>
@@ -54,7 +57,11 @@ class DataAnalysisComponent extends Component {
                         handleChangeStart={handleChangeStart}
                         handleListSelection={handleListSelection}
                         handleChangeEnd={handleChangeEnd}
-                        refreshData={refreshData}/>
+                        refreshData={refreshData}
+                        handleBarClick={handleBarClick}
+                        getModalAnalyticsDataWithMetricId={getModalAnalyticsDataWithMetricId}
+                        modalHandleChangeStart={modalHandleChangeStart}
+                        modalHandleChangeEnd={modalHandleChangeEnd}/>
                     }
                 </div>
             </div>

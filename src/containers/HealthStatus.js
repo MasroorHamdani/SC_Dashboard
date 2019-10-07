@@ -18,7 +18,6 @@ class HealthStatus extends Component {
             insid: props.match.params.insid,
             loading: true
         };
-        this.installationData = false;
     }
 
     componentDidMount() {
@@ -64,8 +63,8 @@ class HealthStatus extends Component {
                 loading: true
             }, function() {
                 let arr = this.props.match.url.split('/');
-                arr[3] = this.props.projectSelected.PID;
-                let url = arr.slice(0,4).join('/');
+                arr[4] = this.props.projectSelected.PID;
+                let url = arr.slice(0,5).join('/');
                 this.props.history.push(url);
             });
         }
@@ -93,21 +92,21 @@ class HealthStatus extends Component {
                 config = getApiConfig(endPoint, 'GET', '', params);
             this.props.onInstalationsList(config);
         }
-
         if (this.props.installationList &&
-            !isEqual(this.props.installationList, prevProps.installationList) &&
-            !this.installationData && this.state.formattedData) {
-            let installationList = groupBy(this.props.installationList,  'Devid');
+            (!isEqual(this.props.installationList, prevProps.installationList) ||
+            !this.state.stateUpdated) && this.state.formattedData) {
+            let installationList = groupBy(this.props.installationList,  'Devid'), updated=false;
             Object.keys(this.state.formattedData).map((key) => {
                 this.state.formattedData[key].map((row) => {
-                    if(installationList[row.ID]) {
+                    if(installationList[row.ID] && installationList[row.ID][0]['Display']) {
                         row.info['name'] = installationList[row.ID][0]['Display'];
+                        updated = true;
                     }
                 })
             })
-            this.installationData = true
-            this.setState({stateUpdated: true,
-                loading: false})
+            if (updated)
+                this.setState({stateUpdated: updated,
+                    loading: false})
         }
     }
 

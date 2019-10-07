@@ -31,20 +31,45 @@ class Reports extends Component {
         }
     }
     downLoadFile = (url) => {
-        let newUrl = `${S3_REPORTS_END_POINT}/${url}`
-        axios({
-            url: newUrl,
-            method: 'GET',
-            responseType: 'blob', // important
-            headers: {
+        let newUrl = `${S3_REPORTS_END_POINT}/${url}`,
+            fileType = url.split('.')[url.split('.').length-1],
+            fileName = url.split('/')[url.split('/').length-1],
+            header, responseType = 'blob';
+        if(fileType === 'pdf') {
+            header = {
                 'Content-Type': 'application/pdf',
                 'Accept': 'application/pdf'
             }
+        } else if(fileType === 'xlsx') {
+            // header = {
+            //     'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            //     'Accept': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+            // }
+            // responseType = 'arraybuffer'
+            header = {
+                'Accept': 'application/vnd.ms-excel' 
+            }
+        } else if(fileType === 'xls') {
+            header = {
+                'Content-Type': 'application/vnd.ms-excel',
+                'Accept': 'application/vnd.ms-excel' 
+            }
+        } else if(fileType === 'csv') {
+            header = {
+                'Content-Type': 'text/csv',
+                'Accept': 'text/csv'
+            }
+        }
+        axios({
+            url: newUrl,
+            method: 'GET',
+            responseType: responseType, // important
+            headers: header
           }).then((response) => {
             const url = window.URL.createObjectURL(new Blob([response.data]));
             const link = document.createElement('a');
             link.href = url;
-            link.setAttribute('download', 'report.pdf');
+            link.setAttribute('download', fileName);
             // Appending link to body is required specifically for downloading on firefox.
             document.body.appendChild(link);
             link.click();
@@ -82,9 +107,9 @@ class Reports extends Component {
                     {stateData.loading &&
                         <LinearProgress className={classes.buttonProgress}/>
                     }
-                    {(stateData.serviceList && stateData.serviceList.length > 0) ?
+                    {(stateData.serviceList && stateData.serviceList.length > 0) &&
                         <GridList 
-                            cellHeight={250} 
+                            cellHeight={300} 
                             className={classes.gridList}>
                         {stateData.serviceList.map((row) => (
                             <Card className={classes.card} key={row.ServiceID}>
@@ -123,7 +148,8 @@ class Reports extends Component {
                             </Card>
                             ))}
                         </GridList>
-                    :
+                    }
+                    { (!stateData.loading && (!stateData.serviceList || stateData.serviceList.length === 0)) &&
                         <div><Typography variant="h6">No Services for given Project</Typography></div>
                     }
                     {stateData.showDate &&

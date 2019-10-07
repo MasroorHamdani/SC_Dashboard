@@ -6,7 +6,7 @@ const login = (state = [], action) => {
             return{
                 ...state,
                 data: action.data
-            };
+            }
         case AUTH_KEY_SET:
             return{
                 ...state,

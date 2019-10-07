@@ -75,7 +75,7 @@ class AuthReset extends Component {
                       success: true,
                     });
                 }
-                this.props.history.push(REACT_URLS['DASHBOARD']);
+                this.props.history.push(REACT_URLS.DASHBOARD(this.props.match.params.partnerid));
         }
     }
 

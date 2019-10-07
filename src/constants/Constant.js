@@ -1,7 +1,20 @@
-export const API_END_POINT = "https://4l6qi5oh0h.execute-api.ap-southeast-1.amazonaws.com/prod";
-//"https://1w5tcso1ol.execute-api.ap-southeast-1.amazonaws.com/alpha";
 
-export const S3_REPORTS_END_POINT = "https://80y6zxl35d.execute-api.ap-southeast-1.amazonaws.com/beta/reports";
+export const API_END_POINT = process.env.REACT_APP_API_END_POINT
+//"https://4l6qi5oh0h.execute-api.ap-southeast-1.amazonaws.com/prod";
+export const ADMIN = "http://127.0.0.1:5000"
+
+export const NEW_API_END_POINT = "https://4l6qi5oh0h.execute-api.ap-southeast-1.amazonaws.com/betaV2"
+export const S3_REPORTS_END_POINT = process.env.REACT_APP_S3_REPORTS_END_POINT
+// export const S3_LOCATION_MAP_END_POINT = "https://4l6qi5oh0h.execute-api.ap-southeast-1.amazonaws.com/prod/assets"
+export const S3_LOCATION_MAP_END_POINT = process.env.REACT_APP_S3_LOCATION_MAP_END_POINT
+export const S3_BUCKET = process.env.REACT_APP_S3_BUCKET
+export const S3_REGION = process.env.REACT_APP_S3_REGION
+export const S3_ACCESS_KEY_ID = process.env.REACT_APP_S3_ACCESS_KEY_ID
+export const S3_SECRET_ACCESS_KEY = process.env.REACT_APP_S3_SECRET_ACCESS_KEY
+
+export const SC_LOGO = 'https://scprojectimages.s3-ap-southeast-1.amazonaws.com/SC_logo.png'
+//process.env.REACT_APP_S3_LOCATION_MAP_END_POINT
+//"https://80y6zxl35d.execute-api.ap-southeast-1.amazonaws.com/beta/reports";
 export const API_URLS = {
     "LOGIN": "/unauth/login",
     "REFRESH_TOKEN": "/unauth/login",
@@ -13,6 +26,7 @@ export const API_URLS = {
     "USER_PROFILE": "/authV2/profile",
     // "DEVICE_DATA": "/authV2/devices/data/project",
     "DEVICE_DATA": "/authV2/devices/datatemp/project",
+    "NEW_DEVICE_DATA": "/authV2/devices/datanew/analytics/projects",
     "DEVICE_METRICS": "/auth/devices/metrics",
     "SERVICE_REQUIREMENTS": "/auth/algorithms",
     "PROJECT_LOCATION": "/installations/devices",
@@ -24,13 +38,21 @@ export const API_URLS = {
     'INSTALLATION': '/installations',
     'HEALTH': '/health',
     'REPORTING_SERVICE': '/services/reporting',
-    'REPORTING_LIST': '/reports'
+    'REPORTING_LIST': '/reports',
+    'PARTNER': '/unauth/partners/',
+    'THEME': '/theme',
+    'ADMIN': '/admin/project',
+    'ADMIN_USER': '/admin/user'
 };
 
 export const DASHBOARD_METRIC = {
-    "ReqType": "default",
-    "Type": "DASHBOARD",
-    "SubType": "V1"
+    // "ReqType": "default",
+    // "Type": "DASHBOARD",
+    // "SubType": "V1"
+    "req_type": "DEFAULT",
+    "type": "DASHBOARD",
+    "sub_type": "V1",
+    "all_metrics": []
 }
 export const NEW_PASSWORD_REQUIRED = "NEW_PASSWORD_REQUIRED";
 
@@ -56,18 +78,23 @@ export const SORTING = {
 
 export const REACT_URLS = {
     'BASEURL': 'optimus',
-    'LOGIN': '/login',
-    'DASHBOARD': '/',
-    'PROJECT_DETAILS': '/project',
-    'LOGOUT': '/logout',
+    'LOGIN': (partnerId) => partnerId ?  `/${partnerId}/login` : '/login',
+    'DASHBOARD': (partnerId) => partnerId ? `/${partnerId}/` : '/',
+    'PROJECT_DETAILS': (partnerId) => partnerId ? `/${partnerId}/project` :'/project',
+    'LOGOUT': (partnerId) => partnerId ? `/${partnerId}/logout` : '/logout',
     'CONTACT': '/contact',
     'ABOUT': '/about',
-    'AUTH_RESET': '/auth-reset',
-    'USER-PROFILE': '/profile',
-    'ALERT': '/alert/project',
-    'DISPENSER': '/dispenser/project',
-    'HEALTH_STATUS': '/health/project'
+    'AUTH_RESET': (partnerId) => partnerId ? `/${partnerId}/auth-reset` : '/auth-reset',
+    'USER_PROFILE': (partnerId) => partnerId ? `/${partnerId}/profile` :'/profile',
+    'ALERT': (partnerId) => partnerId ? `/${partnerId}/alert/project` : '/alert/project',
+    'DISPENSER': (partnerId) => partnerId ? `/${partnerId}/dispenser/project` : '/dispenser/project',
+    'HEALTH_STATUS': (partnerId) => partnerId ? `/${partnerId}/health/project` : '/health/project',
+    'PROJECT_LIST': (partnerId) => partnerId ? `/${partnerId}/listproject` :'/listproject',
+    'MY_PROJECT_LIST': (partnerId) => partnerId ? `/${partnerId}/myproject` :'/myproject',
+    'NEW_PROJECT': (partnerId) => partnerId ? `/${partnerId}/newproject` :'/newproject',
+    // 'PROJECT_LIST': '/listproject'
 }
+// "ALERT': (partnerId) => partnerId ? `${partnerId}/project/${pid}`: `/project/${pid}`
 
 export const DATE_TIME_FORMAT = 'YYYYMMDDHHmmss'
 
@@ -88,6 +115,7 @@ export const ANALYTICS_DATE = {
     'ONE_DAY': '1d',
     'THREE_DAY': '3d',
     'ONE_WEEK': '1w',
+    'TODAY': 'Today',
     'CUSTOM': 'custom'
 }
 // process.env.REACT_APP_SECRET_CODE
@@ -95,6 +123,12 @@ export const ANALYTICS_DATE = {
 export const AUTO_REFRESH_TIMEOUT = 600000; // Time in milliseconds - 10 mins -> 10 * 60 * 1000
 
 export const TIME_LIST = [
+    {
+        name: "today",
+        key: "today",
+        value: 6,
+        text: "Today"
+    },
     {
         name: "last1Hour",
         key: "last1Hour",
@@ -130,7 +164,7 @@ export const TIME_LIST = [
         key: "last1Week",
         value: 5,
         text: "1w"
-    },
+    }
 ];
 
 export const FUNCTION_LIST = [
@@ -148,6 +182,7 @@ export const FUNCTION_LIST = [
     }
 
 ]
+
 export const REPORT_TABS = {
     'SERVICE' : 'service',
     'LOCATION': 'location',
@@ -235,13 +270,16 @@ export const ALERT_STATUS = {
     'pending': 'Pending',
     'resolved': 'Resolved',
     'not_sent': 'Not Sent',
-    'blocked': 'Blocked'
+    'blocked': 'Blocked',
+    'work_started': 'Work Started',
+    'acknowledged': 'Acknowledged'
 }
 
 export const METRIC_TYPE = {
     'TIMESERIES' : 'timeseries',
     'CATEGORICAL' : 'categorical',
-    'RAW_DATA': 'raw_data'
+    'RAW_DATA': 'raw_data',
+    'TABLE_DATA': 'table_ver1'
 }
 
 export const DATA_VIEW_TYPE = {
@@ -251,7 +289,8 @@ export const DATA_VIEW_TYPE = {
     'PIE': 'pie',
     'TILE': 'tile',
     'AREA': 'area',
-    'VERTICAL': 'vertical'
+    'VERTICAL': 'vertical',
+    'STACKED': 'stacked'
 }
 
 export const ALERT_LEVEL = [
@@ -270,27 +309,110 @@ export const ALERT_LEVEL = [
 export const PASSWORD_REGEX = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,12})");
 
 export const DATA_OPERATIONS = {
-    'FILTER': 'FILTER',
-    'RESAMPLER': 'RESAMPLER'
+    FILTER: 'FILTER',
+    RESAMPLER: 'RESAMPLER'
+}
+
+export const OPERATION_TYPE = {
+    DEFAULT: 'DEFAULT',
+    ON_DEMAND: 'ON_DEMAND'
 }
 
 export const DEVICE_TOOL_TIP = {
-    'AQ': 'Air Quality Devices',
+    'ODRDTR': 'Air Quality Devices',
     'PC': 'People Count Devices',
-    'PT': 'Paper Towel Devices',
-    'WD': 'Wetness Detection Devices',
-    'GW': 'Gateway Devices'
-}
-
-export const DEVICE_TYPE = {
-    'AQ': 'Air Quality Devices',
-    'PC': 'People Count Devices',
+    'PPLCTR': 'People Count Devices',
     'PT': 'Paper Towel Devices',
     'WD': 'Wetness Detection Devices',
     'GW': 'Gateway Devices',
-    'TR': 'Toilet Roll Devices'
+    'TR': 'Toilet Roll Devices',
+    'FD': 'FeedBack',
+}
+
+export const DEVICE_TYPE = {
+    'ODRDTR': 'Air Quality Devices',
+    'PPLCTR': 'People Count Devices',
+    'PT': 'Paper Towel Devices',
+    'WD': 'Wetness Detection Devices',
+    'GW': 'Gateway Devices',
+    'TR': 'Toilet Roll Devices',
+    'FD': 'FeedBack',
 }
 
 export const RANGE_ERROR = "Please select Range within End Date limits - *Reset the time to Default"
-export const LINK = "https://80y6zxl35d.execute-api.ap-southeast-1.amazonaws.com/beta/reports/NIE_NTU/13d204df92c14013bbbb93762c64e2ff/312b6b1345764041bcb3d092107d0902.pdf"
-//"https://s3-ap-southeast-1.amazonaws.com/scbins/CERTIS_AQ_CCK_T1/latest.ino.bin"
+
+export const THEME = {
+    highlighter: '#b7d1b4',
+    lighter: '#a9c8a4',
+    light: '#8db788',
+    main: '#68a554'
+}
+
+export const PROJECT_CREATION = {
+    GENERAL: 'general',
+    LOCATION: 'location',
+    AREA: 'area'
+}
+
+export const LOCATION_LIMIT = 5
+
+export const PROJECT_STATUS = {
+    'PENDING': 'pending',
+    'ACTIVE': 'active',
+    'REJECT': 'reject',
+    'DRAFT': 'draft'
+}
+
+export const REGION_LIST = [
+    {key: 'Asia/Dubai',
+    display: 'Asia/Dubai'},
+    {key: 'Asia/Singapore',
+    display: 'Asia/Singapore'},
+    {key: 'Asia/Kolkata',
+    display: 'Asia/Kolkata'},
+    {key: 'Europe/Paris',
+    display: 'Europe/Paris'}
+]
+
+export const PROJECT_ACTIONS = {
+    HOMEPAGE : "PROJECT_HOMEPAGE",
+    INSTALLATIONPAGE: "PROJECT_INSTALLATION",
+    INSTALLATIONHOMEPAGE: "INSTALLATION_HOMEPAGE"
+}
+
+export const GRAPH_RENDER_TYPE = {
+    COLLATE : 'collate',
+    SUBPLOT : 'subplot'
+}
+
+export const AREA_LIST = [{
+    key : 'BASIN_AREA',
+    display: 'Basin Area',
+    color: 'rgba(218,50,23,0.3)'//'rgba(0,255,0,0.3)'
+    },
+    {key: 'CUBICLE',
+    display: 'Cubicle',
+    color: 'rgba(35,23,218,0.3)'//'rgba(0,0,255,0.3)'
+    },
+    {key: 'URINAL',
+    display: 'Urinal',
+    color: 'rgba(23,128,218,0.3)'//'rgba(255,255,0,0.3)'
+}]
+
+export const USER_DESIGNATION = [
+    {key: 'supervisor',
+    display: 'Supervisor'},
+    {key: 'cleaner',
+    display: 'Cleaner'},
+    {key: 'partneradmin',
+    display: 'Partner Admin'}
+]
+
+export const USER_ROLE = [
+    {key: 'supervisor',
+    display: 'Supervisor'},
+    {key: 'cleaner',
+    display: 'Cleaner'},
+    {key: 'partneradmin',
+    display: 'Partner Admin'}
+]

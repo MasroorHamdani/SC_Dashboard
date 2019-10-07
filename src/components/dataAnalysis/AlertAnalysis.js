@@ -11,6 +11,7 @@ import {formatDateTime} from '../../utils/DateFormat';
 import {ALERT_STATUS, DATE_TIME_FORMAT,
     DESCRIPTIVE_DATE_TIME_FORMAT,
     HOUR_MIN_FORMAT, DEVICE_TYPE} from '../../constants/Constant';
+import {capitalizeFirstLetter} from '../../utils/FormatStrings';
 
 import styles from './DataAnalysisStyle';
 
@@ -152,7 +153,7 @@ class AlertAnalysis extends Component {
                         return (<ExpansionPanel key={index}>
                             {row.header &&
                                 <ExpansionPanelSummary className={classes.expansionRoot} expandIcon={<ExpandMoreIcon />}>
-                                <div className={classes.heading}>
+                                <div className={isDashboard? classes.dashboardHeading : classes.heading}>
                                     <Typography component="h6">{row.header.StatusInfo.Reason}
                                     {row.header.name ?
                                         ` - ${row.header.name} (${row.header.locn})`
@@ -160,10 +161,15 @@ class AlertAnalysis extends Component {
                                     ({row.data.length > 0 ? `${row.data[0].Data.Type}` : ''})
                                     </Typography>
                                     <Typography variant="caption">
-                                        {formatDateTime(row.header.Timestamp,
+                                        {formatDateTime(row.header.AlertTimestamp,
                                             DATE_TIME_FORMAT,
                                             DESCRIPTIVE_DATE_TIME_FORMAT)}
                                     </Typography>
+                                    {row.header.ResolvedBy.UserID != 'null' &&
+                                        <Typography variant="caption">
+                                            Resolved By: {capitalizeFirstLetter(row.header.ResolvedBy.UserID)}
+                                        </Typography>
+                                    }
                                     </div>
                                     <Chip
                                         label={ALERT_STATUS[row.header.StatusInfo.Status]}
@@ -174,7 +180,7 @@ class AlertAnalysis extends Component {
                             {row.data.map((dt, index) => {
                                 return<ExpansionPanelDetails key={index}>
                                     <Typography className={classes.content}>
-                                        {formatDateTime(dt.Timestamp, DATE_TIME_FORMAT, HOUR_MIN_FORMAT)}
+                                        {formatDateTime(dt.AlertTimestamp, DATE_TIME_FORMAT, HOUR_MIN_FORMAT)}
                                     </Typography>
                                     <Typography>{dt.Data.Text}</Typography>
                                 </ExpansionPanelDetails>

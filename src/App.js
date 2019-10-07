@@ -1,5 +1,8 @@
 import React from "react";
 import { Route, Switch, Redirect, withRouter} from "react-router-dom";
+// import { connect } from "react-redux";
+// import {isEqual} from "lodash";
+
 import Dashboard from "./containers/dashboard/Dashboard";
 import Login from "./containers/Login";
 import Header from "./components/header/Header";
@@ -9,12 +12,11 @@ import Logout from "./containers/Logout";
 import ProjectDetails from "./containers/projectDetails/ProjectDetail";
 import ProjectInstallationDetails from "./containers/projectInstallationDetails/ProjectInstallationDetails";
 import ProjectTeamDetails from "./containers/projectTeamDetails/ProjectTeamDetails";
-import About from "./containers/About";
+// import About from "./containers/About";
 import NoMatch from "./containers/nomatch/NoMatch";
 import ButtonAppBar from "./components/commonHeader/CommonHeader";
 import AuthReset from "./containers/AuthReset";
-import {CssBaseline, withStyles, MuiThemeProvider} from '@material-ui/core';
-import PropTypes from 'prop-types';
+import {CssBaseline, MuiThemeProvider} from '@material-ui/core';
 import "./sass/App.scss";
 import theme from './SiteTheme';
 import UserProfile from "./containers/UserProfile";
@@ -25,30 +27,95 @@ import DispenserDetails from "./containers/DispenserDetails";
 import ReportView from "./containers/ReportView";
 import Health from "./containers/Health";
 import HealthStatus from "./containers/HealthStatus";
+import PageLoader from "./components/pageLoader/PageLoader";
+import ProjectCreate from "./containers/projectCreate/ProjectCreate";
+import ProjectList from "./containers/projectList/ProjectList";
+import ProjectDetail from "./containers/projectList/ProjectDetail";
+import MyProjectList from "./containers/myProjectList/MyProjectList";
+import MyProjectDetail from "./containers/myProjectList/MyProjectDetail";
+// import {projectSelect}  from './actions/MenuAction';
+import InstallationData from "./containers/installationData/InstallationData";
 
-const styles = theme => ({
+import axios from 'axios';
+import {API_END_POINT, API_URLS} from "./constants/Constant";
 
-});
-  class App extends React.Component {
+class App extends React.Component {
+    constructor(props) {
+      super(props);
+      this.state = {
+        holdComponents: true
+      }
+    }
+
     componentWillMount() {
-      localStorage.setItem('previousPath', window.location.pathname)
+      localStorage.setItem('previousPath', window.location.pathname);
+      const self = this;
+      let addressArray = window.location.pathname.split('/'),
+        mainIndex = addressArray.indexOf('optimus'),
+        partnerid = (addressArray[mainIndex + 1] !== 'profile' &&
+        addressArray[mainIndex + 1] !== 'project' &&
+        addressArray[mainIndex + 1] !== 'view' &&
+        addressArray[mainIndex + 1] !== 'alert' &&
+        addressArray[mainIndex + 1] !== 'dispenser' &&
+        addressArray[mainIndex + 1] !== 'data' &&
+        addressArray[mainIndex + 1] !== 'report' &&
+        addressArray[mainIndex + 1] !== 'health' &&
+        addressArray[mainIndex + 1] !== 'login' &&
+        addressArray[mainIndex + 1] !== 'logout' &&
+        addressArray[mainIndex + 1] !== 'listproject' &&
+        addressArray[mainIndex + 1] !== 'myproject' &&
+        addressArray[mainIndex + 1] !== 'newproject') ? addressArray[mainIndex + 1] : '';
+        
+        const urlEndPoint = `${API_END_POINT}${API_URLS['PARTNER']}${partnerid ? partnerid.toUpperCase() : 'default'}${API_URLS['THEME']}`;
+        axios({
+            method:'GET',
+            url: urlEndPoint,
+            headers: {'Content-Type':'application/json'}
+        })
+        .then(function(data) {
+            if(data && data.data) {
+                localStorage.setItem('footer', data.data[0].Details.footerText);
+                localStorage.setItem('logo', data.data[0].Details.logo);
+                theme.palette.primary={
+                  highlighter: data.data[0].Details.highlighter ? data.data[0].Details.highlighter : theme.palette.primary.highlighter,
+                  lighter: data.data[0].Details.lighter ? data.data[0].Details.lighter : theme.palette.primary.lighter,
+                  light: data.data[0].Details.light ? data.data[0].Details.light : theme.palette.primary.light,
+                  main: data.data[0].Details.main ? data.data[0].Details.main : theme.palette.primary.main
+                }
+                self.setState({holdComponents: false});
+            } else if (data && data.data === null) {
+                localStorage.setItem('footer', '');
+                localStorage.setItem('logo', '');
+                self.setState({holdComponents: false});
+            }
+        })
+        .catch((err) => {
+            console.log(`Error Captured: ${err}`);
+            localStorage.setItem('footer', '');
+            localStorage.setItem('logo', '');
+            self.setState({holdComponents: false})
+        });
+        // Partner id has to be update for all the conditions, so moved separate.
+        localStorage.setItem('partnerid', partnerid);
     }
     render() {
-      const Contact = () => <h2>Contact</h2>
+      // const Contact = () => <h2>Contact</h2>
         return(
           <MuiThemeProvider theme={theme}>
               <div className="common-container">
-                { !localStorage.getItem('idToken') ?
+                {this.state.holdComponents ?
+                  <PageLoader/>
+                : !localStorage.getItem('idToken') ?
                   (<div>
                     <CssBaseline />
                     <ButtonAppBar/>
                     <Switch>
-                      <Route path="/login" component={Login} />
-                      <Route path="/auth-reset" component={AuthReset} />
-                      <Route path="/about" component={About} />
-                      <Route path="/contact" component={Contact} />
+                      <Route path="/:partnerid?/login" component={Login} />
+                      <Route path="/:partnerid?/auth-reset" component={AuthReset} />
+                      {/* <Route path="/about" component={About} />
+                      <Route path="/contact" component={Contact} /> */}
                       {/* when none of the above match, <NoMatch> will be rendered */}
-                      <Route component={NoMatch} />
+                      <Route path="/:partnerid?/*" component={NoMatch} />
                     </Switch>
                     <Footer/>
                   </div>)
@@ -58,20 +125,28 @@ const styles = theme => ({
                     <Header {...this.props}  params={this.props.match.params}/>
                     <Menu {...this.props}/>
                     <Switch>
-                      <Route exact path="/" component={Dashboard} />
-                      <Route path="/project/:pid/installations/:insid?" component={ProjectInstallationDetails} />
-                      <Route path="/project/:pid/team/:uid?" component={ProjectTeamDetails} />
-                      <Route path="/project/:pid?" component={ProjectDetails} />
-                      <Route path="/profile/:userid?" component={UserProfile} />
-                      <Route path="/alert/project/:pid?" component={AlertDetails} />
-                      <Route path="/dispenser/project/:pid?" component={DispenserDetails} />
-                      <Route path="/data/project/:pid" component={DataAnalysis} />
-                      <Route exact path="/report/configure/project/:pid?" component={Report} />
-                      <Route path="/report/project/:pid?" component={ReportView} />
-                      <Route path="/health/project/:pid/:insid" component={HealthStatus}/>
-                      <Route exact path="/health/project/:pid" component={Health}/>
-                      <Route path="/logout" component={Logout} />
-                      <Redirect from="/login" to="/"/>
+                      <Route path="/:partnerid?/newproject/:pid" component={ProjectCreate} />
+                      <Route path="/:partnerid?/newproject" component={ProjectCreate} />
+                      <Route path="/:partnerid?/listproject/:pid" component={ProjectDetail} />
+                      <Route path="/:partnerid?/listproject" component={ProjectList} />
+                      <Route path="/:partnerid?/myproject/:pid" component={MyProjectDetail} />
+                      <Route path="/:partnerid?/myproject" component={MyProjectList} />
+                      <Route path="/:partnerid?/profile/:userid?" component={UserProfile} />
+                      <Route path="/:partnerid?/alert/project/:pid?" component={AlertDetails} />
+                      <Route path="/:partnerid?/dispenser/project/:pid?" component={DispenserDetails} />
+                      <Route path="/:partnerid?/data/project/:pid" component={DataAnalysis} />
+                      <Route path="/:partnerid?/view/project/:pid" component={InstallationData} />
+                      <Route exact path="/:partnerid?/report/configure/project/:pid?" component={Report} />
+                      <Route path="/:partnerid?/report/project/:pid?" component={ReportView} />
+                      <Route path="/:partnerid?/health/project/:pid/:insid" component={HealthStatus}/>
+                      <Route exact path="/:partnerid?/health/project/:pid" component={Health}/>
+                      <Route exact path="/:partnerid?/project/:pid/installations/:insid?" component={ProjectInstallationDetails} />
+                      <Route path="/:partnerid?/project/:pid/team/:uid?" component={ProjectTeamDetails} />
+                      <Route path="/:partnerid?/project/:pid?" component={ProjectDetails} />
+                      
+                      <Route path="/:partnerid?/logout" component={Logout} />
+                      <Route exact path="/:partnerid?/" component={Dashboard} />
+                      <Redirect from="/:partnerid?/login" to="/:partnerid?/"/>
                       <Route component={NoMatch} />
                     </Switch>
                     <Footer/>
@@ -81,10 +156,20 @@ const styles = theme => ({
           </MuiThemeProvider>
         )
     }
-  }
-  App.propTypes = {
-    classes: PropTypes.object.isRequired,
-  };
-// export default withStyles(styles)(App);
-const AppComponent = withStyles(styles)(App);
-export default withRouter(AppComponent)
+}
+// function mapStateToProps(state) {
+//   return {
+//       projectSelected : state.projectSelectReducer.data,
+//   }
+// }
+
+// function mapDispatchToProps(dispatch) {
+//   //will dispatch the async action
+//   return {
+//     onProjectSelect: (value) => {
+//       dispatch(projectSelect(value))
+//     },
+//   }
+// }
+export default withRouter(App)
+// export default (connect(mapStateToProps, mapDispatchToProps))(withRouter(App));

@@ -57,7 +57,29 @@ const styles = theme => ({
     },
     errorMessage: {
         color: red[500]
-    }
+    },
+    noLeftPadding: {
+        paddingLeft: '0px'
+    },
+    grapPlot: {
+        display: 'flex',
+        flexWrap: 'wrap'
+    },
+    modalIniatialDimentions: {
+        height: '500px',
+    },
+    gridList: {
+        width: '100%',
+        height: '100vh',
+    },
+    paddingContent: {
+        padding: theme.spacing.unit * 3,
+    },
+    flexContainer: {
+        width: '100% !important',
+        display: 'flex',
+        flexWrap: 'wrap'
+    },
 })
 
 export default styles;

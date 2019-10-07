@@ -1,15 +1,18 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
+import _ from 'lodash';
 import {Table, TableBody, TableCell, TablePagination,
-  TableRow, Paper, TextField, Select, MenuItem,
-  List, ListItem} from '@material-ui/core';
+  TableRow, TableFooter, Paper, TextField, Select, MenuItem,
+  List, ListItem, Switch, Typography, Grid} from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Edit';
+import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EnhancedTableHead from './GridHeader';
 import styles from "./GridStyle";
 import CustomModal from '../../components/modal/Modal';
 import { NamespacesConsumer } from 'react-i18next';
+import { isDeepStrictEqual } from 'util';
 
 function desc(a, b, orderBy) {
 /**
@@ -65,6 +68,8 @@ function getSorting(order, orderBy) {
  *    It will specify if table will show up delete column of not
  * allowEdit is passed as true or false, by default it will be false.
  *    It will specify if table will show up edit column of not
+ * allowAdd is passed as true or false, by default it will be false.
+ *    It will specify if table will show up Add button.
  */
 
 class EnhancedTable extends React.Component {
@@ -154,15 +159,16 @@ class EnhancedTable extends React.Component {
   isSelected = id => this.props.selected.indexOf(id) !== -1;
 
   render() {
-    const { classes, data, rows, order, orderBy,
+    const { classes, data, stateData, rows, order, orderBy,
         rowsPerPage, page, handleClick, category, redirectID, allowDelete,
-        allowEdit, searchList} = this.props;
+        allowEdit, searchList, allowAdd, handleAddition, onAddition} = this.props;
     const emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
     const queryToLower = this.state.query.toLowerCase();
     return (
       <NamespacesConsumer>
             {
             t=><Paper className={classes.root}>
+          
           {searchList &&
             <div className={classes.searchSection}>
             {/**
@@ -170,23 +176,33 @@ class EnhancedTable extends React.Component {
             * select any and type the value looking for in the text box,
             * and the function will be called on key change and refine the data in the table
             */}
-              <Select
-              displayEmpty
-              value={this.state.queryToColumn}
-              onChange={this.setQueryColumn}
-              >
-              <MenuItem value="" disabled>{t('selectColumn')}</MenuItem>
-              {searchList.map(row => {
-                return <MenuItem value={row.id} key={row.id}>{row.label}</MenuItem>
-                }, this)}
-              </Select>
-              <TextField
-              className={classes.searchField}
-              disabled={this.state.queryToColumn ? false : true}
-              placeholder="All"
-              value={this.state.query}
-              onChange={e=>this.setState({query: e.target.value})}
-              />
+            <Grid justify="space-between"
+                container 
+                spacing={24}>
+              <Grid>
+                <Select
+                  displayEmpty
+                  value={this.state.queryToColumn}
+                  onChange={this.setQueryColumn}>
+                  <MenuItem value="" disabled>{t('selectColumn')}</MenuItem>
+                  {searchList.map(row => {
+                    return <MenuItem value={row.id} key={row.id}>{row.label}</MenuItem>
+                    }, this)}
+                </Select>
+                <TextField
+                  className={classes.searchField}
+                  disabled={this.state.queryToColumn ? false : true}
+                  placeholder="All"
+                  value={this.state.query}
+                  onChange={e=>this.setState({query: e.target.value})}/>
+                </Grid>
+                {allowAdd &&
+                  <div className={classes.pointer}>
+                    <AddCircleOutlineIcon className={classes.icon}
+                      onClick={handleAddition}/>
+                  </div>
+                }
+              </Grid>
             </div>
           }
           <Table className={classes.table} aria-labelledby="tableTitle">
@@ -225,19 +241,40 @@ class EnhancedTable extends React.Component {
                       >
                       {rows.map( (test, i) => {
                         let id = test.id;
+                        var toStr = Object.prototype.toString;
                         return <TableCell key={i} value={n[id]}
                                 // onClick={test.editTable ? () => this.onEdit(i): ''}
                                 >
                                 {Array.isArray(n[id]) ?
                                   <List dense={true}>
                                     {n[id].map((value, index) => {
-                                      return <ListItem key={index}>
-                                        {value}
-                                      </ListItem>
+                                      let valType = Object.prototype.toString.call(value).slice(8, -1);
+                                      if(valType === 'String' || valType === 'Array') {
+                                        return <ListItem key={index} className={classes.denseList}>
+                                          {value}
+                                        </ListItem>
+                                      } else {
+                                        return <div>
+                                          {Object.keys(value).map((key) => {
+                                            return <div> {key}: {value[key]}</div>
+                                          })}
+                                        </div>
+                                      }
                                     })}
                                   </List>
-                                :
-                                  <span>{n[id]}</span>
+                                : _.isBoolean(n[id]) ?
+                                  <Switch
+                                  disabled
+                                  checked={n[id]}
+                                  value="Mute"
+                                />
+                                : ((toStr.call(n[id]) === '[object Object]') && !n[id]['$$typeof']) ?
+                                  <div className={classes.deviceDisplay}>
+                                    {Object.keys(n[id]).map((key, index) => {
+                                        return <Typography key={index}> {key} - { n[id][key]} <b>|</b> </Typography>
+                                    })}
+                                  </div>
+                                : <span>{n[id]}</span>
                                 }
                               </TableCell>
                       })}
@@ -264,22 +301,26 @@ class EnhancedTable extends React.Component {
                 </TableRow>
               )}
             </TableBody>
+            <TableFooter>
+              <TableRow>
+                <TablePagination
+                  rowsPerPageOptions={[5, 10, 25]}
+                  component="div"
+                  count={data.length}
+                  rowsPerPage={rowsPerPage}
+                  page={page}
+                  backIconButtonProps={{
+                    'aria-label': 'Previous Page',
+                  }}
+                  nextIconButtonProps={{
+                    'aria-label': 'Next Page',
+                  }}
+                  onChangePage={this.handleChangePage}
+                  onChangeRowsPerPage={this.handleChangeRowsPerPage}
+                />
+              </TableRow>
+            </TableFooter>
           </Table>
-        <TablePagination
-          rowsPerPageOptions={[5, 10, 25]}
-          component="div"
-          count={data.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          backIconButtonProps={{
-            'aria-label': 'Previous Page',
-          }}
-          nextIconButtonProps={{
-            'aria-label': 'Next Page',
-          }}
-          onChangePage={this.handleChangePage}
-          onChangeRowsPerPage={this.handleChangeRowsPerPage}
-        />
         {/**
         * modal for updating user once delete is enabled and clicked for a row
         */}
@@ -289,6 +330,17 @@ class EnhancedTable extends React.Component {
           handleClose={this.handleClose}
           handleClick={this.onDelete}
           open={this.state.open}
+          showFooter={true}
+        />
+        {/**
+        * modal for Addition
+        */}
+        <CustomModal
+          header={stateData.addModalHeader}
+          content={stateData.additionModal}
+          handleClose={handleAddition}
+          handleClick={onAddition}
+          open={stateData.addNotify}
           showFooter={true}
         />
       </Paper>

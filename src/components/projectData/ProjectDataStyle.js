@@ -12,13 +12,14 @@ const styles = theme => ({
     content: {
       minHeight: 10,
       // paddingTop: '56.25%',
-      display: 'flex'
+      display: 'flex',
+      flexWrap: 'wrap'
     },
     actions: {
       display: 'flex',
     },
     avatar: {
-      backgroundColor: green[300],//red[500],
+      backgroundColor: `${theme.palette.primary.main}`,
     },
     pointer: {
       cursor: 'pointer'

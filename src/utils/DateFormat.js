@@ -34,12 +34,14 @@ export function formatDateWithTimeZone(dateTime, inputFormat, outFormat, timeZon
 }
 
 export function getTimeDifference (startTime, endTime) {
-    startTime = moment(startTime, DATE_TIME_FORMAT);
-    endTime = moment(endTime, DATE_TIME_FORMAT);
-    moment(endTime.diff(startTime)).format("m[m] s[s]")
-    let duration = moment.duration(endTime.diff(startTime));
-    let hours = duration.asHours();
-    return hours
+    // startTime = moment(startTime, DATE_TIME_FORMAT);
+    // endTime = moment(endTime, DATE_TIME_FORMAT);
+    // moment(endTime.diff(startTime)).format("m[m] s[s]")
+    // let duration = moment.duration(endTime.diff(startTime));
+    // let hours = duration.asHours();
+    let start = moment(startTime, DATE_TIME_FORMAT),
+        end = moment(endTime, DATE_TIME_FORMAT);
+    return start.isSame(end, 'date');
 }
 
 export function getXHourOldDateTime (hours='') {

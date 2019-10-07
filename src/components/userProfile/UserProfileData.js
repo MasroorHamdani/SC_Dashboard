@@ -38,7 +38,7 @@ class UserProfileData extends Component {
                         </Grid>
                         <Grid item xs={12} sm={6}>
                         <TextField
-                            disabled
+                            // disabled
                             id="ID"
                             name="ID"
                             label={t('userid')}
@@ -88,8 +88,7 @@ class UserProfileData extends Component {
                             container
                             alignItems='center'
                             direction='row'
-                            justify='flex-end'
-                            >
+                            justify='flex-end'>
                             <Button
                                 variant="contained"
                                 color="primary"

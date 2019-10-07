@@ -5,12 +5,14 @@ import PropTypes from 'prop-types';
 import {isEqual} from "lodash";
 import styles from './DashboardStyle'
 import ProjectDataComponent from "../../components/projectData/ProjectData";
-import { API_URLS, NAMESPACE, DASHBOARD_METRIC,
-  DATE_TIME_FORMAT} from "../../constants/Constant";
+import { API_URLS, NAMESPACE, GRAPH_RENDER_TYPE,
+  DATE_TIME_FORMAT, PROJECT_ACTIONS} from "../../constants/Constant";
 import { getApiConfig } from '../../services/ApiCofig';
-import {projectAnalysisData, projectSubMenuList} from '../../actions/DataAnalysis';
+import {projectAnalysisData, projectSubMenuList,
+  projectDataMetricList, InitialiseDataState,
+  InitialiseMetricState} from '../../actions/DataAnalysis';
 import {getVector} from '../../utils/AnalyticsDataFormat';
-import {formatDateWithTimeZone, getXHourOldDateTime} from '../../utils/DateFormat';
+import {formatDateWithTimeZone, formatDateTime, getTodaysStartDateTime} from '../../utils/DateFormat';
 
 class Dashboard extends Component {
   constructor(props) {
@@ -18,11 +20,13 @@ class Dashboard extends Component {
     this.state = {
       data : [],
       dashboardData : [],
-      loading: true,
+      // loading: true,
       endTime: new Date(),
-      startTime: getXHourOldDateTime(1),
+      startTime: getTodaysStartDateTime(),
     }
     this.metricsIndex = 0;
+    this.metricLength = 0;
+    this.metricsIndexReceived = 0;
   }
 
   getProjectData = () => {
@@ -31,15 +35,17 @@ class Dashboard extends Component {
    * and call the api for fetch analytics data for selected project id.
    */
     this.setState({loading: true}, function() {
-      let dataToPost = DASHBOARD_METRIC,
-        endPoint = `${API_URLS['DEVICE_DATA']}/${this.state.PID}/${API_URLS['DEFAULT']}`,
+      let getEndPoint = `${API_URLS['NEW_DEVICE_DATA']}/${this.state.PID}`,
         params = {
-          'start' : formatDateWithTimeZone(this.state.startTime, DATE_TIME_FORMAT, DATE_TIME_FORMAT, this.state.timeZone),
-          'end': formatDateWithTimeZone(this.state.endTime, DATE_TIME_FORMAT, DATE_TIME_FORMAT, this.state.timeZone),
+          action: `${PROJECT_ACTIONS['HOMEPAGE']}_${this.state.PID}` //PROJECT_ACTIONS['HOMEPAGE']//
         },
-        config = getApiConfig(endPoint, 'POST', dataToPost, params);
-      this.props.onDataAnalysis(config);
+        getconfig = getApiConfig(getEndPoint, 'GET', '', params);
+        this.props.onDataMetricList(getconfig);
     })
+  }
+
+  componentWillUnmount() {
+    this.props.onInitialState();
   }
 
   componentDidMount() {
@@ -86,13 +92,57 @@ class Dashboard extends Component {
    */
     if(this.props.projectSelected &&
       !isEqual(this.props.projectSelected, prevProps.projectSelected)) {
+        this.metricsIndex = 0;
+        this.metricsIndexReceived = 0;
+        this.props.onInitialState();
         this.setState({
           PID: this.props.projectSelected.PID,
-          timeZone: this.props.projectSelected.Region}, function() {
+          timeZone: this.props.projectSelected.Region,
+          dashboardData: []
+        }, function() {
           this.getProjectData();
         });
     }
-  
+  /**
+   * This part will gte the metric list for dashboard. on basis of the
+   * data returned in this API call, rest of the nested call will be done
+   * TO get the actaul data per metrics and shown to end user on Home screen.
+   */
+    if(this.props.projectMetricList &&
+      !isEqual(this.props.projectMetricList, prevProps.projectMetricList)
+      && this.metricsIndex === 0) {
+        this.metricLength = this.props.projectMetricList ? this.props.projectMetricList.length : 0;
+        if(this.metricsIndex < this.metricLength) {
+          this.props.projectMetricList.map((extRow) => {
+            Object.keys(extRow).map((key) => {
+              let agg_query = [],
+                renderType = extRow[key]['Params']['RenderParams']['show'] ?
+                  extRow[key]['Params']['RenderParams']['show'] :
+                  GRAPH_RENDER_TYPE['SUBPLOT'];
+              Object.keys(extRow[key]).map((k) => {
+                if(k === 'Metrics') {
+                  extRow[key][k].map((metricRow) => {
+                    Object.values(metricRow)[0]['renderType'] = renderType
+                    Object.values(metricRow)[0]['serviceId'] = key
+                    agg_query.push(Object.values(metricRow)[0])
+                  })
+                }
+              })
+            // if(Object.values(row)[0].data_source === this.state.PID) {
+              let dataToPost = {'all_metrics' : agg_query},
+                endPoint = `${API_URLS['NEW_DEVICE_DATA']}/${this.state.PID}`,
+                params = {
+                  'start_date_time' : formatDateTime(this.state.startTime, DATE_TIME_FORMAT, DATE_TIME_FORMAT),
+                  'end_date_time': formatDateWithTimeZone(this.state.endTime, DATE_TIME_FORMAT, DATE_TIME_FORMAT, this.state.timeZone),
+                },
+                config = getApiConfig(endPoint, 'POST', dataToPost, params);
+              this.props.onDataAnalysis(config);
+            // }
+            })
+            this.metricsIndex += 1;
+          })
+        }
+    }
   /**
    * This part will get the dashboard data per project.
    * As the api will gte all the relavant data for project,
@@ -105,8 +155,7 @@ class Dashboard extends Component {
     if ((this.props.dashboardData || this.props.dataAnalysis || this.props.projectLocationList) &&
       ((!isEqual(this.props.dashboardData, prevProps.dashboardData) ||
       !isEqual(this.props.dataAnalysis, prevProps.dataAnalysis) ||
-      !isEqual(this.props.projectLocationList, prevProps.projectLocationList)) ||
-      !this.state.dashboardData.length > 0)) {
+      !isEqual(this.props.projectLocationList, prevProps.projectLocationList)))) {
         let projData = [], dashboardData = [];
         if(this.props.dashboardData && this.props.dashboardData.length > 0) {
           this.props.dashboardData.map((row) => {
@@ -115,12 +164,15 @@ class Dashboard extends Component {
           });
         }
         if(this.props.dataAnalysis &&
-          !isEqual(this.props.dataAnalysis, prevProps.dataAnalysis)) {
+          !isEqual(this.props.dataAnalysis, prevProps.dataAnalysis)
+          || !this.state.dashboardData.length > 0) {
+            
             let projObj = {}, metricsData={};
-            const deviceResponse = this.props.dataAnalysis.data.data;
-            if(this.props.dataAnalysis.data.status === "success") {
+            const deviceResponse = this.props.dataAnalysis ? this.props.dataAnalysis.data.data : '';
+            if(this.props.dataAnalysis && this.props.dataAnalysis.data.status === "success") {
+              this.metricsIndexReceived += 1;
               this.getInstallationLocation();
-              metricsData = getVector(this.props.dataAnalysis.data.data.allMetrics, 'DASHBOARD');
+              metricsData = getVector(this.props.dataAnalysis.data.data.all_metrics, 'DASHBOARD');
               projObj['PID'] = deviceResponse.pid;
               projData.map((row) => {
                 if(row.PID === deviceResponse.pid) {
@@ -128,7 +180,7 @@ class Dashboard extends Component {
                   projObj['Site_Addr'] = row.Site_Addr;
                   projObj['dataAnalysis'] = deviceResponse;
                   projObj['metrics'] = metricsData.dataMetrics;
-                  projObj['allMetrics'] = deviceResponse.allMetrics;
+                  projObj['allMetrics'] = deviceResponse.all_metrics;
                 }
               })
             } else {
@@ -144,8 +196,12 @@ class Dashboard extends Component {
             dashboardData.push(projObj);
             this.setState({
               dashboardData: dashboardData,
-              loading: false
+              // loading: false
             });
+            if(this.metricsIndexReceived === this.metricLength)
+                this.setState({
+                    loading: false,
+                });
         }
         if(this.props.projectLocationList &&
           !isEqual(this.props.projectLocationList, prevProps.projectLocationList)) {
@@ -159,17 +215,16 @@ class Dashboard extends Component {
     return (
       <div className={classes.root}>
         <main className={classes.content}>
-        {this.state.loading ? (
-        <LinearProgress className={classes.buttonProgress}/>
-        )
-        : (this.state.dashboardData &&
+        {this.state.loading &&
+          (<LinearProgress className={classes.buttonProgress}/>)
+        }
+        {(this.state.dashboardData &&
           <div className={classes.gridRoot}>
             <GridList cellHeight={180} className={classes.gridList}>
               <ProjectDataComponent stateData={this.state}/>
             </GridList>
-        </div>
-        )
-        }
+          </div>
+        )}
         </main>
       </div>
     );
@@ -182,17 +237,25 @@ function mapStateToProps(state) {
       dataAnalysis : state.DataAnalysisReducer.data,
       projectSelected : state.projectSelectReducer.data,
       projectLocationList : state.DataAnalysisProjectListSubMenuReducer.data,
+      projectMetricList: state.ProjectMetricListReducer.data
   }
 }
 
 function mapDispatchToProps(dispatch) {
   return {
     onDataAnalysis: (config) => {
-        dispatch(projectAnalysisData(config))
+      dispatch(projectAnalysisData(config))
     },
     onDataAnalysisMenu: (config) => {
       dispatch(projectSubMenuList(config))
     },
+    onDataMetricList: (config) => {
+      dispatch(projectDataMetricList(config))
+    },
+    onInitialState: () => {
+      dispatch(InitialiseDataState())
+      dispatch(InitialiseMetricState())
+    }
   }
 }
 

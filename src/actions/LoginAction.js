@@ -1,5 +1,5 @@
 import ApiService from '../services/ApiService';
-import { USER_LOGIN, AUTH_KEY_SET } from '../constants/ActionTypes';
+import { USER_LOGIN, AUTH_KEY_SET, PAGE_LOADING} from '../constants/ActionTypes';
 
 function loginSuccessful(data) {
   return {

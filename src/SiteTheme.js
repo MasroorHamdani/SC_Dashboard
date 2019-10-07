@@ -1,14 +1,16 @@
 import { createMuiTheme } from '@material-ui/core/styles';
 import {pink, red} from '@material-ui/core/colors';
+import {THEME} from './constants/Constant';
 
 // All the following keys are optional.
 // We try our best to provide a great default value.
 const theme = createMuiTheme({
   palette: {
     primary: {
-      lighter: '#a9c8a4',
-      light: '#8db788',
-      main: '#68a554'//green[400],  //indigo,
+      highlighter: THEME.highlighter,
+      lighter: THEME.lighter, 
+      light: THEME.light,
+      main: THEME.main
     },
     secondary: pink,
     error: red,

@@ -11,6 +11,10 @@ Pull the latest code from dev branch.
 Run npm command to get started
 npm install // install all the dependencies from package.json
 
+Copy the Environmrntal variables defined in .env file and save them as environmental variables in your machine
+export variable=value
+
+then start the server
 npm start // Start your local sever.
 
 To create a build - (local build or for testing prod build)

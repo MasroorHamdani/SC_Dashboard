@@ -10,6 +10,7 @@ import peopleCounter from '../../images/people-counter.png';
 import airQuality from '../../images/air-quality.png';
 import wetnessDetection from '../../images/wetness-detection.png';
 import gatewayDevice from '../../images/wetness-detection.jpg';
+import feedbackDevice from '../../images/feedback_device.png';
 
 import styles from './HealthCheckStyle';
 
@@ -59,6 +60,8 @@ class HealthCheck extends Component {
                         image = wetnessDetection;
                     } else if(innerKey === 'GW') {
                         image = gatewayDevice;
+                    } else if(innerKey === 'FD') {
+                        image = feedbackDevice;
                     }
                     if (innerKey !== 'undefined') {
                         headerRow.push({ id: innerKey, numeric: 'left', disablePadding: false,
@@ -96,7 +99,7 @@ class HealthCheck extends Component {
                     <LinearProgress className={classes.buttonProgress}/>
                 }
                 <main className={classes.content}>
-                    {(stateData && stateData.healthData) ?
+                    {(stateData && stateData.healthData) &&
                         <div>
                             <EnhancedTable rows={passedData.rows} data={passedData.data}
                             order={this.state.order} orderBy={this.state.orderBy}
@@ -107,7 +110,8 @@ class HealthCheck extends Component {
                             redirectID="ID"
                             />
                         </div>
-                    :
+                    }
+                    {(!stateData.loading && !stateData.healthData) &&
                         <div><Typography variant="h6">No Health Status Data to display</Typography></div>
                     }
                 </main>
