@@ -59,6 +59,7 @@ class TabData extends Component {
             rowsPerPage={this.state.rowsPerPage} page={this.state.page}
             selected={this.state.selected} category={stateData.tabValue}
             searchList={searchList}
+            stateData={stateData}
             handleChange={this.handleChange}
             handleClick={handleChange}
             redirectID="PID"

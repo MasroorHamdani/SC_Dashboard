@@ -416,3 +416,8 @@ export const USER_ROLE = [
     {key: 'partneradmin',
     display: 'Partner Admin'}
 ]
+
+export const ROLES = {
+    'SC_ADMIN': 'scadmin',
+    'PROJECT_ADMIN': 'projectadmin'
+}

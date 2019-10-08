@@ -69,8 +69,8 @@ class Menu extends Component {
       !isEqual(this.props.projectSelected, prevProps.projectSelected)) {
         this.setState({
           pid: this.props.projectSelected.PID,
-          menu: mainMenuList(this.props.projectSelected.PID, this.state.partnerid),
-          secondaryMenu: secondaryMenuList(this.state.pid, this.state.partnerid)
+          menu: mainMenuList(this.props.projectSelected, this.state.partnerid),
+          secondaryMenu: secondaryMenuList(this.props.projectSelected, this.state.partnerid)
         });
     }
   }

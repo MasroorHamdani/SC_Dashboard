@@ -111,37 +111,46 @@ class Dashboard extends Component {
     if(this.props.projectMetricList &&
       !isEqual(this.props.projectMetricList, prevProps.projectMetricList)
       && this.metricsIndex === 0) {
-        this.metricLength = this.props.projectMetricList ? this.props.projectMetricList.length : 0;
-        if(this.metricsIndex < this.metricLength) {
-          this.props.projectMetricList.map((extRow) => {
-            Object.keys(extRow).map((key) => {
-              let agg_query = [],
-                renderType = extRow[key]['Params']['RenderParams']['show'] ?
-                  extRow[key]['Params']['RenderParams']['show'] :
-                  GRAPH_RENDER_TYPE['SUBPLOT'];
-              Object.keys(extRow[key]).map((k) => {
-                if(k === 'Metrics') {
-                  extRow[key][k].map((metricRow) => {
-                    Object.values(metricRow)[0]['renderType'] = renderType
-                    Object.values(metricRow)[0]['serviceId'] = key
-                    agg_query.push(Object.values(metricRow)[0])
-                  })
-                }
+        let projectMetric = this.props.projectMetricList;
+        if(projectMetric.status === 'success') {
+          this.metricLength = projectMetric.data ? projectMetric.data.length : 0;
+          if(this.metricsIndex < this.metricLength) {
+            projectMetric.data.map((extRow) => {
+              Object.keys(extRow).map((key) => {
+                let agg_query = [],
+                  renderType = extRow[key]['Params']['RenderParams']['show'] ?
+                    extRow[key]['Params']['RenderParams']['show'] :
+                    GRAPH_RENDER_TYPE['SUBPLOT'];
+                Object.keys(extRow[key]).map((k) => {
+                  if(k === 'Metrics') {
+                    extRow[key][k].map((metricRow) => {
+                      Object.values(metricRow)[0]['renderType'] = renderType
+                      Object.values(metricRow)[0]['serviceId'] = key
+                      agg_query.push(Object.values(metricRow)[0])
+                    })
+                  }
+                })
+              // if(Object.values(row)[0].data_source === this.state.PID) {
+                let dataToPost = {'all_metrics' : agg_query},
+                  endPoint = `${API_URLS['NEW_DEVICE_DATA']}/${this.state.PID}`,
+                  params = {
+                    'start_date_time' : formatDateTime(this.state.startTime, DATE_TIME_FORMAT, DATE_TIME_FORMAT),
+                    'end_date_time': formatDateWithTimeZone(this.state.endTime, DATE_TIME_FORMAT, DATE_TIME_FORMAT, this.state.timeZone),
+                  },
+                  config = getApiConfig(endPoint, 'POST', dataToPost, params);
+                this.props.onDataAnalysis(config);
+              // }
               })
-            // if(Object.values(row)[0].data_source === this.state.PID) {
-              let dataToPost = {'all_metrics' : agg_query},
-                endPoint = `${API_URLS['NEW_DEVICE_DATA']}/${this.state.PID}`,
-                params = {
-                  'start_date_time' : formatDateTime(this.state.startTime, DATE_TIME_FORMAT, DATE_TIME_FORMAT),
-                  'end_date_time': formatDateWithTimeZone(this.state.endTime, DATE_TIME_FORMAT, DATE_TIME_FORMAT, this.state.timeZone),
-                },
-                config = getApiConfig(endPoint, 'POST', dataToPost, params);
-              this.props.onDataAnalysis(config);
-            // }
+              this.metricsIndex += 1;
             })
-            this.metricsIndex += 1;
-          })
-        }
+          }
+      } 
+      // else if(projectMetric.status === 'fail') {
+      //   this.setState({
+      //     errorMessage: projectMetric.message,
+      //     loading: false,
+      //   });
+      // }
     }
   /**
    * This part will get the dashboard data per project.
@@ -218,13 +227,16 @@ class Dashboard extends Component {
         {this.state.loading &&
           (<LinearProgress className={classes.buttonProgress}/>)
         }
-        {(this.state.dashboardData &&
+        {((this.state.dashboardData && this.state.dashboardData[0] &&this.state.dashboardData[0].PID !== 'undefined') &&
           <div className={classes.gridRoot}>
             <GridList cellHeight={180} className={classes.gridList}>
               <ProjectDataComponent stateData={this.state}/>
             </GridList>
           </div>
         )}
+        {/* {this.state.errorMessage&&
+          <div>{this.state.errorMessage}</div>
+        } */}
         </main>
       </div>
     );
