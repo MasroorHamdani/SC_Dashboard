@@ -419,5 +419,7 @@ export const USER_ROLE = [
 
 export const ROLES = {
     'SC_ADMIN': 'scadmin',
-    'PROJECT_ADMIN': 'projectadmin'
+    'PARTNER_ADMIN': 'partneradmin',
+    'PROJECT_ADMIN': 'projectadmin',
+    'SUPERVISOR': 'supervisor'
 }

@@ -28,8 +28,9 @@ class ProjectDetail extends Component {
       value: 'team',
       loading: true,
       success: false,
-      pid: props.match.params.pid,
-      addNotify: false
+      // pid: props.match.params.pid,
+      addNotify: false,
+      teamInfo: []
     }
     this.state = this.initialState;
     this.info = false;
@@ -310,7 +311,18 @@ class ProjectDetail extends Component {
   /**
    * Call the API with default tab value.
    */
+  if(this.state.pid) {
     this.callApi(this.state.value);
+  } else if(this.props.projectSelected){// || localStorage.getItem('projectSelected')) {
+    // let dt = JSON.parse(localStorage.getItem('projectSelected'));
+    this.setState({
+      pid: this.props.projectSelected ? this.props.projectSelected.PID : '',//dt.PID,
+      projectSelected : this.props.projectSelected ? this.props.projectSelected : ''//dt
+    }, function() {
+      this.callApi(this.state.value);
+    });
+  }
+    // this.callApi(this.state.value);
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -323,7 +335,11 @@ class ProjectDetail extends Component {
     if(this.props.projectSelected && 
       !isEqual(this.props.projectSelected, prevProps.projectSelected)){
       if(this.state.pid !== this.props.projectSelected.PID)
-        this.setState({pid: this.props.projectSelected.PID},
+        this.setState({
+          pid: this.props.projectSelected.PID,
+          projectSelected: this.props.projectSelected,
+          teamInfo: []
+        },
           function() {
             this.props.history.push(this.props.projectSelected.PID);
             this.info = false;
@@ -374,7 +390,8 @@ class ProjectDetail extends Component {
             config = getApiConfig(endPoint, 'GET');
           this.props.onProjectDetailData(config, url); 
         }
-        if(this.props.projectData && this.props.teamMembers) {
+        if(this.props.projectData && this.props.teamMembers &&
+          this.props.projectData[0]['PID'] === this.state.pid && this.props.teamAsso[0]['PID'] === this.state.pid) {
           let association = groupBy(this.props.teamAsso,  'UID');
           let teamMembers = this.props.teamMembers;
           
@@ -392,6 +409,7 @@ class ProjectDetail extends Component {
           this.setState({teamInfo: teamMembers})
         }
     }
+
     /**
      * This part will fetch the User details temporary for recalling the
      * main api again.

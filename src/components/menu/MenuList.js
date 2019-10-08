@@ -74,7 +74,7 @@ export function secondaryMenuList (projectSelected, partnerId) {
       icon: "CreateIcon",
       toolTip: "Add Project"
     })
-  } else if(role === ROLES['PROJECT_ADMIN']) {
+  } else if(role === ROLES['PARTNER_ADMIN']) {
     secondaryMenu.push({
       name: "My Projects",
       url: partnerId ? `/${partnerId}/myproject` : `/myproject`,
@@ -82,6 +82,13 @@ export function secondaryMenuList (projectSelected, partnerId) {
       toolTip: "My Projects"
     },
     {
+      name: "Add Project",
+      url: partnerId ? `/${partnerId}/newproject` : `/newproject`,
+      icon: "CreateIcon",
+      toolTip: "Add Project"
+    })
+  } else if(role === ROLES['SUPERVISOR']) {
+    secondaryMenu.push({
       name: "Add Project",
       url: partnerId ? `/${partnerId}/newproject` : `/newproject`,
       icon: "CreateIcon",

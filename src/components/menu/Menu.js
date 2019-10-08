@@ -10,6 +10,7 @@ import styles from "./MenuStyle";
 import ListItems from "./ListItems";
 import {mainMenuList} from "./MenuList";
 import {secondaryMenuList} from "./MenuList";
+import {ROLES} from '../../constants/Constant';
 
 
 class Menu extends Component {
@@ -100,11 +101,18 @@ class Menu extends Component {
           <Divider />
           <List>
             <ListItems menuList={this.state.menu} activeRoute={this.activeRoute} menuState={this.state.open}/></List>
-          <Divider />
-          <Typography className={classes.header}>Project Management</Typography>
-          <List>
-            <ListItems menuList={this.state.secondaryMenu} activeRoute={this.activeRoute} menuState={this.state.open}/>
-          </List>
+          {(this.props.projectSelected &&
+            (this.props.projectSelected.Role === ROLES['PARTNER_ADMIN'] ||
+            this.props.projectSelected.Role === ROLES['SC_ADMIN'] ||
+            this.props.projectSelected.Role === ROLES['SUPERVISOR'])) &&
+            <div>
+              <Divider />
+              <Typography className={classes.header}>Project Management</Typography>
+              <List>
+                <ListItems menuList={this.state.secondaryMenu} activeRoute={this.activeRoute} menuState={this.state.open}/>
+              </List>
+            </div>
+          }
           <Divider />
           <Typography className={classes.version}>Version 0.04</Typography>
         </Drawer>

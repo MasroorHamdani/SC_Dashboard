@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import {Typography } from '@material-ui/core';
+import {isEmpty} from 'lodash';
 
-import {PROJECT_TABS, SORTING} from '../../constants/Constant';
+import {PROJECT_TABS, SORTING, ROLES} from '../../constants/Constant';
 import EnhancedTable from '../grid/Grid';
 
 class TabContainer extends Component {
@@ -47,7 +48,7 @@ class TabContainer extends Component {
         const {category, data, handleClick, stateData,
             handleAddition, onAddition} = this.props;
         let tabData, rows, searchList;
-        if(stateData.teamInfo && category === PROJECT_TABS['TEAM']) {
+        if(!isEmpty(stateData.teamInfo) && category === PROJECT_TABS['TEAM']) {
             rows = [{ id: 'Firstname', numeric: 'left', disablePadding: false, label: 'Firstname' },
                     { id: 'Lastname', numeric: 'left', disablePadding: false, label: 'LastName' },
                     { id: 'Role', numeric: 'left', disablePadding: false, label: 'Role' },
@@ -68,9 +69,19 @@ class TabContainer extends Component {
                 searchList={searchList}
                 handleChange={this.handleChange} handleClick={handleClick} redirectID="UID"
                 handleAddition={handleAddition} onAddition={onAddition}
-                allowDelete={false} allowEdit={true} allowAdd={true}/>
+                allowDelete={false}
+                // allowEdit={true}
+                allowEdit={stateData.projectSelected.Role === ROLES['SC_ADMIN'] ||
+                        stateData.projectSelected.Role === ROLES['PARTNER_ADMIN'] ||
+                        stateData.projectSelected.Role === ROLES['PROJECT_ADMIN']?
+                            true : false}
+                allowAdd={stateData.projectSelected.Role === ROLES['SC_ADMIN'] ||
+                        stateData.projectSelected.Role === ROLES['PARTNER_ADMIN'] ||
+                        stateData.projectSelected.Role === ROLES['PROJECT_ADMIN'] ?
+                            true : false}
+                />
             </Typography>
-        } else if (data && category === PROJECT_TABS['INSTALLATION']) {
+        } else if (!isEmpty(data) && category === PROJECT_TABS['INSTALLATION']) {
             rows = [{ id: 'name', numeric: 'left', disablePadding: false, label: 'Name' },
                     { id: 'locn', numeric: 'left', disablePadding: false, label: 'Location' }];
             searchList = [{ id: 'name', label: 'Name' },
