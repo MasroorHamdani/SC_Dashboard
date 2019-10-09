@@ -104,6 +104,7 @@ class Menu extends Component {
           {(this.props.projectSelected &&
             (this.props.projectSelected.Role === ROLES['PARTNER_ADMIN'] ||
             this.props.projectSelected.Role === ROLES['SC_ADMIN'] ||
+            this.props.projectSelected.Role === ROLES['PROJECT_ADMIN'] ||
             this.props.projectSelected.Role === ROLES['SUPERVISOR'])) &&
             <div>
               <Divider />

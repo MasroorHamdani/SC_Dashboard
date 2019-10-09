@@ -3,7 +3,8 @@ import {withStyles, LinearProgress} from '@material-ui/core';
 import { connect } from "react-redux";
 import _, {isEqual} from 'lodash';
 
-import {API_URLS, PROJECT_STATUS} from '../../constants/Constant';
+import {API_URLS, PROJECT_STATUS, ROLES,
+    REACT_URLS} from '../../constants/Constant';
 import {projectCreation} from  '../../actions/AdminAction'; 
 import {getApiConfig} from '../../services/ApiCofig';
 import {formatDateTime} from '../../utils/DateFormat';
@@ -31,6 +32,12 @@ class ProjectDetail extends Component {
     }
 
     componentDidUpdate(prevProps, prevState) {
+        if(this.props.projectSelected &&
+            !isEqual(this.props.projectSelected, prevProps.projectSelected)) {
+            if(this.props.projectSelected.Role !== ROLES['SC_ADMIN']) {
+                    this.props.history.push(`${REACT_URLS.DASHBOARD(this.state.parentId)}`);
+            }
+        }
         if(this.props.projectData && 
             !isEqual(this.props.projectData, prevProps.projectData)) {
             if(this.props.projectData.status !== PROJECT_STATUS['ACTIVE'] &&
@@ -112,6 +119,7 @@ class ProjectDetail extends Component {
 function mapStateToProps(state) {
     return {
         projectData : state.AdminReducer.data,
+        projectSelected : state.projectSelectReducer.data,
     }
 }
 

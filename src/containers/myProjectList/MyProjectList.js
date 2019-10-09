@@ -5,9 +5,9 @@ import { connect } from "react-redux";
 import _, {isEqual} from 'lodash';
 
 import TabData from '../../components/projectCreation/TabData';
-import {API_URLS, REACT_URLS} from '../../constants/Constant';
+import {API_URLS, REACT_URLS, ROLES} from '../../constants/Constant';
 import {getApiConfig} from '../../services/ApiCofig';
-import {projectList} from  '../../actions/AdminAction';
+import {projectList, InitialiseAdminProject} from  '../../actions/AdminAction';
 
 import styles from './MyProjectListStyle';
 
@@ -37,7 +37,19 @@ class MyProjectList extends Component {
         this.props.onProjectList(config);
     }
 
+    componentWillUnmount() {
+        this.props.onInitialState();
+    }
+
     componentDidUpdate(prevProps, prevState) {
+        if(this.props.projectSelected &&
+            !isEqual(this.props.projectSelected, prevProps.projectSelected)) {
+            if(this.props.projectSelected.Role !== ROLES['PARTNER_ADMIN'] &&
+                this.props.projectSelected.Role !== ROLES['SUPERVISOR']) {
+                    this.props.history.push(`${REACT_URLS.DASHBOARD(this.state.parentId)}`);
+            }
+        }
+
         if(this.props.projectList && 
             !isEqual(this.props.projectList, prevProps.projectList)) {
             this.setState({
@@ -58,8 +70,9 @@ class MyProjectList extends Component {
     handleTabChange = (event, value) => {
         this.setState({
             loading: true,
-            tabValue : value
-        }, function(){
+            tabValue : value,
+            projectList: []
+        }, function() {
             let param = {
                 status: value
             };
@@ -107,6 +120,7 @@ class MyProjectList extends Component {
 function mapStateToProps(state) {
     return {
         projectList : state.AdminReducer.data,
+        projectSelected : state.projectSelectReducer.data,
     }
 }
 
@@ -115,6 +129,9 @@ function mapDispatchToProps(dispatch) {
         onProjectList: (config) => {
             dispatch(projectList(config))
         },
+        onInitialState: () => {
+            dispatch(InitialiseAdminProject())
+        }
     }
 }
 

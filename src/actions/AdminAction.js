@@ -1,6 +1,6 @@
 import ApiService from '../services/ApiService';
 import {ADMIN_PROJECT_CREATE, ADMIN_PROJECT_UPDATE,
-    ADMIN_PROJECT_LIST} from '../constants/ActionTypes';
+    ADMIN_PROJECT_LIST, ADMIN_PROJECT_LOCATION_CREATE} from '../constants/ActionTypes';
 
 /**
  * Dispatched function to call the API service to POST
@@ -49,5 +49,12 @@ function onProjectList(data) {
     return {
         type: ADMIN_PROJECT_LIST,
         data
+    }
+}
+
+export function InitialiseAdminProject() {
+    return {
+      type: ADMIN_PROJECT_CREATE,
+      data: {}
     }
 }

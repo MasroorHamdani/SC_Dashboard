@@ -335,14 +335,16 @@ class EnhancedTable extends React.Component {
         {/**
         * modal for Addition
         */}
-        <CustomModal
-          header={stateData.addModalHeader}
-          content={stateData.additionModal}
-          handleClose={handleAddition}
-          handleClick={onAddition}
-          open={stateData.addNotify}
-          showFooter={true}
-        />
+        {stateData && stateData.addModalHeader &&
+          <CustomModal
+            header={stateData.addModalHeader}
+            content={stateData.additionModal}
+            handleClose={handleAddition}
+            handleClick={onAddition}
+            open={stateData.addNotify}
+            showFooter={true}
+          />
+        }
       </Paper>
       }</NamespacesConsumer>
     );

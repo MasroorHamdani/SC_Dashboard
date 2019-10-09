@@ -1,17 +1,18 @@
 import React, {Component} from "react";
 import {withStyles} from '@material-ui/core';
 import { connect } from "react-redux";
-import _, {isEqual} from 'lodash';
+import _, {isEqual, isEmpty} from 'lodash';
 // import S3FileUpload from 'react-s3';
 
 import configureAWS from '../../services/AWSService';
 import { fabric } from 'fabric';
-import imgMap from '../../images/DEMO_PROJECT_LOCN1.jpeg'
 import ProjectCreation from '../../components/projectCreation/ProjectCreation';
 import {PROJECT_CREATION, LOCATION_LIMIT,
     API_URLS, S3_LOCATION_MAP_END_POINT,
-    DEVICE_TYPE, PROJECT_STATUS, REACT_URLS} from '../../constants/Constant';
-import {projectCreation, projectUpdate} from  '../../actions/AdminAction';
+    DEVICE_TYPE, PROJECT_STATUS, REACT_URLS,
+    ROLES} from '../../constants/Constant';
+import {projectCreation, projectUpdate,
+    InitialiseAdminProject} from  '../../actions/AdminAction';
 
 import {formatDateTime} from '../../utils/DateFormat';
 import {getApiConfig} from '../../services/ApiCofig';
@@ -26,7 +27,7 @@ class ProjectCreate extends Component {
         Object.keys(DEVICE_TYPE).map((key, index) => {
             devices_count[key] = 0
         });
-        this.state = {
+        this.initialState = {
             pid: props.match.params.pid,
             expanded: 'general',
             devices_count: devices_count,
@@ -65,6 +66,8 @@ class ProjectCreate extends Component {
             showFooter: true,
             dimensions: {}
         }
+        this.state = this.initialState;
+        this.initiate = false;
     }
 
     componentDidMount() {
@@ -681,7 +684,20 @@ class ProjectCreate extends Component {
     }
 
     componentDidUpdate(prevProps, prevState) {
-        if(this.props.projectData && 
+        if(this.props.projectSelected &&
+            !isEqual(this.props.projectSelected, prevProps.projectSelected)) {
+            if(this.props.projectSelected.Role !== ROLES['PARTNER_ADMIN'] &&
+                this.props.projectSelected.Role !== ROLES['SC_ADMIN'] &&
+                this.props.projectSelected.Role !== ROLES['SUPERVISOR']) {
+                    this.props.history.push(`${REACT_URLS.DASHBOARD(this.state.parentId)}`);
+            }
+        }
+        if (!this.props.match.params.pid && !this.initiate) {
+            this.initiate = true;
+            this.props.onInitialState();
+        }
+
+        if(!isEmpty(this.props.projectData) && 
             !isEqual(this.props.projectData, prevProps.projectData)) {
             if(this.props.projectData['PID'] && this.props.projectData['type'] === PROJECT_CREATION['GENERAL']){
                 this.setState({
@@ -771,6 +787,9 @@ class ProjectCreate extends Component {
                     general: general
                 })
             }
+        } else if(isEmpty(this.props.projectData) &&
+            !isEqual(this.props.projectData, prevProps.projectData)) {
+            this.setState(this.initialState);
         }
 
         if(this.props.projectUpdate && 
@@ -806,7 +825,8 @@ class ProjectCreate extends Component {
 function mapStateToProps(state) {
     return {
         projectData : state.AdminReducer.data,
-        projectUpdate: state.AdminProjectUpdateReducer.data
+        projectUpdate: state.AdminProjectUpdateReducer.data,
+        projectSelected : state.projectSelectReducer.data,
     }
 }
 
@@ -817,6 +837,9 @@ function mapDispatchToProps(dispatch) {
         },
         onProjectUpdate: (config) => {
             dispatch(projectUpdate(config))
+        },
+        onInitialState: () => {
+            dispatch(InitialiseAdminProject())
         }
     }
 }

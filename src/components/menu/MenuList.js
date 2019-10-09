@@ -87,7 +87,7 @@ export function secondaryMenuList (projectSelected, partnerId) {
       icon: "CreateIcon",
       toolTip: "Add Project"
     })
-  } else if(role === ROLES['SUPERVISOR']) {
+  } else if(role === ROLES['SUPERVISOR'] || role === ROLES['PROJECT_ADMIN']) {
     secondaryMenu.push({
       name: "Add Project",
       url: partnerId ? `/${partnerId}/newproject` : `/newproject`,
