@@ -290,9 +290,9 @@ class ProjectDetail extends Component {
         dataToPost['dashboard_access'] = this.state.userDetail.dashboardAccess ? this.state.userDetail.dashboardAccess : false;
         dataToPost['phone_number'] = (this.state.userDetail.countryCode && this.state.userDetail.phoneNumber) ?
           `${this.state.userDetail.countryCode}${this.state.userDetail.phoneNumber}` : '';
-        dataToPost['pid'] = this.state.pid;
+        // dataToPost['pid'] = this.state.pid;
 
-        let endPoint = `${API_URLS['ADMIN_USER']}`,
+        let endPoint = `${API_URLS['ADMIN_USER']}/${this.state.pid}`,
             config = getApiConfig(endPoint, 'POST', dataToPost);
         this.props.onUserCreation(config);
 
