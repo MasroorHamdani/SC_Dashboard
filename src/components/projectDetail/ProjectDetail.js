@@ -359,11 +359,14 @@ class ProjectDetail extends Component {
         let SUB1;
         responseData.map(function (data) {
           SUB1 = NAMESPACE_MAPPER[data['NS']].SUB1;
-          insIDList.push(data.SUB1)
+          insIDList.push({
+            "key": data.SUB1,
+            "display": `${data.name} - ${data.locn}`
+          })
           data[SUB1] = data.SUB1
         });
         this.setState({installationData: responseData})
-        localStorage.setItem('installationLocations', insIDList);
+        localStorage.setItem('installationLocations', JSON.stringify(insIDList));
     }
     /**
      * This part will get the teams members data as well as

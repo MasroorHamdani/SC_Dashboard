@@ -22,8 +22,7 @@ class RadioButtonComponent extends Component {
             {
                 t=><div className={classes.root}>
             <List dense
-                component="nav"
-                >
+                component="nav">
                     {data.projectList &&
                         data.projectList.map((project, index) => {
                         return <div key={project.id}>
