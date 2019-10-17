@@ -250,34 +250,37 @@ class InstallationData extends Component {
         if(this.props.projectMetricList &&
             !isEqual(this.props.projectMetricList, prevProps.projectMetricList)
             && this.metricsIndex === 0) {
-            this.metricLength = this.props.projectMetricList ? this.props.projectMetricList.length : 0;
-            if(this.metricsIndex < this.metricLength) {
-                this.props.projectMetricList.map((extRow) => {
-                Object.keys(extRow).map((key) => {
-                    let agg_query = [],
-                    renderType = extRow[key]['Params']['RenderParams']['show'] ?
-                        extRow[key]['Params']['RenderParams']['show'] :
-                        GRAPH_RENDER_TYPE['SUBPLOT'];
-                    Object.keys(extRow[key]).map((k) => {
-                        if(k === 'Metrics') {
-                            extRow[key][k].map((metricRow) => {
-                                Object.values(metricRow)[0]['renderType'] = renderType
-                                Object.values(metricRow)[0]['serviceId'] = key
-                                agg_query.push(Object.values(metricRow)[0])
+            let projectMetric = this.props.projectMetricList;
+            if(projectMetric.status === 'success') {
+                this.metricLength = projectMetric.data ? projectMetric.data.length : 0;
+                if(this.metricsIndex < this.metricLength) {
+                    projectMetric.data.map((extRow) => {
+                        Object.keys(extRow).map((key) => {
+                            let agg_query = [],
+                            renderType = extRow[key]['Params']['RenderParams']['show'] ?
+                                extRow[key]['Params']['RenderParams']['show'] :
+                                GRAPH_RENDER_TYPE['SUBPLOT'];
+                            Object.keys(extRow[key]).map((k) => {
+                                if(k === 'Metrics') {
+                                    extRow[key][k].map((metricRow) => {
+                                        Object.values(metricRow)[0]['renderType'] = renderType
+                                        Object.values(metricRow)[0]['serviceId'] = key
+                                        agg_query.push(Object.values(metricRow)[0])
+                                    })
+                                }
                             })
-                        }
+                            let dataToPost = {'all_metrics' : agg_query},
+                                endPoint = `${API_URLS['NEW_DEVICE_DATA']}/${this.state.pid}`,
+                                params = {
+                                    'start_date_time' : formatDateTime(this.state.startDate, DATE_TIME_FORMAT, DATE_TIME_FORMAT),
+                                    'end_date_time': formatDateWithTimeZone(this.state.endDate, DATE_TIME_FORMAT, DATE_TIME_FORMAT, this.state.timeZone),
+                                },
+                                config = getApiConfig(endPoint, 'POST', dataToPost, params);
+                            this.props.onDataAnalysis(config);
+                        })
+                        this.metricsIndex += 1;
                     })
-                    let dataToPost = {'all_metrics' : agg_query},
-                        endPoint = `${API_URLS['NEW_DEVICE_DATA']}/${this.state.pid}`,
-                        params = {
-                            'start_date_time' : formatDateTime(this.state.startDate, DATE_TIME_FORMAT, DATE_TIME_FORMAT),
-                            'end_date_time': formatDateWithTimeZone(this.state.endDate, DATE_TIME_FORMAT, DATE_TIME_FORMAT, this.state.timeZone),
-                        },
-                        config = getApiConfig(endPoint, 'POST', dataToPost, params);
-                    this.props.onDataAnalysis(config);
-                })
-                this.metricsIndex += 1;
-                })
+                }
             }
         }
 
