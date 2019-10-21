@@ -4,6 +4,7 @@ import {isEmpty} from 'lodash';
 
 import {PROJECT_TABS, SORTING, ROLES} from '../../constants/Constant';
 import EnhancedTable from '../grid/Grid';
+import CustomPopOver from '../modal/PopOver';
 
 class TabContainer extends Component {
     constructor(props) {
@@ -46,7 +47,7 @@ class TabContainer extends Component {
      *      It will specify if table will show up edit column of not
      */
         const {category, data, handleClick, stateData,
-            handleAddition, onAddition} = this.props;
+            handleAddition, onAddition, handleClose} = this.props;
         let tabData, rows, searchList;
         if(!isEmpty(stateData.teamInfo) && category === PROJECT_TABS['TEAM']) {
             rows = [{ id: 'Firstname', numeric: 'left', disablePadding: false, label: 'Firstname' },
@@ -98,6 +99,10 @@ class TabContainer extends Component {
         return (
             <div>
             {tabData}
+            {/* {stateData.isAuthError &&
+                <CustomPopOver content={stateData.authError} open={stateData.isAuthError}
+                handleClose={handleClose} variant='error'/>
+            } */}
             </div>
         );
     }

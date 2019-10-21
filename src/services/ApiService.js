@@ -49,7 +49,7 @@ function ApiService(configObject) {
     axios.interceptors.request.use(
         reqConfig => {
             if (!reqConfig.url.includes(REACT_URLS.LOGIN()))
-                reqConfig.headers.authorization = localStorage.getItem('idToken');
+                reqConfig.headers.Authorization = localStorage.getItem('idToken');
             return reqConfig;
         },
         err => Promise.reject(err),

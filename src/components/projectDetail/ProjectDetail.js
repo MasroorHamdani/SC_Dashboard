@@ -12,7 +12,7 @@ import {withStyles, AppBar, Tabs, Tab, Paper,
 
 import TabContainer from '../tabContainer/TabContainer';
 import {PROJECT_TABS, API_URLS, NAMESPACE_MAPPER,
-  USER_DESIGNATION, USER_ROLE} from '../../constants/Constant';
+  USER_DESIGNATION, USER_ROLE, ROLES} from '../../constants/Constant';
 import {getApiConfig} from '../../services/ApiCofig';
 import {capitalizeFirstLetter} from '../../utils/FormatStrings';
 import {projectDetailData, projectTeamData,
@@ -30,7 +30,9 @@ class ProjectDetail extends Component {
       success: false,
       // pid: props.match.params.pid,
       addNotify: false,
-      teamInfo: []
+      teamInfo: [],
+      authError: 'something',
+      isAuthError: true,//false
     }
     this.state = this.initialState;
     this.info = false;
@@ -84,6 +86,14 @@ class ProjectDetail extends Component {
           [name]: value
         }
       })
+  }
+
+  filterOnRole = (arr) => {
+    if(this.state.projectSelected.Role === ROLES['SUPERVISOR'] || this.state.projectSelected.Role === ROLES['PROJECT_ADMIN'])
+      arr = arr.filter(x => (x.key === 'attendent' || x.key === 'supervisor'))
+    else if(this.state.projectSelected.Role === ROLES['PARTNER_ADMIN'])
+      arr = arr.filter(x => (x.key === 'attendent' || x.key === 'supervisor' || x.key === 'projectadmin'))
+    return arr
   }
 
   handleAddition = () => {
@@ -210,7 +220,7 @@ class ProjectDetail extends Component {
                             id: 'desig',
                         }}>
                     <option value="" />
-                    {USER_DESIGNATION.map(function(designation) {
+                    {this.filterOnRole(USER_DESIGNATION).map(function(designation) {
                             return <option value={designation.key} name={designation.key} key={designation.key} >
                                 {designation.display}</option>
                     })}
@@ -228,7 +238,7 @@ class ProjectDetail extends Component {
                             id: 'role',
                         }}>
                     <option value="" />
-                    {USER_ROLE.map(function(role) {
+                    {this.filterOnRole(USER_ROLE).map(function(role) {
                             return <option value={role.key} name={role.key} key={role.key} >
                                 {role.display}</option>
                     })}
@@ -393,7 +403,7 @@ class ProjectDetail extends Component {
             config = getApiConfig(endPoint, 'GET');
           this.props.onProjectDetailData(config, url); 
         }
-        if(this.props.projectData && this.props.teamMembers &&
+        if(this.props.projectData && this.props.teamMembers && this.props.teamAsso &&
           this.props.projectData[0]['PID'] === this.state.pid && this.props.teamAsso[0]['PID'] === this.state.pid) {
           let association = groupBy(this.props.teamAsso,  'UID');
           let teamMembers = this.props.teamMembers;
@@ -419,7 +429,15 @@ class ProjectDetail extends Component {
      */
     if(this.props.userData && 
       !isEqual(this.props.userData, prevProps.userData)){
-        this.callApi(this.state.value);
+        if(this.props.userData['Message']) {
+          this.setState({
+            loading: false,
+            authError: this.props.userData['Message'],
+            isAuthError: true
+          });
+        } else {
+          this.callApi(this.state.value);
+        }
     }
     /**
      * Loading progress bar
@@ -428,6 +446,13 @@ class ProjectDetail extends Component {
       this.setState({loading: false});
     }
   }
+
+  handleClose = () => {
+    this.setState({
+      authError: '',
+      isAuthError: false
+    })
+  };
 
   render() {
       const { classes, handleClick } = this.props;
@@ -458,11 +483,12 @@ class ProjectDetail extends Component {
               
               {this.state.value &&
                 <TabContainer data={this.state.installationData}
-                stateData={this.state}
-                category={this.state.value}
-                handleClick={handleClick}
-                handleAddition={this.handleAddition}
-                onAddition={this.onAddition}/>
+                  stateData={this.state}
+                  category={this.state.value}
+                  handleClick={handleClick}
+                  handleAddition={this.handleAddition}
+                  onAddition={this.onAddition}
+                  handleClose={this.handleClose}/>
               }
             </Paper>
           </main>

@@ -196,12 +196,12 @@ class EnhancedTable extends React.Component {
                   value={this.state.query}
                   onChange={e=>this.setState({query: e.target.value})}/>
                 </Grid>
-                {allowAdd &&
+                {/* {allowAdd && */}
                   <div className={classes.pointer}>
                     <AddCircleOutlineIcon className={classes.icon}
                       onClick={handleAddition}/>
                   </div>
-                }
+                {/* } */}
               </Grid>
             </div>
           }

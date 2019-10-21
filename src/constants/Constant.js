@@ -402,19 +402,23 @@ export const AREA_LIST = [{
 export const USER_DESIGNATION = [
     {key: 'supervisor',
     display: 'Supervisor'},
-    {key: 'cleaner',
-    display: 'Cleaner'},
+    {key: 'attendent',
+    display: 'Attendent'},
     {key: 'partneradmin',
-    display: 'Partner Admin'}
+    display: 'Partner Admin'},
+    {key: 'projectadmin',
+    display: 'Project Admin'},
 ]
 
 export const USER_ROLE = [
     {key: 'supervisor',
     display: 'Supervisor'},
-    {key: 'cleaner',
-    display: 'Cleaner'},
+    {key: 'attendent',
+    display: 'Attendent'},
     {key: 'partneradmin',
-    display: 'Partner Admin'}
+    display: 'Partner Admin'},
+    {key: 'projectadmin',
+    display: 'Project Admin'},
 ]
 
 export const ROLES = {
