@@ -25,11 +25,16 @@ function ApiService(configObject) {
         newUrl = `${url}${configObject.url}`;
         axios.defaults.baseURL = NEW_API_END_POINT;
         axios.defaults.timeout = 7000;
-    } else if(configObject.url.includes('admin')) {
+    } else if(configObject.url.includes('admin') || configObject.url.includes('user')) {
         url = ADMIN;
         newUrl = `${url}${configObject.url}`;
         axios.defaults.baseURL = ADMIN;
         axios.defaults.timeout = 7000;
+    // } else if(configObject.url.includes('user')) {
+    //     url = ADMIN;
+    //     newUrl = `${url}${configObject.url}`;
+    //     axios.defaults.baseURL = ADMIN;
+    //     axios.defaults.timeout = 7000;
     } else {
         url = API_END_POINT;
         newUrl = `${url}${configObject.url}`;
@@ -49,7 +54,7 @@ function ApiService(configObject) {
     axios.interceptors.request.use(
         reqConfig => {
             if (!reqConfig.url.includes(REACT_URLS.LOGIN()))
-                reqConfig.headers.Authorization = localStorage.getItem('idToken');
+                reqConfig.headers.authorization = localStorage.getItem('idToken');
             return reqConfig;
         },
         err => Promise.reject(err),

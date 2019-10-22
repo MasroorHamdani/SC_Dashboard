@@ -12,7 +12,7 @@ import {withStyles, AppBar, Tabs, Tab, Paper,
 
 import TabContainer from '../tabContainer/TabContainer';
 import {PROJECT_TABS, API_URLS, NAMESPACE_MAPPER,
-  USER_DESIGNATION, USER_ROLE, ROLES} from '../../constants/Constant';
+  USER_ROLE, ROLES} from '../../constants/Constant';
 import {getApiConfig} from '../../services/ApiCofig';
 import {capitalizeFirstLetter} from '../../utils/FormatStrings';
 import {projectDetailData, projectTeamData,
@@ -31,8 +31,8 @@ class ProjectDetail extends Component {
       // pid: props.match.params.pid,
       addNotify: false,
       teamInfo: [],
-      authError: 'something',
-      isAuthError: true,//false
+      authError: 'Error',
+      isAuthError: true//false
     }
     this.state = this.initialState;
     this.info = false;
@@ -210,7 +210,20 @@ class ProjectDetail extends Component {
                     }}/>
             </Grid>
             <Grid item xs={12} sm={6}>
-                <FormControl fullWidth>
+                <TextField
+                    required
+                    id="desig"
+                    name="desig"
+                    label="Designation"
+                    placeholder="Designation"
+                    fullWidth
+                    autoComplete="Designation"
+                    value={this.state.userDetail.desig}
+                    onChange={this.addDetail}
+                    InputLabelProps={{
+                        shrink: true
+                    }}/>
+                {/* <FormControl fullWidth>
                     <InputLabel htmlFor="desig">Designation</InputLabel>
                     <Select native
                         value={this.state.userDetail.desig}
@@ -225,7 +238,7 @@ class ProjectDetail extends Component {
                                 {designation.display}</option>
                     })}
                     </Select>
-                </FormControl>
+                </FormControl> */}
             </Grid>
             <Grid item xs={12} sm={6}>
                 <FormControl fullWidth>
@@ -300,9 +313,8 @@ class ProjectDetail extends Component {
         dataToPost['dashboard_access'] = this.state.userDetail.dashboardAccess ? this.state.userDetail.dashboardAccess : false;
         dataToPost['phone_number'] = (this.state.userDetail.countryCode && this.state.userDetail.phoneNumber) ?
           `${this.state.userDetail.countryCode}${this.state.userDetail.phoneNumber}` : '';
-        // dataToPost['pid'] = this.state.pid;
 
-        let endPoint = `${API_URLS['ADMIN_USER']}/${this.state.pid}`,
+        let endPoint = `${API_URLS['PROJECT_USER']}/${this.state.pid}`,
             config = getApiConfig(endPoint, 'POST', dataToPost);
         this.props.onUserCreation(config);
 

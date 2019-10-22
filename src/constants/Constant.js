@@ -2,6 +2,7 @@
 export const API_END_POINT = process.env.REACT_APP_API_END_POINT
 //"https://4l6qi5oh0h.execute-api.ap-southeast-1.amazonaws.com/prod";
 export const ADMIN = "http://127.0.0.1:5000"
+export const PROJECT_LEVEL = "project"
 
 export const NEW_API_END_POINT = "https://4l6qi5oh0h.execute-api.ap-southeast-1.amazonaws.com/betaV2"
 export const S3_REPORTS_END_POINT = process.env.REACT_APP_S3_REPORTS_END_POINT
@@ -42,7 +43,7 @@ export const API_URLS = {
     'PARTNER': '/unauth/partners/',
     'THEME': '/theme',
     'ADMIN': '/admin/project',
-    'ADMIN_USER': '/admin/user'
+    'PROJECT_USER': '/project/user'
 };
 
 export const DASHBOARD_METRIC = {
@@ -399,16 +400,16 @@ export const AREA_LIST = [{
     color: 'rgba(23,128,218,0.3)'//'rgba(255,255,0,0.3)'
 }]
 
-export const USER_DESIGNATION = [
-    {key: 'supervisor',
-    display: 'Supervisor'},
-    {key: 'attendent',
-    display: 'Attendent'},
-    {key: 'partneradmin',
-    display: 'Partner Admin'},
-    {key: 'projectadmin',
-    display: 'Project Admin'},
-]
+// export const USER_DESIGNATION = [
+//     {key: 'supervisor',
+//     display: 'Supervisor'},
+//     {key: 'attendent',
+//     display: 'Attendent'},
+//     {key: 'partneradmin',
+//     display: 'Partner Admin'},
+//     {key: 'projectadmin',
+//     display: 'Project Admin'},
+// ]
 
 export const USER_ROLE = [
     {key: 'supervisor',

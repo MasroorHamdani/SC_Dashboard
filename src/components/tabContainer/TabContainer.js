@@ -99,10 +99,10 @@ class TabContainer extends Component {
         return (
             <div>
             {tabData}
-            {/* {stateData.isAuthError &&
+            {stateData.isAuthError &&
                 <CustomPopOver content={stateData.authError} open={stateData.isAuthError}
                 handleClose={handleClose} variant='error'/>
-            } */}
+            }
             </div>
         );
     }
