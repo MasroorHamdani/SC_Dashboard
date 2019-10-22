@@ -101,6 +101,9 @@ class InstallationData extends Component {
             insid: insid ? insid: this.state.insid,
             value: insid ? insid: this.state.insid,
         }, function() {
+            this.props.onInitialState();
+            this.metricsIndex = 0;
+            this.metricsIndexReceived = 0;
             this.getProjectData()
         });
     }
