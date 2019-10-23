@@ -94,6 +94,7 @@ class ProjectGeneralInfo extends Component {
                     {data.showFooter &&
                         <Grid item xs={12} sm={6}>
                             <Button
+                                disabled={data.disable}
                                 variant="contained"
                                 color="primary"
                                 className={classes.button}
@@ -109,6 +110,7 @@ class ProjectGeneralInfo extends Component {
                             direction='row'
                             justify='flex-end'>
                             <Button
+                                disabled={data.disable}
                                 variant="contained"
                                 color="primary"
                                 className={classes.button}

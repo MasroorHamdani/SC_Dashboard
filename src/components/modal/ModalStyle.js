@@ -28,12 +28,15 @@ const styles = theme => ({
     },
     iconVariant: {
         opacity: 0.9,
-        marginRight: theme.spacing.unit,
+        marginRight: theme.spacing.unit * 1,
     },
     message: {
         display: 'flex',
         alignItems: 'center',
-    }
+    },
+    margin: {
+        margin: theme.spacing.unit * 1,
+    },
 });
 
 export default styles;

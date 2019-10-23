@@ -8,6 +8,7 @@ import TabData from '../../components/projectCreation/TabData';
 import {API_URLS, REACT_URLS, ROLES} from '../../constants/Constant';
 import {getApiConfig} from '../../services/ApiCofig';
 import {projectList, InitialiseAdminProject} from  '../../actions/AdminAction';
+import CustomPopOver from '../../components/modal/PopOver';
 
 import styles from './ProjectListStyle';
 
@@ -19,7 +20,9 @@ class ProjectList extends Component {
             loading: true,
             selectedPid: '',
             tabValue: 'pending',
-            parentId: props.match.params.partnerid
+            parentId: props.match.params.partnerid,
+            authError: '',
+            isAuthError: false
         }
     }
 
@@ -51,10 +54,18 @@ class ProjectList extends Component {
         }
         if(this.props.projectList && 
             !isEqual(this.props.projectList, prevProps.projectList)) {
-            this.setState({
-                projectList: this.props.projectList,
-                loading: false
-            })
+            if(this.props.projectList['Message']) {
+                this.setState({
+                    loading: false,
+                    authError: this.props.projectList['Message'],
+                    isAuthError: true
+                });
+            } else {
+                this.setState({
+                    projectList: this.props.projectList,
+                    loading: false
+                })
+            }
         }
     }
 
@@ -75,6 +86,13 @@ class ProjectList extends Component {
                 status: value
             };
             this.getProjectList(param)
+        })
+    }
+
+    handleClose = () => {
+        this.setState({
+          authError: '',
+          isAuthError: false
         })
     }
 
@@ -108,6 +126,10 @@ class ProjectList extends Component {
                         }
                     </Paper>
                 </main>
+                {this.state.isAuthError &&
+                    <CustomPopOver content={this.state.authError} open={this.state.isAuthError}
+                        handleClose={this.handleClose} variant='error'/>
+                }
           </div>
         )
     }

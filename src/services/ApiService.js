@@ -30,11 +30,6 @@ function ApiService(configObject) {
         newUrl = `${url}${configObject.url}`;
         axios.defaults.baseURL = ADMIN;
         axios.defaults.timeout = 7000;
-    // } else if(configObject.url.includes('user')) {
-    //     url = ADMIN;
-    //     newUrl = `${url}${configObject.url}`;
-    //     axios.defaults.baseURL = ADMIN;
-    //     axios.defaults.timeout = 7000;
     } else {
         url = API_END_POINT;
         newUrl = `${url}${configObject.url}`;

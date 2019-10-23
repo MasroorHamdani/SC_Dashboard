@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 
-import { withStyles, Snackbar, SnackbarContent,
-    IconButton} from '@material-ui/core/styles';
+import { withStyles} from '@material-ui/core/styles';
+import {Snackbar, SnackbarContent, IconButton} from '@material-ui/core';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import ErrorIcon from '@material-ui/icons/Error';
 import InfoIcon from '@material-ui/icons/Info';
@@ -23,29 +23,30 @@ class CustomPopOver extends Component {
         };
         const {content, open, variant, classes, handleClose} = this.props;
         const Icon = variantIcon[variant];
-        return (<Snackbar
+        return (
+            <Snackbar
                 anchorOrigin={{
-                    vertical: 'bottom',
-                    horizontal: 'left',
+                    vertical: 'top',
+                    horizontal: 'right',
                 }}
                 open={open}
                 autoHideDuration={6000}
-                onClose={handleClose}
-            >
-            <SnackbarContent
-                className={classes.error}
-                aria-describedby="client-snackbar"
-                message={
+                onClose={handleClose}>
+                <SnackbarContent
+                    className={classes[variant]}
+                    aria-describedby="client-snackbar"
+                    message={
                     <span id="client-snackbar" className={classes.message}>
                         <Icon className={[classes.icon, classes.iconVariant]} />
                         {content}
                     </span>
-                }
-                action={[
-                    <IconButton key="close" aria-label="close" color="inherit" onClick={handleClose}>
-                        <CloseIcon className={classes.icon} />
-                    </IconButton>
-                ]}/>
+                    }
+                    action={[
+                        <IconButton key="close" aria-label="close" color="inherit" onClick={handleClose}>
+                            <CloseIcon className={classes.icon} />
+                        </IconButton>,
+                    ]}
+                />
             </Snackbar>
         )
     }

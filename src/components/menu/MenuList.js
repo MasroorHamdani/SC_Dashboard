@@ -1,10 +1,9 @@
 import {ROLES} from '../../constants/Constant';
 
-export function mainMenuList (projectSelected, partnerId) {
+export function mainMenuList (pid, partnerId) {
   /**
    * Generate the left nav list, with pid being passsed to generate the URL
    */
-  let pid = projectSelected.PID;
   return ([
       {
         name: "Dashboard",
@@ -57,10 +56,8 @@ export function mainMenuList (projectSelected, partnerId) {
   ])
 }
 
-export function secondaryMenuList (projectSelected, partnerId) {
-  let pid = projectSelected.PID,
-      role = projectSelected.Role,
-      secondaryMenu = [];
+export function secondaryMenuList (role, partnerId) {
+  let secondaryMenu = [];
   if (role === ROLES['SC_ADMIN']) {
     secondaryMenu.push({
       name: "List Project",

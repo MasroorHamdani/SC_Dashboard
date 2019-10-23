@@ -28,11 +28,10 @@ class ProjectDetail extends Component {
       value: 'team',
       loading: true,
       success: false,
-      // pid: props.match.params.pid,
       addNotify: false,
       teamInfo: [],
-      authError: 'Error',
-      isAuthError: true//false
+      authError: '',
+      isAuthError: false
     }
     this.state = this.initialState;
     this.info = false;
@@ -492,7 +491,6 @@ class ProjectDetail extends Component {
                     value='installations'/>
                 </Tabs>
               </AppBar>
-              
               {this.state.value &&
                 <TabContainer data={this.state.installationData}
                   stateData={this.state}

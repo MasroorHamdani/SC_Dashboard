@@ -16,6 +16,7 @@ import {projectCreation, projectUpdate,
 
 import {formatDateTime} from '../../utils/DateFormat';
 import {getApiConfig} from '../../services/ApiCofig';
+import CustomPopOver from '../../components/modal/PopOver';
 
 import styles from './ProjectCreateStyle';
 
@@ -64,7 +65,9 @@ class ProjectCreate extends Component {
             tempEditArea: {},
             openArea: false,
             showFooter: true,
-            dimensions: {}
+            dimensions: {},
+            authError: '',
+            isAuthError: false
         }
         this.state = this.initialState;
         this.initiate = false;
@@ -699,7 +702,14 @@ class ProjectCreate extends Component {
 
         if(!isEmpty(this.props.projectData) && 
             !isEqual(this.props.projectData, prevProps.projectData)) {
-            if(this.props.projectData['PID'] && this.props.projectData['type'] === PROJECT_CREATION['GENERAL']){
+            if(this.props.projectData['Message']) {
+                this.setState({
+                    loading: false,
+                    authError: this.props.projectData['Message'],
+                    isAuthError: true,
+                    disable: true
+                });
+            } else if(this.props.projectData['PID'] && this.props.projectData['type'] === PROJECT_CREATION['GENERAL']){
                 this.setState({
                     pid : this.props.projectData['PID'],
                     expanded: this.state.panel,
@@ -800,7 +810,12 @@ class ProjectCreate extends Component {
             })
         }
     }
-
+    handleClose = () => {
+        this.setState({
+          authError: '',
+          isAuthError: false
+        })
+    }
     render() {
         const { classes } = this.props;
         return (
@@ -817,6 +832,10 @@ class ProjectCreate extends Component {
                         handleFileUpload={this.handleFileUpload}
                         deleteObject={window.deleteObject}/>
                 </main>
+                {this.state.isAuthError &&
+                    <CustomPopOver content={this.state.authError} open={this.state.isAuthError}
+                        handleClose={this.handleClose} variant='error'/>
+                }
           </div>
         )
     }

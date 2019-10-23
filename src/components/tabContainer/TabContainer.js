@@ -71,7 +71,6 @@ class TabContainer extends Component {
                 handleChange={this.handleChange} handleClick={handleClick} redirectID="UID"
                 handleAddition={handleAddition} onAddition={onAddition}
                 allowDelete={false}
-                // allowEdit={true}
                 allowEdit={stateData.projectSelected.Role === ROLES['SC_ADMIN'] ||
                         stateData.projectSelected.Role === ROLES['PARTNER_ADMIN'] ||
                         stateData.projectSelected.Role === ROLES['PROJECT_ADMIN']?
@@ -98,11 +97,11 @@ class TabContainer extends Component {
         }
         return (
             <div>
-            {tabData}
-            {stateData.isAuthError &&
-                <CustomPopOver content={stateData.authError} open={stateData.isAuthError}
-                handleClose={handleClose} variant='error'/>
-            }
+                {tabData}
+                {stateData.isAuthError &&
+                    <CustomPopOver content={stateData.authError} open={stateData.isAuthError}
+                        handleClose={handleClose} variant='error'/>
+                }
             </div>
         );
     }
