@@ -81,8 +81,8 @@ function ApiService(configObject) {
             if (err.response.config.url.includes(REACT_URLS.LOGIN(partnerid)))
                 return Promise.reject(err);
             if (err.response.status === 403) return forceLogout();
-            // if (err.response.status !== 401) return Promise.reject(err);
             if (err.response.status === 500) return Promise.reject(err);
+            if (err.response.status !== 401) return Promise.reject(err);
         }
         // if (!err.response) return Promise.reject(err);
         if (err.response.status === 401 && !isFetchingToken) {
@@ -148,7 +148,8 @@ function ApiService(configObject) {
                     // Logger.warn("session has been expired");
                 } else if (status === 400) {
                     // Return request for any user Error, with status 400
-                    return Promise.reject(error.response);
+                    // return Promise.reject(error.response);
+                    return Promise.resolve(error.response);
                 } else if (isNotRobot) {
                     // Logger.error(`status : ${status} ${error.response.data}`);
                 }

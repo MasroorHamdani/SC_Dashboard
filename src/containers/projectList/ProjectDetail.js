@@ -2,6 +2,7 @@ import React, {Component} from "react";
 import {withStyles, LinearProgress} from '@material-ui/core';
 import { connect } from "react-redux";
 import _, {isEqual} from 'lodash';
+import JWTDecode from 'jwt-decode';
 
 import {API_URLS, PROJECT_STATUS, ROLES,
     REACT_URLS} from '../../constants/Constant';
@@ -9,6 +10,7 @@ import {projectCreation} from  '../../actions/AdminAction';
 import {getApiConfig} from '../../services/ApiCofig';
 import {formatDateTime} from '../../utils/DateFormat';
 import ProjectDescription from '../../components/projectCreation/ProjectDescription';
+import {getTokenData} from '../../utils/FormatStrings';
 
 import styles from './ProjectListStyle';
 
@@ -24,6 +26,10 @@ class ProjectDetail extends Component {
     }
 
     componentDidMount() {
+        let idTokenDecoded = JWTDecode(localStorage.getItem('idToken')),
+            userData = getTokenData(idTokenDecoded, "Fn");
+        if (userData)
+            this.setState({role: userData['R']})
         if(this.state.pid) {
             let endPoint = `${API_URLS['ADMIN']}/${this.state.pid}`,
                 config = getApiConfig(endPoint, 'GET');
@@ -34,7 +40,7 @@ class ProjectDetail extends Component {
     componentDidUpdate(prevProps, prevState) {
         if(this.props.projectSelected &&
             !isEqual(this.props.projectSelected, prevProps.projectSelected)) {
-            if(this.props.projectSelected.Role !== ROLES['SC_ADMIN']) {
+            if(this.state.role !== ROLES['SC_ADMIN']) {
                     this.props.history.push(`${REACT_URLS.DASHBOARD(this.state.parentId)}`);
             }
         }

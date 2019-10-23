@@ -16,7 +16,7 @@ import styles from './DataAnalysisStyle';
 import RadioButtonComponent from '../../components/dataAnalysis/RadioButtonController';
 import {getStartEndTime, getVector} from '../../utils/AnalyticsDataFormat';
 import {getXHourOldDateTime, getTodaysStartDateTime} from '../../utils/DateFormat';
-
+import CustomPopOver from '../../components/modal/PopOver';
 
 /***
  * Container Class for Data Analysis view
@@ -43,6 +43,8 @@ class DataAnalysis extends Component {
       endDate: new Date(),
       modalStartDate: getTodaysStartDateTime(),
       modalEndDate: new Date(),
+      notFoundError: '',
+      metricNotFound: false
     };
     this.menuIndex = 0;
     this.metricsIndex = 0;
@@ -182,6 +184,7 @@ class DataAnalysis extends Component {
    * onInstalationsList is the prop function called for it.
    * API data will be in 'DataAnalysisInstallationListReducer'
    */
+    this.props.onInitialState();
     this.setState({
       installationList: {},
       value: insid,
@@ -405,34 +408,34 @@ class DataAnalysis extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-  /**
-   * This function is called whenever component update,
-   * which included getting date from the API as well in reducers.
-   * we need to check if reducer got value and if current value is different the old,
-   * then only we should proceed.
-   */
-  /**
-   * This part will listen to project selection change from the header component.
-   * On any change this will be called and the data will be changed in UI
-   * Reducer used - 'projectSelectReducer'
-   */
-  if(this.props.projectSelected &&
-    !isEqual(this.props.projectSelected, prevProps.projectSelected)) {
-      this.metricsIndex = 0;
-      this.metricsIndexReceived = 0;
-      this.props.onInitialState();
-      this.setState({
-        pid: this.props.projectSelected.PID,
-        timeZone: this.props.projectSelected.Region,
-        tab: '',
-        installationList: {},
-        dataAnalysis: {},
-        value: ''
-      }, function() {
-        this.props.history.push(this.props.projectSelected.PID);
-        this.getInstallationLocation();
-      });
-  }
+    /**
+     * This function is called whenever component update,
+     * which included getting date from the API as well in reducers.
+     * we need to check if reducer got value and if current value is different the old,
+     * then only we should proceed.
+     */
+    /**
+     * This part will listen to project selection change from the header component.
+     * On any change this will be called and the data will be changed in UI
+     * Reducer used - 'projectSelectReducer'
+     */
+    if(this.props.projectSelected &&
+      !isEqual(this.props.projectSelected, prevProps.projectSelected)) {
+        this.metricsIndex = 0;
+        this.metricsIndexReceived = 0;
+        this.props.onInitialState();
+        this.setState({
+          pid: this.props.projectSelected.PID,
+          timeZone: this.props.projectSelected.Region,
+          tab: '',
+          installationList: {},
+          dataAnalysis: {},
+          value: ''
+        }, function() {
+          this.props.history.push(this.props.projectSelected.PID);
+          this.getInstallationLocation();
+        });
+    }
 
   /**
    * This part will get the list of locations per project,
@@ -515,8 +518,8 @@ class DataAnalysis extends Component {
    * One location can have multiple Devices of same type.
    * That is being handled by appending numbers to the type.
    */
-    if (this.props.installationList &&
-      (!isEqual(this.props.installationList, prevProps.installationList) ||
+    if ((this.props.installationList && this.props.installationList.length > 0) &&
+      (!isEqual(this.props.installationList, prevProps.installationList) &&
       (!this.state.installationList || Object.keys(this.state.installationList).length === 0))) {
         let installationList = {}, i = 1;
         let sorted_list = sortBy(this.props.installationList,'Display')
@@ -550,7 +553,15 @@ class DataAnalysis extends Component {
           }
         })
         this.setState({installationList: sortBy(installationList,'index'), loading: false,})
+    } else if(this.props.installationList && this.props.installationList.length === 0 &&
+      !isEqual(this.props.installationList, prevProps.installationList)) {
+      this.setState({
+        loading: false,
+        notFoundError: 'Installation Devices Data not Present',
+        metricNotFound: true
+      });
     }
+
     if (this.props.modalDataAnalysis &&
       !isEqual(this.props.modalDataAnalysis, prevProps.modalDataAnalysis)) {
         if(isEqual(this.props.modalDataAnalysis.data.status, "success")) {
@@ -607,8 +618,21 @@ class DataAnalysis extends Component {
               this.metricsIndex += 1;
             })
           }
+        } else if(projectMetric.status === 'fail') {
+          this.setState({
+              loading: false,
+              notFoundError: 'Metrics Definition not found',
+              metricNotFound: true
+          });
         }
     }
+  }
+
+  handleClose = () => {
+    this.setState({
+        notFoundError: '',
+        metricNotFound: false
+    })
   }
 
   render () {
@@ -639,6 +663,10 @@ class DataAnalysis extends Component {
         }
         {this.state.loading &&
           <LinearProgress className={classes.buttonProgress}/>
+        }
+        {this.state.metricNotFound &&
+            <CustomPopOver content={this.state.notFoundError} open={this.state.metricNotFound}
+                handleClose={this.handleClose} variant='error'/>
         }
           {/* { !this.state.projectList &&
             <div>No Projects Assigned</div>

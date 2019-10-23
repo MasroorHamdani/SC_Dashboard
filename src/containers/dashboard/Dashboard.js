@@ -13,6 +13,7 @@ import {projectAnalysisData, projectSubMenuList,
   InitialiseMetricState} from '../../actions/DataAnalysis';
 import {getVector} from '../../utils/AnalyticsDataFormat';
 import {formatDateWithTimeZone, formatDateTime, getTodaysStartDateTime} from '../../utils/DateFormat';
+import CustomPopOver from '../../components/modal/PopOver';
 
 class Dashboard extends Component {
   constructor(props) {
@@ -23,6 +24,8 @@ class Dashboard extends Component {
       // loading: true,
       endTime: new Date(),
       startTime: getTodaysStartDateTime(),
+      notFoundError: '',
+      metricNotFound: false
     }
     this.metricsIndex = 0;
     this.metricLength = 0;
@@ -64,7 +67,7 @@ class Dashboard extends Component {
         timeZone: this.props.projectSelected ? this.props.projectSelected.Region : dt.Region
       }, function() {
           this.getProjectData();
-        });
+      });
     }
   }
 
@@ -144,13 +147,14 @@ class Dashboard extends Component {
               this.metricsIndex += 1;
             })
           }
-      } 
-      // else if(projectMetric.status === 'fail') {
-      //   this.setState({
-      //     errorMessage: projectMetric.message,
-      //     loading: false,
-      //   });
-      // }
+        } else if(projectMetric.status === 'fail') {
+          this.setState({
+            loading: false,
+            notFoundError: 'Metrics Definition not found',
+            metricNotFound: true
+          });
+        } 
+      
     }
   /**
    * This part will get the dashboard data per project.
@@ -173,8 +177,8 @@ class Dashboard extends Component {
           });
         }
         if(this.props.dataAnalysis &&
-          !isEqual(this.props.dataAnalysis, prevProps.dataAnalysis)
-          || !this.state.dashboardData.length > 0) {
+          (!isEqual(this.props.dataAnalysis, prevProps.dataAnalysis)
+          || !(this.state.dashboardData.length > 0))) {
             
             let projObj = {}, metricsData={};
             const deviceResponse = this.props.dataAnalysis ? this.props.dataAnalysis.data.data : '';
@@ -219,6 +223,13 @@ class Dashboard extends Component {
     }
   }
 
+  handleClose = () => {
+    this.setState({
+        notFoundError: '',
+        metricNotFound: false
+    })
+  }
+
   render() {
     const { classes } = this.props;
     return (
@@ -227,16 +238,17 @@ class Dashboard extends Component {
         {this.state.loading &&
           (<LinearProgress className={classes.buttonProgress}/>)
         }
-        {((this.state.dashboardData && this.state.dashboardData[0] &&this.state.dashboardData[0].PID !== 'undefined') &&
+        {((this.state.dashboardData && this.state.dashboardData[0] && this.state.dashboardData[0].PID !== 'undefined') &&
           <div className={classes.gridRoot}>
             <GridList cellHeight={180} className={classes.gridList}>
               <ProjectDataComponent stateData={this.state}/>
             </GridList>
           </div>
         )}
-        {/* {this.state.errorMessage&&
-          <div>{this.state.errorMessage}</div>
-        } */}
+        {this.state.metricNotFound &&
+            <CustomPopOver content={this.state.notFoundError} open={this.state.metricNotFound}
+                handleClose={this.handleClose} variant='error'/>
+        }
         </main>
       </div>
     );

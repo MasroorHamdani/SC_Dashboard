@@ -15,6 +15,7 @@ import {projectSubMenuList, projectDataMetricList,
 import {formatDateWithTimeZone, formatDateTime,
     getTodaysStartDateTime, getXHourOldDateTime} from '../../utils/DateFormat';
 import {getVector, getStartEndTime} from '../../utils/AnalyticsDataFormat';
+import CustomPopOver from '../../components/modal/PopOver';
 
 import styles from './InstallationDataStyle';
 /***
@@ -29,7 +30,9 @@ class InstallationData extends Component {
             projectList: [],
             startDate: getTodaysStartDateTime(),
             endDate: new Date(),
-            selectedIndex: 6
+            selectedIndex: 6,
+            notFoundError: '',
+            metricNotFound: false
         }
         this.metricsIndex = 0;
         this.metricLength = 0;
@@ -284,12 +287,18 @@ class InstallationData extends Component {
                         this.metricsIndex += 1;
                     })
                 }
+            } else if(projectMetric.status === 'fail') {
+                this.setState({
+                    loading: false,
+                    notFoundError: 'Metrics Definition not found',//projectMetric['message'],
+                    metricNotFound: true
+                });
             }
         }
 
         if (this.props.dataAnalysis &&
             !isEqual(this.props.dataAnalysis, prevProps.dataAnalysis)) {
-            let projObj = {}, metricsData={}, projData = [], dashboardData = [];;
+            let projObj = {}, metricsData={}, projData = [], dashboardData = [];
             const deviceResponse = this.props.dataAnalysis ? this.props.dataAnalysis.data.data : '';
             this.metricsIndexReceived += 1;
             if(this.props.dataAnalysis && this.props.dataAnalysis.data.status === "success") {
@@ -335,6 +344,14 @@ class InstallationData extends Component {
             });
         }
     }
+
+    handleClose = () => {
+        this.setState({
+            notFoundError: '',
+            metricNotFound: false
+        })
+    }
+
     render() {
         const {classes} = this.props;
         return (
@@ -358,6 +375,10 @@ class InstallationData extends Component {
                 )}
                 {this.state.loading &&
                     <LinearProgress className={classes.buttonProgress}/>
+                }
+                {this.state.metricNotFound &&
+                    <CustomPopOver content={this.state.notFoundError} open={this.state.metricNotFound}
+                        handleClose={this.handleClose} variant='error'/>
                 }
             </div>
         )

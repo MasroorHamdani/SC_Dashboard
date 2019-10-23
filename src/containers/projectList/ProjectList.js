@@ -3,12 +3,14 @@ import {withStyles, LinearProgress,
     Paper, AppBar, Tabs, Tab} from '@material-ui/core';
 import { connect } from "react-redux";
 import _, {isEqual, isEmpty} from 'lodash';
+import JWTDecode from 'jwt-decode';
 
 import TabData from '../../components/projectCreation/TabData';
 import {API_URLS, REACT_URLS, ROLES} from '../../constants/Constant';
 import {getApiConfig} from '../../services/ApiCofig';
 import {projectList, InitialiseAdminProject} from  '../../actions/AdminAction';
 import CustomPopOver from '../../components/modal/PopOver';
+import {getTokenData} from '../../utils/FormatStrings';
 
 import styles from './ProjectListStyle';
 
@@ -27,6 +29,10 @@ class ProjectList extends Component {
     }
 
     componentDidMount() {
+        let idTokenDecoded = JWTDecode(localStorage.getItem('idToken')),
+            userData = getTokenData(idTokenDecoded, "Fn");
+        if (userData)
+            this.setState({role: userData['R']})
         let param = {
             status:'pending'
         };
@@ -48,7 +54,7 @@ class ProjectList extends Component {
         if(this.props.projectSelected &&
             (!isEqual(this.props.projectSelected, prevProps.projectSelected) ||
             isEmpty(this.state.projectList))) {
-            if(this.props.projectSelected.Role !== ROLES['SC_ADMIN']) {
+            if(this.state.role !== ROLES['SC_ADMIN']) {
                     this.props.history.push(`${REACT_URLS.DASHBOARD(this.state.parentId)}`);
             }
         }
@@ -60,7 +66,7 @@ class ProjectList extends Component {
                     authError: this.props.projectList['Message'],
                     isAuthError: true
                 });
-            } else {
+            } else if(!isEmpty(this.props.projectList)) {
                 this.setState({
                     projectList: this.props.projectList,
                     loading: false
@@ -78,6 +84,7 @@ class ProjectList extends Component {
     }
 
     handleTabChange = (event, value) => {
+        this.props.onInitialState()
         this.setState({
             loading: true,
             tabValue : value

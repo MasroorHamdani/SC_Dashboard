@@ -3,14 +3,17 @@ import {withStyles, LinearProgress,
     Paper, AppBar, Tabs, Tab} from '@material-ui/core';
 import { connect } from "react-redux";
 import _, {isEqual} from 'lodash';
+import JWTDecode from 'jwt-decode';
 
 import TabData from '../../components/projectCreation/TabData';
 import {API_URLS, REACT_URLS, ROLES} from '../../constants/Constant';
 import {getApiConfig} from '../../services/ApiCofig';
 import {projectList, InitialiseAdminProject} from  '../../actions/AdminAction';
 import CustomPopOver from '../../components/modal/PopOver';
+import {getTokenData} from '../../utils/FormatStrings';
 
 import styles from './MyProjectListStyle';
+import { isEmpty } from "react-redux-firebase";
 
 class MyProjectList extends Component {
     constructor(props) {
@@ -27,6 +30,10 @@ class MyProjectList extends Component {
     }
 
     componentDidMount() {
+        let idTokenDecoded = JWTDecode(localStorage.getItem('idToken')),
+            userData = getTokenData(idTokenDecoded, "Fn");
+        if (userData)
+            this.setState({role: userData['R']})
         let param = {
             status:'draft'
         };
@@ -47,8 +54,8 @@ class MyProjectList extends Component {
     componentDidUpdate(prevProps, prevState) {
         if(this.props.projectSelected &&
             !isEqual(this.props.projectSelected, prevProps.projectSelected)) {
-            if(this.props.projectSelected.Role !== ROLES['PARTNER_ADMIN'] &&
-                this.props.projectSelected.Role !== ROLES['SUPERVISOR']) {
+            if(this.state.role !== ROLES['PARTNER_ADMIN'] &&
+                this.state.role !== ROLES['SUPERVISOR']) {
                     this.props.history.push(`${REACT_URLS.DASHBOARD(this.state.parentId)}`);
             }
         }
@@ -61,7 +68,7 @@ class MyProjectList extends Component {
                     authError: this.props.projectList['Message'],
                     isAuthError: true
                 });
-            } else {
+            } else if(!isEmpty(this.props.projectList)) {
                 this.setState({
                     projectList: this.props.projectList,
                     loading: false
@@ -79,6 +86,7 @@ class MyProjectList extends Component {
     }
 
     handleTabChange = (event, value) => {
+        this.props.onInitialState();
         this.setState({
             loading: true,
             tabValue : value,
@@ -88,6 +96,13 @@ class MyProjectList extends Component {
                 status: value
             };
             this.getProjectList(param)
+        })
+    }
+
+    handleClose = () => {
+        this.setState({
+          authError: '',
+          isAuthError: false
         })
     }
 
