@@ -104,7 +104,7 @@ class App extends React.Component {
           <MuiThemeProvider theme={theme}>
               <div className="common-container">
                 {this.state.holdComponents ?
-                  <PageLoader/>
+                  <PageLoader isOpaque={true}/>
                 : !localStorage.getItem('idToken') ?
                   (<div>
                     <CssBaseline />

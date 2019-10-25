@@ -16,6 +16,7 @@ import {formatDateWithTimeZone, formatDateTime,
     getTodaysStartDateTime, getXHourOldDateTime} from '../../utils/DateFormat';
 import {getVector, getStartEndTime} from '../../utils/AnalyticsDataFormat';
 import CustomPopOver from '../../components/modal/PopOver';
+import PageLoader from '../../components/pageLoader/PageLoader';
 
 import styles from './InstallationDataStyle';
 /***
@@ -374,7 +375,8 @@ class InstallationData extends Component {
                 </div>
                 )}
                 {this.state.loading &&
-                    <LinearProgress className={classes.buttonProgress}/>
+                    <PageLoader isOpaque={false}/>
+                    // <LinearProgress className={classes.buttonProgress}/>
                 }
                 {this.state.metricNotFound &&
                     <CustomPopOver content={this.state.notFoundError} open={this.state.metricNotFound}

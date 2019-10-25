@@ -14,6 +14,7 @@ import {projectAnalysisData, projectSubMenuList,
 import {getVector} from '../../utils/AnalyticsDataFormat';
 import {formatDateWithTimeZone, formatDateTime, getTodaysStartDateTime} from '../../utils/DateFormat';
 import CustomPopOver from '../../components/modal/PopOver';
+import PageLoader from '../../components/pageLoader/PageLoader';
 
 class Dashboard extends Component {
   constructor(props) {
@@ -236,7 +237,10 @@ class Dashboard extends Component {
       <div className={classes.root}>
         <main className={classes.content}>
         {this.state.loading &&
-          (<LinearProgress className={classes.buttonProgress}/>)
+          (
+          // <LinearProgress className={classes.buttonProgress}/>
+          <PageLoader isOpaque={false}/>
+          )
         }
         {((this.state.dashboardData && this.state.dashboardData[0] && this.state.dashboardData[0].PID !== 'undefined') &&
           <div className={classes.gridRoot}>

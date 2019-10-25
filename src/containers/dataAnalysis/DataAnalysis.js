@@ -17,6 +17,7 @@ import RadioButtonComponent from '../../components/dataAnalysis/RadioButtonContr
 import {getStartEndTime, getVector} from '../../utils/AnalyticsDataFormat';
 import {getXHourOldDateTime, getTodaysStartDateTime} from '../../utils/DateFormat';
 import CustomPopOver from '../../components/modal/PopOver';
+import PageLoader from '../../components/pageLoader/PageLoader';
 
 /***
  * Container Class for Data Analysis view
@@ -662,7 +663,8 @@ class DataAnalysis extends Component {
             />
         }
         {this.state.loading &&
-          <LinearProgress className={classes.buttonProgress}/>
+          <PageLoader isOpaque={false}/>
+          // <LinearProgress className={classes.buttonProgress}/>
         }
         {this.state.metricNotFound &&
             <CustomPopOver content={this.state.notFoundError} open={this.state.metricNotFound}

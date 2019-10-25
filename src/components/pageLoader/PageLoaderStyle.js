@@ -1,6 +1,6 @@
 const styles = theme => ({
     overlay: {
-        background: 'rgba(255, 255, 255, 1)',
+        // background: 'rgba(255, 255, 255, 1)',
         position: 'fixed',
         top: 0,
         left: 0,
@@ -10,6 +10,12 @@ const styles = theme => ({
         zIndex: 99999,
         paddingLeft: '50%',
         paddingTop: '25%'
+    },
+    transparent: {
+      background: 'rgba(0, 0, 0, 0.5)'
+    },
+    opaque: {
+      background: 'rgba(255, 255, 255, 1)',
     },
     spinner: {
         display: 'inline-block',
