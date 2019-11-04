@@ -7,6 +7,8 @@ import NotificationImportantIcon from '@material-ui/icons/NotificationImportant'
 import LibraryBooksIcon from '@material-ui/icons/LibraryBooks';
 import SettingsIcon from '@material-ui/icons/Settings';
 import FavoriteIcon from '@material-ui/icons/Favorite';
+import CreateIcon from '@material-ui/icons/CreateNewFolder';
+import ListIcon from '@material-ui/icons/ViewList';
 
 import {ListItem, ListItemIcon, ListItemText, Tooltip, withStyles} from '@material-ui/core';
 import {Link} from "react-router-dom";
@@ -35,6 +37,10 @@ class ListItems extends Component {
                 return <SettingsIcon/>;
             case 'FavoriteIcon':
                 return <FavoriteIcon/>;
+            case 'CreateIcon':
+                return <CreateIcon/>;
+            case 'ListIcon':
+                return <ListIcon/>;
             default:
                 return '';
         }

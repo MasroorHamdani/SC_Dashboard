@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import {Typography } from '@material-ui/core';
+import {isEmpty} from 'lodash';
 
-import {PROJECT_TABS, SORTING} from '../../constants/Constant';
+import {PROJECT_TABS, SORTING, ROLES} from '../../constants/Constant';
 import EnhancedTable from '../grid/Grid';
+import CustomPopOver from '../modal/PopOver';
 
 class TabContainer extends Component {
     constructor(props) {
@@ -44,14 +46,15 @@ class TabContainer extends Component {
      * allowEdit is passed as true or false, by default it will be false.
      *      It will specify if table will show up edit column of not
      */
-        const {category, data, handleClick, stateData} = this.props;
+        const {category, data, handleClick, stateData,
+            handleAddition, onAddition, handleClose} = this.props;
         let tabData, rows, searchList;
-        if(stateData.teamInfo && category === PROJECT_TABS['TEAM']) {
-            rows = [{ id: 'Firstname', numeric: 'center', disablePadding: false, label: 'Firstname' },
-                    { id: 'Lastname', numeric: 'center', disablePadding: false, label: 'LastName' },
-                    { id: 'Role', numeric: 'center', disablePadding: false, label: 'Role' },
-                    { id: 'Status', numeric: 'center', disablePadding: false, label: 'Status' },
-                    { id: 'Association', numeric: 'center', disablePadding: false, label: 'Association'}
+        if(!isEmpty(stateData.teamInfo) && category === PROJECT_TABS['TEAM']) {
+            rows = [{ id: 'Firstname', numeric: 'left', disablePadding: false, label: 'Firstname' },
+                    { id: 'Lastname', numeric: 'left', disablePadding: false, label: 'LastName' },
+                    { id: 'Role', numeric: 'left', disablePadding: false, label: 'Role' },
+                    { id: 'Status', numeric: 'left', disablePadding: false, label: 'Status' },
+                    { id: 'Association', numeric: 'left', disablePadding: false, label: 'Association'}
                 ];
             searchList = [{ id: 'Firstname', label: 'Firstname' },
                     { id: 'Lastname', label: 'LastName' },
@@ -60,16 +63,27 @@ class TabContainer extends Component {
                 ]
             tabData = <Typography component="div">
             <EnhancedTable data={stateData.teamInfo} rows={rows}
+                stateData={stateData}
                 order={this.state.order} orderBy={this.state.orderBy}
                 rowsPerPage={this.state.rowsPerPage} page={this.state.page}
                 selected={this.state.selected} category={category}
                 searchList={searchList}
                 handleChange={this.handleChange} handleClick={handleClick} redirectID="UID"
-                allowDelete={false} allowEdit={true}/>
+                handleAddition={handleAddition} onAddition={onAddition}
+                allowDelete={false}
+                allowEdit={stateData.projectSelected.Role === ROLES['SC_ADMIN'] ||
+                        stateData.projectSelected.Role === ROLES['PARTNER_ADMIN'] ||
+                        stateData.projectSelected.Role === ROLES['PROJECT_ADMIN']?
+                            true : false}
+                allowAdd={stateData.projectSelected.Role === ROLES['SC_ADMIN'] ||
+                        stateData.projectSelected.Role === ROLES['PARTNER_ADMIN'] ||
+                        stateData.projectSelected.Role === ROLES['PROJECT_ADMIN'] ?
+                            true : false}
+                />
             </Typography>
-        } else if (data && category === PROJECT_TABS['INSTALLATION']) {
-            rows = [{ id: 'name', numeric: 'center', disablePadding: false, label: 'Name' },
-                    { id: 'locn', numeric: 'center', disablePadding: false, label: 'Location' }];
+        } else if (!isEmpty(data) && category === PROJECT_TABS['INSTALLATION']) {
+            rows = [{ id: 'name', numeric: 'left', disablePadding: false, label: 'Name' },
+                    { id: 'locn', numeric: 'left', disablePadding: false, label: 'Location' }];
             searchList = [{ id: 'name', label: 'Name' },
                     { id: 'locn', label: 'Location' }];
             tabData = <Typography component="div">
@@ -83,7 +97,11 @@ class TabContainer extends Component {
         }
         return (
             <div>
-            {tabData}
+                {tabData}
+                {stateData.isAuthError &&
+                    <CustomPopOver content={stateData.authError} open={stateData.isAuthError}
+                        handleClose={handleClose} variant='error'/>
+                }
             </div>
         );
     }

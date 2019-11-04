@@ -20,9 +20,9 @@ class RadioButtonComponent extends Component {
         const {classes, data, handleChange} = this.props;
         return(<NamespacesConsumer>
             {
-            t=><List dense
-                component="nav"
-                className={classes.root}>
+                t=><div className={classes.root}>
+            <List dense
+                component="nav">
                     {data.projectList &&
                         data.projectList.map((project, index) => {
                         return <div key={project.id}>
@@ -47,6 +47,7 @@ class RadioButtonComponent extends Component {
                         </div>
                     })}
                 </List>
+                </div>
             }</NamespacesConsumer>
         )
     }

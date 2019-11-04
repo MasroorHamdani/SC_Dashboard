@@ -26,7 +26,7 @@ class Footer extends Component {
                 // color="inherit"
                 noWrap
                 className={classes.title}>
-                {t('footer-note')}
+                {localStorage.getItem('footer') ? localStorage.getItem('footer') : t('footer-note')}
               </Typography>
           }
         </NamespacesConsumer>

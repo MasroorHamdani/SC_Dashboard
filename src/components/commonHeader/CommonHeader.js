@@ -9,6 +9,8 @@ import styles from "./CommonHeaderStyle";
 import { Link} from "react-router-dom";
 import { NamespacesConsumer } from 'react-i18next';
 
+import {SC_LOGO} from '../../constants/Constant';
+
 /**
  * This component is for the generic header which will be used
  * through out the website when user is not authenticated
@@ -23,7 +25,7 @@ class CommonHeader extends Component {
                 <AppBar position="static" className={classes.appBar}>
                   <Toolbar>
                     <Typography variant="h6" color="inherit" className={classes.grow}>
-                    <img src="https://www.smartclean.sg/images/sc-logo.png" alt="logo" className={classes.logo}/>
+                    <img src={localStorage.getItem('logo') ? localStorage.getItem('logo') : {SC_LOGO}} alt="logo" className={classes.logo}/>
                     </Typography>
                     {/* <Button color="inherit" component={Link} to='/contact'>{t('Contact')}</Button>
                     <Button color="inherit" component={Link} to='/about'>{t('About')}</Button>

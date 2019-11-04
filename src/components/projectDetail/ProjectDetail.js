@@ -6,25 +6,34 @@ import { NamespacesConsumer } from 'react-i18next';
 import PropTypes from 'prop-types';
 import {isEqual, groupBy} from 'lodash';
 import {withStyles, AppBar, Tabs, Tab, Paper,
-  LinearProgress} from '@material-ui/core';
+  LinearProgress, Grid, TextField, Typography,
+  FormControl, InputLabel, Select, FormControlLabel,
+  Switch} from '@material-ui/core';
 
 import TabContainer from '../tabContainer/TabContainer';
-import {PROJECT_TABS, API_URLS, NAMESPACE_MAPPER} from '../../constants/Constant';
+import {PROJECT_TABS, API_URLS, NAMESPACE_MAPPER,
+  USER_ROLE, ROLES} from '../../constants/Constant';
 import {getApiConfig} from '../../services/ApiCofig';
 import {capitalizeFirstLetter} from '../../utils/FormatStrings';
-import {projectDetailData, projectTeamData, projectTeamAsso} from '../../actions/ProjectDataAction';
+import {projectDetailData, projectTeamData,
+  projectTeamAsso, userCreation} from '../../actions/ProjectDataAction';
 
 import styles from './ProjectDetailStyle';
 
 class ProjectDetail extends Component {
   constructor(props) {
-    super(props)
-    this.state = {
+    super(props);
+    this.initialState = {
+      userDetail: {},
       value: 'team',
       loading: true,
       success: false,
-      pid: props.match.params.pid
-    };
+      addNotify: false,
+      teamInfo: [],
+      authError: '',
+      isAuthError: false
+    }
+    this.state = this.initialState;
     this.info = false;
   }
   
@@ -61,11 +70,280 @@ class ProjectDetail extends Component {
       this.props.onProjectDetailData(config, url);
     }
   }
+
+  addDetail = (event) => {
+  /***
+   * This function will be called to update the state while user selects a new allocation for any member.
+   */
+      let {name, value} = event.target;
+      if (name === 'mute' || name === 'dashboardAccess') {
+        value = event.target.checked
+      }
+      this.setState({
+        userDetail: {
+          ...this.state.userDetail,
+          [name]: value
+        }
+      })
+  }
+
+  filterOnRole = (arr) => {
+    if(this.state.projectSelected.Role === ROLES['SUPERVISOR'] || this.state.projectSelected.Role === ROLES['PROJECT_ADMIN'])
+      arr = arr.filter(x => (x.key === 'attendent' || x.key === 'supervisor'))
+    else if(this.state.projectSelected.Role === ROLES['PARTNER_ADMIN'])
+      arr = arr.filter(x => (x.key === 'attendent' || x.key === 'supervisor' || x.key === 'projectadmin'))
+    return arr
+  }
+
+  handleAddition = () => {
+    let additionModal = <div>
+        <Grid container spacing={24}>
+            <Grid item xs={12} sm={6}>
+                <TextField
+                    required
+                    id="username"
+                    name="username"
+                    label="Username"
+                    placeholder="Username"
+                    fullWidth
+                    autoComplete="Username"
+                    value={this.state.userDetail.username}
+                    onChange={this.addDetail}
+                    InputLabelProps={{
+                        shrink: true
+                    }}/>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+                <TextField
+                    id="email"
+                    name="email"
+                    label='Email'
+                    fullWidth
+                    autoComplete="Email"
+                    placeholder="Email"
+                    value={this.state.userDetail.email}
+                    onChange={this.addDetail}
+                    InputLabelProps={{
+                        shrink: true
+                    }}/>
+            </Grid>
+            <Grid item xs={6}>
+              <Grid
+                container
+                justify="space-between">
+                  <Grid item
+                    xs={1}>
+                    <TextField
+                      required
+                      id="countryCode"
+                      name="countryCode"
+                      label="Code"
+                      autoComplete="Code"
+                      placeholder="Code"
+                      value={this.state.userDetail.countryCode}
+                      onChange={this.addDetail}
+                      InputLabelProps={{
+                        shrink: true
+                      }}/>
+                  </Grid>
+                  <Grid item
+                    xs={10}>
+                    <TextField
+                      required
+                      fullWidth
+                      type="number"
+                      id="phoneNumber"
+                      name="phoneNumber"
+                      label="Phone Number"
+                      autoComplete="Phone Number"
+                      placeholder="Phone Number"
+                      value={this.state.userDetail.phoneNumber}
+                      onChange={this.addDetail}
+                      InputLabelProps={{
+                        shrink: true
+                      }}/>
+                  </Grid>
+              </Grid>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+                <FormControlLabel
+                  label='Mute'
+                  id="mute"
+                  name="mute"
+                  control={
+                    <Switch
+                    checked={this.state.userDetail.mute}
+                    onChange={this.addDetail}
+                    value="Mute"
+                    />}
+                />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+                <TextField
+                    required
+                    id="fname"
+                    name="fname"
+                    label="FirstName"
+                    placeholder="FirstName"
+                    fullWidth
+                    autoComplete="FirstName"
+                    value={this.state.userDetail.fname}
+                    onChange={this.addDetail}
+                    InputLabelProps={{
+                        shrink: true
+                    }}/>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+                <TextField
+                    required
+                    id="lname"
+                    name="lname"
+                    label="LastName"
+                    placeholder="LastName"
+                    fullWidth
+                    autoComplete="LastName"
+                    value={this.state.userDetail.lname}
+                    onChange={this.addDetail}
+                    InputLabelProps={{
+                        shrink: true
+                    }}/>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+                <TextField
+                    required
+                    id="desig"
+                    name="desig"
+                    label="Designation"
+                    placeholder="Designation"
+                    fullWidth
+                    autoComplete="Designation"
+                    value={this.state.userDetail.desig}
+                    onChange={this.addDetail}
+                    InputLabelProps={{
+                        shrink: true
+                    }}/>
+                {/* <FormControl fullWidth>
+                    <InputLabel htmlFor="desig">Designation</InputLabel>
+                    <Select native
+                        value={this.state.userDetail.desig}
+                        onChange={this.addDetail}
+                        inputProps={{
+                            name: 'desig',
+                            id: 'desig',
+                        }}>
+                    <option value="" />
+                    {this.filterOnRole(USER_DESIGNATION).map(function(designation) {
+                            return <option value={designation.key} name={designation.key} key={designation.key} >
+                                {designation.display}</option>
+                    })}
+                    </Select>
+                </FormControl> */}
+            </Grid>
+            <Grid item xs={12} sm={6}>
+                <FormControl fullWidth>
+                    <InputLabel htmlFor="role">Role</InputLabel>
+                    <Select native
+                        value={this.state.userDetail.role}
+                        onChange={this.addDetail}
+                        inputProps={{
+                            name: 'role',
+                            id: 'role',
+                        }}>
+                    <option value="" />
+                    {this.filterOnRole(USER_ROLE).map(function(role) {
+                            return <option value={role.key} name={role.key} key={role.key} >
+                                {role.display}</option>
+                    })}
+                    </Select>
+                </FormControl>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+                <FormControlLabel
+                  label='Dashboard Access'
+                  id="dashboardAccess"
+                  name="dashboardAccess"
+                  control={
+                    <Switch
+                    checked={this.state.userDetail.dashboardAccess}
+                    onChange={this.addDetail}
+                    value="Dashboard Access"
+                    />}
+                />
+            </Grid>
+            {this.state.errorMessage &&
+                <Grid item
+                    container
+                    alignItems='center'
+                    direction='row'
+                    justify='flex-end'
+                    >
+                    <Typography
+                        variant="contained"
+                        color="secondary"
+                        >
+                        {this.state.errorMessage}
+                    </Typography>
+                </Grid>
+            }
+        </Grid>
+    </div>
+    this.setState({
+      addNotify: !this.state.addNotify,
+      additionModal: additionModal,
+      addModalHeader: 'Add New User'
+    });
+  }
+
+  onAddition = () => {
+    if(this.state.userDetail.username && this.state.userDetail.fname
+      && this.state.userDetail.lname && this.state.userDetail.desig
+      && this.state.userDetail.role && this.state.userDetail.countryCode
+      && this.state.userDetail.phoneNumber) {
+        let dataToPost = {};
+        dataToPost['mute'] = this.state.userDetail.mute ? this.state.userDetail.mute : false;
+        dataToPost['username'] = this.state.userDetail.username ? this.state.userDetail.username : '';
+        dataToPost['email'] = this.state.userDetail.email ?
+          this.state.userDetail.email :
+          `${this.state.pid}.${this.state.userDetail.username}@mail.com`;
+        dataToPost['fname'] = this.state.userDetail.fname ? this.state.userDetail.fname : '';
+        dataToPost['lname'] = this.state.userDetail.lname ? this.state.userDetail.lname : '';
+        dataToPost['desig'] = this.state.userDetail.desig ? this.state.userDetail.desig : '';
+        dataToPost['role'] = this.state.userDetail.role ? this.state.userDetail.role : '';
+        dataToPost['dashboard_access'] = this.state.userDetail.dashboardAccess ? this.state.userDetail.dashboardAccess : false;
+        dataToPost['phone_number'] = (this.state.userDetail.countryCode && this.state.userDetail.phoneNumber) ?
+          `${this.state.userDetail.countryCode}${this.state.userDetail.phoneNumber}` : '';
+
+        let endPoint = `${API_URLS['PROJECT_USER']}/${this.state.pid}`,
+            config = getApiConfig(endPoint, 'POST', dataToPost);
+        this.props.onUserCreation(config);
+
+        this.setState({
+          addNotify: !this.state.addNotify,
+          userDetail: {}
+        });
+    } else {
+        this.setState({
+          errorMessage: 'Enter All Details'
+        })
+    }
+  }
+
   componentDidMount() {
   /**
    * Call the API with default tab value.
    */
+  if(this.state.pid) {
     this.callApi(this.state.value);
+  } else if(this.props.projectSelected){// || localStorage.getItem('projectSelected')) {
+    // let dt = JSON.parse(localStorage.getItem('projectSelected'));
+    this.setState({
+      pid: this.props.projectSelected ? this.props.projectSelected.PID : '',//dt.PID,
+      projectSelected : this.props.projectSelected ? this.props.projectSelected : ''//dt
+    }, function() {
+      this.callApi(this.state.value);
+    });
+  }
+    // this.callApi(this.state.value);
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -78,7 +356,11 @@ class ProjectDetail extends Component {
     if(this.props.projectSelected && 
       !isEqual(this.props.projectSelected, prevProps.projectSelected)){
       if(this.state.pid !== this.props.projectSelected.PID)
-        this.setState({pid: this.props.projectSelected.PID},
+        this.setState({
+          pid: this.props.projectSelected.PID,
+          projectSelected: this.props.projectSelected,
+          teamInfo: []
+        },
           function() {
             this.props.history.push(this.props.projectSelected.PID);
             this.info = false;
@@ -98,11 +380,14 @@ class ProjectDetail extends Component {
         let SUB1;
         responseData.map(function (data) {
           SUB1 = NAMESPACE_MAPPER[data['NS']].SUB1;
-          insIDList.push(data.SUB1)
+          insIDList.push({
+            "key": data.SUB1,
+            "display": `${data.name} - ${data.locn}`
+          })
           data[SUB1] = data.SUB1
         });
         this.setState({installationData: responseData})
-        localStorage.setItem('installationLocations', insIDList);
+        localStorage.setItem('installationLocations', JSON.stringify(insIDList));
     }
     /**
      * This part will get the teams members data as well as
@@ -129,7 +414,8 @@ class ProjectDetail extends Component {
             config = getApiConfig(endPoint, 'GET');
           this.props.onProjectDetailData(config, url); 
         }
-        if(this.props.projectData && this.props.teamMembers) {
+        if(this.props.projectData && this.props.teamMembers && this.props.teamAsso &&
+          this.props.projectData[0]['PID'] === this.state.pid && this.props.teamAsso[0]['PID'] === this.state.pid) {
           let association = groupBy(this.props.teamAsso,  'UID');
           let teamMembers = this.props.teamMembers;
           
@@ -147,6 +433,23 @@ class ProjectDetail extends Component {
           this.setState({teamInfo: teamMembers})
         }
     }
+
+    /**
+     * This part will fetch the User details temporary for recalling the
+     * main api again.
+     */
+    if(this.props.userData && 
+      !isEqual(this.props.userData, prevProps.userData)){
+        if(this.props.userData['Message']) {
+          this.setState({
+            loading: false,
+            authError: this.props.userData['Message'],
+            isAuthError: true
+          });
+        } else {
+          this.callApi(this.state.value);
+        }
+    }
     /**
      * Loading progress bar
      */
@@ -154,6 +457,13 @@ class ProjectDetail extends Component {
       this.setState({loading: false});
     }
   }
+
+  handleClose = () => {
+    this.setState({
+      authError: '',
+      isAuthError: false
+    })
+  };
 
   render() {
       const { classes, handleClick } = this.props;
@@ -174,20 +484,21 @@ class ProjectDetail extends Component {
                   onChange={this.handleChange}
                   indicatorColor="primary"
                   textColor="primary"
-                  variant="fullWidth"
-                >
+                  variant="fullWidth">
                   <Tab label={t('team')}
                     value='team'/>
                   <Tab label={t('installation')}
                     value='installations'/>
                 </Tabs>
               </AppBar>
-              
               {this.state.value &&
                 <TabContainer data={this.state.installationData}
-                stateData={this.state}
-                category={this.state.value}
-                handleClick={handleClick}/>
+                  stateData={this.state}
+                  category={this.state.value}
+                  handleClick={handleClick}
+                  handleAddition={this.handleAddition}
+                  onAddition={this.onAddition}
+                  handleClose={this.handleClose}/>
               }
             </Paper>
           </main>
@@ -206,6 +517,7 @@ function mapStateToProps(state) {
       teamMembers : state.ProjectTeamDataReducer.data,
       teamAsso : state.ProjectTeamAssoDataReducer.data,
       projectSelected : state.projectSelectReducer.data,
+      userData : state.UserProfileReducer.data,
   }
 }
 
@@ -220,6 +532,9 @@ function mapDispatchToProps(dispatch) {
         },
         onTeamAssociation: (config) => {
           dispatch(projectTeamAsso(config))
+        },
+        onUserCreation: (config) => {
+          dispatch(userCreation(config))
         }
     }
 }

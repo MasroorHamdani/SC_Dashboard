@@ -1,24 +1,59 @@
 import axios from 'axios';
 import { merge } from "lodash-es";
 
-import {API_END_POINT, API_URLS, REACT_URLS} from "../constants/Constant";
+import {API_END_POINT, API_URLS, REACT_URLS,
+    NEW_API_END_POINT, ADMIN} from "../constants/Constant";
 
 function ApiService(configObject) {
-    const url = API_END_POINT,
+    // This part will fetch the partnerid from URL if any,
+    // Which is used for redirection latter on
+    let addressArray = window.location.pathname.split('/'),
+        mainIndex = addressArray.indexOf('optimus'),
+        partnerid = (addressArray[mainIndex + 1] !== 'profile' &&
+        addressArray[mainIndex + 1] !== 'project' &&
+        addressArray[mainIndex + 1] !== 'alert' &&
+        addressArray[mainIndex + 1] !== 'dispenser' &&
+        addressArray[mainIndex + 1] !== 'data' &&
+        addressArray[mainIndex + 1] !== 'report' &&
+        addressArray[mainIndex + 1] !== 'health' &&
+        addressArray[mainIndex + 1] !== 'login' &&
+        addressArray[mainIndex + 1] !== 'logout') ? addressArray[mainIndex + 1] : '';
+        
+    let url, newUrl
+    if(configObject.url.includes('datanew')) {
+        url = NEW_API_END_POINT;
         newUrl = `${url}${configObject.url}`;
+        axios.defaults.baseURL = NEW_API_END_POINT;
+        axios.defaults.timeout = 7000;
+    } else if(configObject.url.includes('admin') || configObject.url.includes('user')) {
+        url = ADMIN;
+        newUrl = `${url}${configObject.url}`;
+        axios.defaults.baseURL = ADMIN;
+        axios.defaults.timeout = 7000;
+    } else {
+        url = API_END_POINT;
+        newUrl = `${url}${configObject.url}`;
+        // const config = merge({}, configObject, {
+        //     url: newUrl.replace(/\s/g, "")
+        // });
+        axios.defaults.baseURL = API_END_POINT;
+        axios.defaults.timeout = 7000;
+    }
     const config = merge({}, configObject, {
         url: newUrl.replace(/\s/g, "")
     });
-    axios.defaults.baseURL = API_END_POINT;
-    axios.defaults.timeout = 7000;
 
     /**
      * This part is called as soon as an API call is made
      */
     axios.interceptors.request.use(
         reqConfig => {
-            if (!reqConfig.url.includes(REACT_URLS['LOGIN']))
+            if (!reqConfig.url.includes(REACT_URLS.LOGIN()))
                 reqConfig.headers.authorization = localStorage.getItem('idToken');
+            if(reqConfig.url.includes('admin') || reqConfig.url.includes('user')) {
+                reqConfig.headers.authorization = localStorage.getItem('idToken');
+                reqConfig.headers.scauth = localStorage.getItem('idToken');
+            }
             return reqConfig;
         },
         err => Promise.reject(err),
@@ -35,7 +70,7 @@ function ApiService(configObject) {
         isFetchingToken = false;
         localStorage.clear();
         localStorage.setItem('previousPath', window.location.pathname);
-        window.location = REACT_URLS['LOGIN'];
+        window.location = REACT_URLS.LOGIN(partnerid);
     }
 
     /**
@@ -47,11 +82,11 @@ function ApiService(configObject) {
      */
     axios.interceptors.response.use(undefined, err => {
         if (err.response) {
-            if (err.response.config.url.includes(REACT_URLS['LOGIN']))
+            if (err.response.config.url.includes(REACT_URLS.LOGIN(partnerid)))
                 return Promise.reject(err);
             if (err.response.status === 403) return forceLogout();
-            // if (err.response.status !== 401) return Promise.reject(err);
             if (err.response.status === 500) return Promise.reject(err);
+            if (err.response.status !== 401) return Promise.reject(err);
         }
         // if (!err.response) return Promise.reject(err);
         if (err.response.status === 401 && !isFetchingToken) {
@@ -117,7 +152,8 @@ function ApiService(configObject) {
                     // Logger.warn("session has been expired");
                 } else if (status === 400) {
                     // Return request for any user Error, with status 400
-                    return Promise.reject(error.response);
+                    // return Promise.reject(error.response);
+                    return Promise.resolve(error.response);
                 } else if (isNotRobot) {
                     // Logger.error(`status : ${status} ${error.response.data}`);
                 }

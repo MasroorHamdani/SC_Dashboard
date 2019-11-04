@@ -8,7 +8,7 @@ import DataCard from './DataCard';
 class ProjectDataComponent extends Component {
     render() {
         const { stateData, onClick} = this.props;
-            if(stateData.dashboardData){
+        if(stateData.dashboardData){
             const returnData = stateData.dashboardData.map((row, index) => {
                 return <DataCard key={index} onClick={onClick} row={row}
                     stateData={stateData}/>

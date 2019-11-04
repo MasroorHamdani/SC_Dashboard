@@ -122,8 +122,8 @@ class ReportView extends Component {
      * Reducer used - 'projectSelectReducer'
      */
         if(this.props.projectSelected && 
-            !isEqual(this.props.projectSelected, prevProps.projectSelected)){
-            if(this.state.pid !== this.props.projectSelected.PID){
+            !isEqual(this.props.projectSelected, prevProps.projectSelected)) {
+            if(this.state.pid !== this.props.projectSelected.PID) {
                 this.setState({
                     pid: this.props.projectSelected.PID,
                     serviceList: '',

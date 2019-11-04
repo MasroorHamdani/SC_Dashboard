@@ -40,7 +40,7 @@ class ProjectInstallationDetails extends Component {
         this.props.onProjectInstallationData(config);
         if(localStorage.getItem('installationLocations')) {
             this.setState( {
-                insidList: localStorage.getItem('installationLocations').split(',')
+                insidList: JSON.parse(localStorage.getItem('installationLocations'))
             })
         }
     }
@@ -138,7 +138,7 @@ class ProjectInstallationDetails extends Component {
                             id: 'insid',
                         }}>
                     {this.state.insidList.map(function(insidValue) {
-                        return <MenuItem value={insidValue} key={insidValue}>{insidValue}</MenuItem>
+                        return <MenuItem value={insidValue.key} key={insidValue.key}>{insidValue.display}</MenuItem>
                     })}
                     </Select>
                 {tabData}

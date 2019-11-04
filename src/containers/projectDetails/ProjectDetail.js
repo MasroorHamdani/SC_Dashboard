@@ -11,7 +11,8 @@ class ProjectDetails extends Component {
         super(props);
         this.state = {
             pid: props.match.params.pid,
-            data : {}
+            data : {},
+            parentId: props.match.params.partnerid,
         }
     }
 
@@ -19,7 +20,7 @@ class ProjectDetails extends Component {
     /**
      * Function called from child component to redirect the page.
      */
-        this.props.history.push(`${REACT_URLS['PROJECT_DETAILS']}/${this.state.pid}/${category}/${id}`);
+        this.props.history.push(`${REACT_URLS.PROJECT_DETAILS(this.state.parentId)}/${this.state.pid}/${category}/${id}`);
     };
 
     render() {

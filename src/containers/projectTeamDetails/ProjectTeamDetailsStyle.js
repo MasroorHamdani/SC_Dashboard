@@ -3,6 +3,7 @@ const styles = theme => ({
         // display: 'flex',
         overflow: 'auto',
         height: '100vh',
+        width: '100%'
     },
     main: {
         width: 'auto',

@@ -13,18 +13,19 @@ class DateRowComponent extends Component {
  */
     render () {
         const {classes, handleListSelection, handleChangeStart, handleChangeEnd,
-            handleDatePicker, data, timeList, handleRefresh} = this.props;
+            handleDatePicker, data, timeList, handleRefresh,
+            isCustomModal, modalHandleChangeStart, modalHandleChangeEnd} = this.props;
         return (
             <div className={classes.dateRow}>
                 <div className={classes.dateRow}>
                     <Typography className={classes.marginRight}>Custom</Typography>
                     <DatePicker
                         className={classes.marginRight}
-                        selected={data.startDate}
+                        selected={(isCustomModal ? data.modalStartDate : data.startDate)}
                         selectsStart
-                        startDate={data.startDate}
-                        endDate={data.endDate}
-                        onChange={handleChangeStart}
+                        startDate={(isCustomModal ? data.modalStartDate : data.startDate)}
+                        endDate={(isCustomModal ? data.modalEndDate : data.endDate)}
+                        onChange={(isCustomModal ? modalHandleChangeStart : handleChangeStart)}//{handleChangeStart}
                         showMonthDropdown
                         showYearDropdown
                         showTimeSelect
@@ -36,11 +37,11 @@ class DateRowComponent extends Component {
                     />
                     <DatePicker
                         className={classes.marginRight}
-                        selected={data.endDate}
+                        selected={(isCustomModal ? data.modalEndDate : data.endDate)}
                         selectsEnd
-                        startDate={data.startDate}
-                        endDate={data.endDate}
-                        onChange={handleChangeEnd}
+                        startDate={(isCustomModal ? data.modalStartDate : data.startDate)}
+                        endDate={(isCustomModal ? data.modalEndDate : data.endDate)}
+                        onChange={(isCustomModal ? modalHandleChangeEnd : handleChangeEnd)}
                         showMonthDropdown
                         showYearDropdown
                         showTimeSelect
@@ -48,10 +49,10 @@ class DateRowComponent extends Component {
                         timeIntervals={5}
                         dateFormat="MM/d/YY HH:mm"
                         timeCaption="Time"
-                        minDate={data.startDate}
+                        minDate={(isCustomModal ? data.modalStartDate : data.startDate)}
                         maxDate={new Date()}
                     />
-                    <Button onClick={handleDatePicker}
+                    <Button onClick={e=>handleDatePicker(isCustomModal ? 'modal' : 'default')}
                         color="primary" variant="contained"
                         size="small">
                         Go
@@ -59,11 +60,12 @@ class DateRowComponent extends Component {
                 </div>
                 <List dense={true} className={classes.timeList}>
                     {timeList.map((timeLine) => {
-                        return <ListItem key={timeLine.key} name={timeLine.name} value={timeLine.value}
-                        onClick={e => handleListSelection(e, timeLine.text, timeLine.value)}>
+                        return <ListItem className={classes.noLeftPadding}
+                        key={timeLine.key} name={timeLine.name} value={timeLine.value}
+                        onClick={e => handleListSelection(e, timeLine.text, timeLine.value, isCustomModal ? 'modal' : 'default')}>
                             < ListItemText
                             primary={<Typography type="span"
-                            style={(data.selectedIndex === timeLine.value)?
+                            style={(isCustomModal ? data.modalSelectedIndex === timeLine.value : data.selectedIndex === timeLine.value)?
                                 { fontWeight: 'bold' }: {fontWeight: 'inherit'}}>{timeLine.text}</Typography>}
                             />
                         </ListItem>

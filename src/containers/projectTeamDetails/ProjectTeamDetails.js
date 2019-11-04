@@ -79,11 +79,12 @@ class ProjectInstallationDetails extends Component {
      * and finally calling the POST api.
      * Or showing up error to user to fill all required fields.
      */
-        let startTime = formatDateTime(this.state.userLocation.ShiftStart, "hh:mm a", "HHmm"),
-            endTime = formatDateTime(this.state.userLocation.ShiftEnd, "hh:mm a", "HHmm");
+        
         if(this.state.userLocation.Tags && this.state.userLocation.ShiftStart &&
             this.state.userLocation.ShiftEnd && this.state.userLocation.Level &&
             this.state.userLocation.InsID) {
+            let startTime = formatDateTime(this.state.userLocation.ShiftStart, "hh:mm a", "HHmm"),
+            endTime = formatDateTime(this.state.userLocation.ShiftEnd, "hh:mm a", "HHmm");
             this.setState({
                 userLocation: {
                     ...this.state.userLocation,
@@ -267,8 +268,8 @@ class ProjectInstallationDetails extends Component {
                 this.setState({pid: this.props.projectSelected.PID},
                 function() {
                     let arr = this.props.match.url.split('/');
-                    arr[2] = this.props.projectSelected.PID;
-                    let url = arr.join('/');
+                    arr[3] = this.props.projectSelected.PID;
+                    let url = arr.slice(0,4).join('/');;//arr.join('/');
                     this.info = false;
                     this.props.history.push(url);
                     this.getProfileData();
