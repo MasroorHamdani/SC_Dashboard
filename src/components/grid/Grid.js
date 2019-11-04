@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
-import _ from 'lodash';
+import _, {isEmpty} from 'lodash';
 import {Table, TableBody, TableCell, TablePagination,
   TableRow, TableFooter, Paper, TextField, Select, MenuItem,
   List, ListItem, Switch, Typography, Grid} from '@material-ui/core';
@@ -169,7 +169,7 @@ class EnhancedTable extends React.Component {
             {
             t=><Paper className={classes.root}>
           
-          {searchList &&
+          { (!isEmpty(data) && searchList) &&
             <div className={classes.searchSection}>
             {/**
             * Filter with all the column names,
@@ -205,6 +205,7 @@ class EnhancedTable extends React.Component {
               </Grid>
             </div>
           }
+          {!isEmpty(data) &&
           <Table className={classes.table} aria-labelledby="tableTitle">
           {/**
           * Call the conpmnent which will set up the header of the grid.
@@ -321,6 +322,7 @@ class EnhancedTable extends React.Component {
               </TableRow>
             </TableFooter>
           </Table>
+          }
         {/**
         * modal for updating user once delete is enabled and clicked for a row
         */}

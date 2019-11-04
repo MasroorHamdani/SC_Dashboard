@@ -50,6 +50,10 @@ function ApiService(configObject) {
         reqConfig => {
             if (!reqConfig.url.includes(REACT_URLS.LOGIN()))
                 reqConfig.headers.authorization = localStorage.getItem('idToken');
+            if(reqConfig.url.includes('admin') || reqConfig.url.includes('user')) {
+                reqConfig.headers.authorization = localStorage.getItem('idToken');
+                reqConfig.headers.scauth = localStorage.getItem('idToken');
+            }
             return reqConfig;
         },
         err => Promise.reject(err),

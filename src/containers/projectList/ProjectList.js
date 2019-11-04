@@ -66,7 +66,7 @@ class ProjectList extends Component {
                     authError: this.props.projectList['Message'],
                     isAuthError: true
                 });
-            } else if(!isEmpty(this.props.projectList)) {
+            } else {
                 this.setState({
                     projectList: this.props.projectList,
                     loading: false
