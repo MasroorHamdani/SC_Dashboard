@@ -36,28 +36,31 @@ class Menu extends Component {
     this.props.onToolbarClick(this.state.open);
   };
 
-  componentDidMount(){
+  componentDidMount() {
     /**
      * Check if pid is present in state or not, if yes get the menu,
      * else set the state first and then get the updated menu
      */
-    if(this.state.pid) {
-      this.setState({
-        menu: mainMenuList(this.state.pid, this.state.partnerid),
-        secondaryMenu: secondaryMenuList(this.state.role, this.state.partnerid)
-      });
-    } else if(this.props.projectSelected) {
-      this.setState({
-        pid: this.props.projectSelected.PID,
-        menu: mainMenuList(this.props.projectSelected.PID, this.state.partnerid),
-        secondaryMenu: secondaryMenuList(this.state.role, this.state.partnerid)
-      })
-    }
     let idTokenDecoded = JWTDecode(localStorage.getItem('idToken')),
       userData = getTokenData(idTokenDecoded, "Fn");
-    if (userData)
-      this.setState({role: userData['R']})
+    if (userData) {
+      this.setState({role: userData['R']}, function() {
+        if(this.state.pid) {
+          this.setState({
+            menu: mainMenuList(this.state.pid, this.state.partnerid),
+            secondaryMenu: secondaryMenuList(this.state.role, this.state.partnerid)
+          });
+        } else if(this.props.projectSelected) {
+          this.setState({
+            pid: this.props.projectSelected.PID,
+            menu: mainMenuList(this.props.projectSelected.PID, this.state.partnerid),
+            secondaryMenu: secondaryMenuList(this.state.role, this.state.partnerid)
+          })
+        }
+      })
+    }
   }
+
   componentDidUpdate(prevProps, prevState) {
     /**
      * Get the status of the nav bar - either open or closed.
@@ -75,11 +78,12 @@ class Menu extends Component {
      */
     if(this.props.projectSelected &&
       !isEqual(this.props.projectSelected, prevProps.projectSelected)) {
-        this.setState({
-          pid: this.props.projectSelected.PID,
-          menu: mainMenuList(this.props.projectSelected.PID, this.state.partnerid),
-          secondaryMenu: secondaryMenuList(this.state.role, this.state.partnerid)
-        });
+        if(this.state.role)
+          this.setState({
+            pid: this.props.projectSelected.PID,
+            menu: mainMenuList(this.props.projectSelected.PID, this.state.partnerid),
+            secondaryMenu: secondaryMenuList(this.state.role, this.state.partnerid)
+          });
     }
   }
 
