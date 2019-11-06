@@ -104,6 +104,9 @@ const styles = theme => ({
         top: 'auto',
         bottom: 20,
         position: 'fixed',
+    },
+    containerPadding: {
+        padding: theme.spacing.unit * 3
     }
 });
 

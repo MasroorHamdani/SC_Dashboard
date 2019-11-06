@@ -14,7 +14,7 @@ class ProjectDescription extends Component {
     render() {
         const {classes, statedata, handleModalState,
             onClick, handleEdit} = this.props;
-        return (<div>
+        return (<div className={classes.containerPadding}>
             {!isEmpty(statedata.projectDetail) &&
             <Grid container>
                 <Grid item xs={true}>
