@@ -6,7 +6,7 @@ import ProjectGeneralInfo from './ProjectGeneralInfo';
 import ProjectLocationInfo from './ProjectLocationInfo';
 import ProjectAreaInfo from './ProjectAreaInfo';
 import CustomModal from '../../components/modal/Modal';
-import {PROJECT_STATUS} from '../../constants/Constant';
+import {PROJECT_STATUS, ROLES} from '../../constants/Constant';
 
 import styles from './ProjectCreationStyle';
 
@@ -16,7 +16,7 @@ class ProjectDescription extends Component {
             onClick, handleEdit} = this.props;
         return (<div>
             {!isEmpty(statedata.projectDetail) &&
-            <Grid container spacing={24}>
+            <Grid container>
                 <Grid item xs={true}>
                     <Typography variant="h6">
                         Project General Details
@@ -38,46 +38,32 @@ class ProjectDescription extends Component {
                     <ProjectAreaInfo data={statedata.projectDetail}/>
                 </Grid>
                 {statedata.projectDetail.general.SUB2 === PROJECT_STATUS['DRAFT'] ?
-                    <Grid container spacing={24}>
-                        <Grid item xs={true}>
-                            <Button
-                                variant="contained"
-                                color="primary"
-                                className={classes.button}
-                                onClick={e=>handleEdit(PROJECT_STATUS['DRAFT'])}>
-                                Edit
-                            </Button>
-                        </Grid>
-                    </Grid>
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        className={classes.floatingRightButton}
+                        onClick={e=>handleEdit(PROJECT_STATUS['DRAFT'])}>
+                        Edit
+                    </Button>
                 :
-                    (statedata.projectDetail.general.SUB2 !== PROJECT_STATUS['ACTIVE'] &&
-                    statedata.projectDetail.general.SUB2 !== PROJECT_STATUS['REJECT']) &&
+                (statedata.projectDetail.general.SUB2 !== PROJECT_STATUS['ACTIVE'] &&
+                    statedata.projectDetail.general.SUB2 !== PROJECT_STATUS['REJECT'] &&
+                    statedata.role === ROLES['SC_ADMIN']) &&
                     <Grid container spacing={24}>
-                        <Grid item xs={12} sm={6}
-                        direction='row'
-                        justify='flex-end'>
-                            <Button
-                                variant="contained"
-                                color="primary"
-                                className={classes.button}
-                                onClick={e=>handleModalState(PROJECT_STATUS['REJECT'])}>
-                                Reject
-                            </Button>
-                        </Grid>
-                        <Grid item xs={12} sm={6}
-                        container
-                        alignItems='center'
-                        direction='row'
-                        justify='flex-end'
-                        >
+                        <Button
+                            variant="contained"
+                            color="secondary"
+                            className={classes.floatingLeftButton}
+                            onClick={e=>handleModalState(PROJECT_STATUS['REJECT'])}>
+                            Reject
+                        </Button>
                         <Button
                             variant="contained"
                             color="primary"
-                            className={classes.button}
+                            className={classes.floatingRightButton}
                             onClick={e=>handleModalState(PROJECT_STATUS['ACTIVE'])}>
                             Accept
                         </Button>
-                        </Grid> 
                     </Grid>
                 }
                 {/* Modal for Associating user to new location */}

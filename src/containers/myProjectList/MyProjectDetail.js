@@ -1,7 +1,7 @@
 import React, {Component} from "react";
 import {withStyles, LinearProgress} from '@material-ui/core';
 import { connect } from "react-redux";
-import _, {isEqual} from 'lodash';
+import _, {isEqual, isEmpty} from 'lodash';
 import JWTDecode from 'jwt-decode';
 
 import {API_URLS, PROJECT_STATUS, REACT_URLS,
@@ -47,7 +47,7 @@ class MyProjectDetail extends Component {
             }
         }
 
-        if(this.props.projectData && 
+        if(!isEmpty(this.props.projectData) && 
             !isEqual(this.props.projectData, prevProps.projectData)) {
             if(this.props.projectData.status !== PROJECT_STATUS['ACTIVE'] &&
                 this.props.projectData.status !== PROJECT_STATUS['REJECT'] &&

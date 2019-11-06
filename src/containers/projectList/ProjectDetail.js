@@ -1,7 +1,7 @@
 import React, {Component} from "react";
 import {withStyles, LinearProgress} from '@material-ui/core';
 import { connect } from "react-redux";
-import _, {isEqual} from 'lodash';
+import _, {isEqual, isEmpty} from 'lodash';
 import JWTDecode from 'jwt-decode';
 
 import {API_URLS, PROJECT_STATUS, ROLES,
@@ -44,7 +44,7 @@ class ProjectDetail extends Component {
                     this.props.history.push(`${REACT_URLS.DASHBOARD(this.state.parentId)}`);
             }
         }
-        if(this.props.projectData && 
+        if(!isEmpty(this.props.projectData) && 
             !isEqual(this.props.projectData, prevProps.projectData)) {
             if(this.props.projectData.status !== PROJECT_STATUS['ACTIVE'] &&
                 this.props.projectData.status !== PROJECT_STATUS['REJECT']) {
