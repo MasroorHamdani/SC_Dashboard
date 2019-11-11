@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from "react-redux";
 import {withStyles, GridList, LinearProgress} from '@material-ui/core';
 import PropTypes from 'prop-types';
-import {isEqual} from "lodash";
+import {isEqual, isEmpty} from "lodash";
 import styles from './DashboardStyle'
 import ProjectDataComponent from "../../components/projectData/ProjectData";
 import { API_URLS, NAMESPACE, GRAPH_RENDER_TYPE,
@@ -10,7 +10,7 @@ import { API_URLS, NAMESPACE, GRAPH_RENDER_TYPE,
 import { getApiConfig } from '../../services/ApiCofig';
 import {projectAnalysisData, projectSubMenuList,
   projectDataMetricList, InitialiseDataState,
-  InitialiseMetricState} from '../../actions/DataAnalysis';
+  InitialiseMetricState, projectIframe, InitialiseIframeState} from '../../actions/DataAnalysis';
 import {getVector} from '../../utils/AnalyticsDataFormat';
 import {formatDateWithTimeZone, formatDateTime, getTodaysStartDateTime} from '../../utils/DateFormat';
 import CustomPopOver from '../../components/modal/PopOver';
@@ -45,6 +45,11 @@ class Dashboard extends Component {
         },
         getconfig = getApiConfig(getEndPoint, 'GET', '', params);
         this.props.onDataMetricList(getconfig);
+
+      // Get Iframe
+      getEndPoint = `${API_URLS['PROJECT_IFRAME']}/${this.state.PID}/embeddable`;
+      getconfig = getApiConfig(getEndPoint, 'GET');
+      this.props.onProjectIframe(getconfig);
     })
   }
 
@@ -134,7 +139,6 @@ class Dashboard extends Component {
                     })
                   }
                 })
-              // if(Object.values(row)[0].data_source === this.state.PID) {
                 let dataToPost = {'all_metrics' : agg_query},
                   endPoint = `${API_URLS['NEW_DEVICE_DATA']}/${this.state.PID}`,
                   params = {
@@ -143,7 +147,6 @@ class Dashboard extends Component {
                   },
                   config = getApiConfig(endPoint, 'POST', dataToPost, params);
                 this.props.onDataAnalysis(config);
-              // }
               })
               this.metricsIndex += 1;
             })
@@ -155,7 +158,6 @@ class Dashboard extends Component {
             metricNotFound: true
           });
         } 
-      
     }
   /**
    * This part will get the dashboard data per project.
@@ -222,6 +224,24 @@ class Dashboard extends Component {
             this.setState({projectLocationList: this.props.projectLocationList })
         }
     }
+    /**
+     *  Iframe Reducder data per project.
+     */
+    if(this.props.projectIframe &&
+      !isEqual(this.props.projectIframe, prevProps.projectIframe)) {
+        let projectIframe = this.props.projectIframe;
+        projectIframe.map((row) => {
+          if(!isEmpty(row['E'])) {
+            row['E'].map((innerRow) => {
+              if(innerRow['type'] === 'iframe') {
+                this.setState({
+                  iframeLink: innerRow['value']
+                })
+              }
+            })
+          }
+        })
+    }
   }
 
   handleClose = () => {
@@ -265,7 +285,8 @@ function mapStateToProps(state) {
       dataAnalysis : state.DataAnalysisReducer.data,
       projectSelected : state.projectSelectReducer.data,
       projectLocationList : state.DataAnalysisProjectListSubMenuReducer.data,
-      projectMetricList: state.ProjectMetricListReducer.data
+      projectMetricList: state.ProjectMetricListReducer.data,
+      projectIframe: state.ProjectIframeReducer.data
   }
 }
 
@@ -280,9 +301,13 @@ function mapDispatchToProps(dispatch) {
     onDataMetricList: (config) => {
       dispatch(projectDataMetricList(config))
     },
+    onProjectIframe: (config) => {
+      dispatch(projectIframe(config))
+    },
     onInitialState: () => {
       dispatch(InitialiseDataState())
       dispatch(InitialiseMetricState())
+      dispatch(InitialiseIframeState())
     }
   }
 }

@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 
 import {withStyles, Card, CardHeader,
     CardContent, Avatar} from '@material-ui/core';
-
+import Iframe from 'react-iframe'
 import {getFormatedGraphData} from '../../utils/AnalyticsDataFormat';
 import GraphPlot from '../../components/dataAnalysis/GraphPlot';
 
@@ -21,10 +21,22 @@ class DataCard extends Component{
     }
     render() {
         const {classes, row, stateData} = this.props;
-        let tabData;
-        if(row.dataAnalysis && row.dataAnalysis.metrics){
+        let tabData, iframeContent;
+        if(row.dataAnalysis && row.dataAnalysis.metrics) {
             tabData = this.generateDataAnalytics(row.dataAnalysis.metrics,
                 row.allMetrics, classes, stateData);
+        }
+
+        if(stateData.iframeLink) {
+            iframeContent = <Iframe 
+                            url={stateData.iframeLink}
+                            width="100%"
+                            height="700px"
+                            id="iframeId"
+                            display="initial"
+                            position="relative"
+                            className={classes.topPadding}
+                            frameBorder="0"/>
         }
         return (
             <div className={classes.flexContainer} key={row.PID}>
@@ -38,6 +50,7 @@ class DataCard extends Component{
                     subheader={row.Site_Addr}/>
                     <CardContent className={classes.content}>
                     {tabData}
+                    {iframeContent}
                     </CardContent>
                 </Card>
             </div>

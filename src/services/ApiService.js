@@ -2,7 +2,7 @@ import axios from 'axios';
 import { merge } from "lodash-es";
 
 import {API_END_POINT, API_URLS, REACT_URLS,
-    NEW_API_END_POINT, ADMIN} from "../constants/Constant";
+    NEW_API_END_POINT, ADMIN, API_END_POINT_IFRAME} from "../constants/Constant";
 
 function ApiService(configObject) {
     // This part will fetch the partnerid from URL if any,
@@ -29,6 +29,11 @@ function ApiService(configObject) {
         url = ADMIN;
         newUrl = `${url}${configObject.url}`;
         axios.defaults.baseURL = ADMIN;
+        axios.defaults.timeout = 7000;
+    } else if(configObject.url.includes('embeddable')) {
+        url = API_END_POINT_IFRAME;
+        newUrl = `${url}${configObject.url}`;
+        axios.defaults.baseURL = API_END_POINT_IFRAME;
         axios.defaults.timeout = 7000;
     } else {
         url = API_END_POINT;
