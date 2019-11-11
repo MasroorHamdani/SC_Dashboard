@@ -18,6 +18,9 @@ export function projectHealth(config) {
           //on success we will dispatch a sync action with the data
           dispatch(healthDataSaved(data.data))
       })
+      .catch(error => {
+        dispatch(healthDataSaved(error))
+      })
   }
 }
 
@@ -26,6 +29,9 @@ export function projectLocationHealth(config) {
       ApiService(config).then(data => {
           //on success we will dispatch a sync action with the data
           dispatch(healthLocationSaved(data.data))
+      })
+      .catch(error => {
+        dispatch(healthLocationSaved(error))
       })
   }
 }

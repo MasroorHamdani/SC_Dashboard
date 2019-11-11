@@ -18,6 +18,9 @@ export function projectInstallationList(config) {
           else if(data.data === null && data.status === 200)
             dispatch(dataReceived([]))
       })
+      .catch(error => {
+        dispatch(dataReceived(error))
+      })
   }
 }
 
@@ -38,6 +41,9 @@ export  function projectSubMenuList(config) {
     ApiService(config).then(data => {
         //on success we will dispatch a sync action with the data
         dispatch(subMenuDataReceived(data.data))
+    })
+    .catch(error => {
+      dispatch(subMenuDataReceived(error))
     })
   }
 }
@@ -60,6 +66,9 @@ export function projectAnalysisData(config) {
     ApiService(config).then(data => {
       dispatch(analysisDataReceived(data))
     })
+    .catch(error => {
+      dispatch(analysisDataReceived(error))
+    })
   }
 }
 
@@ -78,6 +87,9 @@ export function modalProjectAnalysisData(config) {
   return function(dispatch) {
     ApiService(config).then(data => {
       dispatch(modalAnalysisDataReceived(data))
+    })
+    .catch(error => {
+      dispatch(modalAnalysisDataReceived(error))
     })
   }
 }
@@ -100,6 +112,9 @@ export function projectAlertList(config) {
     ApiService(config).then(data => {
       dispatch(projectAlertListReceived(data.data))
     })
+    .catch(error => {
+      dispatch(projectAlertListReceived(error))
+    })
   }
 }
 
@@ -120,6 +135,9 @@ export function dispenserData(config) {
   return function(dispatch) {
     ApiService(config).then(data => {
       dispatch(dispenserDataReceived(data))
+    })
+    .catch(error => {
+      dispatch(dispenserDataReceived(error))
     })
   }
 }
@@ -146,6 +164,9 @@ export function projectDataMetricList(config) {
   return function(dispatch) {
     ApiService(config).then(data => {
       dispatch(projectMetricReceived(data.data))
+    })
+    .catch(error => {
+      dispatch(projectMetricReceived(error.data))
     })
   }
 }

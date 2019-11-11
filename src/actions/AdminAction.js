@@ -12,6 +12,9 @@ export function projectCreation(config) {
         ApiService(config).then(data => {
             dispatch(onProjectCreation(data.data))
         })
+        .catch(error => {
+            dispatch(onProjectCreation(error))
+        })
     }
 }
 
@@ -27,6 +30,9 @@ export function projectUpdate(config) {
         ApiService(config).then(data => {
             dispatch(onProjectUpdation(data.data))
         })
+        .catch(error => {
+            dispatch(onProjectUpdation(error))
+        })
     }
 }
 
@@ -41,6 +47,9 @@ export function projectList(config) {
     return function (dispatch) {
         ApiService(config).then(data => {
             dispatch(onProjectList(data.data))
+        })
+        .catch(error => {
+            dispatch(onProjectList(error))
         })
     }
 }

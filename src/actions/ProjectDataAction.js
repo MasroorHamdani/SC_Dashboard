@@ -20,6 +20,9 @@ export function projectData(config) {
           //on success we will dispatch a sync action with the data
           dispatch(dataReceived(data.data))
       })
+      .catch(error => {
+        dispatch(dataReceived(error))
+      })
   }
 }
 
@@ -44,6 +47,9 @@ export function projectDetailData(config) {
             // if(data)
             dispatch(detailedDataReceived(data.data))
         })
+        .catch(error => {
+            dispatch(detailedDataReceived(error))
+        })
     }
 }
 
@@ -65,6 +71,9 @@ export function projectTeamAsso(config) {
         ApiService(config).then(data => {
             //on success we will dispatch a sync action with the data
             dispatch(teamAssoDataReceived(data.data))
+        })
+        .catch(error => {
+            dispatch(teamAssoDataReceived(error))
         })
     }
 }
@@ -88,6 +97,9 @@ export function projectTeamData(config) {
             //on success we will dispatch a sync action with the data
             dispatch(teamDataReceived(data.data))
         })
+        .catch(error => {
+            dispatch(teamDataReceived(error))
+        })
     }
 }
 
@@ -108,6 +120,9 @@ export function userCreation(config) {
         ApiService(config).then(data => {
             //on success we will dispatch a sync action with the data
             dispatch(userCreated(data.data))
+        })
+        .catch(error => {
+            dispatch(userCreated(error))
         })
     }
 }

@@ -13,6 +13,9 @@ export function serviceRequirementData(config) {
       ApiService(config).then(data => {
         dispatch(serviceRequirementReceived(data.data))
       })
+      .catch(error => {
+        dispatch(serviceRequirementReceived(error))
+      })
   }
 }
 
@@ -37,6 +40,9 @@ export function reportServiceList(config) {
         else if (data.data === null)
           dispatch(reportServiceListReceived([]))
       })
+      .catch(error => {
+        dispatch(reportServiceListReceived(error))
+      })
   }
 }
 
@@ -57,6 +63,9 @@ export function reportsList(config) {
   return function (dispatch) {
       ApiService(config).then(data => {
         dispatch(reportListReceived(data.data))
+      })
+      .catch(error => {
+        dispatch(reportListReceived(error))
       })
   }
 }
