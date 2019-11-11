@@ -11,6 +11,7 @@ export const S3_BUCKET = process.env.REACT_APP_S3_BUCKET
 export const S3_REGION = process.env.REACT_APP_S3_REGION
 export const S3_ACCESS_KEY_ID = process.env.REACT_APP_S3_ACCESS_KEY_ID
 export const S3_SECRET_ACCESS_KEY = process.env.REACT_APP_S3_SECRET_ACCESS_KEY
+export const API_END_POINT_IFRAME = process.env.REACT_APP_API_END_POINT_IFRAME
 
 export const SC_LOGO = 'https://scprojectimages.s3-ap-southeast-1.amazonaws.com/SC_logo.png'
 
@@ -27,6 +28,7 @@ export const API_URLS = {
     "DEVICE_DATA": "/authV2/devices/datatemp/project",
     "NEW_DEVICE_DATA": "/authV2/devices/datanew/analytics/projects",
     "DEVICE_METRICS": "/auth/devices/metrics",
+    "PROJECT_IFRAME": "/authv2-dev/projects",
     "SERVICE_REQUIREMENTS": "/auth/algorithms",
     "PROJECT_LOCATION": "/installations/devices",
     "WASHROOM_LOCATION": "/installations/info",

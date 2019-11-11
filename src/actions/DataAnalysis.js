@@ -2,7 +2,8 @@ import ApiService from '../services/ApiService';
 import {DATA_ANALYSIS_PROJECT_LIST_SUB_MENU, DATA_ANALYSIS_INSTALLATION_LIST,
   PROJECT_ANALYSIS_DATA, PROJECT_ALERT_LIST, DISPENSER_DATA,
   PROJECT_METRIC_LIST, CLEAR_REDUCER, MODAL_PROJECT_ANALYSIS_DATA,
-  PROJECT_ANALYSIS_INITIALISE, PROJECT_METRIC_INITIALISE} from '../constants/ActionTypes';
+  PROJECT_ANALYSIS_INITIALISE, PROJECT_METRIC_INITIALISE,
+  PROJECT_IFRAME} from '../constants/ActionTypes';
 
 /**
  * Dispatched function to call the API service to get
@@ -168,5 +169,32 @@ export function InitialiseMetricState() {
   return {
     type: PROJECT_METRIC_INITIALISE,
     data: []
+  }
+}
+
+export function InitialiseIframeState() {
+  return {
+    type: PROJECT_IFRAME,
+    data: []
+  }
+}
+
+/**
+ * Dispatched function to call the API service to get
+ * the Iframe Details to be shown on UI
+ * @param {*} config 
+ */
+export function projectIframe(config) {
+  return function(dispatch) {
+    ApiService(config).then(data => {
+      dispatch(projectIframeReceived(data.data))
+    })
+  }
+}
+
+function projectIframeReceived(data) {
+  return {
+    type: PROJECT_IFRAME,
+    data
   }
 }
