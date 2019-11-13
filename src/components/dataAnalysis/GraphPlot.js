@@ -122,7 +122,7 @@ class GraphPlot extends Component {
         const {classes, metrics, graphData, nameMapper,
             stateData, handleSamplingChange, isDashboard,
             handleBarClick, handleClose, isCustomModal,
-            referenceMapper} = this.props;
+            referenceMapper, isDataView} = this.props;
         let emptyGraph = [{'name': 'No Data'}]
         const renderActiveShape = (props) => {
         /**
@@ -201,7 +201,7 @@ class GraphPlot extends Component {
                             <ResponsiveContainer width='100%' height={400}>
                                 <ComposedChart className={classes.lineChart} data={graphData[metric.metric_id]}
                                     margin={{top: 5, right: 30, left: 20, bottom: 5}}
-                                    onClick={e => !isCustomModal? !isDashboard ? handleBarClick(metric.metric_id): "" : ''}>
+                                    onClick={e => !isDataView ? !isCustomModal ? !isDashboard ? handleBarClick(metric.metric_id): "" : '' : ''}>
                                     {isCustomModal ?
                                         <XAxis dataKey="name" 
                                             minTickGap={20}
@@ -251,7 +251,7 @@ class GraphPlot extends Component {
                                                     // dataKey={key}
                                                     dataKey={this.state.selectedLine === null || this.state.selectedLine === key ? key : `${key} `}
                                                     dot={false}
-                                                    activeDot={{onClick: () => !isCustomModal ? !isDashboard ? handleBarClick(metric.metric_id): '' :''}}
+                                                    activeDot={{onClick: () => !isDataView ? !isCustomModal ? !isDashboard ? handleBarClick(metric.metric_id): '' :'': ''}}
                                                     isAnimationActive={false}
                                                     stroke={mapper['color']}
                                                     // onClick={e => !isCustomModal? handleBarClick(metric.metric_id): ''}
@@ -456,7 +456,7 @@ class GraphPlot extends Component {
                                 selected={this.state.selected}
                                 redirectID="v_sessionId"
                                 handleChange={this.handleChange}
-                                allowDelete={false} allowEdit={false}/>
+                                allowDelete={false} allowEdit={false} noView={false}/>
                             </div>
                         }
                     </div>

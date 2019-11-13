@@ -63,7 +63,7 @@ class TabData extends Component {
             handleChange={this.handleChange}
             handleClick={handleChange}
             redirectID="PID"
-            allowDelete={false} allowEdit={false}/>
+            allowDelete={false} allowEdit={false} noView={false}/>
         </Typography>
         return (
             <div>

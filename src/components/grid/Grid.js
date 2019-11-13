@@ -161,7 +161,8 @@ class EnhancedTable extends React.Component {
   render() {
     const { classes, data, stateData, rows, order, orderBy,
         rowsPerPage, page, handleClick, category, redirectID, allowDelete,
-        allowEdit, searchList, allowAdd, handleAddition, onAddition} = this.props;
+        allowEdit, searchList, allowAdd, handleAddition, onAddition,
+        noView} = this.props;
     const emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
     const queryToLower = this.state.query.toLowerCase();
     return (
@@ -234,7 +235,7 @@ class EnhancedTable extends React.Component {
                     <TableRow
                       hover
                       className={classes.pointer}
-                      onClick={(!allowEdit && handleClick) ?event => handleClick(event, n[redirectID], category): null}
+                      onClick={(!noView && handleClick) ?event => handleClick(event, n[redirectID], category): null}
                       aria-checked={isSelected}
                       tabIndex={-1}
                       key={n[redirectID]}

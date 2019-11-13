@@ -339,7 +339,7 @@ class InstallationData extends Component {
             this.setState({
                 pid: this.props.projectSelected.PID,
                 timeZone: this.props.projectSelected.Region,
-                dataAnalysis: {},
+                dashboardData: [],
                 value: ''
             }, function() {
                 this.props.history.push(this.props.projectSelected.PID);

@@ -127,10 +127,14 @@ class Health extends Component {
 
         if(this.props.HealthStatus &&
             (!isEqual(this.props.HealthStatus, prevProps.HealthStatus) ||
-            !this.state.data)){
+            !this.state.data)) {
             this.setState({data: this.props.HealthStatus}, function() {
                 this.getLocationDetails()
             })
+        }
+        if(this.props.HealthStatus === null &&
+            !isEqual(this.props.HealthStatus, prevProps.HealthStatus)) {
+            this.setState({loading: false})
         }
     /**
      * This part will get the list of locations per project,

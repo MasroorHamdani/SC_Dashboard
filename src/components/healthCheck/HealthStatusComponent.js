@@ -130,7 +130,7 @@ class HealthStatusComponent extends Component {
                                     handleChange={this.handleChange}
                                     searchList={searchList}
                                     redirectID="ID"
-                                    allowDelete={false} allowEdit={false}/>
+                                    allowDelete={false} allowEdit={false} noView={false}/>
                                 </Typography>
                             }
                         </Paper>

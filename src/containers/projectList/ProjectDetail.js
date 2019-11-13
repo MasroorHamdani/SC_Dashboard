@@ -11,6 +11,7 @@ import {getApiConfig} from '../../services/ApiCofig';
 import {formatDateTime} from '../../utils/DateFormat';
 import ProjectDescription from '../../components/projectCreation/ProjectDescription';
 import {getTokenData} from '../../utils/FormatStrings';
+import CustomPopOver from '../../components/modal/PopOver';
 
 import styles from './ProjectListStyle';
 
@@ -21,7 +22,9 @@ class ProjectDetail extends Component {
             pid: props.match.params.pid,
             loading: true,
             projectDetail: {},
-            open: false
+            open: false,
+            authError: '',
+            isAuthError: false
         }
     }
 
@@ -46,26 +49,34 @@ class ProjectDetail extends Component {
         }
         if(!isEmpty(this.props.projectData) && 
             !isEqual(this.props.projectData, prevProps.projectData)) {
-            if(this.props.projectData.status !== PROJECT_STATUS['ACTIVE'] &&
-                this.props.projectData.status !== PROJECT_STATUS['REJECT']) {
-                let projectDetail = this.props.projectData;
-                let email= [];
-                projectDetail.general['ProjectConfig']['HealthUpdates']['Email'].map((row) => {
-                    email.push(Object.values(row)[0])
-                })
-                projectDetail.general['Email'] = email.join()
-                projectDetail.locations.map((row) => {
-                    row.offtimes[0].Start = formatDateTime(row.offtimes[0].Start, "HHmm", "HH:mm");
-                    row.offtimes[0].End = formatDateTime(row.offtimes[0].End, "HHmm", "HH:mm")
-                })
+            if(this.props.projectData.status && this.props.projectData.status === 400) {
                 this.setState({
-                    projectDetail: this.props.projectData,
-                    loading: false
-                })
+                    loading: false,
+                    authError: this.props.projectData.data['Message'],
+                    isAuthError: true
+                });
             } else {
-                let arr = this.props.match.url.split('/');
-                let url = arr.slice(0, arr.indexOf('listproject')+1).join('/');
-                this.props.history.push(url);
+                if(this.props.projectData.status !== PROJECT_STATUS['ACTIVE'] &&
+                    this.props.projectData.status !== PROJECT_STATUS['REJECT']) {
+                    let projectDetail = this.props.projectData;
+                    let email= [];
+                    projectDetail.general['ProjectConfig']['HealthUpdates']['Email'].map((row) => {
+                        email.push(Object.values(row)[0])
+                    })
+                    projectDetail.general['Email'] = email.join()
+                    projectDetail.locations.map((row) => {
+                        row.offtimes[0].Start = formatDateTime(row.offtimes[0].Start, "HHmm", "HH:mm");
+                        row.offtimes[0].End = formatDateTime(row.offtimes[0].End, "HHmm", "HH:mm")
+                    })
+                    this.setState({
+                        projectDetail: this.props.projectData,
+                        loading: false
+                    })
+                } else {
+                    let arr = this.props.match.url.split('/');
+                    let url = arr.slice(0, arr.indexOf('listproject')+1).join('/');
+                    this.props.history.push(url);
+                }
             }
         }
     }
@@ -115,6 +126,10 @@ class ProjectDetail extends Component {
                         <ProjectDescription statedata={this.state}
                         handleModalState={this.handleModalState}
                         onClick={this.onClick}/>
+                    }
+                    {this.state.isAuthError &&
+                        <CustomPopOver content={this.state.authError} open={this.state.isAuthError}
+                        handleClose={this.handleClose} variant='error'/>
                     }
                 </main>
             </div>

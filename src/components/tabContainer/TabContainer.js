@@ -71,6 +71,7 @@ class TabContainer extends Component {
                 handleChange={this.handleChange} handleClick={handleClick} redirectID="UID"
                 handleAddition={handleAddition} onAddition={onAddition}
                 allowDelete={false}
+                noView={true}
                 allowEdit={stateData.projectSelected.Role === ROLES['SC_ADMIN'] ||
                         stateData.projectSelected.Role === ROLES['PARTNER_ADMIN'] ||
                         stateData.projectSelected.Role === ROLES['PROJECT_ADMIN']?

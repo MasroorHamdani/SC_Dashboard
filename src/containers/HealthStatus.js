@@ -56,17 +56,24 @@ class HealthStatus extends Component {
      * Reducer used - 'projectSelectReducer'
      */
         if(this.props.projectSelected && 
-            !isEqual(this.props.projectSelected, prevProps.projectSelected)){
-            if(this.state.pid !== this.props.projectSelected.PID)
-            this.setState({
-                pid: this.props.projectSelected.PID,
-                loading: true
-            }, function() {
-                let arr = this.props.match.url.split('/');
-                arr[4] = this.props.projectSelected.PID;
-                let url = arr.slice(0,5).join('/');
-                this.props.history.push(url);
-            });
+            !isEqual(this.props.projectSelected, prevProps.projectSelected)) {
+            if(this.state.pid !== this.props.projectSelected.PID) {
+                this.setState({
+                    pid: this.props.projectSelected.PID,
+                    loading: true
+                }, function() {
+                    let arr = this.props.match.url.split('/');
+                    if(arr[1] === "health") {
+                        arr[3] = this.props.projectSelected.PID;
+                        let url = arr.slice(0,4).join('/');
+                        this.props.history.push(url);
+                    } else {
+                        arr[4] = this.props.projectSelected.PID;
+                        let url = arr.slice(0,5).join('/');
+                        this.props.history.push(url);
+                    }
+                });
+            }
         }
 
         if (this.props.healthStatusLocation &&
