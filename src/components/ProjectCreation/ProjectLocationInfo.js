@@ -83,7 +83,7 @@ class ProjectLocationInfo extends Component {
                         required
                         id="offday"
                         name="offday"
-                        label="Off Days, seperated by ,"
+                        label="Off Days, like: Sunday, Monday"
                         fullWidth
                         value={data.location.offday}
                         onChange={e=>onChange(e, 'location')}/>

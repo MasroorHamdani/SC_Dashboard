@@ -1,7 +1,7 @@
 const styles = theme => ({
     root: {
-        display: 'flex',
-        width: '100%'
+        // display: 'flex',
+        width: '85%'//'100%'
     },
     main: {
         width: 'auto',

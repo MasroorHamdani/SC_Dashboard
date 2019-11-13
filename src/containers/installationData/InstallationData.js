@@ -231,22 +231,24 @@ class InstallationData extends Component {
             this.state.projectList.length === 0)) {
             let project = [],
             projObj = {}, SUB1, SUB2;;
-            const deviceResponse = this.props.projectSubMenuList;
-            projObj['id'] = deviceResponse[0].PID;
-            projObj['name'] = deviceResponse[0].PID;
-            deviceResponse.map((row) => {
-                SUB1 = NAMESPACE_MAPPER[row['NS']].SUB1;
-                SUB2 = NAMESPACE_MAPPER[row['NS']].SUB2;
-                row[SUB1] =  row.SUB1;
-                row[SUB2] = row.SUB2;
-            })
-            projObj['devices'] = deviceResponse;
-            project.push(projObj);
-            if(project[0] && project[0]['devices']) {
-            this.setState({
-                projectList: project,
-                loading: false,
+            const deviceResponse = this.props.projectSubMenuList.data;
+            if (deviceResponse){
+                projObj['id'] = deviceResponse[0].PID;
+                projObj['name'] = deviceResponse[0].PID;
+                deviceResponse.map((row) => {
+                    SUB1 = NAMESPACE_MAPPER[row['NS']].SUB1;
+                    SUB2 = NAMESPACE_MAPPER[row['NS']].SUB2;
+                    row[SUB1] =  row.SUB1;
+                    row[SUB2] = row.SUB2;
                 })
+                projObj['devices'] = deviceResponse;
+                project.push(projObj);
+            }
+            if(project[0] && project[0]['devices']) {
+                this.setState({
+                    projectList: project,
+                    loading: false,
+                    })
             }
         }
     /**
@@ -337,7 +339,7 @@ class InstallationData extends Component {
             this.setState({
                 pid: this.props.projectSelected.PID,
                 timeZone: this.props.projectSelected.Region,
-                dataAnalysis: {},
+                dashboardData: [],
                 value: ''
             }, function() {
                 this.props.history.push(this.props.projectSelected.PID);
@@ -389,7 +391,7 @@ class InstallationData extends Component {
 
 function mapStateToProps(state) {
     return {
-        projectSubMenuList : state.DataAnalysisProjectListSubMenuReducer.data,
+        projectSubMenuList : state.DataAnalysisProjectListSubMenuReducer,
         projectSelected : state.projectSelectReducer.data,
         projectMetricList: state.ProjectMetricListReducer.data,
         dataAnalysis : state.DataAnalysisReducer.data,

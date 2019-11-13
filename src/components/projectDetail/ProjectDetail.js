@@ -439,11 +439,11 @@ class ProjectDetail extends Component {
      * main api again.
      */
     if(this.props.userData && 
-      !isEqual(this.props.userData, prevProps.userData)){
-        if(this.props.userData['Message']) {
+      !isEqual(this.props.userData, prevProps.userData)) {
+        if(this.props.userData.status && this.props.userData.status === 400) {
           this.setState({
             loading: false,
-            authError: this.props.userData['Message'],
+            authError: this.props.userData.data['Message'],
             isAuthError: true
           });
         } else {

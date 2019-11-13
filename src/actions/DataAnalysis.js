@@ -2,7 +2,8 @@ import ApiService from '../services/ApiService';
 import {DATA_ANALYSIS_PROJECT_LIST_SUB_MENU, DATA_ANALYSIS_INSTALLATION_LIST,
   PROJECT_ANALYSIS_DATA, PROJECT_ALERT_LIST, DISPENSER_DATA,
   PROJECT_METRIC_LIST, CLEAR_REDUCER, MODAL_PROJECT_ANALYSIS_DATA,
-  PROJECT_ANALYSIS_INITIALISE, PROJECT_METRIC_INITIALISE} from '../constants/ActionTypes';
+  PROJECT_ANALYSIS_INITIALISE, PROJECT_METRIC_INITIALISE,
+  PROJECT_IFRAME} from '../constants/ActionTypes';
 
 /**
  * Dispatched function to call the API service to get
@@ -17,6 +18,9 @@ export function projectInstallationList(config) {
             dispatch(dataReceived(data.data))
           else if(data.data === null && data.status === 200)
             dispatch(dataReceived([]))
+      })
+      .catch(error => {
+        dispatch(dataReceived(error))
       })
   }
 }
@@ -39,6 +43,9 @@ export  function projectSubMenuList(config) {
         //on success we will dispatch a sync action with the data
         dispatch(subMenuDataReceived(data.data))
     })
+    .catch(error => {
+      dispatch(subMenuDataReceived(error))
+    })
   }
 }
 
@@ -60,6 +67,9 @@ export function projectAnalysisData(config) {
     ApiService(config).then(data => {
       dispatch(analysisDataReceived(data))
     })
+    .catch(error => {
+      dispatch(analysisDataReceived(error))
+    })
   }
 }
 
@@ -78,6 +88,9 @@ export function modalProjectAnalysisData(config) {
   return function(dispatch) {
     ApiService(config).then(data => {
       dispatch(modalAnalysisDataReceived(data))
+    })
+    .catch(error => {
+      dispatch(modalAnalysisDataReceived(error))
     })
   }
 }
@@ -100,6 +113,9 @@ export function projectAlertList(config) {
     ApiService(config).then(data => {
       dispatch(projectAlertListReceived(data.data))
     })
+    .catch(error => {
+      dispatch(projectAlertListReceived(error))
+    })
   }
 }
 
@@ -120,6 +136,9 @@ export function dispenserData(config) {
   return function(dispatch) {
     ApiService(config).then(data => {
       dispatch(dispenserDataReceived(data))
+    })
+    .catch(error => {
+      dispatch(dispenserDataReceived(error))
     })
   }
 }
@@ -147,6 +166,9 @@ export function projectDataMetricList(config) {
     ApiService(config).then(data => {
       dispatch(projectMetricReceived(data.data))
     })
+    .catch(error => {
+      dispatch(projectMetricReceived(error.data))
+    })
   }
 }
 
@@ -168,5 +190,32 @@ export function InitialiseMetricState() {
   return {
     type: PROJECT_METRIC_INITIALISE,
     data: []
+  }
+}
+
+export function InitialiseIframeState() {
+  return {
+    type: PROJECT_IFRAME,
+    data: []
+  }
+}
+
+/**
+ * Dispatched function to call the API service to get
+ * the Iframe Details to be shown on UI
+ * @param {*} config 
+ */
+export function projectIframe(config) {
+  return function(dispatch) {
+    ApiService(config).then(data => {
+      dispatch(projectIframeReceived(data.data))
+    })
+  }
+}
+
+function projectIframeReceived(data) {
+  return {
+    type: PROJECT_IFRAME,
+    data
   }
 }

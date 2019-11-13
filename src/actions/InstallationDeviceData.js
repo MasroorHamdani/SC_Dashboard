@@ -18,5 +18,8 @@ export function installationDeviceData(config) {
         ApiService(config).then(data => {
             dispatch(installationData(data.data))
         })
+        .catch(error => {
+            dispatch(installationData(error))
+        })
     }
 }

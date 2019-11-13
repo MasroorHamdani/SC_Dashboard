@@ -1,7 +1,7 @@
 import React, {Component} from "react";
 import {withStyles, LinearProgress} from '@material-ui/core';
 import { connect } from "react-redux";
-import _, {isEqual} from 'lodash';
+import _, {isEqual, isEmpty} from 'lodash';
 import JWTDecode from 'jwt-decode';
 
 import {API_URLS, PROJECT_STATUS, REACT_URLS,
@@ -11,6 +11,7 @@ import {getApiConfig} from '../../services/ApiCofig';
 import {formatDateTime} from '../../utils/DateFormat';
 import ProjectDescription from '../../components/projectCreation/ProjectDescription';
 import {getTokenData} from '../../utils/FormatStrings';
+import CustomPopOver from '../../components/modal/PopOver';
 
 import styles from './MyProjectListStyle';
 
@@ -22,7 +23,9 @@ class MyProjectDetail extends Component {
             parentId: props.match.params.partnerid,
             loading: true,
             projectDetail: {},
-            open: false
+            open: false,
+            authError: '',
+            isAuthError: false
         }
     }
 
@@ -47,29 +50,37 @@ class MyProjectDetail extends Component {
             }
         }
 
-        if(this.props.projectData && 
+        if(!isEmpty(this.props.projectData) && 
             !isEqual(this.props.projectData, prevProps.projectData)) {
-            if(this.props.projectData.status !== PROJECT_STATUS['ACTIVE'] &&
-                this.props.projectData.status !== PROJECT_STATUS['REJECT'] &&
-                this.props.projectData.status !== PROJECT_STATUS['DRAFT']) {
-                let projectDetail = this.props.projectData;
-                let email= [];
-                projectDetail.general['ProjectConfig']['HealthUpdates']['Email'].map((row) => {
-                    email.push(Object.values(row)[0])
-                })
-                projectDetail.general['Email'] = email.join()
-                projectDetail.locations.map((row) => {
-                    row.offtimes[0].Start = formatDateTime(row.offtimes[0].Start, "HHmm", "HH:mm");
-                    row.offtimes[0].End = formatDateTime(row.offtimes[0].End, "HHmm", "HH:mm")
-                })
+            if(this.props.projectData.status && this.props.projectData.status === 400) {
                 this.setState({
-                    projectDetail: this.props.projectData,
-                    loading: false
-                })
+                    loading: false,
+                    authError: this.props.projectData.data['Message'],
+                    isAuthError: true
+                });
             } else {
-                let arr = this.props.match.url.split('/');
-                let url = arr.slice(0, arr.indexOf('listproject')+1).join('/');
-                this.props.history.push(url);
+                if(this.props.projectData.status !== PROJECT_STATUS['ACTIVE'] &&
+                    this.props.projectData.status !== PROJECT_STATUS['REJECT'] &&
+                    this.props.projectData.status !== PROJECT_STATUS['DRAFT']) {
+                    let projectDetail = this.props.projectData;
+                    let email= [];
+                    projectDetail.general['ProjectConfig']['HealthUpdates']['Email'].map((row) => {
+                        email.push(Object.values(row)[0])
+                    })
+                    projectDetail.general['Email'] = email.join()
+                    projectDetail.locations.map((row) => {
+                        row.offtimes[0].Start = formatDateTime(row.offtimes[0].Start, "HHmm", "HH:mm");
+                        row.offtimes[0].End = formatDateTime(row.offtimes[0].End, "HHmm", "HH:mm")
+                    })
+                    this.setState({
+                        projectDetail: this.props.projectData,
+                        loading: false
+                    })
+                } else {
+                    let arr = this.props.match.url.split('/');
+                    let url = arr.slice(0, arr.indexOf('listproject')+1).join('/');
+                    this.props.history.push(url);
+                }
             }
         }
     }
@@ -124,6 +135,10 @@ class MyProjectDetail extends Component {
                         handleModalState={this.handleModalState}
                         onClick={this.onClick}
                         handleEdit={this.handleEdit}/>
+                    }
+                    {this.state.isAuthError &&
+                        <CustomPopOver content={this.state.authError} open={this.state.isAuthError}
+                        handleClose={this.handleClose} variant='error'/>
                     }
                 </main>
             </div>

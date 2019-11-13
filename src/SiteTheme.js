@@ -1,5 +1,5 @@
 import { createMuiTheme } from '@material-ui/core/styles';
-import {pink, red} from '@material-ui/core/colors';
+import {red} from '@material-ui/core/colors';
 import {THEME} from './constants/Constant';
 
 // All the following keys are optional.
@@ -12,7 +12,7 @@ const theme = createMuiTheme({
       light: THEME.light,
       main: THEME.main
     },
-    secondary: pink,
+    secondary: red,
     error: red,
     // Used by `getContrastText()` to maximize the contrast between the background and
     // the text.

@@ -90,6 +90,23 @@ const styles = theme => ({
     },
     temp: {
         width: '95%'
+    },
+    floatingRightButton: {
+        margin: 20,
+        top: 'auto',
+        right: 20,
+        bottom: 20,
+        left: 'auto',
+        position: 'fixed',
+    },
+    floatingLeftButton: {
+        margin: 20,
+        top: 'auto',
+        bottom: 20,
+        position: 'fixed',
+    },
+    containerPadding: {
+        padding: theme.spacing.unit * 3
     }
 });
 

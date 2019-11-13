@@ -17,7 +17,7 @@ class DataViewAnalysis extends Component {
             metricToUse = analyticsData.metricToUse,
             tabData = <GraphPlot graphData={graphData}
                         nameMapper={nameMapper} metrics={metricToUse}
-                        stateData={stateData}/>;
+                        stateData={stateData} isDataView={true}/>;
         return tabData;
     }
 

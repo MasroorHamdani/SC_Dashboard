@@ -30,6 +30,9 @@ const styles = theme => ({
     seperator: {
       marginTop: theme.spacing.unit * 1,
       marginBottom: theme.spacing.unit * 2,
+    },
+    topPadding: {
+      paddingTop: theme.spacing.unit * 4
     }
 });
 

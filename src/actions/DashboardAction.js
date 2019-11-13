@@ -23,6 +23,9 @@ export function dashboardData(config) {
           else
             dispatch(dataReceived(data.data))
       })
+      .catch(error => {
+        dispatch(dataReceived(error))
+      })
   }
 }
 

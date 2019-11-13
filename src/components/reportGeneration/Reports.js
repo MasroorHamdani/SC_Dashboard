@@ -206,7 +206,7 @@ class Reports extends Component {
                         selected={this.state.selected}
                         searchList={searchList}
                         redirectID="ID"
-                        allowDelete={false} allowEdit={false}/>
+                        allowDelete={false} allowEdit={false} noView={false}/>
                     }
                 </main>
             </div>

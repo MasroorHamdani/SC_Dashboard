@@ -1,21 +1,20 @@
 
 export const API_END_POINT = process.env.REACT_APP_API_END_POINT
 //"https://4l6qi5oh0h.execute-api.ap-southeast-1.amazonaws.com/prod";
-export const ADMIN = process.env.REACT_APP_ADMIN_API_END_POINT
+export const ADMIN = 'http://127.0.0.1:5000'//process.env.REACT_APP_ADMIN_API_END_POINT
 export const PROJECT_LEVEL = "project"
 
-export const NEW_API_END_POINT = "https://4l6qi5oh0h.execute-api.ap-southeast-1.amazonaws.com/betaV2"
+export const NEW_API_END_POINT = process.env.REACT_APP_NEW_API_END_POINT
 export const S3_REPORTS_END_POINT = process.env.REACT_APP_S3_REPORTS_END_POINT
-// export const S3_LOCATION_MAP_END_POINT = "https://4l6qi5oh0h.execute-api.ap-southeast-1.amazonaws.com/prod/assets"
 export const S3_LOCATION_MAP_END_POINT = process.env.REACT_APP_S3_LOCATION_MAP_END_POINT
 export const S3_BUCKET = process.env.REACT_APP_S3_BUCKET
 export const S3_REGION = process.env.REACT_APP_S3_REGION
 export const S3_ACCESS_KEY_ID = process.env.REACT_APP_S3_ACCESS_KEY_ID
 export const S3_SECRET_ACCESS_KEY = process.env.REACT_APP_S3_SECRET_ACCESS_KEY
+export const API_END_POINT_IFRAME = process.env.REACT_APP_API_END_POINT_IFRAME
 
 export const SC_LOGO = 'https://scprojectimages.s3-ap-southeast-1.amazonaws.com/SC_logo.png'
-//process.env.REACT_APP_S3_LOCATION_MAP_END_POINT
-//"https://80y6zxl35d.execute-api.ap-southeast-1.amazonaws.com/beta/reports";
+
 export const API_URLS = {
     "LOGIN": "/unauth/login",
     "REFRESH_TOKEN": "/unauth/login",
@@ -29,6 +28,7 @@ export const API_URLS = {
     "DEVICE_DATA": "/authV2/devices/datatemp/project",
     "NEW_DEVICE_DATA": "/authV2/devices/datanew/analytics/projects",
     "DEVICE_METRICS": "/auth/devices/metrics",
+    "PROJECT_IFRAME": "/authv2-dev/projects",
     "SERVICE_REQUIREMENTS": "/auth/algorithms",
     "PROJECT_LOCATION": "/installations/devices",
     "WASHROOM_LOCATION": "/installations/info",

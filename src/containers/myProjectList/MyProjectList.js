@@ -62,10 +62,10 @@ class MyProjectList extends Component {
 
         if(this.props.projectList && 
             !isEqual(this.props.projectList, prevProps.projectList)) {
-            if(this.props.projectList['Message']) {
+            if(this.props.projectList.status && this.props.projectList.status === 400) {
                 this.setState({
                     loading: false,
-                    authError: this.props.projectList['Message'],
+                    authError: this.props.projectList.data['Message'],
                     isAuthError: true
                 });
             } else {

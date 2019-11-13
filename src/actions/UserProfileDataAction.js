@@ -12,6 +12,9 @@ export function profileData(config) {
         ApiService(config).then(data => {
             dispatch(UserDataReceived(data.data))
         })
+        .catch(error => {
+            dispatch(UserDataReceived(error))
+        })
     }
 }
 function UserDataReceived (data){
@@ -31,6 +34,9 @@ export function profileDataUpdate(config) {
     return function(dispatch) {
         ApiService(config).then(data => {
             dispatch(UserDataUpdated(data.data))
+        })
+        .catch(error => {
+            dispatch(UserDataUpdated(error))
         })
     }
 }

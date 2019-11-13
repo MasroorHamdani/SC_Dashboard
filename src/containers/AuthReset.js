@@ -36,15 +36,15 @@ class AuthReset extends Component {
                             errorMessage: '',
                             disableBtn: true
                         })
-                    const endPoint = API_URLS['AUTH_RESET_PASSWORD'],
+                        const endPoint = API_URLS['AUTH_RESET_PASSWORD'],
                             dataToPost = {
-                            "uname": this.state.email,
-                            "passwd": this.state.password,
-                            "apikey": this.state.code,
-                            "session": localStorage.getItem('session')
-                        },
-                        config = getApiConfig(endPoint, 'POST', dataToPost);
-                    this.props.onAuthReset(config);
+                                "uname": this.state.email,
+                                "passwd": this.state.password,
+                                "apikey": this.state.code,
+                                "session": localStorage.getItem('session')
+                            },
+                            config = getApiConfig(endPoint, 'POST', dataToPost);
+                        this.props.onAuthReset(config);
                     }
                 } else {
                     this.setState({
@@ -64,18 +64,30 @@ class AuthReset extends Component {
     }
 
     componentDidUpdate(prevProps, prevState) {
-        if (this.props.userData.LoginReducer.data
-            && !isEqual(this.props.userData.LoginReducer, prevProps.userData.LoginReducer)) {
-                const responseData = this.props.userData.LoginReducer.data;
-                localStorage.setItem('idToken', responseData['AuthenticationResult']['IdToken']);
-                localStorage.setItem('refreshToken', responseData['AuthenticationResult']['RefreshToken']);
-                if (this.state.loading) {
+        if (this.props.userData
+            && !isEqual(this.props.userData, prevProps.userData)) {
+                const responseData = this.props.userData;
+                if(typeof(responseData) === "string" && responseData.includes('NotAuthorizedException'))
                     this.setState({
-                      loading: false,
-                      success: true,
+                        errorMessage: 'Invalid session for the user, session is expired',
+                        disableBtn: false
                     });
+                else if(typeof(responseData) === "string" && responseData.includes('InvalidParameterException'))
+                    this.setState({
+                        errorMessage: 'Invalid attributes given',
+                        disableBtn: false
+                    });
+                else {
+                    localStorage.setItem('idToken', responseData['AuthenticationResult']['IdToken']);
+                    localStorage.setItem('refreshToken', responseData['AuthenticationResult']['RefreshToken']);
+                    if (this.state.loading) {
+                        this.setState({
+                        loading: false,
+                        success: true,
+                        });
+                    }
+                    this.props.history.push(REACT_URLS.DASHBOARD(this.props.match.params.partnerid));
                 }
-                this.props.history.push(REACT_URLS.DASHBOARD(this.props.match.params.partnerid));
         }
     }
 
@@ -87,7 +99,7 @@ class AuthReset extends Component {
 }
 function mapStateToProps(state) {
     return {
-        userData : state
+        userData : state.LoginReducer.data
     }
 }
   
