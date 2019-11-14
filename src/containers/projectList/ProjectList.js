@@ -121,6 +121,8 @@ class ProjectList extends Component {
                             variant="fullWidth">
                             <Tab label='Pending'
                                 value='pending'/>
+                            <Tab label='Draft'
+                                value='draft'/>
                             <Tab label='Active'
                                 value='active'/>
                             <Tab label='Reject'

@@ -821,7 +821,7 @@ class ProjectCreate extends Component {
         return (
             <div className={classes.root}>
                 <main className={classes.content}>
-                    {(this.state.general && !isEmpty(this.state.general))?
+                    {(this.state.general && !isEmpty(this.state.general)) &&
                         <ProjectCreation onChange={this.handleChange}
                             data={this.state}
                             onClick={this.handleClick}
@@ -832,7 +832,6 @@ class ProjectCreate extends Component {
                             editArea={this.editArea}
                             handleFileUpload={this.handleFileUpload}
                             deleteObject={window.deleteObject}/>
-                    :<Typography>Project doesn't Exist</Typography>
                     }
                 </main>
                 {this.state.isAuthError &&

@@ -114,6 +114,10 @@ class ProjectDetail extends Component {
         this.handleModalState();
     }
 
+    handleEdit = (type) => {
+        this.props.history.push(`${REACT_URLS.NEW_PROJECT(this.state.parentId)}/${this.state.pid}`);
+    }
+
     render() {
         const {classes} = this.props
         return (
@@ -125,7 +129,8 @@ class ProjectDetail extends Component {
                     {this.state.projectDetail &&
                         <ProjectDescription statedata={this.state}
                         handleModalState={this.handleModalState}
-                        onClick={this.onClick}/>
+                        onClick={this.onClick}
+                        handleEdit={this.handleEdit}/>
                     }
                     {this.state.isAuthError &&
                         <CustomPopOver content={this.state.authError} open={this.state.isAuthError}
