@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import {withStyles} from '@material-ui/core';
+import {withStyles, Typography} from '@material-ui/core';
 import { connect } from "react-redux";
 import _, {isEqual, isEmpty} from 'lodash';
 // import S3FileUpload from 'react-s3';
@@ -821,16 +821,19 @@ class ProjectCreate extends Component {
         return (
             <div className={classes.root}>
                 <main className={classes.content}>
-                    <ProjectCreation onChange={this.handleChange}
-                        data={this.state}
-                        onClick={this.handleClick}
-                        onLocationAddtion={this.onLocationAddtion}
-                        onAreaAddtion={this.onAreaAddtion}
-                        handleModalState={this.handleModalState}
-                        editLocation={this.editLocation}
-                        editArea={this.editArea}
-                        handleFileUpload={this.handleFileUpload}
-                        deleteObject={window.deleteObject}/>
+                    {(this.state.general && !isEmpty(this.state.general))?
+                        <ProjectCreation onChange={this.handleChange}
+                            data={this.state}
+                            onClick={this.handleClick}
+                            onLocationAddtion={this.onLocationAddtion}
+                            onAreaAddtion={this.onAreaAddtion}
+                            handleModalState={this.handleModalState}
+                            editLocation={this.editLocation}
+                            editArea={this.editArea}
+                            handleFileUpload={this.handleFileUpload}
+                            deleteObject={window.deleteObject}/>
+                    :<Typography>Project doesn't Exist</Typography>
+                    }
                 </main>
                 {this.state.isAuthError &&
                     <CustomPopOver content={this.state.authError} open={this.state.isAuthError}
