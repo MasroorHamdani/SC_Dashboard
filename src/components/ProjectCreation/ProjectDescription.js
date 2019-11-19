@@ -30,7 +30,7 @@ class ProjectDescription extends Component {
                 }
                 { !isEmpty(statedata.projectDetail.locations) &&
                     <Grid item
-                        // xs={true}
+                        xs={true}
                         >
                         <Typography variant="h6">
                             Project Location Details
@@ -41,7 +41,7 @@ class ProjectDescription extends Component {
                 }
                 { !isEmpty(statedata.projectDetail.area) &&
                     <Grid item
-                        // xs={true}
+                        xs={true}
                         >
                         <Typography variant="h6">
                             Project Area Details
