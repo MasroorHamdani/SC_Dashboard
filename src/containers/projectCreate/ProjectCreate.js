@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import {withStyles, Typography} from '@material-ui/core';
+import {withStyles} from '@material-ui/core';
 import { connect } from "react-redux";
 import _, {isEqual, isEmpty} from 'lodash';
 // import S3FileUpload from 'react-s3';

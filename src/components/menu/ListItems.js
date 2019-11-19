@@ -9,8 +9,13 @@ import SettingsIcon from '@material-ui/icons/Settings';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import CreateIcon from '@material-ui/icons/CreateNewFolder';
 import ListIcon from '@material-ui/icons/ViewList';
+import IconExpandLess from '@material-ui/icons/ExpandLess';
+import IconExpandMore from '@material-ui/icons/ExpandMore';
+import DataUsageIcon from '@material-ui/icons/DataUsage';
+import ShowChartIcon from '@material-ui/icons/ShowChart'
 
-import {ListItem, ListItemIcon, ListItemText, Tooltip, withStyles} from '@material-ui/core';
+import {ListItem, ListItemIcon, ListItemText, Tooltip,
+    withStyles, Collapse, Divider, List} from '@material-ui/core';
 import {Link} from "react-router-dom";
 
 import styles from "./MenuStyle";
@@ -41,21 +46,27 @@ class ListItems extends Component {
                 return <CreateIcon/>;
             case 'ListIcon':
                 return <ListIcon/>;
+            case 'DataUsageIcon':
+                return <DataUsageIcon/>;
+            case 'ShowChartIcon':
+                return <ShowChartIcon/>
             default:
                 return '';
         }
     }
     render() {
         const {menuList, classes,
-            activeRoute, menuState} = this.props;
+            activeRoute, menuState, handleClick, open} = this.props;
         if(menuList) {
             const menu = menuList.map((row, index) => {
                 const icon = row.icon;
                 return (
+                    <div>
                     <Tooltip title={!menuState ? row.toolTip : ''} key={index}>
-                        <ListItem button component={Link} to={row.url}
-                            className={activeRoute(row.url) ? classes.isActive: ''}>
-                            
+                        <ListItem button component={!row.nestedMenu ? Link : ''}
+                            to={!row.nestedMenu ? row.url: ''}
+                            className={row.nestedMenu ? activeRoute(row.url) ? classes.isActive: '' : ''}
+                            onClick={row.nestedMenu ? handleClick: ''}>
                                 <ListItemIcon>
                                     {this.renderSwitch(icon)}
                                 </ListItemIcon>
@@ -65,8 +76,29 @@ class ListItems extends Component {
                                 <ListItemText primary={t(row.name)} />
                             }
                             </NamespacesConsumer>
+                            {row.nestedMenu ? open ? <IconExpandLess /> : <IconExpandMore /> : ''}
                         </ListItem>
                     </Tooltip>
+                    {row.nestedMenu &&
+                        <Collapse in={open} timeout="auto" unmountOnExit>
+                            <Divider />
+                            <List component="div" disablePadding>
+                                {row.submenu.map((innerRow, innerIndex) => {
+                                    return <Tooltip title={innerRow.toolTip} key={innerIndex}>
+                                        <ListItem button component={Link} to={innerRow.url}
+                                            className={activeRoute(innerRow.url) ? classes.isActive: ''}>
+                                            <ListItemIcon>
+                                                {this.renderSwitch(innerRow.icon)}
+                                            </ListItemIcon>
+                                            <ListItemText inset primary={innerRow.name} />
+                                        </ListItem>
+                                    </Tooltip>
+                                })}
+                            </List>
+                            <Divider />
+                        </Collapse>
+                        }
+                    </div>
                 )
             });
             return(

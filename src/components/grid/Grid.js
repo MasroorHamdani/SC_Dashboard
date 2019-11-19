@@ -12,7 +12,6 @@ import EnhancedTableHead from './GridHeader';
 import styles from "./GridStyle";
 import CustomModal from '../../components/modal/Modal';
 import { NamespacesConsumer } from 'react-i18next';
-import { isDeepStrictEqual } from 'util';
 
 function desc(a, b, orderBy) {
 /**
