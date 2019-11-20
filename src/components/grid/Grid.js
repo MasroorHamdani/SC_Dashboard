@@ -224,7 +224,7 @@ class EnhancedTable extends React.Component {
             * Handle the filtered data as well as the sorting of the data
             */}
               {stableSort(this.state.query ?
-              data.filter(x => x[this.state.queryToColumn].toLowerCase().includes(queryToLower)) :
+              data.filter(x => x[this.state.queryToColumn] && x[this.state.queryToColumn].toLowerCase().includes(queryToLower)) :
               data,
               getSorting(order, orderBy))
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
