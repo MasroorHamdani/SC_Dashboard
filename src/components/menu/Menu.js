@@ -23,7 +23,8 @@ class Menu extends Component {
       open: true,
       pid: '',
       menu: [],
-      partnerid: localStorage.getItem('partnerid')
+      partnerid: localStorage.getItem('partnerid'),
+      openSubMenu: true
     }
   }
 
@@ -91,6 +92,12 @@ class Menu extends Component {
     return this.props.location.pathname === routeName ? true : false;
   }
 
+  handleClick = () => {
+    this.setState({
+      openSubMenu: !this.state.openSubMenu
+    })
+  }
+
   render() {
     const { classes } = this.props;
 
@@ -113,7 +120,8 @@ class Menu extends Component {
           </div>
           <Divider />
           <List>
-            <ListItems menuList={this.state.menu} activeRoute={this.activeRoute} menuState={this.state.open}/></List>
+            <ListItems menuList={this.state.menu} activeRoute={this.activeRoute}
+              menuState={this.state.open} handleClick={this.handleClick} open={this.state.openSubMenu}/></List>
           {(this.state.role &&
             (this.state.role === ROLES['PARTNER_ADMIN'] ||
             this.state.role === ROLES['SC_ADMIN'] ||
@@ -123,7 +131,8 @@ class Menu extends Component {
               <Divider />
               <Typography className={classes.header}>Project Management</Typography>
               <List>
-                <ListItems menuList={this.state.secondaryMenu} activeRoute={this.activeRoute} menuState={this.state.open}/>
+                <ListItems menuList={this.state.secondaryMenu} activeRoute={this.activeRoute}
+                  menuState={this.state.open}/>
               </List>
             </div>
           }

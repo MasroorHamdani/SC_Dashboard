@@ -55,3 +55,10 @@ export function getTodaysStartDateTime () {
     dateTime.setHours(0,0,0,0);
     return dateTime;
 }
+
+export function convertUnixToDateObj(time, outFormat) {
+    if(time) {
+        time =  moment.unix(time).format(outFormat);
+    }
+    return time
+}

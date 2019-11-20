@@ -17,26 +17,38 @@ class ProjectDescription extends Component {
         return (<div className={classes.containerPadding}>
             {!isEmpty(statedata.projectDetail) &&
             <Grid container>
-                <Grid item xs={true}>
-                    <Typography variant="h6">
-                        Project General Details
-                    </Typography>
-                    <ProjectGeneralInfo data={statedata.projectDetail}/>
-                    <Divider className={classes.divider}/>
-                </Grid>
-                <Grid item xs={true}>
-                    <Typography variant="h6">
-                        Project Location Details
-                    </Typography>
-                    <ProjectLocationInfo data={statedata.projectDetail}/>
-                    <Divider className={classes.divider}/>
-                </Grid>
-                <Grid item xs={true}>
-                    <Typography variant="h6">
-                        Project Area Details
-                    </Typography>
-                    <ProjectAreaInfo data={statedata.projectDetail}/>
-                </Grid>
+                {statedata.projectDetail &&
+                    <Grid item
+                        // xs={true}
+                    >
+                        <Typography variant="h6">
+                            Project General Details
+                        </Typography>
+                        <ProjectGeneralInfo data={statedata.projectDetail}/>
+                        <Divider className={classes.divider}/>
+                    </Grid>
+                }
+                { !isEmpty(statedata.projectDetail.locations) &&
+                    <Grid item
+                        xs={true}
+                        >
+                        <Typography variant="h6">
+                            Project Location Details
+                        </Typography>
+                        <ProjectLocationInfo data={statedata.projectDetail}/>
+                        <Divider className={classes.divider}/>
+                    </Grid>
+                }
+                { !isEmpty(statedata.projectDetail.area) &&
+                    <Grid item
+                        xs={true}
+                        >
+                        <Typography variant="h6">
+                            Project Area Details
+                        </Typography>
+                        <ProjectAreaInfo data={statedata.projectDetail}/>
+                    </Grid>
+                }
                 {statedata.projectDetail.general.SUB2 === PROJECT_STATUS['DRAFT'] ?
                     <Button
                         variant="contained"

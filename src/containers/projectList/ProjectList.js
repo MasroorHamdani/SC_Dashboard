@@ -6,11 +6,12 @@ import _, {isEqual, isEmpty} from 'lodash';
 import JWTDecode from 'jwt-decode';
 
 import TabData from '../../components/projectCreation/TabData';
-import {API_URLS, REACT_URLS, ROLES} from '../../constants/Constant';
+import {API_URLS, REACT_URLS, ROLES, DESCRIPTIVE_DATE_TIME_FORMAT} from '../../constants/Constant';
 import {getApiConfig} from '../../services/ApiCofig';
 import {projectList, InitialiseAdminProject} from  '../../actions/AdminAction';
 import CustomPopOver from '../../components/modal/PopOver';
 import {getTokenData} from '../../utils/FormatStrings';
+import {convertUnixToDateObj} from '../../utils/DateFormat';
 
 import styles from './ProjectListStyle';
 
@@ -67,10 +68,17 @@ class ProjectList extends Component {
                     isAuthError: true
                 });
             } else {
-                this.setState({
-                    projectList: this.props.projectList,
-                    loading: false
-                })
+                if (!isEmpty(this.props.projectList)) {
+                    this.props.projectList.map((row) => {
+                        if(row.CreatedOn) {
+                            row.CreatedOn = convertUnixToDateObj(row.CreatedOn, DESCRIPTIVE_DATE_TIME_FORMAT)
+                        }
+                    })
+                    this.setState({
+                        projectList: this.props.projectList,
+                        loading: false
+                    })
+                }
             }
         }
     }
@@ -121,6 +129,8 @@ class ProjectList extends Component {
                             variant="fullWidth">
                             <Tab label='Pending'
                                 value='pending'/>
+                            <Tab label='Draft'
+                                value='draft'/>
                             <Tab label='Active'
                                 value='active'/>
                             <Tab label='Reject'

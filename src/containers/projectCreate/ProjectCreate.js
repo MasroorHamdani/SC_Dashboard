@@ -821,16 +821,18 @@ class ProjectCreate extends Component {
         return (
             <div className={classes.root}>
                 <main className={classes.content}>
-                    <ProjectCreation onChange={this.handleChange}
-                        data={this.state}
-                        onClick={this.handleClick}
-                        onLocationAddtion={this.onLocationAddtion}
-                        onAreaAddtion={this.onAreaAddtion}
-                        handleModalState={this.handleModalState}
-                        editLocation={this.editLocation}
-                        editArea={this.editArea}
-                        handleFileUpload={this.handleFileUpload}
-                        deleteObject={window.deleteObject}/>
+                    {(this.state.general && !isEmpty(this.state.general)) &&
+                        <ProjectCreation onChange={this.handleChange}
+                            data={this.state}
+                            onClick={this.handleClick}
+                            onLocationAddtion={this.onLocationAddtion}
+                            onAreaAddtion={this.onAreaAddtion}
+                            handleModalState={this.handleModalState}
+                            editLocation={this.editLocation}
+                            editArea={this.editArea}
+                            handleFileUpload={this.handleFileUpload}
+                            deleteObject={window.deleteObject}/>
+                    }
                 </main>
                 {this.state.isAuthError &&
                     <CustomPopOver content={this.state.authError} open={this.state.isAuthError}

@@ -49,9 +49,11 @@ class TabData extends Component {
         let tabData, rows, searchList;
         rows = [{ id: 'site', numeric: 'left', disablePadding: false, label: 'Site' },
                 { id: 'site_addr', numeric: 'left', disablePadding: false, label: 'Site Location' },
+                {id: 'CreatedOn', numeric: 'left', disablePadding: false, label: 'Created On'}
             ];
         searchList = [{ id: 'site', label: 'Site' },
                 { id: 'site_addr', label: 'Site Location' },
+                {id: 'CreatedOn', label: 'Created On'}
             ]
         tabData = <Typography component="div">
         <EnhancedTable data={stateData.projectList} rows={rows}

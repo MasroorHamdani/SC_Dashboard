@@ -18,16 +18,22 @@ export function mainMenuList (pid, partnerId) {
         toolTip: "Project details"
       },
       {
-        name: "Data View",
-        url: partnerId ? `/${partnerId}/view/project/${pid}` : `/view/project/${pid}`,
-        icon: "BarChartIcon",
-        toolTip: "Data View"
-      },
-      {
-        name: "Data Analytics",
-        url: partnerId ? `/${partnerId}/data/project/${pid}` : `/data/project/${pid}`,
-        icon: "BarChartIcon",
-        toolTip: "Data Analytics"
+        name: "Data Analysis",
+        nestedMenu: true,
+        icon: "DataUsageIcon",
+        toolTip: "Data Analysis",
+        submenu: [{
+          name: "Data View",
+          url: partnerId ? `/${partnerId}/view/project/${pid}` : `/view/project/${pid}`,
+          icon: "ShowChartIcon",
+          toolTip: "Data View"
+        },
+        {
+          name: "Data Analytics",
+          url: partnerId ? `/${partnerId}/data/project/${pid}` : `/data/project/${pid}`,
+          icon: "BarChartIcon",
+          toolTip: "Data Analytics"
+        }]
       },
       {
         name: "Reports",
