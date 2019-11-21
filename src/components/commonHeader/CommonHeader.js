@@ -24,7 +24,7 @@ class CommonHeader extends Component {
               t=><div className={classes.root}>
                 <AppBar position="static" className={classes.appBar}>
                   <Toolbar>
-                    <Typography variant="h6" color="inherit" className={classes.grow}>
+                    <Typography variant="h6" className={classes.grow}>
                     <img src={localStorage.getItem('logo') ? localStorage.getItem('logo') : {SC_LOGO}} alt="logo" className={classes.logo}/>
                     </Typography>
                     {/* <Button color="inherit" component={Link} to='/contact'>{t('Contact')}</Button>

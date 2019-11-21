@@ -16,8 +16,8 @@ class Footer extends Component {
     return (
       <AppBar
         position="fixed"
-        color="primary"
-        className={classNames(classes.appBar)}
+        // color="primary"
+        className={classes.appBar}
         >
         <NamespacesConsumer>
           {

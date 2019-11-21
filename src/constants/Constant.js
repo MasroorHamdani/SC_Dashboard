@@ -344,9 +344,9 @@ export const RANGE_ERROR = "Please select Range within End Date limits - *Reset 
 
 export const THEME = {
     highlighter: '#b7d1b4',
-    lighter: '#a9c8a4',
-    light: '#8db788',
-    main: '#68a554'
+    lighter: '#4385b9', //'#a9c8a4',
+    light: '#ffffff', //'#8db788',
+    main: '#4385b9'//'#68a554'
 }
 
 export const PROJECT_CREATION = {

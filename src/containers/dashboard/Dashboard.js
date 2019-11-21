@@ -230,16 +230,18 @@ class Dashboard extends Component {
     if(this.props.projectIframe &&
       !isEqual(this.props.projectIframe, prevProps.projectIframe)) {
         let projectIframe = this.props.projectIframe;
+        let iframeLink=[]
         projectIframe.map((row) => {
           if(!isEmpty(row['E'])) {
             row['E'].map((innerRow) => {
               if(innerRow['type'] === 'iframe') {
-                this.setState({
-                  iframeLink: innerRow['value']
-                })
+                iframeLink.push(innerRow['value'])
               }
             })
           }
+        })
+        this.setState({
+          iframeLink: iframeLink//innerRow['value']
         })
     }
   }

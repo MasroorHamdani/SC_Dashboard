@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 
+import {isEmpty} from "lodash";
 import {withStyles, Card, CardHeader,
     CardContent, Avatar} from '@material-ui/core';
 import Iframe from 'react-iframe'
@@ -21,22 +22,25 @@ class DataCard extends Component{
     }
     render() {
         const {classes, row, stateData} = this.props;
-        let tabData, iframeContent;
+        let tabData, iframeContent = [];
         if(row.dataAnalysis && row.dataAnalysis.metrics) {
             tabData = this.generateDataAnalytics(row.dataAnalysis.metrics,
                 row.allMetrics, classes, stateData);
         }
 
-        if(stateData.iframeLink) {
-            iframeContent = <Iframe 
-                            url={stateData.iframeLink}
-                            width="100%"
-                            height="700px"
-                            id="iframeId"
-                            display="initial"
-                            position="relative"
-                            className={classes.topPadding}
-                            frameBorder="0"/>
+        if(!isEmpty(stateData.iframeLink)) {
+            stateData.iframeLink.map((row) => {
+                iframeContent.push(<Iframe 
+                    url={row}
+                    width="100%"
+                    height="700px"
+                    id="iframeId"
+                    display="initial"
+                    position="relative"
+                    className={classes.topPadding}
+                    frameBorder="0"/>)
+            })
+            
         }
         return (
             <div className={classes.flexContainer} key={row.PID}>

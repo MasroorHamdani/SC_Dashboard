@@ -2,6 +2,7 @@ import {blueGrey} from '@material-ui/core/colors';
 const drawerWidth = 240;
 const styles = theme => ({
   drawerPaper: {
+    color: "#ffffff",
     position: 'relative',
     whiteSpace: 'nowrap',
     // height: '100vh',
@@ -20,6 +21,7 @@ const styles = theme => ({
     // '&:focus': { backgroundColor: 'rgba(0, 0, 0, 0.0)' }
   },
   drawerPaperClose: {
+    color: "#ffffff",
     // height: '100vh',
     overflowX: 'hidden',
     transition: theme.transitions.create('width', {
@@ -39,12 +41,25 @@ const styles = theme => ({
     ...theme.mixins.toolbar,
   },
   version :{
-    paddingLeft: '70px'//'80px'
+    paddingLeft: '70px',//'80px'
+    color: '#f0f8ff',
+    opacity: '0.5',
+    // fontFamily: 'sans-serif'
   },
   header: {
     paddingLeft: '70px',
-    opacity: '0.5'
-  }
+    opacity: '0.5',
+    color: '#f0f8ff',
+    // fontFamily: 'sans-serif'
+  },
+  textFontColor: {
+    // fontFamily: "Font Awesome 5 Free",
+    color: "#ffffff",
+    fontSize: ".85rem"
+  },
+  whiteFont: {
+    color: "#ffffff"
+  },
 });
 
 export default styles;

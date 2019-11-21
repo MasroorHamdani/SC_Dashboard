@@ -24,7 +24,7 @@ class Menu extends Component {
       pid: '',
       menu: [],
       partnerid: localStorage.getItem('partnerid'),
-      openSubMenu: true
+      openSubMenu: false
     }
   }
 
@@ -58,6 +58,11 @@ class Menu extends Component {
             secondaryMenu: secondaryMenuList(this.state.role, this.state.partnerid)
           })
         }
+      })
+    }
+    if(window.location.pathname.includes('view/project') || window.location.pathname.includes('data/project')) {
+      this.setState({
+        openSubMenu: true
       })
     }
   }
@@ -115,7 +120,7 @@ class Menu extends Component {
           open={!this.state.open}>
           <div className={classes.toolbarIcon}>
             <IconButton onClick={this.handleDrawerClose}>
-              <ChevronLeftIcon />
+              <ChevronLeftIcon className={classes.whiteFont}/>
             </IconButton>
           </div>
           <Divider />

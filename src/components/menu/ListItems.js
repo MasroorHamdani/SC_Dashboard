@@ -65,15 +65,15 @@ class ListItems extends Component {
                     <Tooltip title={!menuState ? row.toolTip : ''} key={index}>
                         <ListItem button component={!row.nestedMenu ? Link : ''}
                             to={!row.nestedMenu ? row.url: ''}
-                            className={row.nestedMenu ? activeRoute(row.url) ? classes.isActive: '' : ''}
+                            className={!row.nestedMenu ? activeRoute(row.url) ? classes.isActive: '' : ''}
                             onClick={row.nestedMenu ? handleClick: ''}>
-                                <ListItemIcon>
+                                <ListItemIcon className={classes.whiteFont}>
                                     {this.renderSwitch(icon)}
                                 </ListItemIcon>
                             <NamespacesConsumer>
                             {
                                 t=>
-                                <ListItemText primary={t(row.name)} />
+                                <ListItemText disableTypography={true} primary={t(row.name)} className={classes.textFontColor}/>
                             }
                             </NamespacesConsumer>
                             {row.nestedMenu ? open ? <IconExpandLess /> : <IconExpandMore /> : ''}
@@ -87,10 +87,12 @@ class ListItems extends Component {
                                     return <Tooltip title={innerRow.toolTip} key={innerIndex}>
                                         <ListItem button component={Link} to={innerRow.url}
                                             className={activeRoute(innerRow.url) ? classes.isActive: ''}>
-                                            <ListItemIcon>
+                                            <ListItemIcon className={classes.whiteFont}>
                                                 {this.renderSwitch(innerRow.icon)}
                                             </ListItemIcon>
-                                            <ListItemText inset primary={innerRow.name} />
+                                            <ListItemText
+                                            // inset
+                                            disableTypography={true} primary={innerRow.name} className={classes.textFontColor}/>
                                         </ListItem>
                                     </Tooltip>
                                 })}
