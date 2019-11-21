@@ -80,7 +80,8 @@ class App extends React.Component {
                   highlighter: data.data[0].Details.highlighter ? data.data[0].Details.highlighter : theme.palette.primary.highlighter,
                   lighter: data.data[0].Details.lighter ? data.data[0].Details.lighter : theme.palette.primary.lighter,
                   light: data.data[0].Details.light ? data.data[0].Details.light : theme.palette.primary.light,
-                  main: data.data[0].Details.main ? data.data[0].Details.main : theme.palette.primary.main
+                  main: data.data[0].Details.main ? data.data[0].Details.main : theme.palette.primary.main,
+                  textcolor: data.data[0].Details.textcolor ? data.data[0].Details.textcolor : theme.palette.primary.textcolor,
                 }
                 self.setState({holdComponents: false});
             } else if (data && data.data === null) {

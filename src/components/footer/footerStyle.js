@@ -9,7 +9,7 @@ const styles = theme => ({
       title: {
         flexGrow: 1,
         textAlign: 'center',
-        color: '#ffffff'
+        color: `${theme.palette.primary.textcolor}` //"#ffffff"
       }
 });
 

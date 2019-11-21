@@ -10,7 +10,8 @@ const theme = createMuiTheme({
       highlighter: THEME.highlighter,
       lighter: THEME.lighter, 
       light: THEME.light,
-      main: THEME.main
+      main: THEME.main,
+      textcolor: THEME.textcolor
     },
     secondary: red,
     error: red,
