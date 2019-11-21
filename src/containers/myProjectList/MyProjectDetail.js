@@ -64,13 +64,16 @@ class MyProjectDetail extends Component {
                     this.props.projectData.status !== PROJECT_STATUS['DRAFT']) {
                     let projectDetail = this.props.projectData;
                     let email= [];
-                    projectDetail.general['ProjectConfig']['HealthUpdates']['Email'].map((row) => {
-                        email.push(Object.values(row)[0])
-                    })
-                    projectDetail.general['Email'] = email.join()
+                    if(projectDetail.general['ProjectConfig'])
+                        projectDetail.general['ProjectConfig']['HealthUpdates']['Email'].map((row) => {
+                            email.push(Object.values(row)[0])
+                        })
+                    projectDetail.general['Email'] = email.join();
                     projectDetail.locations.map((row) => {
-                        row.offtimes[0].Start = formatDateTime(row.offtimes[0].Start, "HHmm", "HH:mm");
-                        row.offtimes[0].End = formatDateTime(row.offtimes[0].End, "HHmm", "HH:mm")
+                        if(!isEmpty(row.offtimes)) {
+                            row.offtimes[0].Start = formatDateTime(row.offtimes[0].Start, "HHmm", "HH:mm");
+                            row.offtimes[0].End = formatDateTime(row.offtimes[0].End, "HHmm", "HH:mm")
+                        }
                     })
                     this.setState({
                         projectDetail: this.props.projectData,
