@@ -35,6 +35,7 @@ class DataCard extends Component{
                     width="100%"
                     height="1000px"
                     id={key}
+                    loading="lazy"
                     display="initial"
                     position="relative"
                     className={classes.topPadding}
