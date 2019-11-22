@@ -29,15 +29,16 @@ class DataCard extends Component{
         }
 
         if(!isEmpty(stateData.iframeLink)) {
-            stateData.iframeLink.map((row) => {
+            stateData.iframeLink.map((row, key) => {
                 iframeContent.push(<Iframe 
                     url={row}
                     width="100%"
-                    height="700px"
-                    id="iframeId"
+                    height="1000px"
+                    id={key}
                     display="initial"
                     position="relative"
                     className={classes.topPadding}
+                    allowFullScreen
                     frameBorder="0"/>)
             })
             
