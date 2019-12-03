@@ -209,6 +209,22 @@ class ProjectDetail extends Component {
                     }}/>
             </Grid>
             <Grid item xs={12} sm={6}>
+              <TextField
+                  required
+                  id="RFID"
+                  name="RFID"
+                  label="RFID"
+                  placeholder="RFID"
+                  fullWidth
+                  autoComplete="RFID"
+                  value={this.state.userDetail.RFID}
+                  onChange={this.addDetail}
+                  InputLabelProps={{
+                      shrink: true
+                  }}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
                 <TextField
                     required
                     id="desig"
@@ -309,6 +325,7 @@ class ProjectDetail extends Component {
         dataToPost['lname'] = this.state.userDetail.lname ? this.state.userDetail.lname : '';
         dataToPost['desig'] = this.state.userDetail.desig ? this.state.userDetail.desig : '';
         dataToPost['role'] = this.state.userDetail.role ? this.state.userDetail.role : '';
+        dataToPost['RFID'] = this.state.userDetail.RFID ? this.state.userDetail.RFID : 'null';
         dataToPost['dashboard_access'] = this.state.userDetail.dashboardAccess ? this.state.userDetail.dashboardAccess : false;
         dataToPost['phone_number'] = (this.state.userDetail.countryCode && this.state.userDetail.phoneNumber) ?
           `${this.state.userDetail.countryCode}${this.state.userDetail.phoneNumber}` : '';
@@ -402,6 +419,7 @@ class ProjectDetail extends Component {
       (!isEqual(this.props.teamMembers, prevProps.teamMembers) ||
       !isEqual(this.props.teamAsso, prevProps.teamAsso) ||
       !isEqual(this.props.projectData, prevProps.projectData))) {
+        let teamMembers = this.props.teamMembers;
         if(!this.info) {
           const endPoint = `${API_URLS['PROJECT_DETAILS']}/${this.state.pid}/${API_URLS['TEAM_ASSOCIATION']}`,
           config = getApiConfig(endPoint, 'GET');
@@ -417,7 +435,6 @@ class ProjectDetail extends Component {
         if(this.props.projectData && this.props.teamMembers && this.props.teamAsso &&
           this.props.projectData[0]['PID'] === this.state.pid && this.props.teamAsso[0]['PID'] === this.state.pid) {
           let association = groupBy(this.props.teamAsso,  'UID');
-          let teamMembers = this.props.teamMembers;
           
           teamMembers.map((row) => {
             let tags = []
@@ -430,8 +447,8 @@ class ProjectDetail extends Component {
               })
             row['Association'] = tags;
           })
-          this.setState({teamInfo: teamMembers})
         }
+        this.setState({teamInfo: teamMembers})
     }
 
     /**

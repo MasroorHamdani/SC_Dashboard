@@ -31,7 +31,7 @@ class Header extends Component {
     constructor(props) {
       super(props);
       this.state = {
-        open: true,
+        open: false,//true,
         projectList: [],
         arrowRef: null,
         profileOpen: false,

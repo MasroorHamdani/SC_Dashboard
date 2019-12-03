@@ -67,7 +67,9 @@ class ProjectCreate extends Component {
             showFooter: true,
             dimensions: {},
             authError: '',
-            isAuthError: false
+            isAuthError: false,
+            updateMessage: '',
+            isUpdated: false
         }
         this.state = this.initialState;
         this.initiate = false;
@@ -418,8 +420,9 @@ class ProjectCreate extends Component {
 
     onLocationAddtion = () => {
         if (this.state.location.name && this.state.location.locn &&
-            this.state.location.offday && this.state.location.ShiftEnd &&
-            this.state.location.ShiftStart && !_.isEmpty(this.state.location.devices_count) &&
+            // this.state.location.offday && this.state.location.ShiftEnd &&
+            // this.state.location.ShiftStart &&
+            !_.isEmpty(this.state.location.devices_count) &&
             (this.state.location.file || this.state.location.fileUrl)) {
                 let dataToPost = {}, temp = {};
                 dataToPost['name'] = this.state.location.name;
@@ -427,12 +430,12 @@ class ProjectCreate extends Component {
                 dataToPost['Mute'] = this.state.location.Mute;
                 dataToPost['devices_count'] = this.state.location.devices_count;
                 dataToPost['fileUrl'] = this.state.location.file ? this.state.location.file[0].name: this.state.location.fileUrl ? this.state.location.fileUrl : null;
-                let offDays = this.state.location.offday.split(',')
+                let offDays = this.state.location.offday ? this.state.location.offday.split(',') : [];
                 dataToPost['offdays'] = offDays;
-                dataToPost['offtimes'] = [{
+                dataToPost['offtimes'] = this.state.location.ShiftEnd && this.state.location.ShiftStart ? [{
                     'End': formatDateTime(this.state.location.ShiftEnd, "hh:mm a", "HHmm"),
                     'Start': formatDateTime(this.state.location.ShiftStart, "hh:mm a", "HHmm")
-                }]
+                }] : []
 
                 temp =  _.cloneDeep(dataToPost);
                 temp['ShiftEnd'] = this.state.location.ShiftEnd;
@@ -713,7 +716,9 @@ class ProjectCreate extends Component {
                 this.setState({
                     pid : this.props.projectData['PID'],
                     expanded: this.state.panel,
-                    generalProject: this.state.general
+                    generalProject: this.state.general,
+                    updateMessage: "Project details Added",
+                    isUpdated: true
                 })
             } else if(this.props.projectData['PID'] && this.props.projectData['type'] === PROJECT_CREATION['LOCATION']) {
                 this.state.tempLocation.map((row) => {
@@ -724,8 +729,8 @@ class ProjectCreate extends Component {
 
                 let loc = this.props.projectData['location'];
                 loc.map((row) => {
-                    row['ShiftEnd'] = formatDateTime(row['offtimes'][0]['End'], "HHmm", "HH:mm");
-                    row['ShiftStart'] = formatDateTime(row['offtimes'][0]['Start'], "HHmm", "HH:mm");
+                    row['ShiftEnd'] = row['offtimes'][0] ? formatDateTime(row['offtimes'][0]['End'], "HHmm", "HH:mm") : '';
+                    row['ShiftStart'] = row['offtimes'][0] ? formatDateTime(row['offtimes'][0]['Start'], "HHmm", "HH:mm") : '';
                     row['insid'] = row['InsID'];
                 })
                 this.setState({
@@ -733,6 +738,8 @@ class ProjectCreate extends Component {
                     limitErrorMessage: '',
                     allLocations: [],
                     tempLocation: [],
+                    updateMessage: "Project details Added",
+                    isUpdated: true,
                     locations: [
                         ...this.state.locations.concat(loc)
                     ],
@@ -757,6 +764,8 @@ class ProjectCreate extends Component {
                     limitErrorMessage: '',
                     allAreas: [],
                     tempArea: [],
+                    updateMessage: "Project details Added",
+                    isUpdated: true,
                     areas: [
                         ...this.state.areas.concat(area)
                     ],
@@ -813,7 +822,9 @@ class ProjectCreate extends Component {
     handleClose = () => {
         this.setState({
           authError: '',
-          isAuthError: false
+          isAuthError: false,
+          updateMessage: '',
+          isUpdated: false
         })
     }
     render() {
@@ -837,6 +848,10 @@ class ProjectCreate extends Component {
                 {this.state.isAuthError &&
                     <CustomPopOver content={this.state.authError} open={this.state.isAuthError}
                         handleClose={this.handleClose} variant='error'/>
+                }
+                {this.state.isUpdated &&
+                    <CustomPopOver content={this.state.updateMessage} open={this.state.isUpdated}
+                        handleClose={this.handleClose} variant='success'/>
                 }
           </div>
         )

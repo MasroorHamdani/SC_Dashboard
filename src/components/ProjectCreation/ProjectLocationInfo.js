@@ -80,7 +80,7 @@ class ProjectLocationInfo extends Component {
                 </Grid>
                 <Grid item xs={12} sm={6}>
                     <TextField
-                        required
+                        // required
                         id="offday"
                         name="offday"
                         label="Off Days, like: Sunday, Monday"
@@ -103,7 +103,7 @@ class ProjectLocationInfo extends Component {
                 </Grid>
                 <Grid item xs={12} sm={6}>
                     <TextField
-                        required
+                        // required
                         id="ShiftStart"
                         name="ShiftStart"
                         label="Offtime Start"
@@ -118,7 +118,7 @@ class ProjectLocationInfo extends Component {
                 </Grid>
                 <Grid item xs={12} sm={6}>
                     <TextField
-                        required
+                        // required
                         id="ShiftEnd"
                         name="ShiftEnd"
                         label="Offtime End"
@@ -137,7 +137,7 @@ class ProjectLocationInfo extends Component {
                         {Object.keys(DEVICE_TYPE).map((key, index) => {
                             return <ListItem className={classes.listItem} key={index}>
                                     <TextField
-                                        required
+                                        // required
                                         disabled = {data.location.isEdit ? true : false}
                                         type="number"
                                         id={key}

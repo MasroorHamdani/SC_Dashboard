@@ -38,7 +38,7 @@ class UserProfileData extends Component {
                         </Grid>
                         <Grid item xs={12} sm={6}>
                         <TextField
-                            // disabled
+                            disabled
                             id="ID"
                             name="ID"
                             label={t('userid')}
