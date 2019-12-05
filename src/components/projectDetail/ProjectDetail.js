@@ -31,7 +31,8 @@ class ProjectDetail extends Component {
       addNotify: false,
       teamInfo: [],
       authError: '',
-      isAuthError: false
+      isAuthError: false,
+      errorMessage: ''
     }
     this.state = this.initialState;
     this.info = false;
@@ -238,22 +239,6 @@ class ProjectDetail extends Component {
                     InputLabelProps={{
                         shrink: true
                     }}/>
-                {/* <FormControl fullWidth>
-                    <InputLabel htmlFor="desig">Designation</InputLabel>
-                    <Select native
-                        value={this.state.userDetail.desig}
-                        onChange={this.addDetail}
-                        inputProps={{
-                            name: 'desig',
-                            id: 'desig',
-                        }}>
-                    <option value="" />
-                    {this.filterOnRole(USER_DESIGNATION).map(function(designation) {
-                            return <option value={designation.key} name={designation.key} key={designation.key} >
-                                {designation.display}</option>
-                    })}
-                    </Select>
-                </FormControl> */}
             </Grid>
             <Grid item xs={12} sm={6}>
                 <FormControl fullWidth>
@@ -294,7 +279,7 @@ class ProjectDetail extends Component {
                     justify='flex-end'
                     >
                     <Typography
-                        variant="contained"
+                        variant="subtitle2"
                         color="secondary"
                         >
                         {this.state.errorMessage}

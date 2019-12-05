@@ -307,6 +307,7 @@ class ProjectCreate extends Component {
             dataToPost['location'] = this.state.allLocations;
             dataToPost['type'] = PROJECT_CREATION['LOCATION'];
             dataToPost['pid'] = this.state.pid; //value returned from previous api call - project id
+            dataToPost['createdBy'] = localStorage.getItem('cognitoUser');
             let config = getApiConfig(endPoint, 'POST', dataToPost);
             this.props.onProjectCreation(config, 'POST');
         }
@@ -316,6 +317,7 @@ class ProjectCreate extends Component {
             this.state.editLocation.map((row) => {
                 dataToPost = row;
                 dataToPost['type'] = PROJECT_CREATION['LOCATION'];
+                dataToPost['UpdatedBy'] = localStorage.getItem('cognitoUser');
                 let config = getApiConfig(endPoint, 'POST', dataToPost);
                 this.props.onProjectUpdate(config, 'POST');
             })
@@ -339,6 +341,11 @@ class ProjectCreate extends Component {
                 dataToPost['type'] = PROJECT_CREATION['GENERAL'];
                 dataToPost['HealthUpdates'] = {'Email': EmailArray};
                 dataToPost['status'] = PROJECT_STATUS.DRAFT;
+                if (this.state.pid) {
+                    dataToPost['UpdatedBy'] = localStorage.getItem('cognitoUser');
+                } else {
+                    dataToPost['createdBy'] = localStorage.getItem('cognitoUser');
+                }
                 let config = getApiConfig(endPoint, 'POST', dataToPost);
                 this.props.onProjectCreation(config, 'POST');
             } else {

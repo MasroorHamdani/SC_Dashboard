@@ -1,6 +1,8 @@
 import React, {Component} from 'react';
 import { connect } from "react-redux";
 import {isEqual} from "lodash";
+import JWTDecode from 'jwt-decode';
+
 import ResetPasswordComponent from '../components/login/ResetPassword';
 import {API_URLS, REACT_URLS, PASSWORD_REGEX} from '../constants/Constant';
 import {getApiConfig} from '../services/ApiCofig';
@@ -80,6 +82,8 @@ class AuthReset extends Component {
                 else {
                     localStorage.setItem('idToken', responseData['AuthenticationResult']['IdToken']);
                     localStorage.setItem('refreshToken', responseData['AuthenticationResult']['RefreshToken']);
+                    let idTokenDecoded = JWTDecode(responseData['AuthenticationResult']['IdToken'])
+                    localStorage.setItem('cognitoUser', idTokenDecoded['cognito:username']);
                     if (this.state.loading) {
                         this.setState({
                         loading: false,

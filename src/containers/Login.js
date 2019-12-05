@@ -202,6 +202,7 @@ class Login extends React.Component {
         localStorage.setItem('refreshToken', responseData['AuthenticationResult']['RefreshToken']);
         let idTokenDecoded = JWTDecode(responseData['AuthenticationResult']['IdToken']),
           userData = this.getTokenData(idTokenDecoded, "Fn");
+        localStorage.setItem('cognitoUser', idTokenDecoded['cognito:username']);
         if (userData)
           localStorage.setItem('userName', userData['Fn']);
         if (this.state.loading) {
