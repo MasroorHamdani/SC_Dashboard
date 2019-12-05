@@ -116,8 +116,7 @@ class ProjectCreate extends Component {
     }
 
     getImage = () => {
-        let img = new Image(),
-            canvas = new fabric.Canvas('canvas', {});
+        let img = new Image();
 
         if(this.state.area.insid) {
             let index = _.findIndex(this.state.locations, {'insid': this.state.area.insid}),
@@ -125,24 +124,21 @@ class ProjectCreate extends Component {
             if (index >=0) {
                 url = `${S3_LOCATION_MAP_END_POINT}${this.state.pid}/mapview/${this.state.locations[index].fileUrl}`;
             }
-            img.src = url;
             img.onload = () => {
-                canvas.setHeight(img.height);
-                canvas.setWidth(img.width);
-                canvas = this.setCanvas(canvas, url);
+                this.canvas = new fabric.Canvas('canvas', {
+                    backgroundImage: img,
+                    width: img.width,
+                    height: img.height
+                })
+                this. canvas = this.setCanvas(this.canvas, url);
             }
+            img.src = url;
         }
     }
 
     setCanvas = (canvas, url) => {
         let self = this;
-        canvas.setBackgroundImage(url,
-            function() {
-                canvas.renderAll();
-            }, {
-                width:canvas.width,
-                height:canvas.height
-            });
+        canvas.setBackgroundImage(url, canvas.renderAll.bind(canvas));
 
         canvas.selectionColor = 'rgba(0,255,0,0.3)';
         canvas.selectionBorderColor = 'red';
