@@ -28,6 +28,7 @@ import AdminReducer from './AdminReducer';
 import AdminProjectUpdateReducer from './AdminProjectUpdateReducer';
 import ProjectMetricListReducer from './ProjectMetricListReducer';
 import ProjectIframeReducer from './ProjectIframeReducer';
+import InstallationDevReducer from './InstallationDevReducer';
 
 const reducers = {
     LoginReducer,
@@ -57,7 +58,8 @@ const reducers = {
     AdminReducer,
     AdminProjectUpdateReducer,
     ProjectMetricListReducer,
-    ProjectIframeReducer
+    ProjectIframeReducer,
+    InstallationDevReducer
 }
 
 // combines all the reducers which will be passed in Redux Store
