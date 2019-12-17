@@ -35,7 +35,9 @@ class ProjectInstallationDetails extends Component {
                 Phonenum: "",
                 ShiftStart: '',
                 ShiftEnd: '',
-                Mute: false
+                Mute: false,
+                Desig: '',
+                AlertMedium: ''
             },
             pid: props.match.params.pid,
             uid: props.match.params.uid,
@@ -105,7 +107,7 @@ class ProjectInstallationDetails extends Component {
         }
     }
 
-    handleChange = (event) => {
+    handleChange = (event, AlertMedium) => {
     /**
      * Common function to change the state variables.
      */
@@ -113,12 +115,26 @@ class ProjectInstallationDetails extends Component {
         if (name === 'Mute') {
             value = event.target.checked
         }
-        this.setState({
-            profile: {
-                ...this.state.profile,
-                [name]: value
-              }
-        });
+        if (name === undefined) { // For AlertMedium
+            name = 'AlertMedium';
+            value = AlertMedium;
+        }
+        if (name === 'RFID') {
+            this.setState({
+                profile: {
+                    ...this.state.profile,
+                    SUB1: value,
+                    [name]: value
+                }
+            });
+        } else {
+            this.setState({
+                profile: {
+                    ...this.state.profile,
+                    [name]: value
+                }
+            });
+        }
     }
 
     handleSubmit = () => {
@@ -230,6 +246,11 @@ class ProjectInstallationDetails extends Component {
     }
 
     componentDidMount() {
+        if(this.props.projectSelected) {
+            this.setState({
+              projectSelected : this.props.projectSelected ? this.props.projectSelected : ''
+            });
+        }
         this.getProfileData();
     }
 
@@ -263,7 +284,8 @@ class ProjectInstallationDetails extends Component {
      * and also make api call to update the user profile
      */
         if(this.props.projectSelected && 
-            !isEqual(this.props.projectSelected, prevProps.projectSelected)){
+            !isEqual(this.props.projectSelected, prevProps.projectSelected)) {
+            this.setState({projectSelected: this.props.projectSelected})
             if(this.state.pid !== this.props.projectSelected.PID)
                 this.setState({pid: this.props.projectSelected.PID},
                 function() {
@@ -292,13 +314,15 @@ class ProjectInstallationDetails extends Component {
                 this.props.onProjectDetailData(config);
                 this.info = true;
             }
-            if(this.props.userProfile.length >0) {
+            if (this.props.userProfile && this.props.userProfile.length > 0) {
                 let userDetails = this.getUserProfile(this.props.userProfile);
                 let profile = userDetails.profile,
                     userProfile = {'Firstname': profile.Firstname,
                         'Lastname': profile.Lastname ? profile.Lastname : prevState.profile.Lastname,
                         'Phonenum': profile.Phonenum ? profile.Phonenum : prevState.profile.Phonenum,
-                        'Mute': profile.Mute ? profile.Mute : prevState.profile.Mute
+                        'Mute': profile.Mute ? profile.Mute : prevState.profile.Mute,
+                        'AlertMedium': profile.AlertMedium ? profile.AlertMedium : prevState.profile.AlertMedium,
+                        'Desig': profile.Desig ? profile.Desig : prevState.profile.Desig
                     },
                     SUB1, SUB2;
                 if(profile['NS']) {
@@ -311,7 +335,7 @@ class ProjectInstallationDetails extends Component {
                     userProfile['RFID']= prevState.profile.RFID;
                 }
 
-                if(!this.state.profile.Firstname) {
+                // if(!this.state.profile.Firstname) {
                     this.setState({
                         profile: userProfile,
                         userLocation: {
@@ -319,7 +343,7 @@ class ProjectInstallationDetails extends Component {
                             'Mute': userProfile.Mute,
                         }
                     });
-                }
+                // }
                 
                 if(this.props.locationList) {
                     let association = userDetails.association;
@@ -475,12 +499,15 @@ class ProjectInstallationDetails extends Component {
                 {this.state.loading &&
                     <LinearProgress className={classes.buttonProgress}/>
                 }
+                
                 <main className={classes.content}>
+                { this.state.projectSelected &&
                 <UserProfileData 
                     data={this.state}
                     onChange={this.handleChange}
                     onClick={this.handleSubmit}
                     handleModalProfileState={this.handleModalProfileState}/>
+                }
                 <Divider className={classes.seperator} />
                 <Grid container spacing={24} className={classes.grid}>
                         <Grid item xs={12} sm={6}>

@@ -130,8 +130,7 @@ class Menu extends Component {
           {(this.state.role &&
             (this.state.role === ROLES['PARTNER_ADMIN'] ||
             this.state.role === ROLES['SC_ADMIN'] ||
-            this.state.role === ROLES['PROJECT_ADMIN'] ||
-            this.state.role === ROLES['SUPERVISOR'])) &&
+            this.state.role === ROLES['PROJECT_ADMIN'])) &&
             <div>
               <Divider />
               <Typography className={classes.header}>Project Management</Typography>

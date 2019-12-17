@@ -89,10 +89,10 @@ class ProjectDetail extends Component {
   }
 
   filterOnRole = (arr) => {
-    if(this.state.projectSelected.Role === ROLES['SUPERVISOR'] || this.state.projectSelected.Role === ROLES['PROJECT_ADMIN'])
-      arr = arr.filter(x => (x.key === 'attendent' || x.key === 'supervisor'))
+    if(this.state.projectSelected.Role === ROLES['PROJECT_ADMIN'])
+      arr = arr.filter(x => (x.key === 'attendent' || x.key === 'default'))
     else if(this.state.projectSelected.Role === ROLES['PARTNER_ADMIN'])
-      arr = arr.filter(x => (x.key === 'attendent' || x.key === 'supervisor' || x.key === 'projectadmin'))
+      arr = arr.filter(x => (x.key === 'attendent' || x.key === 'projectadmin' || x.key === 'default'))
     return arr
   }
 
@@ -314,15 +314,11 @@ class ProjectDetail extends Component {
         dataToPost['dashboard_access'] = this.state.userDetail.dashboardAccess ? this.state.userDetail.dashboardAccess : false;
         dataToPost['phone_number'] = (this.state.userDetail.countryCode && this.state.userDetail.phoneNumber) ?
           `${this.state.userDetail.countryCode}${this.state.userDetail.phoneNumber}` : '';
+        dataToPost['createdBy'] = localStorage.getItem('cognitoUser');
 
         let endPoint = `${API_URLS['PROJECT_USER']}/${this.state.pid}`,
             config = getApiConfig(endPoint, 'POST', dataToPost);
         this.props.onUserCreation(config);
-
-        this.setState({
-          addNotify: !this.state.addNotify,
-          userDetail: {}
-        });
     } else {
         this.setState({
           errorMessage: 'Enter All Details'
@@ -336,11 +332,10 @@ class ProjectDetail extends Component {
    */
   if(this.state.pid) {
     this.callApi(this.state.value);
-  } else if(this.props.projectSelected){// || localStorage.getItem('projectSelected')) {
-    // let dt = JSON.parse(localStorage.getItem('projectSelected'));
+  } else if(this.props.projectSelected){
     this.setState({
-      pid: this.props.projectSelected ? this.props.projectSelected.PID : '',//dt.PID,
-      projectSelected : this.props.projectSelected ? this.props.projectSelected : ''//dt
+      pid: this.props.projectSelected ? this.props.projectSelected.PID : '',
+      projectSelected : this.props.projectSelected ? this.props.projectSelected : ''
     }, function() {
       this.callApi(this.state.value);
     });
@@ -449,6 +444,10 @@ class ProjectDetail extends Component {
             isAuthError: true
           });
         } else {
+          this.setState({
+            addNotify: !this.state.addNotify,
+            userDetail: {}
+          });
           this.callApi(this.state.value);
         }
     }

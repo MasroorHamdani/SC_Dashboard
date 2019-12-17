@@ -54,8 +54,7 @@ class MyProjectList extends Component {
     componentDidUpdate(prevProps, prevState) {
         if(this.props.projectSelected &&
             !isEqual(this.props.projectSelected, prevProps.projectSelected)) {
-            if(this.state.role !== ROLES['PARTNER_ADMIN'] &&
-                this.state.role !== ROLES['SUPERVISOR']) {
+            if(this.state.role !== ROLES['PARTNER_ADMIN']) {
                     this.props.history.push(`${REACT_URLS.DASHBOARD(this.state.parentId)}`);
             }
         }

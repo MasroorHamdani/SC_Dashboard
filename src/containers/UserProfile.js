@@ -20,7 +20,9 @@ class UserProfile extends Component {
                 Phonenum: "",
                 ShiftStart: '',
                 ShiftEnd: '',
-                Mute: false
+                Mute: false,
+                Desig: '',
+                AlertMedium: ''
             },
             profileNotify: false
         };
@@ -28,7 +30,7 @@ class UserProfile extends Component {
         this.state = this.initialState;
     }
       
-    handleChange = (event) => {
+    handleChange = (event, AlertMedium) => {
     /**
      * Common function to set any fields value from UI in state.
      */
@@ -36,13 +38,28 @@ class UserProfile extends Component {
         if (name === 'Mute') {
             value = event.target.checked
         }
-        this.setState({
-            profile: {
-                ...this.state.profile,
-                [name]: value
-              }
-        });
+        if (name === undefined) { // For AlertMedium
+            name = 'AlertMedium';
+            value = AlertMedium;
+        }
+        if (name === 'RFID') {
+            this.setState({
+                profile: {
+                    ...this.state.profile,
+                    SUB1: value,
+                    [name]: value
+                }
+            });
+        } else {
+            this.setState({
+                profile: {
+                    ...this.state.profile,
+                    [name]: value
+                }
+            });
+        }
     }
+
     handleSubmit = () => {
     /**
      * Post API call to save the data for a user profile.
@@ -65,12 +82,14 @@ class UserProfile extends Component {
         });
         return profile;
     }
+
     handleModalProfileState = () => {
     /**
      * Update notification handling
      */
         this.setState({ profileNotify: !this.state.profileNotify});
     }
+
     componentDidUpdate(prevProps, prevState) {
     /**
      * Get profile data and format it and save in state variable.
@@ -89,7 +108,9 @@ class UserProfile extends Component {
             let userProfile = {'Firstname': profile.Firstname,
                 'Lastname': profile.Lastname ? profile.Lastname : prevState.profile.Lastname,
                 'Phonenum': profile.Phonenum ? profile.Phonenum : prevState.profile.Phonenum,
-                'Mute': profile.Mute ? profile.Mute : prevState.profile.Mute
+                'Mute': profile.Mute ? profile.Mute : prevState.profile.Mute,
+                'AlertMedium': profile.AlertMedium ? profile.AlertMedium : prevState.profile.AlertMedium,
+                'Desig': profile.Desig ? profile.Desig : prevState.profile.Desig
                 },
                 SUB1, SUB2;
             if(profile['NS']) {
@@ -107,26 +128,52 @@ class UserProfile extends Component {
             if(!this.earlyState)
                 this.handleModalProfileState();
         }
+
+        if(this.props.projectSelected && 
+            !isEqual(this.props.projectSelected, prevProps.projectSelected)) {
+            if(this.state.pid !== this.props.projectSelected.PID)
+              this.setState({
+                projectSelected: this.props.projectSelected,
+              },
+                function() {
+                  this.callApi();
+              });
+          }
     }
 
     componentDidMount() {
     /**
      * Get API call for user profile
      */
+        if(this.state.projectSelected) {
+            this.callApi();
+        } else if(this.props.projectSelected) {
+            this.setState({
+                projectSelected : this.props.projectSelected ? this.props.projectSelected : ''
+            }, function() {
+                this.callApi();
+            });
+        }
+        
+    }
+
+    callApi = () => {
         const endPoint = `${API_URLS['USER_PROFILE']}`,
             config = getApiConfig(endPoint, 'GET');
         this.props.onProfileData(config);
     }
 
-    render(){
+    render() {
         const {classes} = this.props;
         return (
             <div className={classes.root}>
-                <UserProfileData 
-                data={this.state}
-                onChange={this.handleChange}
-                onClick={this.handleSubmit}
-                handleModalProfileState={this.handleModalProfileState}/>
+                {this.state.projectSelected &&
+                    <UserProfileData 
+                    data={this.state}
+                    onChange={this.handleChange}
+                    onClick={this.handleSubmit}
+                    handleModalProfileState={this.handleModalProfileState}/>
+                }
             </div>
         )
     }
@@ -134,7 +181,8 @@ class UserProfile extends Component {
 
 function mapStateToProps(state) {
     return {
-        userProfile: state.UserProfileReducer.data
+        userProfile: state.UserProfileReducer.data,
+        projectSelected : state.projectSelectReducer.data,
     }
 }
 

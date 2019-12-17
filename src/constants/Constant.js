@@ -404,19 +404,17 @@ export const AREA_LIST = [{
 }]
 
 export const USER_ROLE = [
-    {key: 'supervisor',
-    display: 'Supervisor'},
-    {key: 'attendant',
-    display: 'Attendant'},
     {key: 'partneradmin',
     display: 'Partner Admin'},
     {key: 'projectadmin',
     display: 'Project Admin'},
+    {key: 'default',
+    display: 'Default'},
 ]
 
 export const ROLES = {
     'SC_ADMIN': 'scadmin',
     'PARTNER_ADMIN': 'partneradmin',
     'PROJECT_ADMIN': 'projectadmin',
-    'SUPERVISOR': 'supervisor'
+    'DEFAULT': 'default'
 }

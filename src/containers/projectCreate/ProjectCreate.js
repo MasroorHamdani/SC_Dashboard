@@ -696,8 +696,7 @@ class ProjectCreate extends Component {
         if(this.props.projectSelected &&
             !isEqual(this.props.projectSelected, prevProps.projectSelected)) {
             if(this.props.projectSelected.Role !== ROLES['PARTNER_ADMIN'] &&
-                this.props.projectSelected.Role !== ROLES['SC_ADMIN'] &&
-                this.props.projectSelected.Role !== ROLES['SUPERVISOR']) {
+                this.props.projectSelected.Role !== ROLES['SC_ADMIN']) {
                     this.props.history.push(`${REACT_URLS.DASHBOARD(this.state.parentId)}`);
             }
         }

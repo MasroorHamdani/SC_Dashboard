@@ -1,8 +1,10 @@
 import React, {Component} from 'react';
-import {withStyles, Grid, TextField, Button, Switch, FormControlLabel} from '@material-ui/core';
+import {withStyles, Grid, TextField, Button, Switch, FormControlLabel, Typography} from '@material-ui/core';
+import {ToggleButton, ToggleButtonGroup} from '@material-ui/lab';
 import styles from './UserProfileDataStyle';
 import { NamespacesConsumer } from 'react-i18next';
 import CustomModal from '../modal/Modal';
+import {ROLES} from '../../constants/Constant';
 
 class UserProfileData extends Component {
     render() {
@@ -50,7 +52,7 @@ class UserProfileData extends Component {
                         </Grid>
                         <Grid item xs={12} sm={6}>
                         <TextField
-                            disabled
+                            disabled = {data.projectSelected.Role !== ROLES['DEFAULT'] ? false : true}
                             id="RFID"
                             name="RFID"
                             label={t('userfid')}
@@ -83,6 +85,46 @@ class UserProfileData extends Component {
                                 value="Mute"
                                 />}
                             />
+                        </Grid>
+                        <Grid item xs={12} sm={6}>
+                            <TextField
+                                required
+                                id="Desig"
+                                name="Desig"
+                                label='Designation'
+                                fullWidth
+                                value={data.profile.Desig}
+                                onChange={onChange}
+                            />
+                        </Grid>
+                        <Grid item>
+                            {/* <FormControlLabel
+                            label='Alert Medium'
+                            id="AlertMedium"
+                            name="AlertMedium"
+                            control={
+                                <Switch
+                                checked={data.profile.AlertMedium}
+                                onChange={onChange}
+                                value="AlertMedium"
+                                />}
+                            /> */}
+                            <Typography gutterBottom>Alert Medium</Typography>
+                            <div className={classes.toggleContainer}>
+                                <ToggleButtonGroup
+                                    value={data.profile.AlertMedium}
+                                    exclusive
+                                    onChange={onChange}
+                                    aria-label="Alert Medium"
+                                >
+                                    <ToggleButton value="APP" aria-label="APP">
+                                        <Typography>APP</Typography>
+                                    </ToggleButton>
+                                    <ToggleButton value="SMS" aria-label="SMS">
+                                        <Typography>SMS</Typography>
+                                    </ToggleButton>
+                                </ToggleButtonGroup>
+                            </div>
                         </Grid>
                         <Grid item
                             container

@@ -25,6 +25,9 @@ const styles = theme => ({
         marginTop: theme.spacing.unit * 3,
         marginLeft: theme.spacing.unit,
     },
+    toggleContainer: {
+        margin: theme.spacing.unit * 2
+    }
 });
 
 export default styles;

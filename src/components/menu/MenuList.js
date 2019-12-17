@@ -23,16 +23,16 @@ export function mainMenuList (pid, partnerId) {
         icon: "DataUsageIcon",
         toolTip: "Data Analysis",
         submenu: [{
-          name: "Data View",
+          name: "By Location",
           url: partnerId ? `/${partnerId}/view/project/${pid}` : `/view/project/${pid}`,
           icon: "ShowChartIcon",
-          toolTip: "Data View"
+          toolTip: "By Location"
         },
         {
-          name: "Data Analytics",
+          name: "By Device",
           url: partnerId ? `/${partnerId}/data/project/${pid}` : `/data/project/${pid}`,
           icon: "BarChartIcon",
-          toolTip: "Data Analytics"
+          toolTip: "By Device"
         }]
       },
       {
@@ -90,7 +90,7 @@ export function secondaryMenuList (role, partnerId) {
       icon: "CreateIcon",
       toolTip: "Add Project"
     })
-  } else if(role === ROLES['SUPERVISOR'] || role === ROLES['PROJECT_ADMIN']) {
+  } else if(role === ROLES['PROJECT_ADMIN']) {
     secondaryMenu.push({
       name: "Add Project",
       url: partnerId ? `/${partnerId}/newproject` : `/newproject`,

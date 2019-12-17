@@ -216,7 +216,7 @@ class DataAnalysis extends Component {
     this.state.installationList.map((row) => {
       if(row.key === tab) {
         this.setStateValue(tab, row.key,
-          row.devid, row.subType, row.pid)
+          row.alias, row.subType, row.pid)
       }
     })
   };
@@ -523,7 +523,7 @@ class DataAnalysis extends Component {
       (!isEqual(this.props.installationList, prevProps.installationList) &&
       (!this.state.installationList || Object.keys(this.state.installationList).length === 0))) {
         let installationList = {}, i = 1;
-        let sorted_list = sortBy(this.props.installationList,'Display')
+        let sorted_list = sortBy(this.props.installationList, 'Display')
         sorted_list.map((tab)=> {
           let list = {
             'key': tab.Type,
@@ -532,7 +532,8 @@ class DataAnalysis extends Component {
             'subType': tab.SubType,
             'type': tab.Type,
             'devid': tab.Devid,
-            'pid': tab.PID
+            'pid': tab.PID,
+            'alias': tab.Alias
           }
           if(list.key === 'FD') {
             list['index'] = 0;
