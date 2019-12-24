@@ -33,10 +33,10 @@ class ProjectDetail extends Component {
       authError: '',
       isAuthError: false,
       errorMessage: '',
-      searchquery: '',
+      // searchquery: '',
       addUserNotify: false,
-      userList: [],
-      userError: ''
+      userError: '',
+      userDetails: {}
     }
     this.state = this.initialState;
     this.info = false;
@@ -56,8 +56,11 @@ class ProjectDetail extends Component {
 
   handleRadioChange = (event, value) => {
     this.setState({
-      askUserDetail: true,
-      userSelected: value
+      userDetails: {
+        ...this.state.userDetails,
+        askUserDetail: true,
+        userSelected: value
+      }
     })
   }
   callApi = (value) => {
@@ -103,7 +106,10 @@ class ProjectDetail extends Component {
     if (name === 'userdDashboardAccess')
       value = event.target.checked
     this.setState({
-      [name]: value
+      userDetails: {
+        ...this.state.userDetails,
+        [name]: value
+      }
     })
   }
 
@@ -290,7 +296,7 @@ class ProjectDetail extends Component {
                     />}
                 />
             </Grid>
-            {this.state.errorMessage &&
+            {this.state.userDetail.errorMessage &&
                 <Grid item
                     container
                     alignItems='center'
@@ -301,7 +307,7 @@ class ProjectDetail extends Component {
                         variant="subtitle2"
                         color="secondary"
                         >
-                        {this.state.errorMessage}
+                        {this.state.userDetail.errorMessage}
                     </Typography>
                 </Grid>
             }
@@ -315,7 +321,7 @@ class ProjectDetail extends Component {
   }
 
   searchUser = () => {
-    const endPoint = `${API_URLS['PROJECT_USER']}?query_param=${this.state.searchquery}`,
+    const endPoint = `${API_URLS['PROJECT_USER']}?query_param=${this.state.userDetails.searchquery}`,
       config = getApiConfig(endPoint, 'GET');
     this.props.onUserSearch(config, endPoint);
   }
@@ -325,12 +331,12 @@ class ProjectDetail extends Component {
         <Grid container spacing={24}>
             <Grid item xs={12} sm={6}>
               <TextField
-                  // id="searchquery"
+                  id="searchquery"
                   name="searchquery"
                   label="Search Query"
                   placeholder="Search Query"
                   // autoComplete="Search Query"
-                  value={this.state.searchquery}
+                  value={this.state.userDetails.searchquery}
                   onChange={this.update}
                   // onChange={e=>this.setState({searchquery: e.target.value})}
                   InputLabelProps={{
@@ -343,21 +349,21 @@ class ProjectDetail extends Component {
                     Search
                 </Button>
             </Grid>
-            {this.state.userList &&
+            {this.state.userDetails.userList &&
               <Grid item xs={12} sm={6}>
                   <RadioGroup aria-label="User" name="customized-radios">
-                    {this.state.userList.map((row, key) => {
+                    {this.state.userDetails.userList.map((row, key) => {
                       return <div>
                         <FormControlLabel key={key} value={row.UID} control={<Radio />}
                           label={`${row.Firstname} ${row.Lastname} (${row.UID})`}
                           onChange={event => this.handleRadioChange(event, row.UID)}/>
-                          {(this.state.askUserDetail && this.state.userSelected === row.UID) &&
+                          {(this.state.userDetails.askUserDetail && this.state.userDetails.userSelected === row.UID) &&
                             <Grid container spacing={24}>
                               <Grid item xs={12} sm={6}>
                                 <FormControl fullWidth>
                                   <InputLabel htmlFor="role">Role</InputLabel>
                                   <Select native
-                                      value={this.state.userRole}
+                                      value={this.state.userDetails.userRole}
                                       onChange={this.update}
                                       inputProps={{
                                           name: 'userRole',
@@ -378,7 +384,7 @@ class ProjectDetail extends Component {
                                   name="userdDashboardAccess"
                                   control={
                                     <Switch
-                                    checked={this.state.userDashboardAccess}
+                                    checked={this.state.userDetails.userDashboardAccess}
                                     onChange={this.update}
                                     value="Dashboard Access"
                                     />}
@@ -391,7 +397,7 @@ class ProjectDetail extends Component {
                   </RadioGroup>
               </Grid>
             }
-            {this.state.userError &&
+            {this.state.userDetails.userError &&
                 <Grid item
                     container
                     alignItems='center'
@@ -401,7 +407,7 @@ class ProjectDetail extends Component {
                         variant="subtitle2"
                         color="secondary"
                         >
-                        {this.state.userError}
+                        {this.state.userDetails.userError}
                     </Typography>
                 </Grid>
             }
@@ -415,7 +421,6 @@ class ProjectDetail extends Component {
   }
 
   onSearchAddition = () => {
-    console.log('addition')
     if( this.state.userSelected && this.state.userRole && this.state.userdDashboardAccess) {
       const endPoint = `${API_URLS['PROJECT_USER']}`,
         dataToPost = {
@@ -429,7 +434,12 @@ class ProjectDetail extends Component {
         console.log(dataToPost)
       // this.props.onUserSearch(config, endPoint);
     } else {
-      this.setState({userError: 'Please Enter All details'})
+      this.setState({
+        userDetails: {
+          ...this.state.userDetails,
+          userError: 'Please Enter All details'
+        }
+        })
     }
   }
 
@@ -459,7 +469,10 @@ class ProjectDetail extends Component {
         this.props.onUserCreation(config);
     } else {
         this.setState({
-          errorMessage: 'Enter All Details'
+          userDetail: {
+            ...this.state.userDetail,
+            errorMessage: 'Enter All Details'
+          }
         })
     }
   }
@@ -575,7 +588,6 @@ class ProjectDetail extends Component {
      */
     if(this.props.userData && 
       !isEqual(this.props.userData, prevProps.userData)) {
-        console.log(this.props.userData, "this.props.userData.")
         if(this.props.userData.status && this.props.userData.status === 400) {
           this.setState({
             loading: false,
@@ -585,7 +597,10 @@ class ProjectDetail extends Component {
         } else {
           if(Array.isArray(this.props.userData)) {
             this.setState({
-              userList : this.props.userData
+              userDetails : {
+                ...this.state.userDetails,
+                userList : this.props.userData
+              }
             })
           } else {
             this.setState({
