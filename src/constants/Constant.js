@@ -1,7 +1,7 @@
 
 export const API_END_POINT = process.env.REACT_APP_API_END_POINT
 //"https://4l6qi5oh0h.execute-api.ap-southeast-1.amazonaws.com/prod";
-export const ADMIN = process.env.REACT_APP_ADMIN_API_END_POINT
+export const ADMIN = 'http://127.0.0.1:5000'//process.env.REACT_APP_ADMIN_API_END_POINT
 export const PROJECT_LEVEL = "project"
 
 // export const NEW_API_END_POINT = process.env.REACT_APP_NEW_API_END_POINT

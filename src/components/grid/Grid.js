@@ -4,7 +4,7 @@ import { withStyles } from '@material-ui/core/styles';
 import _, {isEmpty} from 'lodash';
 import {Table, TableBody, TableCell, TablePagination,
   TableRow, TableFooter, Paper, TextField, Select, MenuItem,
-  List, ListItem, Switch, Typography, Grid} from '@material-ui/core';
+  List, ListItem, Switch, Typography, Grid, Button} from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Edit';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import DeleteIcon from '@material-ui/icons/Delete';
@@ -161,7 +161,7 @@ class EnhancedTable extends React.Component {
     const { classes, data, stateData, rows, order, orderBy,
         rowsPerPage, page, handleClick, category, redirectID, allowDelete,
         allowEdit, searchList, allowAdd, handleAddition, onAddition,
-        noView} = this.props;
+        noView, allowSearchAdd, handleSearchAddition, onSearchAddition} = this.props;
     const emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
     const queryToLower = this.state.query.toLowerCase();
     return (
@@ -196,6 +196,12 @@ class EnhancedTable extends React.Component {
                   value={this.state.query}
                   onChange={e=>this.setState({query: e.target.value})}/>
                 </Grid>
+                {allowSearchAdd &&
+                  <Button variant="contained" color="primary"
+                    onClick={handleSearchAddition}>
+                    Add Existing Users
+                  </Button>
+                }
                 {allowAdd &&
                   <div className={classes.pointer}>
                     <AddCircleOutlineIcon className={classes.icon}
@@ -337,16 +343,27 @@ class EnhancedTable extends React.Component {
         {/**
         * modal for Addition
         */}
-        {stateData && stateData.addModalHeader &&
+        {(stateData && (stateData.addNotify || stateData.addUserNotify)) &&
+          <CustomModal
+            header={stateData.addModalHeader}
+            content={stateData.additionModal}
+            handleClose={stateData.addNotify ? handleAddition : handleSearchAddition}
+            handleClick={stateData.addNotify ? onAddition: onSearchAddition}
+            open={stateData.addNotify ? stateData.addNotify : stateData.addUserNotify}
+            showFooter={true}
+          />
+        }
+        {/* {stateData && stateData.addUserNotify &&
           <CustomModal
             header={stateData.addModalHeader}
             content={stateData.additionModal}
             handleClose={handleAddition}
             handleClick={onAddition}
-            open={stateData.addNotify}
+            open={stateData.addUserNotify}
             showFooter={true}
           />
-        }
+
+        } */}
       </Paper>
       }</NamespacesConsumer>
     );

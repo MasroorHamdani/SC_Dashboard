@@ -1,6 +1,7 @@
 import ApiService from '../services/ApiService';
 import { PROJECT_DETAIL, PROJECT_DETAIL_DATA, PROJECT_TEAM_DATA,
-    PROJECT_TEAM_ASSO_DATA, PROJECT_USER_CREATE} from '../constants/ActionTypes';
+    PROJECT_TEAM_ASSO_DATA, PROJECT_USER_CREATE,
+    USER_SEARCH} from '../constants/ActionTypes';
 
 function dataReceived(data) {
   return {
@@ -124,5 +125,29 @@ export function userCreation(config) {
         .catch(error => {
             dispatch(userCreated(error))
         })
+    }
+}
+
+/**
+ * Dispatched function to call the API service to get
+ * the User searched API call.
+ * @param {*} config 
+ */
+export function userSearch(config) {
+    return function (dispatch) {
+        ApiService(config).then(data => {
+            //on success we will dispatch a sync action with the data
+            dispatch(userSearched(data.data))
+        })
+        .catch(error => {
+            dispatch(userSearched(error))
+        })
+    }
+}
+
+function userSearched(data) {
+    return {
+        type: USER_SEARCH,
+        data
     }
 }

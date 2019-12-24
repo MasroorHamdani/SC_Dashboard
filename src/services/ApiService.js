@@ -20,28 +20,14 @@ function ApiService(configObject) {
         addressArray[mainIndex + 1] !== 'logout') ? addressArray[mainIndex + 1] : '';
         
     let url, newUrl
-    // if(configObject.url.includes('datanew')) {
-    //     url = NEW_API_END_POINT;
-    //     newUrl = `${url}${configObject.url}`;
-    //     axios.defaults.baseURL = NEW_API_END_POINT;
-    //     axios.defaults.timeout = 7000;
-    // } else
     if(configObject.url.includes('admin') || configObject.url.includes('user')) {
         url = ADMIN;
         newUrl = `${url}${configObject.url}`;
         axios.defaults.baseURL = ADMIN;
         axios.defaults.timeout = 7000;
-    // } else if(configObject.url.includes('embeddable')) {
-    //     url = API_END_POINT_IFRAME;
-    //     newUrl = `${url}${configObject.url}`;
-    //     axios.defaults.baseURL = API_END_POINT_IFRAME;
-    //     axios.defaults.timeout = 7000;
     } else {
         url = API_END_POINT;
         newUrl = `${url}${configObject.url}`;
-        // const config = merge({}, configObject, {
-        //     url: newUrl.replace(/\s/g, "")
-        // });
         axios.defaults.baseURL = API_END_POINT;
         axios.defaults.timeout = 7000;
     }

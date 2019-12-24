@@ -47,7 +47,8 @@ class TabContainer extends Component {
      *      It will specify if table will show up edit column of not
      */
         const {category, data, handleClick, stateData,
-            handleAddition, onAddition, handleClose} = this.props;
+            handleAddition, onAddition, handleClose,
+            handleSearchAddition, onSearchAddition} = this.props;
         let tabData, rows, searchList;
         if(!isEmpty(stateData.teamInfo) && category === PROJECT_TABS['TEAM']) {
             rows = [{ id: 'Firstname', numeric: 'left', disablePadding: false, label: 'Firstname' },
@@ -70,6 +71,8 @@ class TabContainer extends Component {
                 searchList={searchList}
                 handleChange={this.handleChange} handleClick={handleClick} redirectID="UID"
                 handleAddition={handleAddition} onAddition={onAddition}
+                handleSearchAddition={handleSearchAddition}
+                onSearchAddition={onSearchAddition}
                 allowDelete={false}
                 noView={true}
                 allowEdit={stateData.projectSelected.Role === ROLES['SC_ADMIN'] ||
@@ -80,6 +83,10 @@ class TabContainer extends Component {
                         stateData.projectSelected.Role === ROLES['PARTNER_ADMIN'] ||
                         stateData.projectSelected.Role === ROLES['PROJECT_ADMIN'] ?
                             true : false}
+                allowSearchAdd={stateData.projectSelected.Role === ROLES['SC_ADMIN'] ||
+                        stateData.projectSelected.Role === ROLES['PARTNER_ADMIN'] ||
+                        stateData.projectSelected.Role === ROLES['PROJECT_ADMIN'] ?
+                        true : false}
                 />
             </Typography>
         } else if (!isEmpty(data) && category === PROJECT_TABS['INSTALLATION']) {

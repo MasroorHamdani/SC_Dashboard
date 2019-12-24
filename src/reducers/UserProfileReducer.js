@@ -1,5 +1,5 @@
 import {USER_PROFILE, USER_PROFILE_UPDATE,
-    PROJECT_USER_CREATE} from '../constants/ActionTypes';
+    PROJECT_USER_CREATE, USER_SEARCH} from '../constants/ActionTypes';
 
 const userProfile = (state=[], action) => {
     switch(action.type) {
@@ -14,6 +14,11 @@ const userProfile = (state=[], action) => {
                 data: action.data
             };
         case PROJECT_USER_CREATE:
+            return {
+                ...state,
+                data: action.data
+            };
+        case USER_SEARCH:
             return {
                 ...state,
                 data: action.data

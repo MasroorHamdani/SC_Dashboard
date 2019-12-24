@@ -30,7 +30,7 @@ class DataCard extends Component{
 
         if(!isEmpty(stateData.iframeLink)) {
             stateData.iframeLink.map((row, key) => {
-                let url = `${row}&scauth=${localStorage.getItem('idToken')}`;
+                let url = `${row}?scauth=${localStorage.getItem('idToken')}`;
                 iframeContent.push(<Iframe 
                     url={url}
                     width="100%"

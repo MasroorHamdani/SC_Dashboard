@@ -8,7 +8,7 @@ import {isEqual, groupBy} from 'lodash';
 import {withStyles, AppBar, Tabs, Tab, Paper,
   LinearProgress, Grid, TextField, Typography,
   FormControl, InputLabel, Select, FormControlLabel,
-  Switch} from '@material-ui/core';
+  Switch, Button, RadioGroup, Radio} from '@material-ui/core';
 
 import TabContainer from '../tabContainer/TabContainer';
 import {PROJECT_TABS, API_URLS, NAMESPACE_MAPPER,
@@ -16,7 +16,7 @@ import {PROJECT_TABS, API_URLS, NAMESPACE_MAPPER,
 import {getApiConfig} from '../../services/ApiCofig';
 import {capitalizeFirstLetter} from '../../utils/FormatStrings';
 import {projectDetailData, projectTeamData,
-  projectTeamAsso, userCreation} from '../../actions/ProjectDataAction';
+  projectTeamAsso, userCreation, userSearch} from '../../actions/ProjectDataAction';
 
 import styles from './ProjectDetailStyle';
 
@@ -32,7 +32,11 @@ class ProjectDetail extends Component {
       teamInfo: [],
       authError: '',
       isAuthError: false,
-      errorMessage: ''
+      errorMessage: '',
+      searchquery: '',
+      addUserNotify: false,
+      userList: [],
+      userError: ''
     }
     this.state = this.initialState;
     this.info = false;
@@ -50,6 +54,12 @@ class ProjectDetail extends Component {
       });
   };
 
+  handleRadioChange = (event, value) => {
+    this.setState({
+      askUserDetail: true,
+      userSelected: value
+    })
+  }
   callApi = (value) => {
     /**
      * Check if selected tab is 'team' or 'installation'
@@ -86,6 +96,15 @@ class ProjectDetail extends Component {
           [name]: value
         }
       })
+  }
+  // Temporary function for updating query string
+  update = (event)=> {
+    let {name, value} = event.target;
+    if (name === 'userdDashboardAccess')
+      value = event.target.checked
+    this.setState({
+      [name]: value
+    })
   }
 
   filterOnRole = (arr) => {
@@ -295,6 +314,125 @@ class ProjectDetail extends Component {
     });
   }
 
+  searchUser = () => {
+    const endPoint = `${API_URLS['PROJECT_USER']}?query_param=${this.state.searchquery}`,
+      config = getApiConfig(endPoint, 'GET');
+    this.props.onUserSearch(config, endPoint);
+  }
+
+  handleSearchAddition = () => {
+    let additionSearchModal = <div>
+        <Grid container spacing={24}>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                  // id="searchquery"
+                  name="searchquery"
+                  label="Search Query"
+                  placeholder="Search Query"
+                  // autoComplete="Search Query"
+                  value={this.state.searchquery}
+                  onChange={this.update}
+                  // onChange={e=>this.setState({searchquery: e.target.value})}
+                  InputLabelProps={{
+                      shrink: true
+                  }}/>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+                <Button variant="contained" color="primary"
+                    onClick={this.searchUser}>
+                    Search
+                </Button>
+            </Grid>
+            {this.state.userList &&
+              <Grid item xs={12} sm={6}>
+                  <RadioGroup aria-label="User" name="customized-radios">
+                    {this.state.userList.map((row, key) => {
+                      return <div>
+                        <FormControlLabel key={key} value={row.UID} control={<Radio />}
+                          label={`${row.Firstname} ${row.Lastname} (${row.UID})`}
+                          onChange={event => this.handleRadioChange(event, row.UID)}/>
+                          {(this.state.askUserDetail && this.state.userSelected === row.UID) &&
+                            <Grid container spacing={24}>
+                              <Grid item xs={12} sm={6}>
+                                <FormControl fullWidth>
+                                  <InputLabel htmlFor="role">Role</InputLabel>
+                                  <Select native
+                                      value={this.state.userRole}
+                                      onChange={this.update}
+                                      inputProps={{
+                                          name: 'userRole',
+                                          id: 'userRole',
+                                      }}>
+                                  <option value="" />
+                                  {this.filterOnRole(USER_ROLE).map(function(role) {
+                                          return <option value={role.key} name={role.key} key={role.key} >
+                                              {role.display}</option>
+                                  })}
+                                  </Select>
+                                </FormControl>
+                              </Grid>
+                              <Grid item xs={12} sm={6}>
+                                <FormControlLabel
+                                  label='Dashboard Access'
+                                  id="userdDashboardAccess"
+                                  name="userdDashboardAccess"
+                                  control={
+                                    <Switch
+                                    checked={this.state.userDashboardAccess}
+                                    onChange={this.update}
+                                    value="Dashboard Access"
+                                    />}
+                                />
+                              </Grid>
+                            </Grid>
+                          }
+                        </div>
+                    })}
+                  </RadioGroup>
+              </Grid>
+            }
+            {this.state.userError &&
+                <Grid item
+                    container
+                    alignItems='center'
+                    direction='row'
+                    justify='flex-end'>
+                    <Typography
+                        variant="subtitle2"
+                        color="secondary"
+                        >
+                        {this.state.userError}
+                    </Typography>
+                </Grid>
+            }
+        </Grid>
+    </div>
+    this.setState({
+      addUserNotify: !this.state.addUserNotify,
+      additionModal: additionSearchModal,
+      addModalHeader: 'Add User'
+    });
+  }
+
+  onSearchAddition = () => {
+    console.log('addition')
+    if( this.state.userSelected && this.state.userRole && this.state.userdDashboardAccess) {
+      const endPoint = `${API_URLS['PROJECT_USER']}`,
+        dataToPost = {
+          "pid": this.state.pid,
+          "username": this.state.userSelected,
+          "role": this.state.userRole,
+          "dashboard_access": this.state.userdDashboardAccess,
+          "createdBy": localStorage.getItem('cognitoUser')
+        },
+        config = getApiConfig(endPoint, 'POST', dataToPost);
+        console.log(dataToPost)
+      // this.props.onUserSearch(config, endPoint);
+    } else {
+      this.setState({userError: 'Please Enter All details'})
+    }
+  }
+
   onAddition = () => {
     if(this.state.userDetail.username && this.state.userDetail.fname
       && this.state.userDetail.lname && this.state.userDetail.desig
@@ -437,6 +575,7 @@ class ProjectDetail extends Component {
      */
     if(this.props.userData && 
       !isEqual(this.props.userData, prevProps.userData)) {
+        console.log(this.props.userData, "this.props.userData.")
         if(this.props.userData.status && this.props.userData.status === 400) {
           this.setState({
             loading: false,
@@ -444,11 +583,17 @@ class ProjectDetail extends Component {
             isAuthError: true
           });
         } else {
-          this.setState({
-            addNotify: !this.state.addNotify,
-            userDetail: {}
-          });
-          this.callApi(this.state.value);
+          if(Array.isArray(this.props.userData)) {
+            this.setState({
+              userList : this.props.userData
+            })
+          } else {
+            this.setState({
+              addNotify: !this.state.addNotify,
+              userDetail: {}
+            });
+            this.callApi(this.state.value);
+          }
         }
     }
     /**
@@ -499,7 +644,9 @@ class ProjectDetail extends Component {
                   handleClick={handleClick}
                   handleAddition={this.handleAddition}
                   onAddition={this.onAddition}
-                  handleClose={this.handleClose}/>
+                  onSearchAddition={this.onSearchAddition}
+                  handleClose={this.handleClose}
+                  handleSearchAddition={this.handleSearchAddition}/>
               }
             </Paper>
           </main>
@@ -536,6 +683,9 @@ function mapDispatchToProps(dispatch) {
         },
         onUserCreation: (config) => {
           dispatch(userCreation(config))
+        },
+        onUserSearch: (config) => {
+          dispatch(userSearch(config))
         }
     }
 }
