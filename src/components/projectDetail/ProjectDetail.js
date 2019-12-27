@@ -33,10 +33,10 @@ class ProjectDetail extends Component {
       authError: '',
       isAuthError: false,
       errorMessage: '',
-      // searchquery: '',
       addUserNotify: false,
-      userError: '',
-      userDetails: {}
+      userDetails: {
+        userList: []
+      }
     }
     this.state = this.initialState;
     this.info = false;
@@ -63,6 +63,7 @@ class ProjectDetail extends Component {
       }
     })
   }
+  
   callApi = (value) => {
     /**
      * Check if selected tab is 'team' or 'installation'
@@ -100,6 +101,7 @@ class ProjectDetail extends Component {
         }
       })
   }
+  
   // Temporary function for updating query string
   update = (event)=> {
     let {name, value} = event.target;
@@ -326,7 +328,8 @@ class ProjectDetail extends Component {
     this.props.onUserSearch(config, endPoint);
   }
 
-  handleSearchAddition = () => {
+  handleSearchAddition = (state) => {
+    console.log(state.userDetails, "****")
     let additionSearchModal = <div>
         <Grid container spacing={24}>
             <Grid item xs={12} sm={6}>
@@ -336,7 +339,7 @@ class ProjectDetail extends Component {
                   label="Search Query"
                   placeholder="Search Query"
                   // autoComplete="Search Query"
-                  value={this.state.userDetails.searchquery}
+                  value={state.userDetails.searchquery}
                   onChange={this.update}
                   // onChange={e=>this.setState({searchquery: e.target.value})}
                   InputLabelProps={{
@@ -349,21 +352,21 @@ class ProjectDetail extends Component {
                     Search
                 </Button>
             </Grid>
-            {this.state.userDetails.userList &&
+            {state.userDetails.userList &&
               <Grid item xs={12} sm={6}>
                   <RadioGroup aria-label="User" name="customized-radios">
-                    {this.state.userDetails.userList.map((row, key) => {
-                      return <div>
-                        <FormControlLabel key={key} value={row.UID} control={<Radio />}
+                    {state.userDetails.userList.map((row, key) => {
+                      return <div key={key}>
+                        <FormControlLabel value={row.UID} control={<Radio />}
                           label={`${row.Firstname} ${row.Lastname} (${row.UID})`}
                           onChange={event => this.handleRadioChange(event, row.UID)}/>
-                          {(this.state.userDetails.askUserDetail && this.state.userDetails.userSelected === row.UID) &&
+                          {(state.userDetails.askUserDetail && state.userDetails.userSelected === row.UID) &&
                             <Grid container spacing={24}>
                               <Grid item xs={12} sm={6}>
                                 <FormControl fullWidth>
                                   <InputLabel htmlFor="role">Role</InputLabel>
                                   <Select native
-                                      value={this.state.userDetails.userRole}
+                                      value={state.userDetails.userRole}
                                       onChange={this.update}
                                       inputProps={{
                                           name: 'userRole',
@@ -384,7 +387,7 @@ class ProjectDetail extends Component {
                                   name="userdDashboardAccess"
                                   control={
                                     <Switch
-                                    checked={this.state.userDetails.userDashboardAccess}
+                                    checked={state.userDetails.userDashboardAccess}
                                     onChange={this.update}
                                     value="Dashboard Access"
                                     />}
@@ -397,7 +400,7 @@ class ProjectDetail extends Component {
                   </RadioGroup>
               </Grid>
             }
-            {this.state.userDetails.userError &&
+            {state.userDetails.userError &&
                 <Grid item
                     container
                     alignItems='center'
@@ -407,32 +410,31 @@ class ProjectDetail extends Component {
                         variant="subtitle2"
                         color="secondary"
                         >
-                        {this.state.userDetails.userError}
+                        {state.userDetails.userError}
                     </Typography>
                 </Grid>
             }
         </Grid>
     </div>
     this.setState({
-      addUserNotify: !this.state.addUserNotify,
+      addUserNotify: !state.addUserNotify,
       additionModal: additionSearchModal,
       addModalHeader: 'Add User'
     });
   }
 
   onSearchAddition = () => {
-    if( this.state.userSelected && this.state.userRole && this.state.userdDashboardAccess) {
+    if( this.state.userDetails.userSelected && this.state.userDetails.userRole && this.state.userDetails.userdDashboardAccess) {
       const endPoint = `${API_URLS['PROJECT_USER']}`,
         dataToPost = {
           "pid": this.state.pid,
-          "username": this.state.userSelected,
-          "role": this.state.userRole,
-          "dashboard_access": this.state.userdDashboardAccess,
+          "username": this.state.userDetails.userSelected,
+          "role": this.state.userDetails.userRole,
+          "dashboard_access": this.state.userDetails.userdDashboardAccess,
           "createdBy": localStorage.getItem('cognitoUser')
         },
         config = getApiConfig(endPoint, 'POST', dataToPost);
-        console.log(dataToPost)
-      // this.props.onUserSearch(config, endPoint);
+      this.props.onUserSearch(config, endPoint);
     } else {
       this.setState({
         userDetails: {
@@ -601,11 +603,14 @@ class ProjectDetail extends Component {
                 ...this.state.userDetails,
                 userList : this.props.userData
               }
+            }, function() {
+              console.log(this.state.userDetails)
             })
           } else {
             this.setState({
-              addNotify: !this.state.addNotify,
-              userDetail: {}
+              addNotify: this.state.addNotify ? !this.state.addNotify: this.state.addNotify,
+              userDetail: {},
+              addUserNotify: this.state.addUserNotify ? !this.state.addUserNotify: this.state.addUserNotify,
             });
             this.callApi(this.state.value);
           }

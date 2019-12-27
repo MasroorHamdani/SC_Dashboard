@@ -164,6 +164,7 @@ class EnhancedTable extends React.Component {
         noView, allowSearchAdd, handleSearchAddition, onSearchAddition} = this.props;
     const emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
     const queryToLower = this.state.query.toLowerCase();
+    console.log(stateData.userDetails, "****")
     return (
       <NamespacesConsumer>
             {
@@ -198,7 +199,7 @@ class EnhancedTable extends React.Component {
                 </Grid>
                 {allowSearchAdd &&
                   <Button variant="contained" color="primary"
-                    onClick={handleSearchAddition}>
+                    onClick={e=>handleSearchAddition(stateData)}>
                     Add Existing Users
                   </Button>
                 }
@@ -347,23 +348,12 @@ class EnhancedTable extends React.Component {
           <CustomModal
             header={stateData.addModalHeader}
             content={stateData.additionModal}
-            handleClose={stateData.addNotify ? handleAddition : handleSearchAddition}
+            handleClose={stateData.addNotify ? handleAddition : e=>handleSearchAddition(stateData)}
             handleClick={stateData.addNotify ? onAddition: onSearchAddition}
             open={stateData.addNotify ? stateData.addNotify : stateData.addUserNotify}
             showFooter={true}
           />
         }
-        {/* {stateData && stateData.addUserNotify &&
-          <CustomModal
-            header={stateData.addModalHeader}
-            content={stateData.additionModal}
-            handleClose={handleAddition}
-            handleClick={onAddition}
-            open={stateData.addUserNotify}
-            showFooter={true}
-          />
-
-        } */}
       </Paper>
       }</NamespacesConsumer>
     );
