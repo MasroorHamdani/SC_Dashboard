@@ -164,7 +164,6 @@ class EnhancedTable extends React.Component {
         noView, allowSearchAdd, handleSearchAddition, onSearchAddition} = this.props;
     const emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
     const queryToLower = this.state.query.toLowerCase();
-    console.log(stateData.userDetails, "****")
     return (
       <NamespacesConsumer>
             {
@@ -278,9 +277,9 @@ class EnhancedTable extends React.Component {
                                 />
                                 : ((toStr.call(n[id]) === '[object Object]') && !n[id]['$$typeof']) ?
                                   <div className={classes.deviceDisplay}>
-                                    {Object.keys(n[id]).map((key, index) => {
-                                        return <Typography key={index}> {key} - { n[id][key]} <b>|</b> </Typography>
-                                    })}
+                                      {Object.keys(n[id]).map((key, index) => {
+                                          return <Typography key={index}>{key} - { n[id][key]} <b>,&nbsp;</b></Typography>
+                                      })}
                                   </div>
                                 : <span>{n[id]}</span>
                                 }

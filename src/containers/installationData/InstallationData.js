@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import {connect} from 'react-redux';
 import _, {isEqual} from 'lodash';
 import moment from 'moment-timezone';
-import {withStyles, LinearProgress} from '@material-ui/core';
+import {withStyles, Typography} from '@material-ui/core';
 
 import {API_URLS, NAMESPACE_MAPPER, PROJECT_ACTIONS,
     GRAPH_RENDER_TYPE, DATE_TIME_FORMAT, RANGE_ERROR} from '../../constants/Constant';
@@ -358,32 +358,35 @@ class InstallationData extends Component {
     render() {
         const {classes} = this.props;
         return (
-            <div className={classes.root}>
-                {this.state.projectList.length > 0 &&
-                    <RadioButtonComponent data={this.state}
-                        handleChange={this.handleChange}/>
-                }
-                {this.state.projectList.length > 0 &&
-                    <div className={classes.seperator}></div>
-                }
-                {(this.state.dashboardData &&
-                <div className={classes.main}>
-                    <DataViewAnalysis stateData={this.state}
-                        handleListSelection={this.handleListSelection}
-                        handleDatePicker={this.handleDatePicker}
-                        handleChangeStart={this.handleChangeStart}
-                        handleChangeEnd={this.handleChangeEnd}
-                        />
+            <div className={classes.content}>
+                <Typography className={classes.pageHeader}>Data Analysis By Location /</Typography>
+                <div className={classes.root}>
+                    {this.state.projectList.length > 0 &&
+                        <RadioButtonComponent data={this.state}
+                            handleChange={this.handleChange}/>
+                    }
+                    {this.state.projectList.length > 0 &&
+                        <div className={classes.seperator}></div>
+                    }
+                    {(this.state.dashboardData &&
+                    <div className={classes.main}>
+                        <DataViewAnalysis stateData={this.state}
+                            handleListSelection={this.handleListSelection}
+                            handleDatePicker={this.handleDatePicker}
+                            handleChangeStart={this.handleChangeStart}
+                            handleChangeEnd={this.handleChangeEnd}
+                            />
+                    </div>
+                    )}
+                    {this.state.loading &&
+                        <PageLoader isOpaque={false}/>
+                        // <LinearProgress className={classes.buttonProgress}/>
+                    }
+                    {this.state.metricNotFound &&
+                        <CustomPopOver content={this.state.notFoundError} open={this.state.metricNotFound}
+                            handleClose={this.handleClose} variant='error'/>
+                    }
                 </div>
-                )}
-                {this.state.loading &&
-                    <PageLoader isOpaque={false}/>
-                    // <LinearProgress className={classes.buttonProgress}/>
-                }
-                {this.state.metricNotFound &&
-                    <CustomPopOver content={this.state.notFoundError} open={this.state.metricNotFound}
-                        handleClose={this.handleClose} variant='error'/>
-                }
             </div>
         )
     }

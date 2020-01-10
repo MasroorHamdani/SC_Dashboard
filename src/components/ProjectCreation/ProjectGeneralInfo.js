@@ -1,7 +1,7 @@
 import React, {Component} from "react";
 import {withStyles, Grid, TextField, Button,
     Typography, FormControl, InputLabel, Select} from '@material-ui/core';
-import {REGION_LIST} from '../../constants/Constant';
+import {REGION_LIST, ROLES} from '../../constants/Constant';
 
 import styles from './ProjectCreationStyle';
 
@@ -14,7 +14,7 @@ class ProjectGeneralInfo extends Component {
     }
 
     render() {
-        const {classes, data, onChange, onClick} = this.props;
+        const {classes, data, onChange, onClick, projectSelected} = this.props;
         return (
             <div className={classes.root}>
                 <Grid container spacing={24}>
@@ -30,46 +30,46 @@ class ProjectGeneralInfo extends Component {
                             onChange={e=>onChange(e, 'general')}/>
                     </Grid>
                     <Grid item xs={12} sm={6}>
-                    <TextField
-                        required
-                        disabled={!data.showFooter ? true: false}
-                        id="site_addr"
-                        name="site_addr"
-                        label="Site Address"
-                        fullWidth
-                        autoComplete="Site Address"
-                        value={data.general.site_addr}
-                        onChange={e=>onChange(e, 'general')}/>
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
-                    {!data.showFooter ?
                         <TextField
                             required
-                            disabled={true}
-                            id="Region"
-                            name="Region"
-                            label="Time Zone/Region"
+                            disabled={!data.showFooter ? true: false}
+                            id="site_addr"
+                            name="site_addr"
+                            label="Site Address"
                             fullWidth
-                            value={data.general.Region}
+                            autoComplete="Site Address"
+                            value={data.general.site_addr}
                             onChange={e=>onChange(e, 'general')}/>
-                    :
-                        <FormControl className={classes.formControl} fullWidth>
-                            <InputLabel htmlFor="age-native-helper">Time Zone/Region</InputLabel>
-                            <Select native
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                        {!data.showFooter ?
+                            <TextField
+                                required
+                                disabled={true}
+                                id="Region"
+                                name="Region"
+                                label="Time Zone/Region"
+                                fullWidth
                                 value={data.general.Region}
-                                onChange={e=>onChange(e, 'general')}
-                                inputProps={{
-                                    name: 'Region',
-                                    id: 'Region',
-                                    }}>
-                            <option value="" />
-                                {REGION_LIST.map(function(region) {
-                                    return <option value={region.key} name={region.key} key={region.key} >
-                                        {region.display}</option>
-                            })}
-                            </Select>
-                        </FormControl>
-                    }
+                                onChange={e=>onChange(e, 'general')}/>
+                        :
+                            <FormControl className={classes.formControl} fullWidth>
+                                <InputLabel htmlFor="age-native-helper">Time Zone/Region</InputLabel>
+                                <Select native
+                                    value={data.general.Region}
+                                    onChange={e=>onChange(e, 'general')}
+                                    inputProps={{
+                                        name: 'Region',
+                                        id: 'Region',
+                                        }}>
+                                <option value="" />
+                                    {REGION_LIST.map(function(region) {
+                                        return <option value={region.key} name={region.key} key={region.key} >
+                                            {region.display}</option>
+                                })}
+                                </Select>
+                            </FormControl>
+                        }
                     </Grid>
                     <Grid item xs={12} sm={6}>
                         <TextField
@@ -82,6 +82,22 @@ class ProjectGeneralInfo extends Component {
                             value={data.general.Email}
                             onChange={e=>onChange(e, 'general')}/>
                     </Grid>
+                    {projectSelected && projectSelected.Role === ROLES['SC_ADMIN'] &&
+                        <Grid item xs={12}>
+                            <Grid xs={6}>
+                                <TextField
+                                    required
+                                    disabled = {!data.showFooter ? true: false}
+                                    id="partner_id"
+                                    name="partner_id"
+                                    label="Partner Id"
+                                    fullWidth
+                                    autoComplete="Partner Id"
+                                    value={data.general.partner_id}
+                                    onChange={e=>onChange(e, 'general')}/>
+                            </Grid>
+                        </Grid>
+                    }
                     {data.generalErrorMessage &&
                         <Grid item
                             xs={12} sm={12}>

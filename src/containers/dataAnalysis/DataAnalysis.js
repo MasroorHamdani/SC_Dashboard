@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import {connect} from 'react-redux';
 import {isEqual} from 'lodash';
-import {withStyles, LinearProgress} from '@material-ui/core';
+import {withStyles, Typography} from '@material-ui/core';
 import _, {sortBy} from 'lodash';
 import moment from 'moment-timezone';
 import DataAnalysisComponent from '../../components/dataAnalysis/DataAnalysis';
@@ -640,42 +640,43 @@ class DataAnalysis extends Component {
   render () {
     const {classes} = this.props;
       return(
-        <div className={classes.root}>
-        {this.state.projectList.length > 0 &&
-          <RadioButtonComponent data={this.state}
-          handleChange={this.handleChange}/>
-        }
-        {this.state.projectList.length > 0 &&
-          <div className={classes.seperator}></div>
-        }
-        {this.state.installationList &&
-          <DataAnalysisComponent stateData={this.state}
-            handleDateChange={this.handleDateChange}
-            handleTabChange={this.handleTabChange}
-            handleSamplingChange={this.handleSamplingChange}
-            handleDatePicker={this.handleDatePicker}
-            handleChangeStart={this.handleChangeStart}
-            handleListSelection={this.handleListSelection}
-            handleChangeEnd={this.handleChangeEnd}
-            refreshData={this.refreshData}
-            getModalAnalyticsDataWithMetricId={this.getModalAnalyticsDataWithMetricId}
-            modalHandleChangeStart={this.modalHandleChangeStart}
-            modalHandleChangeEnd={this.modalHandleChangeEnd}
-            />
-        }
-        {this.state.loading &&
-          <PageLoader isOpaque={false}/>
-          // <LinearProgress className={classes.buttonProgress}/>
-        }
-        {this.state.metricNotFound &&
-            <CustomPopOver content={this.state.notFoundError} open={this.state.metricNotFound}
-                handleClose={this.handleClose} variant='error'/>
-        }
-          {/* { !this.state.projectList &&
-            <div>No Projects Assigned</div>
-          } */}
+        <div className={classes.content}>
+                <Typography className={classes.pageHeader}>Data Analysis By Device /</Typography>
+          <div className={classes.root}>
+            {this.state.projectList.length > 0 &&
+              <RadioButtonComponent data={this.state}
+              handleChange={this.handleChange}/>
+            }
+            {this.state.projectList.length > 0 &&
+              <div className={classes.seperator}></div>
+            }
+            {this.state.installationList &&
+              <DataAnalysisComponent stateData={this.state}
+                handleDateChange={this.handleDateChange}
+                handleTabChange={this.handleTabChange}
+                handleSamplingChange={this.handleSamplingChange}
+                handleDatePicker={this.handleDatePicker}
+                handleChangeStart={this.handleChangeStart}
+                handleListSelection={this.handleListSelection}
+                handleChangeEnd={this.handleChangeEnd}
+                refreshData={this.refreshData}
+                getModalAnalyticsDataWithMetricId={this.getModalAnalyticsDataWithMetricId}
+                modalHandleChangeStart={this.modalHandleChangeStart}
+                modalHandleChangeEnd={this.modalHandleChangeEnd}
+                />
+            }
+            {this.state.loading &&
+              <PageLoader isOpaque={false}/>
+            }
+            {this.state.metricNotFound &&
+                <CustomPopOver content={this.state.notFoundError} open={this.state.metricNotFound}
+                    handleClose={this.handleClose} variant='error'/>
+            }
+            {/* { !this.state.projectList &&
+              <div>No Projects Assigned</div>
+            } */}
           </div>
-
+        </div>
       )
   }
 }

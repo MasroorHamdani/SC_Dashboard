@@ -12,10 +12,11 @@ import ListIcon from '@material-ui/icons/ViewList';
 import IconExpandLess from '@material-ui/icons/ExpandLess';
 import IconExpandMore from '@material-ui/icons/ExpandMore';
 import DataUsageIcon from '@material-ui/icons/DataUsage';
-import ShowChartIcon from '@material-ui/icons/ShowChart'
+import ShowChartIcon from '@material-ui/icons/ShowChart';
+import PermDataSettingIcon from '@material-ui/icons/PermDataSetting';
 
 import {ListItem, ListItemIcon, ListItemText, Tooltip,
-    withStyles, Collapse, Divider, List} from '@material-ui/core';
+    withStyles, Collapse, Divider, List, Typography} from '@material-ui/core';
 import {Link} from "react-router-dom";
 
 import styles from "./MenuStyle";
@@ -49,7 +50,9 @@ class ListItems extends Component {
             case 'DataUsageIcon':
                 return <DataUsageIcon/>;
             case 'ShowChartIcon':
-                return <ShowChartIcon/>
+                return <ShowChartIcon/>;
+            case 'PermDataSettingIcon':
+                return <PermDataSettingIcon/>
             default:
                 return '';
         }
@@ -63,6 +66,7 @@ class ListItems extends Component {
                 return (
                     <div>
                     <Tooltip title={!menuState ? row.toolTip : ''} key={index}>
+                        {!row.isExternal ?
                         <ListItem button component={!row.nestedMenu ? Link : ''}
                             to={!row.nestedMenu ? row.url: ''}
                             className={!row.nestedMenu ? activeRoute(row.url) ? classes.isActive: '' : ''}
@@ -78,6 +82,15 @@ class ListItems extends Component {
                             </NamespacesConsumer>
                             {row.nestedMenu ? open ? <IconExpandLess /> : <IconExpandMore /> : ''}
                         </ListItem>
+                        :
+                            <a href={row.url} target="_blank"
+                                className={[classes.anchorIsActive, classes.listPaddingMenu, classes.flexDisplay]}>
+                                <ListItemIcon className={classes.whiteFont}>
+                                    {this.renderSwitch(icon)}
+                                </ListItemIcon>
+                                <Typography className={[classes.textFontColor, classes.listPaddingMenu]}>{row.name}</Typography>
+                            </a>
+                        }
                     </Tooltip>
                     {row.nestedMenu &&
                         <Collapse in={open} timeout="auto" unmountOnExit>

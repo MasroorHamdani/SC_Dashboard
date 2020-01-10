@@ -59,7 +59,7 @@ class ProjectAreaInfo extends Component {
               }
               <Grid item xs={12} sm={6}>
                 <FormControl className={classes.formControl} fullWidth>
-                    <InputLabel htmlFor="age-native-helper">Area List</InputLabel>
+                    <InputLabel htmlFor="age-native-helper">Select Area Type</InputLabel>
                     <Select native
                         value={data.area.area_type}
                         onChange={e=>onChange(e, 'area')}
@@ -88,7 +88,7 @@ class ProjectAreaInfo extends Component {
                     <option value="" />
                     {data.locations.map(function(loc) {
                         return <option value={loc.insid} name={loc.insid} key={loc.insid} >
-                            {loc.name} | {loc.locn}</option>
+                            {loc.name} ({loc.locn})</option>
                     })}
                   </Select>
                 </FormControl>
@@ -98,9 +98,9 @@ class ProjectAreaInfo extends Component {
                       required
                       id="locn"
                       name="locn"
-                      label="Washroom Location"
+                      label="Full Name"
                       fullWidth
-                      autoComplete="Washroom Location"
+                      autoComplete="Full Name"
                       value={data.area.locn}
                       onChange={e=>onChange(e, 'area')}/>
               </Grid>

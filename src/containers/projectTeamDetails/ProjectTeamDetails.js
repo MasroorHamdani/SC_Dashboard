@@ -499,17 +499,17 @@ class ProjectInstallationDetails extends Component {
                 {this.state.loading &&
                     <LinearProgress className={classes.buttonProgress}/>
                 }
-                
                 <main className={classes.content}>
-                { this.state.projectSelected &&
-                <UserProfileData 
-                    data={this.state}
-                    onChange={this.handleChange}
-                    onClick={this.handleSubmit}
-                    handleModalProfileState={this.handleModalProfileState}/>
-                }
-                <Divider className={classes.seperator} />
-                <Grid container spacing={24} className={classes.grid}>
+                    <Typography className={classes.pageName}>Team User Details /</Typography>
+                    { this.state.projectSelected &&
+                    <UserProfileData 
+                        data={this.state}
+                        onChange={this.handleChange}
+                        onClick={this.handleSubmit}
+                        handleModalProfileState={this.handleModalProfileState}/>
+                    }
+                    <Divider className={classes.seperator} />
+                    <Grid container spacing={24} className={classes.grid}>
                         <Grid item xs={12} sm={6}>
                             <Card className={classes.card}>
                                 <CardHeader action={

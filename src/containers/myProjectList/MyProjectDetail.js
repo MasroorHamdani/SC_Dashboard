@@ -68,6 +68,7 @@ class MyProjectDetail extends Component {
                             email.push(Object.values(row)[0])
                         })
                     projectDetail.general['Email'] = email.join();
+                    projectDetail.general['partner_id'] =projectDetail.general['SUB3']
                     projectDetail.locations.map((row) => {
                         if(!isEmpty(row.offtimes)) {
                             row.offtimes[0].Start = formatDateTime(row.offtimes[0].Start, "HHmm", "HH:mm");

@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import {withStyles, LinearProgress} from '@material-ui/core';
+import {withStyles, LinearProgress, Typography} from '@material-ui/core';
 import { connect } from "react-redux";
 import _, {isEqual, isEmpty} from 'lodash';
 import JWTDecode from 'jwt-decode';
@@ -65,6 +65,7 @@ class ProjectDetail extends Component {
                             email.push(Object.values(row)[0])
                         })
                     projectDetail.general['Email'] = email.join();
+                    projectDetail.general['partner_id'] = projectDetail.general['SUB3']
                     projectDetail.locations.map((row) => {
                         if(!isEmpty(row.offtimes)) {
                             row.offtimes[0].Start = formatDateTime(row.offtimes[0].Start, "HHmm", "HH:mm");
@@ -110,7 +111,8 @@ class ProjectDetail extends Component {
         let endPoint = `${API_URLS['ADMIN']}/${this.state.pid}`,
             dataToPost = {
                 "type": "general",
-                "status": this.state.type
+                "status": this.state.type,
+                "createdBy" : this.state.projectDetail.general.CreatedBy
             },
             config = getApiConfig(endPoint, 'POST', dataToPost);
         this.props.onProjectCreation(config);
@@ -133,7 +135,8 @@ class ProjectDetail extends Component {
                         <ProjectDescription statedata={this.state}
                         handleModalState={this.handleModalState}
                         onClick={this.onClick}
-                        handleEdit={this.handleEdit}/>
+                        handleEdit={this.handleEdit}
+                        projectSelected={this.props.projectSelected}/>
                     }
                     {this.state.isAuthError &&
                         <CustomPopOver content={this.state.authError} open={this.state.isAuthError}

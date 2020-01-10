@@ -56,6 +56,18 @@ const styles = theme => ({
   whiteFont: {
     color: `${theme.palette.primary.textcolor}`
   },
+  listPaddingMenu: {
+    paddingLeft: theme.spacing.unit * 2,
+    textDecoration: 'none',
+    paddingTop: theme.spacing.unit,
+    paddingTop: theme.spacing.unit
+  },
+  flexDisplay: {
+    display: 'flex'
+  },
+  anchorIsActive: {
+    '&:hover': { backgroundColor: `${theme.palette.primary.highlighter} !important`},
+  }
 });
 
 export default styles;

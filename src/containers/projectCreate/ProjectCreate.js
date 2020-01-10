@@ -19,6 +19,7 @@ import {getApiConfig} from '../../services/ApiCofig';
 import CustomPopOver from '../../components/modal/PopOver';
 
 import styles from './ProjectCreateStyle';
+import sharedInstance from "jss";
 
 
 class ProjectCreate extends Component {
@@ -36,7 +37,8 @@ class ProjectCreate extends Component {
                 site: "",
                 site_addr: "",
                 Region: "",
-                Email: ""
+                Email: "",
+                partner_id: ""
             },
             location: {
                 locn: "",
@@ -88,7 +90,6 @@ class ProjectCreate extends Component {
      * Common function to set any fields value from UI in state.
      */
         let {name, value} = event.target;
-        
         if (name === 'Mute') {
             value = event.target.checked;
         }
@@ -337,6 +338,8 @@ class ProjectCreate extends Component {
                 dataToPost['type'] = PROJECT_CREATION['GENERAL'];
                 dataToPost['HealthUpdates'] = {'Email': EmailArray};
                 dataToPost['status'] = PROJECT_STATUS.DRAFT;
+                dataToPost['partner_id'] = this.props.projectSelected.Role === ROLES['SC_ADMIN'] ?
+                    this.state.general.partner_id : this.state.projectSelected.SUB3;
                 if (this.state.pid) {
                     dataToPost['UpdatedBy'] = localStorage.getItem('cognitoUser');
                 } else {
@@ -695,6 +698,13 @@ class ProjectCreate extends Component {
     componentDidUpdate(prevProps, prevState) {
         if(this.props.projectSelected &&
             !isEqual(this.props.projectSelected, prevProps.projectSelected)) {
+            this.setState({
+                projectSelected: this.props.projectSelected,
+                general: {
+                    ...this.state.general,
+                    partner_id: this.props.projectSelected.SUB3
+                }
+            })
             if(this.props.projectSelected.Role !== ROLES['PARTNER_ADMIN'] &&
                 this.props.projectSelected.Role !== ROLES['SC_ADMIN']) {
                     this.props.history.push(`${REACT_URLS.DASHBOARD(this.state.parentId)}`);
@@ -714,7 +724,7 @@ class ProjectCreate extends Component {
                     isAuthError: true,
                     disable: true
                 });
-            } else if(this.props.projectData['PID'] && this.props.projectData['type'] === PROJECT_CREATION['GENERAL']){
+            } else if(this.props.projectData['PID'] && this.props.projectData['type'] === PROJECT_CREATION['GENERAL']) {
                 this.setState({
                     pid : this.props.projectData['PID'],
                     expanded: this.state.panel,
@@ -785,6 +795,7 @@ class ProjectCreate extends Component {
                         })
                         general['Email'] = email.join();
                     }
+                    general['partner_id'] = general['SUB3'];
                 }
                 if(!_.isEmpty(area)){
                     area.map((r) => {
@@ -844,7 +855,8 @@ class ProjectCreate extends Component {
                             editLocation={this.editLocation}
                             editArea={this.editArea}
                             handleFileUpload={this.handleFileUpload}
-                            deleteObject={window.deleteObject}/>
+                            deleteObject={window.deleteObject}
+                            projectSelected = {this.props.projectSelected}/>
                     }
                 </main>
                 {this.state.isAuthError &&

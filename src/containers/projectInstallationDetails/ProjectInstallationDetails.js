@@ -294,6 +294,7 @@ class ProjectInstallationDetails extends Component {
                     * user can directly change the insid from drop down
                     * rather then moving back and selecting next location
                     */}
+                    <Typography>Installation Details /</Typography>
                     <Typography component="div">
                         <InputLabel htmlFor="insid">{t('changeLocn')}</InputLabel>
                         <Select className={classes.select}

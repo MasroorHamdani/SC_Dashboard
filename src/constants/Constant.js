@@ -1,7 +1,7 @@
 
 export const API_END_POINT = process.env.REACT_APP_API_END_POINT
 //"https://4l6qi5oh0h.execute-api.ap-southeast-1.amazonaws.com/prod";
-export const ADMIN = 'http://127.0.0.1:5000'//process.env.REACT_APP_ADMIN_API_END_POINT
+export const ADMIN = process.env.REACT_APP_ADMIN_API_END_POINT
 export const PROJECT_LEVEL = "project"
 
 // export const NEW_API_END_POINT = process.env.REACT_APP_NEW_API_END_POINT
@@ -13,13 +13,15 @@ export const S3_ACCESS_KEY_ID = process.env.REACT_APP_S3_ACCESS_KEY_ID
 export const S3_SECRET_ACCESS_KEY = process.env.REACT_APP_S3_SECRET_ACCESS_KEY
 // export const API_END_POINT_IFRAME = process.env.REACT_APP_API_END_POINT_IFRAME
 
-export const SC_LOGO = 'https://scprojectimages.s3-ap-southeast-1.amazonaws.com/SC_logo.png'
+export const DEVICE_MANAGEMENT_URL = process.env.REACT_APP_DEVICE_MANAGEMENT_URL
+
+export const SC_LOGO = process.env.REACT_APP_SC_LOGO
 
 export const API_URLS = {
     "LOGIN": "/unauth/login",
     "REFRESH_TOKEN": "/unauth/login",
-    "DASHBOARD": "/authV2/projects",
-    "PROJECT_DETAILS": "/authV2/projects",
+    "DASHBOARD": "/authv2-dev/projects",//"/authV2/projects",
+    "PROJECT_DETAILS": "/authv2-dev/projects",//"/authV2/projects",
     "FORGOT_PASSWORD": "/unauth/password/change",
     "RESET_PASSWORD": "/unauth/password/confirm",
     "AUTH_RESET_PASSWORD": "/unauth/password/authchallenge",
@@ -45,7 +47,8 @@ export const API_URLS = {
     'ADMIN': '/admin/project',
     'PROJECT_USER': '/project/user',
     'DEVICE_UPDATE':'/authv2-dev/provisioning',
-    'DEVICE_ASSIGN':'/deviceAssign'
+    'DEVICE_ASSIGN':'/deviceAssign',
+    'SEARCH': '/search',
 };
 
 export const DASHBOARD_METRIC = {

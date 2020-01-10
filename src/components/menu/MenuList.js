@@ -1,4 +1,4 @@
-import {ROLES} from '../../constants/Constant';
+import {ROLES, DEVICE_MANAGEMENT_URL} from '../../constants/Constant';
 
 export function mainMenuList (pid, partnerId) {
   /**
@@ -76,7 +76,15 @@ export function secondaryMenuList (role, partnerId) {
       url: partnerId ? `/${partnerId}/newproject` : `/newproject`,
       icon: "CreateIcon",
       toolTip: "Add Project"
-    })
+    },
+    // {
+    //   name: "Device Management",
+    //   url: `${DEVICE_MANAGEMENT_URL}?scauth=${localStorage.getItem('idToken')}`,
+    //   icon: "PermDataSettingIcon",
+    //   toolTip: "Device Management",
+    //   isExternal: true
+    // }
+    )
   } else if(role === ROLES['PARTNER_ADMIN']) {
     secondaryMenu.push({
       name: "My Projects",

@@ -102,7 +102,7 @@ class ProjectDetail extends Component {
       })
   }
   
-  // Temporary function for updating query string
+  // Function for updating text feilds for Search user Modal
   update = (event)=> {
     let {name, value} = event.target;
     if (name === 'userdDashboardAccess')
@@ -117,7 +117,7 @@ class ProjectDetail extends Component {
 
   filterOnRole = (arr) => {
     if(this.state.projectSelected.Role === ROLES['PROJECT_ADMIN'])
-      arr = arr.filter(x => (x.key === 'attendent' || x.key === 'default'))
+      arr = arr.filter(x => (x.key === 'attendent' || x.key === 'default' || x.key === 'projectadmin'))
     else if(this.state.projectSelected.Role === ROLES['PARTNER_ADMIN'])
       arr = arr.filter(x => (x.key === 'attendent' || x.key === 'projectadmin' || x.key === 'default'))
     return arr
@@ -323,13 +323,13 @@ class ProjectDetail extends Component {
   }
 
   searchUser = () => {
-    const endPoint = `${API_URLS['PROJECT_USER']}?query_param=${this.state.userDetails.searchquery}`,
+    const endPoint = `${API_URLS['PROJECT_USER']}${API_URLS['SEARCH']}/${this.state.pid}
+        ?query_param=${this.state.userDetails.searchquery}&partner=${this.state.projectSelected.SUB3}`,
       config = getApiConfig(endPoint, 'GET');
     this.props.onUserSearch(config, endPoint);
   }
 
   handleSearchAddition = (state) => {
-    console.log(state.userDetails, "****")
     let additionSearchModal = <div>
         <Grid container spacing={24}>
             <Grid item xs={12} sm={6}>
@@ -338,10 +338,8 @@ class ProjectDetail extends Component {
                   name="searchquery"
                   label="Search Query"
                   placeholder="Search Query"
-                  // autoComplete="Search Query"
                   value={state.userDetails.searchquery}
                   onChange={this.update}
-                  // onChange={e=>this.setState({searchquery: e.target.value})}
                   InputLabelProps={{
                       shrink: true
                   }}/>
@@ -425,7 +423,7 @@ class ProjectDetail extends Component {
 
   onSearchAddition = () => {
     if( this.state.userDetails.userSelected && this.state.userDetails.userRole && this.state.userDetails.userdDashboardAccess) {
-      const endPoint = `${API_URLS['PROJECT_USER']}`,
+      const endPoint = `${API_URLS['PROJECT_USER']}${API_URLS['SEARCH']}/${this.state.pid}`,
         dataToPost = {
           "pid": this.state.pid,
           "username": this.state.userDetails.userSelected,
@@ -465,7 +463,7 @@ class ProjectDetail extends Component {
         dataToPost['phone_number'] = (this.state.userDetail.countryCode && this.state.userDetail.phoneNumber) ?
           `${this.state.userDetail.countryCode}${this.state.userDetail.phoneNumber}` : '';
         dataToPost['createdBy'] = localStorage.getItem('cognitoUser');
-
+        dataToPost['partner_id'] = this.state.projectSelected.SUB3;
         let endPoint = `${API_URLS['PROJECT_USER']}/${this.state.pid}`,
             config = getApiConfig(endPoint, 'POST', dataToPost);
         this.props.onUserCreation(config);
@@ -603,8 +601,6 @@ class ProjectDetail extends Component {
                 ...this.state.userDetails,
                 userList : this.props.userData
               }
-            }, function() {
-              console.log(this.state.userDetails)
             })
           } else {
             this.setState({
@@ -632,6 +628,7 @@ class ProjectDetail extends Component {
   };
 
   render() {
+    this.handleSearchAddition.bind(this);
       const { classes, handleClick } = this.props;
       return (
           <div className={classes.root}>

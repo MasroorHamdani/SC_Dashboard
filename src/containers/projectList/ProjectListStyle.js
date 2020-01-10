@@ -1,7 +1,7 @@
 const styles = theme => ({
     root: {
-        // display: 'flex',
-        width: '85%'//'100%'
+        display: 'flex',
+        width: '100%'//'85%'// 85% to set the width and don't let ui break. not needed till xs is not set for a Grid!
     },
     main: {
         width: 'auto',

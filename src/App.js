@@ -1,7 +1,5 @@
 import React from "react";
 import { Route, Switch, Redirect, withRouter} from "react-router-dom";
-// import { connect } from "react-redux";
-// import {isEqual} from "lodash";
 
 import Dashboard from "./containers/dashboard/Dashboard";
 import Login from "./containers/Login";
@@ -12,7 +10,6 @@ import Logout from "./containers/Logout";
 import ProjectDetails from "./containers/projectDetails/ProjectDetail";
 import ProjectInstallationDetails from "./containers/projectInstallationDetails/ProjectInstallationDetails";
 import ProjectTeamDetails from "./containers/projectTeamDetails/ProjectTeamDetails";
-// import About from "./containers/About";
 import NoMatch from "./containers/nomatch/NoMatch";
 import ButtonAppBar from "./components/commonHeader/CommonHeader";
 import AuthReset from "./containers/AuthReset";
@@ -33,7 +30,6 @@ import ProjectList from "./containers/projectList/ProjectList";
 import ProjectDetail from "./containers/projectList/ProjectDetail";
 import MyProjectList from "./containers/myProjectList/MyProjectList";
 import MyProjectDetail from "./containers/myProjectList/MyProjectDetail";
-// import {projectSelect}  from './actions/MenuAction';
 import InstallationData from "./containers/installationData/InstallationData";
 
 import axios from 'axios';
@@ -100,7 +96,6 @@ class App extends React.Component {
         localStorage.setItem('partnerid', partnerid);
     }
     render() {
-      // const Contact = () => <h2>Contact</h2>
         return(
           <MuiThemeProvider theme={theme}>
               <div className="common-container">
@@ -113,8 +108,6 @@ class App extends React.Component {
                     <Switch>
                       <Route path="/:partnerid?/login" component={Login} />
                       <Route path="/:partnerid?/auth-reset" component={AuthReset} />
-                      {/* <Route path="/about" component={About} />
-                      <Route path="/contact" component={Contact} /> */}
                       {/* when none of the above match, <NoMatch> will be rendered */}
                       <Route path="/:partnerid?/*" component={NoMatch} />
                     </Switch>
@@ -158,19 +151,4 @@ class App extends React.Component {
         )
     }
 }
-// function mapStateToProps(state) {
-//   return {
-//       projectSelected : state.projectSelectReducer.data,
-//   }
-// }
-
-// function mapDispatchToProps(dispatch) {
-//   //will dispatch the async action
-//   return {
-//     onProjectSelect: (value) => {
-//       dispatch(projectSelect(value))
-//     },
-//   }
-// }
 export default withRouter(App)
-// export default (connect(mapStateToProps, mapDispatchToProps))(withRouter(App));

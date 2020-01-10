@@ -4,7 +4,7 @@ const styles = theme => ({
         width: "100%",
         flexGrow: 1,
         // padding: theme.spacing.unit * 3,
-        marginTop: theme.spacing.unit * 8,
+        // marginTop: theme.spacing.unit * 8,
         display: "flex",
         height: '100vh',
         overflow: 'auto',
@@ -22,6 +22,13 @@ const styles = theme => ({
     },
     main: {
         width: '80%'
+    },
+    content: {
+        flexGrow: 1,
+        marginTop: theme.spacing.unit * 8,
+    },
+    pageHeader: {
+        padding: theme.spacing.unit * 3
     }
 })
 

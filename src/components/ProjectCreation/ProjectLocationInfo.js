@@ -169,9 +169,7 @@ class ProjectLocationInfo extends Component {
         </div>;
         let rows = [{ id: 'name', numeric: 'left', disablePadding: false, label: 'Name' },
                     { id: 'locn', numeric: 'left', disablePadding: false, label: 'Location' },
-                    { id: 'offdays', numeric: 'left', disablePadding: false, label: 'Off Days' },
                     { id: 'Mute', numeric: 'left', disablePadding: false, label: 'Mute' },
-                    { id: 'offtimes', numeric: 'left', disablePadding: false, label: 'Off Times' },
                     { id: 'fileUrl', numeric: 'left', disablePadding: false, label: 'Floor Map' },
                     { id: 'devices_count', numeric: 'left', disablePadding: false, label: 'Total Devices'},
                 ],
@@ -224,26 +222,12 @@ class ProjectLocationInfo extends Component {
                                             <b>Map Image:</b> {dt.fileUrl}
                                         </Typography>
                                     }
-                                    <Typography component="p">
-                                        <b>Shift Start At :</b> {formatDateTime(dt.ShiftStart, "HHmm", "hh:mm A")}
-                                    </Typography>
-                                    <Typography component="p">
-                                    <   b>Shift Ends At :</b> {formatDateTime(dt.ShiftEnd, "HHmm", "hh:mm A")}
-                                    </Typography>
                                     <Typography component="div">
                                         <b>Device Count List :</b> 
                                         <div className={classes.deviceDisplay}>
                                         {Object.keys(dt.devices_count).map((key, index) => {
-                                            return <Typography key={index}> {key} - { dt.devices_count[key]} <b>|</b> </Typography>
+                                            return <Typography key={index}> {key} - { dt.devices_count[key]} <b>,&nbsp;</b> </Typography>
                                         })}
-                                        </div>
-                                    </Typography>
-                                    <Typography component="div">
-                                        <b>Off Days :</b>
-                                        <div className={classes.deviceDisplay}>
-                                            {dt.offdays.map((dt, index) => {
-                                                return <Typography key={index}> {capitalizeFirstLetter(dt)} <b>|</b> </Typography>
-                                            })}
                                         </div>
                                     </Typography>
                                 </CardContent>

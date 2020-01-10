@@ -13,8 +13,9 @@ import styles from './ProjectCreationStyle';
 class ProjectDescription extends Component {
     render() {
         const {classes, statedata, handleModalState,
-            onClick, handleEdit} = this.props;
+            onClick, handleEdit, projectSelected} = this.props;
         return (<div className={classes.containerPadding}>
+            <Typography>View Project Details / </Typography>
             {!isEmpty(statedata.projectDetail) &&
             <Grid container>
                 {statedata.projectDetail &&
@@ -24,13 +25,13 @@ class ProjectDescription extends Component {
                         <Typography variant="h6">
                             Project General Details
                         </Typography>
-                        <ProjectGeneralInfo data={statedata.projectDetail}/>
+                        <ProjectGeneralInfo data={statedata.projectDetail} projectSelected={projectSelected}/>
                         <Divider className={classes.divider}/>
                     </Grid>
                 }
                 { !isEmpty(statedata.projectDetail.locations) &&
                     <Grid item
-                        xs={true}
+                        // xs={true} // Comented out for UI fixing
                         >
                         <Typography variant="h6">
                             Project Location Details

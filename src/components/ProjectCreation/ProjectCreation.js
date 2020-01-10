@@ -19,7 +19,7 @@ class ProjectCreation extends Component {
     render() {
       const {classes, onChange, data, onClick, onLocationAddtion,
         handleModalState, onAreaAddtion, editLocation, editArea,
-        handleFileUpload, deleteObject} = this.props;
+        handleFileUpload, deleteObject, projectSelected} = this.props;
       return (
         <div>
           <Typography variant="h6">
@@ -31,7 +31,7 @@ class ProjectCreation extends Component {
             </ExpansionPanelSummary>
             <ExpansionPanelDetails>
               <ProjectGeneralInfo onChange={onChange}
-                data={data} onClick={onClick}/>
+                data={data} onClick={onClick} projectSelected={projectSelected}/>
             </ExpansionPanelDetails>
           </ExpansionPanel>
           <ExpansionPanel expanded={data.expanded === 'location'}>
