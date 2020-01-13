@@ -1,7 +1,7 @@
 import {yellow, green, red} from '@material-ui/core/colors';
 
 export const API_END_POINT = process.env.REACT_APP_API_END_POINT
-export const ADMIN = 'http://127.0.0.1:5000'//process.env.REACT_APP_ADMIN_API_END_POINT
+export const ADMIN = process.env.REACT_APP_ADMIN_API_END_POINT
 export const PROJECT_LEVEL = "project"
 
 export const S3_REPORTS_END_POINT = process.env.REACT_APP_S3_REPORTS_END_POINT
