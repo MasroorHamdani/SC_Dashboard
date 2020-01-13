@@ -1,7 +1,8 @@
 import ApiService from '../services/ApiService';
 import { PROJECT_DETAIL, PROJECT_DETAIL_DATA, PROJECT_TEAM_DATA,
     PROJECT_TEAM_ASSO_DATA, PROJECT_USER_CREATE,
-    USER_SEARCH} from '../constants/ActionTypes';
+    USER_SEARCH, PROJECT_TEAM_MEMBER_INITIALISE,
+    PROJECT_TEAM_ASSOCIATION_INITIALISE, PROJECT_DATA_INITIALISE} from '../constants/ActionTypes';
 
 function dataReceived(data) {
   return {
@@ -149,5 +150,26 @@ function userSearched(data) {
     return {
         type: USER_SEARCH,
         data
+    }
+}
+
+export function InitialiseTeamMember() {
+    return {
+      type: PROJECT_TEAM_MEMBER_INITIALISE,
+      data: []
+    }
+}
+
+export function InitialiseTeamAssociation() {
+    return {
+      type: PROJECT_TEAM_ASSOCIATION_INITIALISE,
+      data: []
+    }
+}
+
+export function InitialiseProjectData() {
+    return {
+      type: PROJECT_DATA_INITIALISE,
+      data: []
     }
 }

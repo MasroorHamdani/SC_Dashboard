@@ -26,6 +26,10 @@ const styles = theme => ({
         padding: theme.spacing.unit * 1,
         margin: theme.spacing.unit * 1,
     },
+    pageHeader: {
+        color: theme.palette.primary.main,
+        opacity: '0.8'
+    },
 });
 
 export default styles;

@@ -17,8 +17,10 @@ const styles = theme => ({
           marginRight: 'auto',
         },
     },
-    pageName: {
-        paddingLeft: theme.spacing.unit * 3
+    pageHeader: {
+        paddingLeft: theme.spacing.unit * 3,
+        color: theme.palette.primary.main,
+        opacity: '0.8'
     },
     content: {
         flexGrow: 1,

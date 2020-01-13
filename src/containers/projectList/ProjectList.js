@@ -35,7 +35,8 @@ class ProjectList extends Component {
         if (userData)
             this.setState({role: userData['R']})
         let param = {
-            status:'pending'
+            status:'pending',
+            is_admin: true
         };
         this.getProjectList(param)
     }
@@ -78,6 +79,11 @@ class ProjectList extends Component {
                         projectList: this.props.projectList,
                         loading: false
                     })
+                } else {
+                    this.setState({
+                        projectList: this.props.projectList,
+                        loading: false
+                    })
                 }
             }
         }
@@ -98,7 +104,8 @@ class ProjectList extends Component {
             tabValue : value
         }, function(){
             let param = {
-                status: value
+                status: value,
+                is_admin: true
             };
             this.getProjectList(param)
         })

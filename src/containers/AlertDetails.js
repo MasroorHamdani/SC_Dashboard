@@ -1,13 +1,13 @@
 import React, { Component } from "react";
 import {connect} from 'react-redux';
-import {isEqual, groupBy, orderBy} from 'lodash';
+import _, {isEqual, groupBy, orderBy} from 'lodash';
 
 import AlertAnalysis from "../components/dataAnalysis/AlertAnalysis";
 import {API_URLS, DATE_TIME_FORMAT, NAMESPACE_MAPPER,
-    RANGE_ERROR} from '../constants/Constant';
+    RANGE_ERROR, ALERT_STATUS} from '../constants/Constant';
 import {getApiConfig} from '../services/ApiCofig';
-import {projectAlertList} from '../actions/DataAnalysis';
-import {projectSubMenuList} from '../actions/DataAnalysis';
+import {projectSubMenuList, initialiseProjectLocationState,
+    initialiseAlertListState, projectAlertList} from '../actions/DataAnalysis';
 import {formatDateTime, getTodaysStartDateTime} from '../utils/DateFormat';
 
 class AlertDetails extends Component {
@@ -19,7 +19,14 @@ class AlertDetails extends Component {
             endDate: new Date(),
             dateChanged: false,
             loading: true,
-            insid: ''
+            insid: '',
+            alertCount : {
+                'not_resolved': 0,
+                'pending': 0,
+                'resolved': 0,
+                'work_started': 0,
+                'acknowledged': 0
+            }
         }
         this.info = false;
     }
@@ -61,6 +68,9 @@ class AlertDetails extends Component {
         this.props.onDataAnalysisMenu(config);
     }
 
+    componentWillUnmount() {
+        this.props.onInitialState();
+    }
     componentDidCatch(error, errorInfo) {
         // Catch errors in any components below and re-render with error message
         if(error.toString().includes('RangeError: Invalid interval')) {
@@ -164,7 +174,7 @@ class AlertDetails extends Component {
             !isEqual(this.props.projectAlert, prevProps.projectAlert)) {
             let finalDict = [], data;
             if(this.props.projectAlert)
-                data = groupBy(this.props.projectAlert,'ID');
+                data = groupBy(this.props.projectAlert, 'ID');
             let SUB1, SUB2;
             if(this.props.projectLocationList) {
                 let deviceResponse = this.props.projectLocationList;
@@ -195,9 +205,16 @@ class AlertDetails extends Component {
                     })
                     this.showFilter = true;
                 }
+                let alertCount = _.pick(_.countBy(finalDict, 'header.StatusInfo.Status'),
+                    ['pending', 'not_resolved', 'resolved', 'work_started', 'acknowledged']);
+                alertCount['total_count'] = finalDict.length;
                 this.setState({'locationList': deviceResponse,
-                    'alertData': orderBy(finalDict, 'header.Timestamp', 'desc'),//finalDict,
-                    rangeError: ''
+                    alertData: orderBy(finalDict, 'header.Timestamp', 'desc'),//finalDict,
+                    rangeError: '',
+                    alertCount: {
+                        ...this.state.alertCount,
+                        ...alertCount
+                    }
                     // loading: false,
                 })
             }
@@ -243,6 +260,10 @@ function mapDispatchToProps(dispatch) {
         onDataAnalysisMenu: (config) => {
             dispatch(projectSubMenuList(config))
         },
+        onInitialState: (config) => {
+            dispatch(initialiseAlertListState(config))
+            dispatch(initialiseProjectLocationState(config))
+        }
     }
 }
 

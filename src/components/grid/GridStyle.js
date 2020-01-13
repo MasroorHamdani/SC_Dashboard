@@ -30,7 +30,12 @@ const styles = theme => ({
     deviceDisplay: {
       display: 'flex',
       flexWrap: 'wrap',
-    }
+    },
+    error: {
+      color: theme.palette.error.dark,
+      display :'flex',
+      justifyContent: 'center'
+    },
   });
 
   export default styles;

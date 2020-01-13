@@ -16,7 +16,8 @@ import {PROJECT_TABS, API_URLS, NAMESPACE_MAPPER,
 import {getApiConfig} from '../../services/ApiCofig';
 import {capitalizeFirstLetter} from '../../utils/FormatStrings';
 import {projectDetailData, projectTeamData,
-  projectTeamAsso, userCreation, userSearch} from '../../actions/ProjectDataAction';
+  projectTeamAsso, userCreation, userSearch,
+  InitialiseTeamMember, InitialiseTeamAssociation, InitialiseProjectData} from '../../actions/ProjectDataAction';
 
 import styles from './ProjectDetailStyle';
 
@@ -477,21 +478,24 @@ class ProjectDetail extends Component {
     }
   }
 
+  componentWillUnmount() {
+    this.props.onInitialState();
+  }
+
   componentDidMount() {
   /**
    * Call the API with default tab value.
    */
-  if(this.state.pid) {
-    this.callApi(this.state.value);
-  } else if(this.props.projectSelected){
-    this.setState({
-      pid: this.props.projectSelected ? this.props.projectSelected.PID : '',
-      projectSelected : this.props.projectSelected ? this.props.projectSelected : ''
-    }, function() {
+    if(this.state.pid) {
       this.callApi(this.state.value);
-    });
-  }
-    // this.callApi(this.state.value);
+    } else if(this.props.projectSelected){
+      this.setState({
+        pid: this.props.projectSelected ? this.props.projectSelected.PID : '',
+        projectSelected : this.props.projectSelected ? this.props.projectSelected : ''
+      }, function() {
+        this.callApi(this.state.value);
+      });
+    }
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -703,6 +707,11 @@ function mapDispatchToProps(dispatch) {
         },
         onUserSearch: (config) => {
           dispatch(userSearch(config))
+        },
+        onInitialState: () => {
+          dispatch(InitialiseTeamMember())
+          dispatch(InitialiseTeamAssociation())
+          dispatch(InitialiseProjectData())
         }
     }
 }

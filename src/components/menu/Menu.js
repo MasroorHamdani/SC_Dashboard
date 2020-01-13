@@ -24,7 +24,8 @@ class Menu extends Component {
       pid: '',
       menu: [],
       partnerid: localStorage.getItem('partnerid'),
-      openSubMenu: false
+      openSubMenu: false,
+      openOptimusMenu: false
     }
   }
 
@@ -103,6 +104,12 @@ class Menu extends Component {
     })
   }
 
+  handleOptimusMenuClick = () => {
+    this.setState({
+      openOptimusMenu: !this.state.openOptimusMenu
+    })
+  }
+
   render() {
     const { classes } = this.props;
 
@@ -136,7 +143,8 @@ class Menu extends Component {
               <Typography className={classes.header}>Project Management</Typography>
               <List>
                 <ListItems menuList={this.state.secondaryMenu} activeRoute={this.activeRoute}
-                  menuState={this.state.open}/>
+                  menuState={this.state.open} open={this.state.openOptimusMenu}
+                  handleClick={this.handleOptimusMenuClick}/>
               </List>
             </div>
           }

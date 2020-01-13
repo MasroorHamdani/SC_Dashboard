@@ -157,6 +157,20 @@ const styles = theme => ({
         '& *': { color: 'rgba(255, 255, 255, 0.7)' },
         textAlign: 'center',
         padding: theme.spacing.unit * 2
+    },
+    // Alert Tile Dimentions
+    alertTile: {
+        width: '15%',
+        textAlign: 'center',
+        backgroundColor: blueGrey[900],//'#262f3e',//'#404854',
+        '& *': { color: 'rgba(255, 255, 255, 0.7)' },
+        padding: theme.spacing.unit * 2,
+        borderRadius: '5px',
+        boxShadow: '0 12px 20px -10px rgba(0, 172, 193,.28), 0 4px 20px 0 rgba(0, 0, 0,.12), 0 7px 8px -5px rgba(0, 172, 193,.2)',
+    },
+    alertTileRow: {
+        display: 'flex',
+        justifyContent: 'space-around'
     }
 })
 

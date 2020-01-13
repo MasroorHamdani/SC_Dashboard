@@ -3,7 +3,8 @@ import { connect } from "react-redux";
 import {withStyles, Grid, CardContent,
     Typography, Card, CardHeader, IconButton,
     Divider, FormControl, InputLabel, TextField,
-    Select, LinearProgress, List, ListItem} from '@material-ui/core';
+    Select, LinearProgress, List, ListItem,
+    Tooltip} from '@material-ui/core';
 import {isEqual} from 'lodash';
 import ClearIcon from '@material-ui/icons/Clear';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
@@ -500,7 +501,7 @@ class ProjectInstallationDetails extends Component {
                     <LinearProgress className={classes.buttonProgress}/>
                 }
                 <main className={classes.content}>
-                    <Typography className={classes.pageName}>Team User Details /</Typography>
+                    <Typography className={classes.pageHeader}>Team User Details /</Typography>
                     { this.state.projectSelected &&
                     <UserProfileData 
                         data={this.state}
@@ -513,9 +514,11 @@ class ProjectInstallationDetails extends Component {
                         <Grid item xs={12} sm={6}>
                             <Card className={classes.card}>
                                 <CardHeader action={
-                                    <IconButton>
-                                        <AddCircleOutlineIcon onClick={event => this.handleModalState()}/>
-                                    </IconButton>
+                                    <Tooltip title="Associate Location">
+                                        <IconButton>
+                                            <AddCircleOutlineIcon onClick={event => this.handleModalState()}/>
+                                        </IconButton>
+                                    </Tooltip>
                                     }
                                 subheader="Location Assigned"/>
                                 {this.state.association &&
@@ -526,8 +529,12 @@ class ProjectInstallationDetails extends Component {
                                         <CardHeader
                                             action={
                                             <IconButton className={classes.iconButton}>
-                                                <EditIcon onClick={event => this.editLocation(dt.InsID, dt.name)}/>
-                                                <ClearIcon onClick={event => this.removeLocation(dt.InsID, dt.name)}/>
+                                                <Tooltip title="Edit User Association">
+                                                    <EditIcon onClick={event => this.editLocation(dt.InsID, dt.name)}/>
+                                                </Tooltip>
+                                                <Tooltip title="Remove User Association">
+                                                    <ClearIcon onClick={event => this.removeLocation(dt.InsID, dt.name)}/>
+                                                </Tooltip>
                                             </IconButton>
                                             }
                                             title={dt.name}

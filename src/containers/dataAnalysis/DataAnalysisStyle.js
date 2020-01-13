@@ -23,9 +23,12 @@ const styles = theme => ({
     content: {
         flexGrow: 1,
         marginTop: theme.spacing.unit * 8,
+        width: '85%'
     },
     pageHeader: {
-        padding: theme.spacing.unit * 3
+        padding: theme.spacing.unit * 3,
+        color: theme.palette.primary.main,
+        opacity: '0.8'
     }
 })
 

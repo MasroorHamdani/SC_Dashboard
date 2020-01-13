@@ -34,10 +34,14 @@ class MyProjectList extends Component {
             userData = getTokenData(idTokenDecoded, "Fn");
         if (userData)
             this.setState({role: userData['R']})
-        let param = {
-            status:'draft'
-        };
-        this.getProjectList(param)
+        if (this.props.projectSelected || localStorage.getItem('projectSelected')) {
+            let dt = JSON.parse(localStorage.getItem('projectSelected'));
+            let param = {
+                status:'draft',
+                partner: this.props.projectSelected ? this.props.projectSelected.SUB3 : dt.SUB3
+            };
+            this.getProjectList(param)
+        }
     }
 
     getProjectList = (param) => {
@@ -54,6 +58,7 @@ class MyProjectList extends Component {
     componentDidUpdate(prevProps, prevState) {
         if(this.props.projectSelected &&
             !isEqual(this.props.projectSelected, prevProps.projectSelected)) {
+            this.setState({projectSelected: this.props.projectSelected})
             if(this.state.role !== ROLES['PARTNER_ADMIN']) {
                     this.props.history.push(`${REACT_URLS.DASHBOARD(this.state.parentId)}`);
             }
@@ -74,6 +79,11 @@ class MyProjectList extends Component {
                             row.CreatedOn = convertUnixToDateObj(row.CreatedOn, DESCRIPTIVE_DATE_TIME_FORMAT)
                         }
                     })
+                    this.setState({
+                        projectList: this.props.projectList,
+                        loading: false
+                    })
+                } else {
                     this.setState({
                         projectList: this.props.projectList,
                         loading: false
@@ -99,7 +109,8 @@ class MyProjectList extends Component {
             projectList: []
         }, function() {
             let param = {
-                status: value
+                status: value,
+                partner: this.state.projectSelected.SUB3
             };
             this.getProjectList(param)
         })

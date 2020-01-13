@@ -56,6 +56,10 @@ const styles = theme => ({
         width: 40,
         height: 40,
     },
+    pageHeader: {
+        color: theme.palette.primary.main,
+        opacity: '0.8'
+    }
 });
 
 export default styles;

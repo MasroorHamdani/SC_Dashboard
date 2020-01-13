@@ -2,7 +2,7 @@ import axios from 'axios';
 import { merge } from "lodash-es";
 
 import {API_END_POINT, API_URLS, REACT_URLS,
-    NEW_API_END_POINT, ADMIN, API_END_POINT_IFRAME} from "../constants/Constant";
+    ADMIN} from "../constants/Constant";
 
 function ApiService(configObject) {
     // This part will fetch the partnerid from URL if any,

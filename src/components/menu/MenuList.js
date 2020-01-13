@@ -1,4 +1,4 @@
-import {ROLES, DEVICE_MANAGEMENT_URL} from '../../constants/Constant';
+import {ROLES, DEVICE_MANAGEMENT_URL, OPTIMUS_VCS_MANAGEMENT_URL} from '../../constants/Constant';
 
 export function mainMenuList (pid, partnerId) {
   /**
@@ -77,13 +77,26 @@ export function secondaryMenuList (role, partnerId) {
       icon: "CreateIcon",
       toolTip: "Add Project"
     },
-    // {
-    //   name: "Device Management",
-    //   url: `${DEVICE_MANAGEMENT_URL}?scauth=${localStorage.getItem('idToken')}`,
-    //   icon: "PermDataSettingIcon",
-    //   toolTip: "Device Management",
-    //   isExternal: true
-    // }
+    {
+      name: "Device Management",
+      url: `${DEVICE_MANAGEMENT_URL}?scauth=${localStorage.getItem('idToken')}`,
+      icon: "PermDataSettingIcon",
+      toolTip: "Device Management",
+      isExternal: true
+    },
+    {
+      name: "Optimus",
+      nestedMenu: true,
+      icon: "SettingsApplicationsIcon",
+      toolTip: "Optimus",
+      submenu: [{
+        name: "VCS",
+        url: `${OPTIMUS_VCS_MANAGEMENT_URL}?scauth=${localStorage.getItem('idToken')}`,
+        icon: "DesktopMacIcon",
+        toolTip: "VCS",
+        isExternal: true
+      }]
+    }
     )
   } else if(role === ROLES['PARTNER_ADMIN']) {
     secondaryMenu.push({
@@ -97,6 +110,19 @@ export function secondaryMenuList (role, partnerId) {
       url: partnerId ? `/${partnerId}/newproject` : `/newproject`,
       icon: "CreateIcon",
       toolTip: "Add Project"
+    },
+    {
+      name: "Optimus",
+      nestedMenu: true,
+      icon: "SettingsApplicationsIcon",
+      toolTip: "Optimus",
+      submenu: [{
+        name: "VCS",
+        url: `${OPTIMUS_VCS_MANAGEMENT_URL}?scauth=${localStorage.getItem('idToken')}`,
+        icon: "DesktopMacIcon",
+        toolTip: "VCS",
+        isExternal: true
+      }]
     })
   } else if(role === ROLES['PROJECT_ADMIN']) {
     secondaryMenu.push({
@@ -104,6 +130,19 @@ export function secondaryMenuList (role, partnerId) {
       url: partnerId ? `/${partnerId}/newproject` : `/newproject`,
       icon: "CreateIcon",
       toolTip: "Add Project"
+    },
+    {
+      name: "Optimus",
+      nestedMenu: true,
+      icon: "SettingsApplicationsIcon",
+      toolTip: "Optimus",
+      submenu: [{
+        name: "VCS",
+        url: `${OPTIMUS_VCS_MANAGEMENT_URL}?scauth=${localStorage.getItem('idToken')}`,
+        icon: "DesktopMacIcon",
+        toolTip: "VCS",
+        isExternal: true
+      }]
     })
   }
   return secondaryMenu

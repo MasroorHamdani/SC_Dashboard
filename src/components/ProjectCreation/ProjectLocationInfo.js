@@ -2,7 +2,7 @@ import React, {Component} from "react";
 import {withStyles, Grid, TextField, Button,
     Card, IconButton, CardHeader, CardContent,
     Typography, List, ListItem, GridList,
-    Switch, FormControlLabel, Checkbox} from '@material-ui/core';
+    Switch, FormControlLabel, Tooltip} from '@material-ui/core';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import EditIcon from '@material-ui/icons/Edit';
 
@@ -194,9 +194,11 @@ class ProjectLocationInfo extends Component {
                         alignItems='flex-end'
                         direction='row'
                         justify='flex-end'>
-                        <IconButton onClick={event => handleModalState('location')}>
-                            <AddCircleOutlineIcon/>
-                        </IconButton>
+                        <Tooltip title="Add new Location Details">
+                            <IconButton onClick={event => handleModalState('location')}>
+                                <AddCircleOutlineIcon/>
+                            </IconButton>
+                        </Tooltip>
                     </Grid>
                 </Grid>
                 <GridList cellHeight={300} spacing={8} className={classes.gridList}>
@@ -207,12 +209,14 @@ class ProjectLocationInfo extends Component {
                         return <Card className={classes.card} key={i}>
                             <CardHeader
                                 action={
-                                <IconButton
-                                    className={classes.iconButton}
-                                    onClick={event => editLocation(i)}>
-                                    <EditIcon/>
-                                    {/* <ClearIcon onClick={event => this.removeLocation(dt.InsID, dt.name)}/> */}
-                                </IconButton>
+                                <Tooltip title="Edit Location Details">
+                                    <IconButton
+                                        className={classes.iconButton}
+                                        onClick={event => editLocation(i)}>
+                                        <EditIcon/>
+                                        {/* <ClearIcon onClick={event => this.removeLocation(dt.InsID, dt.name)}/> */}
+                                    </IconButton>
+                                </Tooltip>
                                 }
                                 title={dt.name}
                                 subheader={dt.locn}/>

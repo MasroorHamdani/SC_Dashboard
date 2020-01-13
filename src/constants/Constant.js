@@ -1,19 +1,18 @@
+import {yellow, green, red} from '@material-ui/core/colors';
 
 export const API_END_POINT = process.env.REACT_APP_API_END_POINT
-//"https://4l6qi5oh0h.execute-api.ap-southeast-1.amazonaws.com/prod";
-export const ADMIN = process.env.REACT_APP_ADMIN_API_END_POINT
+export const ADMIN = 'http://127.0.0.1:5000'//process.env.REACT_APP_ADMIN_API_END_POINT
 export const PROJECT_LEVEL = "project"
 
-// export const NEW_API_END_POINT = process.env.REACT_APP_NEW_API_END_POINT
 export const S3_REPORTS_END_POINT = process.env.REACT_APP_S3_REPORTS_END_POINT
 export const S3_LOCATION_MAP_END_POINT = process.env.REACT_APP_S3_LOCATION_MAP_END_POINT
 export const S3_BUCKET = process.env.REACT_APP_S3_BUCKET
 export const S3_REGION = process.env.REACT_APP_S3_REGION
 export const S3_ACCESS_KEY_ID = process.env.REACT_APP_S3_ACCESS_KEY_ID
 export const S3_SECRET_ACCESS_KEY = process.env.REACT_APP_S3_SECRET_ACCESS_KEY
-// export const API_END_POINT_IFRAME = process.env.REACT_APP_API_END_POINT_IFRAME
 
 export const DEVICE_MANAGEMENT_URL = process.env.REACT_APP_DEVICE_MANAGEMENT_URL
+export const OPTIMUS_VCS_MANAGEMENT_URL = process.env.REACT_APP_OPTIMUS_VCS_MANAGEMENT_URL
 
 export const SC_LOGO = process.env.REACT_APP_SC_LOGO
 
@@ -52,9 +51,6 @@ export const API_URLS = {
 };
 
 export const DASHBOARD_METRIC = {
-    // "ReqType": "default",
-    // "Type": "DASHBOARD",
-    // "SubType": "V1"
     "req_type": "DEFAULT",
     "type": "DASHBOARD",
     "sub_type": "V1",
@@ -98,9 +94,7 @@ export const REACT_URLS = {
     'PROJECT_LIST': (partnerId) => partnerId ? `/${partnerId}/listproject` :'/listproject',
     'MY_PROJECT_LIST': (partnerId) => partnerId ? `/${partnerId}/myproject` :'/myproject',
     'NEW_PROJECT': (partnerId) => partnerId ? `/${partnerId}/newproject` :'/newproject',
-    // 'PROJECT_LIST': '/listproject'
 }
-// "ALERT': (partnerId) => partnerId ? `${partnerId}/project/${pid}`: `/project/${pid}`
 
 export const DATE_TIME_FORMAT = 'YYYYMMDDHHmmss'
 
@@ -124,7 +118,6 @@ export const ANALYTICS_DATE = {
     'TODAY': 'Today',
     'CUSTOM': 'custom'
 }
-// process.env.REACT_APP_SECRET_CODE
 
 export const AUTO_REFRESH_TIMEOUT = 600000; // Time in milliseconds - 10 mins -> 10 * 60 * 1000
 
@@ -275,10 +268,18 @@ export const ALERT_STATUS = {
     'not_resolved': 'Not Resovled',
     'pending': 'Pending',
     'resolved': 'Resolved',
-    'not_sent': 'Not Sent',
-    'blocked': 'Blocked',
+    // 'not_sent': 'Not Sent',
+    // 'blocked': 'Blocked',
     'work_started': 'Work Started',
     'acknowledged': 'Acknowledged'
+}
+
+export const ALERT_STATUS_COLOR = {
+    'not_resolved': red[500],
+    'pending': yellow[700],
+    'resolved': green[700],
+    'work_started': green[300],
+    'acknowledged': green[500]
 }
 
 export const METRIC_TYPE = {

@@ -4,9 +4,10 @@ import { withStyles } from '@material-ui/core/styles';
 import _, {isEmpty} from 'lodash';
 import {Table, TableBody, TableCell, TablePagination,
   TableRow, TableFooter, Paper, TextField, Select, MenuItem,
-  List, ListItem, Switch, Typography, Grid, Button} from '@material-ui/core';
+  List, ListItem, Switch, Typography, Grid, Tooltip} from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Edit';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
+import PersonAdd from '@material-ui/icons/PersonAdd';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EnhancedTableHead from './GridHeader';
 import styles from "./GridStyle";
@@ -176,42 +177,46 @@ class EnhancedTable extends React.Component {
             * select any and type the value looking for in the text box,
             * and the function will be called on key change and refine the data in the table
             */}
-            <Grid justify="space-between"
-                container 
-                spacing={24}>
-              <Grid>
-                <Select
-                  displayEmpty
-                  value={this.state.queryToColumn}
-                  onChange={this.setQueryColumn}>
-                  <MenuItem value="" disabled>{t('selectColumn')}</MenuItem>
-                  {searchList.map(row => {
-                    return <MenuItem value={row.id} key={row.id}>{row.label}</MenuItem>
-                    }, this)}
-                </Select>
-                <TextField
-                  className={classes.searchField}
-                  disabled={this.state.queryToColumn ? false : true}
-                  placeholder="All"
-                  value={this.state.query}
-                  onChange={e=>this.setState({query: e.target.value})}/>
+              <Grid justify="space-between"
+                  container 
+                  spacing={24}>
+                <Grid>
+                  <Select
+                    displayEmpty
+                    value={this.state.queryToColumn}
+                    onChange={this.setQueryColumn}>
+                    <MenuItem value="" disabled>{t('selectColumn')}</MenuItem>
+                    {searchList.map(row => {
+                      return <MenuItem value={row.id} key={row.id}>{row.label}</MenuItem>
+                      }, this)}
+                  </Select>
+                  <TextField
+                    className={classes.searchField}
+                    disabled={this.state.queryToColumn ? false : true}
+                    placeholder="All"
+                    value={this.state.query}
+                    onChange={e=>this.setState({query: e.target.value})}/>
                 </Grid>
-                {allowSearchAdd &&
-                  <Button variant="contained" color="primary"
-                    onClick={e=>handleSearchAddition(stateData)}>
-                    Add Existing Users
-                  </Button>
-                }
-                {allowAdd &&
+                <Grid>
                   <div className={classes.pointer}>
-                    <AddCircleOutlineIcon className={classes.icon}
-                      onClick={handleAddition}/>
+                    {allowSearchAdd &&
+                    <Tooltip title="Add Existing User">
+                      <PersonAdd className={classes.icon}
+                          onClick={e=>handleSearchAddition(stateData)}/>
+                    </Tooltip>
+                    }
+                    {allowAdd &&
+                      <Tooltip title="Add New User">
+                        <AddCircleOutlineIcon className={classes.icon}
+                            onClick={handleAddition}/>
+                      </Tooltip>
+                    }
                   </div>
-                }
+                </Grid>
               </Grid>
             </div>
           }
-          {!isEmpty(data) &&
+          {!isEmpty(data) ?
           <Table className={classes.table} aria-labelledby="tableTitle">
           {/**
           * Call the conpmnent which will set up the header of the grid.
@@ -287,16 +292,20 @@ class EnhancedTable extends React.Component {
                       })}
                       { allowEdit &&
                         <TableCell>
-                          <EditIcon className={classes.icon}
-                          onClick={event => handleClick(event, n[redirectID], category)}/>
+                          <Tooltip title="Edit Row">
+                            <EditIcon className={classes.icon}
+                            onClick={event => handleClick(event, n[redirectID], category)}/>
+                          </Tooltip>
                         </TableCell>
                       }
                       {allowDelete &&
-                       <TableCell>
-                         <DeleteIcon className={classes.icon}
-                         onClick={event => this.handleOpen(n[redirectID])}
-                        //  onClick={event => this.onDelete(event, n[redirectID])}
-                        />
+                        <TableCell>
+                          <Tooltip title="Delete Row">
+                            <DeleteIcon className={classes.icon}
+                            onClick={event => this.handleOpen(n[redirectID])}
+                            //  onClick={event => this.onDelete(event, n[redirectID])}
+                            />
+                          </Tooltip>
                         </TableCell>
                       }
                     </TableRow>
@@ -328,7 +337,9 @@ class EnhancedTable extends React.Component {
               </TableRow>
             </TableFooter>
           </Table>
-          }
+        :
+          <Typography className={classes.error}>No Details found</Typography>
+        }
         {/**
         * modal for updating user once delete is enabled and clicked for a row
         */}

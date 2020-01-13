@@ -14,6 +14,8 @@ import IconExpandMore from '@material-ui/icons/ExpandMore';
 import DataUsageIcon from '@material-ui/icons/DataUsage';
 import ShowChartIcon from '@material-ui/icons/ShowChart';
 import PermDataSettingIcon from '@material-ui/icons/PermDataSetting';
+import SettingsApplicationsIcon from '@material-ui/icons/SettingsApplications';
+import DesktopMacIcon from '@material-ui/icons/DesktopMac';
 
 import {ListItem, ListItemIcon, ListItemText, Tooltip,
     withStyles, Collapse, Divider, List, Typography} from '@material-ui/core';
@@ -52,7 +54,11 @@ class ListItems extends Component {
             case 'ShowChartIcon':
                 return <ShowChartIcon/>;
             case 'PermDataSettingIcon':
-                return <PermDataSettingIcon/>
+                return <PermDataSettingIcon/>;
+            case 'SettingsApplicationsIcon':
+                return <SettingsApplicationsIcon/>;
+            case 'DesktopMacIcon':
+                return <DesktopMacIcon/>
             default:
                 return '';
         }
@@ -98,15 +104,25 @@ class ListItems extends Component {
                             <List component="div" disablePadding>
                                 {row.submenu.map((innerRow, innerIndex) => {
                                     return <Tooltip title={innerRow.toolTip} key={innerIndex}>
-                                        <ListItem button component={Link} to={innerRow.url}
-                                            className={activeRoute(innerRow.url) ? classes.isActive: ''}>
-                                            <ListItemIcon className={classes.whiteFont}>
-                                                {this.renderSwitch(innerRow.icon)}
-                                            </ListItemIcon>
-                                            <ListItemText
-                                            // inset
-                                            disableTypography={true} primary={innerRow.name} className={classes.textFontColor}/>
-                                        </ListItem>
+                                        {!innerRow.isExternal ?
+                                            <ListItem button component={Link} to={innerRow.url}
+                                                className={activeRoute(innerRow.url) ? classes.isActive: ''}>
+                                                <ListItemIcon className={classes.whiteFont}>
+                                                    {this.renderSwitch(innerRow.icon)}
+                                                </ListItemIcon>
+                                                <ListItemText
+                                                // inset
+                                                disableTypography={true} primary={innerRow.name} className={classes.textFontColor}/>
+                                            </ListItem>
+                                        :
+                                            <a href={innerRow.url} target="_blank"
+                                                className={[classes.anchorIsActive, classes.listPaddingMenu, classes.flexDisplay]}>
+                                                <ListItemIcon className={classes.whiteFont}>
+                                                    {this.renderSwitch(innerRow.icon)}
+                                                </ListItemIcon>
+                                                <Typography className={[classes.textFontColor, classes.listPaddingMenu]}>{innerRow.name}</Typography>
+                                            </a>
+                                        }
                                     </Tooltip>
                                 })}
                             </List>

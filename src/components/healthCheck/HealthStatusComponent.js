@@ -79,7 +79,7 @@ class HealthStatusComponent extends Component {
                 <main className={classes.content}>
                     {(stateData.name && stateData.formattedData && stateData.stateUpdated) ?
                         <Paper style={{ padding: 8 * 3 }}>
-                            <Typography>Installation Device Health Details /</Typography>
+                            <Typography className={classes.pageHeader}>Installation Device Health Details /</Typography>
                             <div>
                                 <Typography variant="h6">{stateData.name}</Typography>
                                 <Typography variant="h6" gutterBottom>{stateData.locn}</Typography>

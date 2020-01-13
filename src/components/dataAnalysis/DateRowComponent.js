@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {withStyles, ListItem, ListItemText, Typography,
-    List, Button} from '@material-ui/core';
+    List, Button, Tooltip} from '@material-ui/core';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import styles from './AnalysisDataStyle';
@@ -72,8 +72,10 @@ class DateRowComponent extends Component {
                     })}
                 </List>
                 {handleRefresh &&
-                    <RefreshIcon className={classes.pointer}
-                    onClick={handleRefresh}/>
+                    <Tooltip title="Refresh">
+                        <RefreshIcon className={classes.pointer}
+                        onClick={handleRefresh}/>
+                    </Tooltip>
                 }
                 {data.rangeError &&
                     <Typography className={classes.errorMessage}>{data.rangeError}</Typography>

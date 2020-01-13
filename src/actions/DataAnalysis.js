@@ -3,7 +3,7 @@ import {DATA_ANALYSIS_PROJECT_LIST_SUB_MENU, DATA_ANALYSIS_INSTALLATION_LIST,
   PROJECT_ANALYSIS_DATA, PROJECT_ALERT_LIST, DISPENSER_DATA,
   PROJECT_METRIC_LIST, CLEAR_REDUCER, MODAL_PROJECT_ANALYSIS_DATA,
   PROJECT_ANALYSIS_INITIALISE, PROJECT_METRIC_INITIALISE,
-  PROJECT_IFRAME} from '../constants/ActionTypes';
+  PROJECT_IFRAME, ALERT_DATA_INITIALISE, PROJECT_LOCATION_INITIALISE} from '../constants/ActionTypes';
 
 /**
  * Dispatched function to call the API service to get
@@ -217,5 +217,19 @@ function projectIframeReceived(data) {
   return {
     type: PROJECT_IFRAME,
     data
+  }
+}
+
+export function initialiseAlertListState() {
+  return {
+    type: ALERT_DATA_INITIALISE,
+    data: []
+  }
+}
+
+export function initialiseProjectLocationState() {
+  return {
+    type: PROJECT_LOCATION_INITIALISE,
+    data: []
   }
 }

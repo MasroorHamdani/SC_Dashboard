@@ -2,7 +2,7 @@ import React, {Component} from "react";
 import {withStyles, Grid, TextField, Button,
     Card, IconButton, CardHeader, FormControl,
     Typography, InputLabel, Select, GridList,
-    CardContent} from '@material-ui/core';
+    CardContent, Tooltip} from '@material-ui/core';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import EditIcon from '@material-ui/icons/Edit';
 
@@ -142,9 +142,11 @@ class ProjectAreaInfo extends Component {
                     alignItems='flex-end'
                     direction='row'
                     justify='flex-end'>
-                    <IconButton onClick={event => handleModalState('area')}>
-                        <AddCircleOutlineIcon/>
-                    </IconButton>
+                    <Tooltip title="Add New Area Details">
+                      <IconButton onClick={event => handleModalState('area')}>
+                          <AddCircleOutlineIcon/>
+                      </IconButton>
+                    </Tooltip>
                 </Grid>
               </Grid>
               <GridList cellHeight={250} className={classes.gridList}>
@@ -155,12 +157,14 @@ class ProjectAreaInfo extends Component {
                     return <Card className={classes.card} key={i}>
                       <CardHeader
                         action={
-                        <IconButton
-                          className={classes.iconButton}
-                          onClick={event => editArea(i)}>
-                            <EditIcon/>
-                            {/* <ClearIcon onClick={event => this.removeLocation(dt.InsID, dt.name)}/> */}
-                        </IconButton>
+                        <Tooltip title="Edit Area Details">
+                          <IconButton
+                            className={classes.iconButton}
+                            onClick={event => editArea(i)}>
+                              <EditIcon/>
+                              {/* <ClearIcon onClick={event => this.removeLocation(dt.InsID, dt.name)}/> */}
+                          </IconButton>
+                        </Tooltip>
                         }
                         title={dt.locn}/>
                         <CardContent>
