@@ -114,7 +114,7 @@ class MyProjectList extends Component {
         }, function() {
             let param = {
                 status: value,
-                partner: this.state.projectSelected.SUB3 ? this.state.projectSelected.SUB3 : ''
+                partner: this.state.projectSelected.SUB3
             };
             this.getProjectList(param)
         })

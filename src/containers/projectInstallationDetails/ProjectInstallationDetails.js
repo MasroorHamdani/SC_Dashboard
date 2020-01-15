@@ -129,8 +129,6 @@ class ProjectInstallationDetails extends Component {
     /**
      * Function which will handle any click on the row.
      */
-    console.log(id, this.state.installationGroup, this.state.installationDeviceData,
-        'id, this.state.installationGroup, this.state.installationDeviceData')
         this.setState({
             openModal: !this.state.openModal,
             installlation: this.state.installationGroup[id][0]
