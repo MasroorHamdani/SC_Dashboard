@@ -66,9 +66,9 @@ class ProjectInstallationDetails extends Component {
         }
     }
 
-    componentWillUnmount() {
-        this.props.onInitialState();
-    }
+    // componentWillUnmount() {
+    //     this.props.onInitialState();
+    // }
 
     componentDidUpdate(prevProps, prevState) {
     /**
@@ -106,7 +106,7 @@ class ProjectInstallationDetails extends Component {
             prevProps.installationDeviceData)) {
             this.setState({
                 installationDeviceData: this.props.installationDeviceData,
-                installationGroup: groupBy(this.props.installationDeviceData,  'Devid')
+                installationGroup: groupBy(this.props.installationDeviceData,  'Alias')//'Devid')
             })
         }
         if (this.props.installationUpdate &&
@@ -129,6 +129,8 @@ class ProjectInstallationDetails extends Component {
     /**
      * Function which will handle any click on the row.
      */
+    console.log(id, this.state.installationGroup, this.state.installationDeviceData,
+        'id, this.state.installationGroup, this.state.installationDeviceData')
         this.setState({
             openModal: !this.state.openModal,
             installlation: this.state.installationGroup[id][0]
@@ -224,7 +226,7 @@ class ProjectInstallationDetails extends Component {
                     searchList={searchList}
                     handleChange={this.handleChange}
                     handleClick={this.handleClick}
-                    redirectID="Devid"
+                    redirectID="Alias"//"Devid"
                     noView={true}
                     allowEdit={this.state.projectSelected.Role === ROLES['SC_ADMIN'] ||
                         this.state.projectSelected.Role === ROLES['PARTNER_ADMIN'] ||

@@ -36,11 +36,15 @@ class MyProjectList extends Component {
             this.setState({role: userData['R']})
         if (this.props.projectSelected || localStorage.getItem('projectSelected')) {
             let dt = JSON.parse(localStorage.getItem('projectSelected'));
-            let param = {
-                status:'draft',
-                partner: this.props.projectSelected ? this.props.projectSelected.SUB3 : dt.SUB3
-            };
-            this.getProjectList(param)
+            this.setState({
+                projectSelected: this.props.projectSelected ? this.props.projectSelected : dt
+                }, function() {
+                    let param = {
+                        status:'draft',
+                        partner: this.state.projectSelected.SUB3,
+                    };
+                    this.getProjectList(param)
+                });
         }
     }
 
@@ -110,7 +114,7 @@ class MyProjectList extends Component {
         }, function() {
             let param = {
                 status: value,
-                partner: this.state.projectSelected.SUB3
+                partner: this.state.projectSelected.SUB3 ? this.state.projectSelected.SUB3 : ''
             };
             this.getProjectList(param)
         })

@@ -125,12 +125,7 @@ export function secondaryMenuList (role, partnerId) {
       }]
     })
   } else if(role === ROLES['PROJECT_ADMIN']) {
-    secondaryMenu.push({
-      name: "Add Project",
-      url: partnerId ? `/${partnerId}/newproject` : `/newproject`,
-      icon: "CreateIcon",
-      toolTip: "Add Project"
-    },
+    secondaryMenu.push(
     {
       name: "Optimus",
       nestedMenu: true,
