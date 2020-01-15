@@ -3,11 +3,11 @@ import {connect} from 'react-redux';
 import {isEqual, groupBy} from 'lodash';
 
 import {API_URLS} from '../constants/Constant';
-import {projectLocationHealth} from '../actions/HealthStatus';
-import {installationDeviceData} from '../actions/InstallationDeviceData';
+import {projectLocationHealth, initialiseHealthState} from '../actions/HealthStatus';
+import {installationDeviceData, initialiseInstallationState,
+    initialiseInstallationListState} from '../actions/InstallationDeviceData';
 import {projectInstallationList} from '../actions/DataAnalysis';
 import {getApiConfig} from '../services/ApiCofig';
-
 import HealthStatusComponent from '../components/healthCheck/HealthStatusComponent';
 
 class HealthStatus extends Component {
@@ -18,6 +18,10 @@ class HealthStatus extends Component {
             insid: props.match.params.insid,
             loading: true
         };
+    }
+
+    componentWillUnmount() {
+        this.props.onInitialState();
     }
 
     componentDidMount() {
@@ -124,7 +128,7 @@ class HealthStatus extends Component {
 
 function mapStateToProps(state) {
     return {
-        healthStatusLocation: state.HealthtSatusLocationSReducer.data,
+        healthStatusLocation: state.HealthtSatusLocationReducer.data,
         installationDetail: state.InstallationDeviceReducer.data,
         installationList : state.DataAnalysisInstallationListReducer.data,
         projectSelected : state.projectSelectReducer.data,
@@ -142,6 +146,11 @@ function mapDispatchToProps(dispatch) {
         onInstalationsList: (config) => {
             dispatch(projectInstallationList(config))
         },
+        onInitialState: () => {
+            dispatch(initialiseInstallationState())
+            dispatch(initialiseHealthState())
+            dispatch(initialiseInstallationListState())
+        }
     }
 }
 

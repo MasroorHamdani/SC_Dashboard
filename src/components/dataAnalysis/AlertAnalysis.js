@@ -95,10 +95,10 @@ class AlertAnalysis extends Component {
                                     key={index}
                                     style={{backgroundColor:ALERT_STATUS_COLOR[key]}}
                                     >
-                                    <Typography gutterBottom variant="h6">
+                                    <Typography gutterBottom>
                                         { key === 'total_count' ? 'Total Count' : ALERT_STATUS[key]}
                                     </Typography>
-                                    <Typography gutterBottom variant="h6">
+                                    <Typography gutterBottom variant="h2">
                                         {stateData.alertCount[key]}
                                     </Typography>
                                 </div>

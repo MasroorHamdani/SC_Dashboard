@@ -7,7 +7,8 @@ import {isEqual, groupBy} from 'lodash';
 import {PROJECT_TABS, API_URLS, SORTING,
     ROLES} from '../../constants/Constant';
 import {getApiConfig} from '../../services/ApiCofig';
-import {installationDeviceData, updateDeviceData} from '../../actions/InstallationDeviceData';
+import {installationDeviceData, updateDeviceData,
+    initialiseInstallationState} from '../../actions/InstallationDeviceData';
 import EnhancedTable from '../../components/grid/Grid';
 import { NamespacesConsumer } from 'react-i18next';
 import CustomModal from '../../components/modal/Modal'
@@ -65,6 +66,10 @@ class ProjectInstallationDetails extends Component {
         }
     }
 
+    componentWillUnmount() {
+        this.props.onInitialState();
+    }
+
     componentDidUpdate(prevProps, prevState) {
     /**
      * On change in project selected from header,
@@ -80,7 +85,7 @@ class ProjectInstallationDetails extends Component {
 
             if(this.state.pid !== this.props.projectSelected.PID)
                 this.setState({pid: this.props.projectSelected.PID},
-                    function() {
+                function() {
                     let arr = this.props.match.url.split('/');
                     if(arr[1] === "project") {
                         arr[2] = this.props.projectSelected.PID;
@@ -341,6 +346,9 @@ function mapDispatchToProps(dispatch) {
         },
         onDeviceUpdate: (config) => {
             dispatch(updateDeviceData(config))
+        },
+        onInitialState: () => {
+            dispatch(initialiseInstallationState())
         }
     }
 }

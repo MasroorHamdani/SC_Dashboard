@@ -20,7 +20,7 @@ import ProjectTeamAssoDataReducer from './ProjectTeamAssoDataReducer';
 import projectSelectReducer from './ProjectSelectReducer';
 import projectListReducer from './ProjectListReducer';
 import HealthStatusReducer from './HealthStatusReducer';
-import HealthtSatusLocationSReducer from './HealthStatusLocationReducer';
+import HealthtSatusLocationReducer from './HealthStatusLocationReducer';
 import ReportsListReducer from './ReportsListReducer';
 import ModalDataAnalysisReducer from './ModalDataAnalysisReducer';
 import PartnerThemeReducer from './PartnerThemeReducer';
@@ -51,7 +51,7 @@ const reducers = {
     projectSelectReducer,
     projectListReducer,
     HealthStatusReducer,
-    HealthtSatusLocationSReducer,
+    HealthtSatusLocationReducer,
     ReportsListReducer,
     ModalDataAnalysisReducer,
     PartnerThemeReducer,

@@ -72,13 +72,11 @@ class App extends React.Component {
             if(data && data.data) {
                 localStorage.setItem('footer', data.data[0].Details.footerText);
                 localStorage.setItem('logo', data.data[0].Details.logo);
-                theme.palette.primary={
-                  highlighter: data.data[0].Details.highlighter ? data.data[0].Details.highlighter : theme.palette.primary.highlighter,
-                  lighter: data.data[0].Details.lighter ? data.data[0].Details.lighter : theme.palette.primary.lighter,
-                  light: data.data[0].Details.light ? data.data[0].Details.light : theme.palette.primary.light,
-                  main: data.data[0].Details.main ? data.data[0].Details.main : theme.palette.primary.main,
-                  textcolor: data.data[0].Details.textcolor ? data.data[0].Details.textcolor : theme.palette.primary.textcolor,
-                }
+                theme.palette.primary['highlighter'] = data.data[0].Details.highlighter ? data.data[0].Details.highlighter : theme.palette.primary.highlighter;
+                theme.palette.primary['lighter'] = data.data[0].Details.lighter ? data.data[0].Details.lighter : theme.palette.primary.lighter;
+                theme.palette.primary['light'] = data.data[0].Details.light ? data.data[0].Details.light : theme.palette.primary.light;
+                theme.palette.primary['main'] = data.data[0].Details.main ? data.data[0].Details.main : theme.palette.primary.main;
+                theme.palette.primary['textcolor'] = data.data[0].Details.textcolor ? data.data[0].Details.textcolor : theme.palette.primary.textcolor;
                 self.setState({holdComponents: false});
             } else if (data && data.data === null) {
                 localStorage.setItem('footer', '');

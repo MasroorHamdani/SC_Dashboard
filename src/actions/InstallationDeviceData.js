@@ -1,5 +1,7 @@
 import ApiService from '../services/ApiService';
-import {INSTALLATION_DEVICE, INSTALLATION_DEVICE_UPDATE} from '../constants/ActionTypes';
+import {INSTALLATION_DEVICE, INSTALLATION_DEVICE_UPDATE,
+    INSTALLATION_LIST_INITIALISE,
+    INSTALLATION_INITIALISE, PROJECT_ANALYSIS_INITIALISE } from '../constants/ActionTypes';
 
 function installationData(data) {
     return {
@@ -39,5 +41,19 @@ export function updateDeviceData(config) {
         .catch(error => {
             dispatch(updatedInstallationData(error))
         })
+    }
+}
+
+export function initialiseInstallationState() {
+    return {
+      type: INSTALLATION_INITIALISE,
+      data: []
+    }
+}
+
+export function initialiseInstallationListState() {
+    return {
+      type: PROJECT_ANALYSIS_INITIALISE,//INSTALLATION_LIST_INITIALISE,
+      data: []
     }
 }
