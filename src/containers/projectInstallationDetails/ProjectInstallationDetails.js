@@ -66,9 +66,9 @@ class ProjectInstallationDetails extends Component {
         }
     }
 
-    // componentWillUnmount() {
-    //     this.props.onInitialState();
-    // }
+    componentWillUnmount() {
+        this.props.onInitialState();
+    }
 
     componentDidUpdate(prevProps, prevState) {
     /**

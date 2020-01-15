@@ -20,9 +20,9 @@ class HealthStatus extends Component {
         };
     }
 
-    // componentWillUnmount() {
-    //     this.props.onInitialState();
-    // }
+    componentWillUnmount() {
+        this.props.onInitialState();
+    }
 
     componentDidMount() {
     /**
