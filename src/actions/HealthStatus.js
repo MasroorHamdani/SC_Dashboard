@@ -1,5 +1,5 @@
 import { HEALTH_STATUS, HEALTH_LOCATION_STATUS,
-  HEALTH_INITIALISE } from '../constants/ActionTypes';
+  HEALTH_INITIALISE, HEALTH_STATUS_INITIALISE} from '../constants/ActionTypes';
 import ApiService from '../services/ApiService';
 
 /**
@@ -47,6 +47,13 @@ export function healthLocationSaved(data) {
 export function initialiseHealthState() {
   return {
     type: HEALTH_INITIALISE,
+    data: []
+  }
+}
+
+export function initialiseHealthStatusState() {
+  return {
+    type: HEALTH_STATUS_INITIALISE,
     data: []
   }
 }

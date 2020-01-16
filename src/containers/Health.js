@@ -6,7 +6,7 @@ import {API_URLS, NAMESPACE_MAPPER, REACT_URLS} from '../constants/Constant';
 import {getApiConfig} from '../services/ApiCofig';
 import HealthCheck from '../components/healthCheck/HealthCheck';
 import {projectSubMenuList} from '../actions/DataAnalysis';
-import {projectHealth} from '../actions/HealthStatus';
+import {projectHealth, initialiseHealthStatusState} from '../actions/HealthStatus';
 
 
 class Health extends Component {
@@ -22,6 +22,10 @@ class Health extends Component {
         };
     }
 
+    componentWillUnmount() {
+        this.props.onInitialState();
+    }
+
     componentDidMount() {
     /**
      * Check id pid and timezone are present in state,
@@ -29,16 +33,16 @@ class Health extends Component {
      * or set the value first and then make the call.
      */
         if(this.state.pid) {
-            this.getHealthDeatails();
+            this.getHealthDetails();
         } else if(this.props.projectSelected) {
             this.setState({
                 pid: this.props.projectSelected.PID
             }, function() {
-                this.getHealthDeatails();
+                this.getHealthDetails();
             });
         }
     }
-    getHealthDeatails = () => {
+    getHealthDetails = () => {
     /***
      * Call Health API and get the health data
      */
@@ -120,7 +124,8 @@ class Health extends Component {
                     loading: true
                 },function() {
                     this.props.history.push(this.props.projectSelected.PID);
-                    this.getHealthDeatails();
+                    this.props.onInitialState();
+                    this.getHealthDetails();
                 });
             }
         }
@@ -178,6 +183,9 @@ function mapDispatchToProps(dispatch) {
         },
         onProjectHealth: (config) => {
             dispatch(projectHealth(config))
+        },
+        onInitialState: () => {
+            dispatch(initialiseHealthStatusState())
         }
     }
 }
