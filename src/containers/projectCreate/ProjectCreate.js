@@ -339,7 +339,7 @@ class ProjectCreate extends Component {
                 dataToPost['HealthUpdates'] = {'Email': EmailArray};
                 dataToPost['status'] = PROJECT_STATUS.DRAFT;
                 dataToPost['partner_id'] = this.props.projectSelected.Role === ROLES['SC_ADMIN'] ?
-                    this.state.general.partner_id : this.state.projectSelected.SUB3;
+                    this.state.general.partner_id : this.props.projectSelected.SUB3;
                 if (this.state.pid) {
                     dataToPost['UpdatedBy'] = localStorage.getItem('cognitoUser');
                 } else {
