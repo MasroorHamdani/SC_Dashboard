@@ -146,9 +146,17 @@ class AlertDetails extends Component {
                 this.setState({
                     pid: this.props.projectSelected.PID,
                     timeZone: this.props.projectSelected.Region,
-                    insid: ''
+                    insid: '',
+                    alertCount : {
+                        'not_resolved': 0,
+                        'pending': 0,
+                        'resolved': 0,
+                        'work_started': 0,
+                        'acknowledged': 0
+                    }
                 }, function() {
                         this.props.history.push(this.props.projectSelected.PID);
+                        // this.props.onInitialState()
                         this.getInstallationLocation()
                         this.getAlertData();
                 })

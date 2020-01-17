@@ -1,6 +1,6 @@
 import React, {Component} from "react";
 import {withStyles, LinearProgress,
-    Paper, AppBar, Tabs, Tab} from '@material-ui/core';
+    Paper, AppBar, Tabs, Tab, Typography} from '@material-ui/core';
 import { connect } from "react-redux";
 import _, {isEqual, isEmpty} from 'lodash';
 import JWTDecode from 'jwt-decode';
@@ -89,7 +89,7 @@ class MyProjectList extends Component {
                     })
                 } else {
                     this.setState({
-                        projectList: this.props.projectList,
+                        projectList: 'No Project found',//this.props.projectList,
                         loading: false
                     })
                 }
@@ -106,7 +106,7 @@ class MyProjectList extends Component {
     }
 
     handleTabChange = (event, value) => {
-        this.props.onInitialState();
+        // this.props.onInitialState();
         this.setState({
             loading: true,
             tabValue : value,
@@ -153,9 +153,12 @@ class MyProjectList extends Component {
                                 value='reject'/>
                             </Tabs>
                         </AppBar>
-                        {this.state.tabValue &&
+                        {(this.state.tabValue && !isEmpty(this.state.projectList) && Array.isArray(this.state.projectList)) &&
                             <TabData stateData={this.state}
                                 handleChange={this.handleChange}/>
+                        }
+                        {(this.state.tabValue && !isEmpty(this.state.projectList) && typeof(this.state.projectList) === 'string') &&
+                        <Typography className={classes.error}>No Details found</Typography>
                         }
                     </Paper>
                 </main>

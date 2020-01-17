@@ -60,7 +60,7 @@ const styles = theme => ({
     paddingLeft: theme.spacing.unit * 2,
     textDecoration: 'none',
     paddingTop: theme.spacing.unit,
-    paddingTop: theme.spacing.unit
+    paddingBottom: theme.spacing.unit
   },
   flexDisplay: {
     display: 'flex'

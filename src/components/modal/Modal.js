@@ -28,7 +28,7 @@ class CustomModal extends Component {
                 </DialogContent>
                 {showFooter &&
                     <DialogActions>
-                        <Button onClick={handleClose} color="primary">
+                        <Button onClick={handleClose} color="secondary">
                         Cancel
                         </Button>
                         <Button onClick={handleClick} color="primary" autoFocus>

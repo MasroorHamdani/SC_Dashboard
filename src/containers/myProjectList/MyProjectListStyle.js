@@ -48,7 +48,13 @@ const styles = theme => ({
         position: 'absolute',
         right: '0%',
         top: '64px',
-    }
+    },
+    error: {
+        color: theme.palette.error.dark,
+        display :'flex',
+        justifyContent: 'center',
+        paddingTop: theme.spacing.unit * 2
+    },
 });
 
 export default styles;

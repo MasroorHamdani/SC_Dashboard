@@ -64,6 +64,6 @@ function onProjectList(data) {
 export function InitialiseAdminProject() {
     return {
       type: ADMIN_PROJECT_CREATE,
-      data: {}
+      data: []
     }
 }
